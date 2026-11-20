@@ -1,0 +1,84 @@
+export type ParticipantStatus = 'PENDING_VERIFICATION' | 'PARTIALLY_PAID' | 'FULLY_PAID' | 'REJECTED';
+export type PaymentStatus = 'PENDING' | 'VERIFIED' | 'REJECTED';
+export type PaymentType = 'INITIAL_REGISTRATION' | 'BALANCE_PAYMENT';
+
+export interface Payment {
+  id: string;
+  payment_id: string;
+  participant_id: string;
+  reg_id: string;
+  payment_type: PaymentType;
+  amount: number;
+  transaction_id: string;
+  r2_object_key: string;
+  file_mime?: string;
+  file_size?: number;
+  status: PaymentStatus;
+  rejection_reason?: string | null;
+  verified_by?: string | null;
+  verified_at?: string | null;
+  created_at: string;
+  view_url?: string; // Signed GET URL generated for admin view
+}
+
+export interface Participant {
+  id: string;
+  reg_id: string;
+  full_name: string;
+  email: string;
+  dob: string;
+  gender: string;
+  mobile: string;
+  whatsapp: string;
+  city: string;
+  category: string;
+  height?: string | null;
+  instagram?: string | null;
+  experience?: string | null;
+  total_fee: number;
+  amount_paid: number;
+  balance_due: number;
+  status: ParticipantStatus;
+  created_at: string;
+  updated_at: string;
+  payments?: Payment[];
+}
+
+export interface PaymentInfo {
+  event_name: string;
+  upi_id: string;
+  upi_name: string;
+  default_total_fee: number;
+  allowed_balance_amounts: number[];
+  qr_code_url: string;
+}
+
+export interface PresignedUploadResponse {
+  upload_url: string;
+  object_key: string;
+  expires_in_seconds: number;
+}
+
+export interface AdminStats {
+  total_participants: number;
+  total_verified_revenue: number;
+  total_pending_amount: number;
+  total_balance_due: number;
+  pending_verifications_count: number;
+  verified_participants_count: number;
+  partially_paid_count: number;
+  fully_paid_count: number;
+  rejected_count: number;
+}
+
+export interface AuditLog {
+  id: string;
+  admin_id: string;
+  action: string;
+  target_type: string;
+  target_id?: string;
+  ip_address?: string;
+  user_agent?: string;
+  details?: Record<string, any>;
+  created_at: string;
+}
