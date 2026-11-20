@@ -1,37 +1,20 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import Navbar from './components/Navbar';
-import LandingPage from './pages/LandingPage';
 import RegistrationPage from './pages/RegistrationPage';
 import BalancePaymentPage from './pages/BalancePaymentPage';
 import StatusPassPage from './pages/StatusPassPage';
 import AdminDashboard from './pages/AdminDashboard';
-import { getPaymentInfo } from './lib/api';
-import { PaymentInfo } from './types/index';
 
 export default function App() {
-  const [activeTab, setActiveTab] = useState<string>('landing');
+  const [activeTab, setActiveTab] = useState<string>('register');
   const [balanceRegId, setBalanceRegId] = useState<string>('');
   const [lookupRegId, setLookupRegId] = useState<string>('');
-  const [paymentInfo, setPaymentInfo] = useState<PaymentInfo | null>(null);
-
-  useEffect(() => {
-    getPaymentInfo()
-      .then(data => setPaymentInfo(data))
-      .catch(err => console.error("Error loading event payment info", err));
-  }, []);
 
   return (
-    <div className="min-h-screen flex flex-col bg-charcoal text-ivory">
+    <div className="min-h-screen flex flex-col bg-[#0b0d13] text-zinc-100">
       <Navbar activeTab={activeTab} setActiveTab={setActiveTab} />
 
       <main className="flex-1">
-        {activeTab === 'landing' && (
-          <LandingPage
-            setActiveTab={setActiveTab}
-            paymentInfo={paymentInfo}
-          />
-        )}
-
         {activeTab === 'register' && (
           <RegistrationPage
             setActiveTab={setActiveTab}
@@ -69,64 +52,49 @@ export default function App() {
         )}
       </main>
 
-      {/* Editorial Luxury Footer */}
-      <footer className="bg-[#101213] border-t border-charcoal-border py-12 text-xs text-charcoal-muted">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-col md:flex-row items-start md:items-center justify-between pb-8 border-b border-charcoal-border/60 gap-6">
-            <div>
-              <div className="flex items-center space-x-2">
-                <span className="font-editorial text-2xl text-ivory tracking-wider">SKYRA CREATIONS</span>
-                <span className="w-1.5 h-1.5 rounded-full bg-lime-accent"></span>
-              </div>
-              <p className="text-xs text-charcoal-muted mt-1 font-light max-w-sm">
-                Runway Show 2026 Edition • Production, Talent Curation & Professional Event Management Platform.
-              </p>
-            </div>
-
-            <div className="flex flex-wrap items-center gap-6 text-xs uppercase font-mono tracking-wider">
-              <button 
-                onClick={() => { setActiveTab('landing'); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
-                className="hover:text-lime-accent transition-colors"
-              >
-                Home
-              </button>
-              <button 
-                onClick={() => { setActiveTab('register'); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
-                className="hover:text-lime-accent transition-colors"
-              >
-                Registration
-              </button>
-              <button 
-                onClick={() => { setActiveTab('balance'); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
-                className="hover:text-lime-accent transition-colors"
-              >
-                Balance Portal
-              </button>
-              <button 
-                onClick={() => { setActiveTab('status'); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
-                className="hover:text-lime-accent transition-colors"
-              >
-                Digital Pass
-              </button>
-              <button 
-                onClick={() => { setActiveTab('admin'); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
-                className="hover:text-lime-accent transition-colors"
-              >
-                Staff Portal
-              </button>
+      {/* Footer */}
+      <footer className="bg-[#090b10] border-t border-zinc-800/80 py-10 text-xs text-zinc-500">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4">
+          <div className="flex items-center space-x-3">
+            <img src="/logo.png" alt="Skyra Creations Logo" className="w-8 h-8 object-contain rounded-md bg-black border border-amber-500/30 p-0.5" />
+            <div className="flex items-center space-x-2">
+              <span className="font-serif font-bold text-amber-400">SKYRA CREATIONS</span>
+              <span>•</span>
+              <span>Runway Show 2026 Portal</span>
+              <span>•</span>
+              <span className="text-[10px] px-2 py-0.5 rounded bg-zinc-800 text-zinc-400">Vercel • Supabase • Cloudflare R2</span>
             </div>
           </div>
 
-          <div className="pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-[11px] font-mono text-charcoal-muted">
-            <div className="flex items-center space-x-2">
-              <span>Merchant: mr.death4646@oksbi (Sanjay Mass)</span>
-              <span>•</span>
-              <span className="text-lime-accent">100% Bank Statement Reconciliation</span>
-            </div>
+          <div className="flex items-center space-x-6 text-zinc-400">
+            <button 
+              onClick={() => setActiveTab('register')}
+              className="hover:text-amber-400 transition-colors"
+            >
+              Registration
+            </button>
+            <button 
+              onClick={() => setActiveTab('balance')}
+              className="hover:text-amber-400 transition-colors"
+            >
+              Balance Portal
+            </button>
+            <button 
+              onClick={() => setActiveTab('status')}
+              className="hover:text-amber-400 transition-colors"
+            >
+              Check Pass
+            </button>
+            <button 
+              onClick={() => setActiveTab('admin')}
+              className="hover:text-amber-400 transition-colors"
+            >
+              Staff Portal
+            </button>
+          </div>
 
-            <div>
-              <span>© 2026 SKYRA CREATIONS. All rights reserved.</span>
-            </div>
+          <div>
+            <span>© 2026 Skyra Creations. All rights reserved.</span>
           </div>
         </div>
       </footer>

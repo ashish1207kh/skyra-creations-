@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React from 'react';
+import { Sparkles, CreditCard, UserCheck, ShieldCheck } from 'lucide-react';
 
 interface NavbarProps {
   activeTab: string;
@@ -6,182 +7,92 @@ interface NavbarProps {
 }
 
 export default function Navbar({ activeTab, setActiveTab }: NavbarProps) {
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-
-  const handleNavClick = (tabId: string) => {
-    setActiveTab(tabId);
-    setMobileMenuOpen(false);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  };
-
-  const navLinks = [
-    { id: 'landing', label: 'Home', icon: 'villa' },
-    { id: 'register', label: 'Register', icon: 'app_registration' },
-    { id: 'balance', label: 'Balance Portal', icon: 'account_balance_wallet', highlight: true },
-    { id: 'status', label: 'Status & Pass', icon: 'verified' },
-    { id: 'admin', label: 'Admin Portal', icon: 'admin_panel_settings' },
+  const navItems = [
+    { id: 'register', label: 'Runway Registration', icon: Sparkles },
+    { id: 'balance', label: 'Balance Payment', icon: CreditCard, highlight: true },
+    { id: 'status', label: 'Check Status & Pass', icon: UserCheck },
+    { id: 'admin', label: 'Admin Portal', icon: ShieldCheck },
   ];
 
   return (
-    <>
-      {/* Top Fixed Header Bar */}
-      <header className="fixed top-0 w-full z-50 pt-safe bg-surface/85 backdrop-blur-xl shadow-[0_1px_12px_rgba(0,0,0,0.45)] border-b border-surface-variant/40">
-        <div className="h-16 px-margin-mobile max-w-7xl mx-auto flex items-center justify-between">
-          <div className="flex items-center gap-space-sm">
-            <button 
-              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              aria-label="Menu" 
-              className="w-11 h-11 flex items-center justify-center text-on-surface hover:text-primary transition-colors focus:outline-none md:hidden"
-            >
-              <span className="material-symbols-outlined text-2xl">{mobileMenuOpen ? 'close' : 'menu'}</span>
-            </button>
-            
-            <div 
-              onClick={() => handleNavClick('landing')}
-              className="flex items-center gap-space-sm cursor-pointer group"
-            >
-              <div className="w-9 h-9 rounded-full bg-primary/20 border border-primary/40 flex items-center justify-center text-primary font-bold text-sm">
-                SC
-              </div>
-              <div className="flex flex-col">
-                <span className="font-label-caps text-label-caps uppercase tracking-widest text-on-surface group-hover:text-primary transition-colors">
+    <header className="sticky top-0 z-50 bg-[#0d0f17]/95 backdrop-blur-md border-b border-amber-500/20">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex items-center justify-between h-20">
+          {/* Logo & Brand */}
+          <div 
+            onClick={() => setActiveTab('register')}
+            className="flex items-center space-x-3.5 cursor-pointer group"
+          >
+            <div className="relative rounded-xl overflow-hidden bg-black border border-amber-500/30 p-1 shadow-lg shadow-amber-500/10 group-hover:border-amber-400/60 transition-all">
+              <img 
+                src="/logo.png" 
+                alt="Skyra Creations" 
+                className="w-12 h-12 object-contain group-hover:scale-105 transition-transform" 
+              />
+            </div>
+            <div>
+              <div className="flex items-center space-x-2">
+                <span className="font-serif text-xl sm:text-2xl font-bold tracking-wider text-white group-hover:text-amber-300 transition-colors">
                   SKYRA CREATIONS
                 </span>
-                <span className="text-[10px] font-data-mono text-outline uppercase tracking-wider">
-                  Runway 2026 // Paris & Milan
+                <span className="hidden sm:inline-block text-[10px] uppercase tracking-widest px-2 py-0.5 rounded bg-amber-500/10 text-amber-400 border border-amber-500/30">
+                  Runway 2026
                 </span>
               </div>
+              <p className="text-xs text-zinc-400 tracking-wide">Vercel & Supabase Powered Fashion Portal</p>
             </div>
           </div>
 
-          {/* Desktop Links */}
-          <nav className="hidden md:flex items-center gap-2">
-            {navLinks.map((item) => {
+          {/* Desktop Nav Items */}
+          <nav className="hidden md:flex items-center space-x-1 lg:space-x-2">
+            {navItems.map((item) => {
+              const Icon = item.icon;
               const isActive = activeTab === item.id;
               return (
                 <button
                   key={item.id}
-                  onClick={() => handleNavClick(item.id)}
-                  className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-label-md uppercase tracking-wider transition-all ${
+                  onClick={() => setActiveTab(item.id)}
+                  className={`flex items-center space-x-2 px-3.5 py-2 rounded-lg text-sm font-medium transition-all ${
                     isActive
-                      ? 'bg-primary text-on-primary font-semibold shadow-sm'
+                      ? 'bg-amber-500/20 text-amber-300 border border-amber-500/40 shadow-sm shadow-amber-500/10'
                       : item.highlight
-                      ? 'text-primary hover:bg-surface-container'
-                      : 'text-on-surface-variant hover:text-on-surface hover:bg-surface-container'
+                      ? 'text-amber-400 hover:bg-amber-500/10 hover:text-amber-300'
+                      : 'text-zinc-300 hover:text-white hover:bg-zinc-800/60'
                   }`}
                 >
-                  <span className="material-symbols-outlined text-base">{item.icon}</span>
+                  <Icon className={`w-4 h-4 ${isActive ? 'text-amber-400' : 'text-zinc-400'}`} />
                   <span>{item.label}</span>
+                  {item.highlight && !isActive && (
+                    <span className="w-2 h-2 rounded-full bg-amber-400 animate-pulse"></span>
+                  )}
                 </button>
               );
             })}
           </nav>
 
-          {/* Profile / Status Quick Action */}
-          <div className="flex items-center gap-space-xs">
-            <button 
-              onClick={() => handleNavClick('status')}
-              aria-label="Check Status & Pass" 
-              className="w-11 h-11 flex items-center justify-center focus:outline-none"
-              title="Check Digital Pass"
-            >
-              <div className="w-8 h-8 rounded-full bg-surface-container-high border border-outline-variant/50 flex items-center justify-center text-primary hover:border-primary transition-colors">
-                <span className="material-symbols-outlined text-base">badge</span>
-              </div>
-            </button>
-          </div>
-        </div>
-
-        {/* Mobile Dropdown Drawer */}
-        {mobileMenuOpen && (
-          <div className="md:hidden bg-surface-container-lowest/95 backdrop-blur-xl border-b border-surface-variant p-4 space-y-1">
-            {navLinks.map((item) => {
+          {/* Mobile Quick Switcher */}
+          <div className="flex md:hidden items-center space-x-1">
+            {navItems.map((item) => {
+              const Icon = item.icon;
               const isActive = activeTab === item.id;
               return (
                 <button
                   key={item.id}
-                  onClick={() => handleNavClick(item.id)}
-                  className={`w-full flex items-center justify-between px-4 py-3 rounded-lg text-sm font-label-md tracking-wide ${
+                  onClick={() => setActiveTab(item.id)}
+                  title={item.label}
+                  className={`p-2.5 rounded-lg text-xs transition-all ${
                     isActive
-                      ? 'bg-primary text-on-primary font-semibold'
-                      : 'text-on-surface-variant hover:text-on-surface hover:bg-surface-container'
+                      ? 'bg-amber-500/20 text-amber-300 border border-amber-500/40'
+                      : 'text-zinc-400 hover:text-white hover:bg-zinc-800/60'
                   }`}
                 >
-                  <div className="flex items-center gap-3">
-                    <span className="material-symbols-outlined text-xl">{item.icon}</span>
-                    <span>{item.label}</span>
-                  </div>
-                  {item.highlight && !isActive && (
-                    <span className="text-[10px] font-data-mono uppercase tracking-wider px-2 py-0.5 rounded bg-primary/10 text-primary">
-                      Due
-                    </span>
-                  )}
+                  <Icon className="w-5 h-5" />
                 </button>
               );
             })}
           </div>
-        )}
-      </header>
-
-      {/* Fixed Bottom Navigation Bar for Mobile */}
-      <nav className="fixed bottom-0 w-full z-40 pb-safe bg-surface/90 backdrop-blur-xl shadow-[0_-1px_16px_rgba(0,0,0,0.5)] md:hidden border-t border-surface-variant/30">
-        <div className="flex justify-around items-center h-16 px-space-sm">
-          <button
-            onClick={() => handleNavClick('landing')}
-            className={`relative flex flex-col items-center justify-center gap-0.5 w-16 h-12 transition-all focus:outline-none ${
-              activeTab === 'landing' ? 'text-primary' : 'text-on-surface-variant hover:text-on-surface'
-            }`}
-          >
-            <span className="material-symbols-outlined text-[22px]">villa</span>
-            <span className="font-label-caps text-[10px] uppercase tracking-wider">Home</span>
-            {activeTab === 'landing' && <span className="w-1 h-1 rounded-full bg-primary absolute bottom-0.5"></span>}
-          </button>
-
-          <button
-            onClick={() => handleNavClick('register')}
-            className={`relative flex flex-col items-center justify-center gap-0.5 w-16 h-12 transition-all focus:outline-none ${
-              activeTab === 'register' ? 'text-primary' : 'text-on-surface-variant hover:text-on-surface'
-            }`}
-          >
-            <span className="material-symbols-outlined text-[22px]">app_registration</span>
-            <span className="font-label-caps text-[10px] uppercase tracking-wider">Register</span>
-            {activeTab === 'register' && <span className="w-1 h-1 rounded-full bg-primary absolute bottom-0.5"></span>}
-          </button>
-
-          <button
-            onClick={() => handleNavClick('balance')}
-            className={`relative flex flex-col items-center justify-center gap-0.5 w-16 h-12 transition-all focus:outline-none ${
-              activeTab === 'balance' ? 'text-primary' : 'text-on-surface-variant hover:text-on-surface'
-            }`}
-          >
-            <span className="material-symbols-outlined text-[22px]">account_balance_wallet</span>
-            <span className="font-label-caps text-[10px] uppercase tracking-wider">Balance</span>
-            {activeTab === 'balance' && <span className="w-1 h-1 rounded-full bg-primary absolute bottom-0.5"></span>}
-          </button>
-
-          <button
-            onClick={() => handleNavClick('status')}
-            className={`relative flex flex-col items-center justify-center gap-0.5 w-16 h-12 transition-all focus:outline-none ${
-              activeTab === 'status' ? 'text-primary' : 'text-on-surface-variant hover:text-on-surface'
-            }`}
-          >
-            <span className="material-symbols-outlined text-[22px]">verified</span>
-            <span className="font-label-caps text-[10px] uppercase tracking-wider">Pass</span>
-            {activeTab === 'status' && <span className="w-1 h-1 rounded-full bg-primary absolute bottom-0.5"></span>}
-          </button>
-
-          <button
-            onClick={() => handleNavClick('admin')}
-            className={`relative flex flex-col items-center justify-center gap-0.5 w-16 h-12 transition-all focus:outline-none ${
-              activeTab === 'admin' ? 'text-primary' : 'text-on-surface-variant hover:text-on-surface'
-            }`}
-          >
-            <span className="material-symbols-outlined text-[22px]">admin_panel_settings</span>
-            <span className="font-label-caps text-[10px] uppercase tracking-wider">Admin</span>
-            {activeTab === 'admin' && <span className="w-1 h-1 rounded-full bg-primary absolute bottom-0.5"></span>}
-          </button>
         </div>
-      </nav>
-    </>
+      </div>
+    </header>
   );
 }
