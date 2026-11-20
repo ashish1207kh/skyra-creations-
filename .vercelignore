@@ -1,0 +1,6 @@
+backend/
+frontend/
+tests/
+.git/
+.github/
+*.bat
