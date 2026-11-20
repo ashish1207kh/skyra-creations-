@@ -241,6 +241,66 @@ async function runTests() {
   assert(stats.total_verified_revenue >= 10000);
   console.log('   ✓ Stats accurately calculated: Total Participants =', stats.total_participants, ', Revenue = ₹' + stats.total_verified_revenue);
 
+  // 11. Test Consolidated Serverless Routers (Hobby Plan Compliant: <= 12 Functions)
+  console.log('10. Testing Consolidated Hobby-Plan Compliant Routers...');
+  const adminHandler = (await import('../api/admin/[action].js')).default;
+  const storageHandler = (await import('../api/storage/[action].js')).default;
+
+  // Mock response helper
+  function createMockRes() {
+    let statusCode = 200;
+    let data: any = null;
+    const headers: Record<string, string> = {};
+    return {
+      status(code: number) {
+        statusCode = code;
+        return this;
+      },
+      json(payload: any) {
+        data = payload;
+        return this;
+      },
+      send(payload: any) {
+        data = payload;
+        return this;
+      },
+      setHeader(name: string, val: string) {
+        headers[name] = val;
+      },
+      getStatus: () => statusCode,
+      getData: () => data,
+    } as any;
+  }
+
+  // Test admin login via consolidated router
+  const loginRes = createMockRes();
+  await adminHandler({
+    method: 'POST',
+    query: { action: 'login' },
+    headers: {},
+    body: { email: 'admin@skyracreations.com', password: 'SkyraDirector@Runway2026' },
+  } as any, loginRes);
+  assert.strictEqual(loginRes.getStatus(), 200);
+  assert(loginRes.getData().token);
+  console.log('   ✓ Consolidated admin router handled action=login successfully');
+
+  // Test storage upload via consolidated router
+  const uploadRes = createMockRes();
+  await storageHandler({
+    method: 'POST',
+    query: { action: 'presigned-upload' },
+    headers: {},
+    body: {
+      fileName: 'proof.png',
+      mimeType: 'image/png',
+      fileSizeBytes: 1024,
+      folder: 'proofs',
+    },
+  } as any, uploadRes);
+  assert.strictEqual(uploadRes.getStatus(), 200);
+  assert(uploadRes.getData().uploadUrl);
+  console.log('   ✓ Consolidated storage router handled action=presigned-upload successfully');
+
   console.log('\n=========================================');
   console.log('ALL SERVERLESS & STORAGE SUITES PASSED! ✓');
   console.log('=========================================');
