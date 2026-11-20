@@ -14,7 +14,8 @@ import {
   ShieldCheck, 
   Copy, 
   Check,
-  QrCode
+  QrCode,
+  MessageSquare
 } from 'lucide-react';
 import { getPaymentInfo, registerContestant } from '../lib/api';
 import { uploadFileToR2 } from '../lib/storage';
@@ -287,9 +288,86 @@ export default function RegistrationPage({ setActiveTab, setLookupRegId }: Regis
   }
 
   return (
-    <div className="max-w-4xl mx-auto py-10 px-4 sm:px-6">
-      {/* Official Master Spec Banner */}
-      <div className="relative overflow-hidden bg-gradient-to-r from-[#171a24] via-[#1b1f2c] to-[#171a24] border border-amber-500/30 rounded-3xl p-6 sm:p-10 mb-8 shadow-2xl">
+    <div className="max-w-7xl mx-auto py-10 px-4 sm:px-6 lg:px-8">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+        {/* Left Column: Founder & CEO Profile */}
+        <aside className="lg:col-span-4 lg:sticky lg:top-24 space-y-6">
+          <div className="bg-[#12151e] border border-amber-500/30 rounded-3xl p-6 shadow-2xl relative overflow-hidden group">
+            {/* Top gold accent line */}
+            <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-amber-600 via-amber-400 to-yellow-200"></div>
+
+            <div className="relative mb-5 overflow-hidden rounded-2xl border border-amber-500/30 bg-black shadow-lg">
+              <img
+                src="/founder.jpg"
+                alt="B. SRIRAM — Founder & CEO, Skyra Creations"
+                className="w-full h-auto max-h-[420px] object-cover object-top group-hover:scale-105 transition-transform duration-500"
+              />
+              <div className="absolute bottom-3 left-3 right-3 flex items-center justify-between">
+                <span className="inline-flex items-center space-x-1.5 px-3 py-1 rounded-full bg-black/85 backdrop-blur-md text-amber-300 border border-amber-500/40 text-[11px] font-bold uppercase tracking-wider shadow">
+                  <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                  <span>Founder &amp; CEO</span>
+                </span>
+              </div>
+            </div>
+
+            <div className="space-y-3.5">
+              <div>
+                <span className="text-[10px] uppercase tracking-widest text-zinc-400 font-semibold block">
+                  Event Leadership
+                </span>
+                <h3 className="font-serif text-2xl font-extrabold text-white tracking-wide">
+                  B. SRIRAM
+                </h3>
+                <p className="text-xs text-amber-400 font-medium">
+                  Founder &amp; CEO, Skyra Creations
+                </p>
+              </div>
+
+              <p className="text-xs text-zinc-300 leading-relaxed border-l-2 border-amber-500/40 pl-3 py-0.5">
+                "Welcome to Skyra Creations. We are committed to discovering, mentoring, and launching aspiring models on the premier runway."
+              </p>
+
+              {/* Direct Contact Info */}
+              <div className="pt-3 border-t border-zinc-800 space-y-2.5">
+                <div className="flex items-center justify-between text-xs">
+                  <span className="text-zinc-400">Direct Contact:</span>
+                  <a
+                    href="tel:9342049287"
+                    className="font-mono font-bold text-amber-300 hover:text-amber-200 transition-colors flex items-center space-x-1"
+                  >
+                    <Phone className="w-3.5 h-3.5 text-amber-400" />
+                    <span>9342049287</span>
+                  </a>
+                </div>
+
+                <div className="grid grid-cols-2 gap-2 pt-1">
+                  <a
+                    href="tel:9342049287"
+                    className="flex items-center justify-center space-x-1.5 px-3 py-2.5 rounded-xl bg-zinc-800 hover:bg-zinc-700 text-white text-xs font-semibold border border-zinc-700 transition-colors shadow-sm"
+                  >
+                    <Phone className="w-3.5 h-3.5 text-amber-400" />
+                    <span>Call Now</span>
+                  </a>
+
+                  <a
+                    href="https://wa.me/919342049287?text=Hello%20Sriram%20sir%2C%20I%20am%20inquiring%20about%20the%20Skyra%20Creations%20Runway%20Show%202026%20registration."
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center justify-center space-x-1.5 px-3 py-2.5 rounded-xl bg-emerald-950/60 hover:bg-emerald-900/80 text-emerald-300 border border-emerald-500/40 text-xs font-semibold transition-colors shadow-sm"
+                  >
+                    <MessageSquare className="w-3.5 h-3.5 text-emerald-400" />
+                    <span>WhatsApp</span>
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </aside>
+
+        {/* Right Column: Registration Form & Details */}
+        <div className="lg:col-span-8 space-y-8">
+          {/* Official Master Spec Banner */}
+          <div className="relative overflow-hidden bg-gradient-to-r from-[#171a24] via-[#1b1f2c] to-[#171a24] border border-amber-500/30 rounded-3xl p-6 sm:p-10 shadow-2xl">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6 mb-6">
           <div>
             <div className="flex items-center space-x-2 text-amber-400 text-xs font-semibold tracking-widest uppercase mb-2">
@@ -836,6 +914,8 @@ export default function RegistrationPage({ setActiveTab, setLookupRegId }: Regis
           </button>
         </div>
       </form>
+        </div>
+      </div>
     </div>
   );
 }
