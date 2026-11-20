@@ -11,7 +11,9 @@ import {
   XCircle,
   ShieldCheck,
   FileText,
-  BadgeCheck
+  BadgeCheck,
+  MapPin,
+  Calendar
 } from 'lucide-react';
 import { lookupParticipant } from '../lib/api';
 import { Participant } from '../types/index';
@@ -125,6 +127,31 @@ export default function StatusPassPage({ initialRegId, setActiveTab, setBalanceR
             <span>{errorMsg}</span>
           </div>
         )}
+      </div>
+
+      {/* Prominent Venue & Schedule Notice */}
+      <div className="bg-gradient-to-r from-amber-950/40 via-[#1d1610] to-[#12151e] border-2 border-amber-500/50 rounded-2xl p-5 mb-8 shadow-xl relative overflow-hidden">
+        <div className="flex items-start space-x-3.5">
+          <div className="w-10 h-10 rounded-xl bg-amber-500/20 border border-amber-500/40 flex items-center justify-center shrink-0 text-amber-400 mt-0.5 shadow">
+            <MapPin className="w-5 h-5" />
+          </div>
+          <div className="space-y-1 flex-1">
+            <div className="flex flex-wrap items-center gap-2">
+              <span className="text-xs font-bold uppercase tracking-widest text-amber-300">
+                Event Location &amp; Announcement Schedule
+              </span>
+              <span className="px-2.5 py-0.5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/30 text-[10px] font-bold uppercase tracking-wider">
+                Chennai (City Center — Not Outer)
+              </span>
+            </div>
+            <p className="text-xs sm:text-sm text-zinc-200 leading-relaxed">
+              <strong className="text-white">Event Location:</strong> Hosted exclusively in <strong className="text-amber-300">Chennai city center (prime location, not outer areas)</strong>.
+            </p>
+            <p className="text-xs sm:text-sm text-zinc-300 leading-relaxed">
+              <strong className="text-white">Venue &amp; Timings Release:</strong> Exact venue address and complete event timings will be <strong className="text-amber-300">officially announced 10 days before the show</strong> and communicated directly via registered WhatsApp and published here on the portal.
+            </p>
+          </div>
+        </div>
       </div>
 
       {/* Participant Results */}
@@ -328,7 +355,7 @@ export default function StatusPassPage({ initialRegId, setActiveTab, setBalanceR
 
                   <div className="grid grid-cols-2 gap-4">
                     <div>
-                      <span className="text-[11px] uppercase tracking-wider text-zinc-400 block mb-0.5">City</span>
+                      <span className="text-[11px] uppercase tracking-wider text-zinc-400 block mb-0.5">Participant City</span>
                       <strong className="text-zinc-200 text-base">{participant.city || 'Verified Participant'}</strong>
                     </div>
                     <div>
@@ -342,6 +369,24 @@ export default function StatusPassPage({ initialRegId, setActiveTab, setBalanceR
                           ? 'FULLY PAID — ALL ACCESS'
                           : `VERIFIED — PARTIAL PAYMENT (Due: ₹${participant.balance_due})`}
                       </span>
+                    </div>
+                  </div>
+
+                  {/* Official Runway Venue & Schedule Pass Details */}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 p-3.5 rounded-xl bg-black/50 border border-amber-500/30">
+                    <div className="flex items-start space-x-2">
+                      <MapPin className="w-4 h-4 text-amber-400 shrink-0 mt-0.5" />
+                      <div>
+                        <span className="text-[10px] uppercase tracking-wider text-amber-400 font-bold block">Event Venue</span>
+                        <strong className="text-zinc-200 text-xs block">Chennai (City Center — Not outer)</strong>
+                      </div>
+                    </div>
+                    <div className="flex items-start space-x-2">
+                      <Calendar className="w-4 h-4 text-amber-400 shrink-0 mt-0.5" />
+                      <div>
+                        <span className="text-[10px] uppercase tracking-wider text-amber-400 font-bold block">Venue &amp; Timings Release</span>
+                        <strong className="text-zinc-200 text-xs block">Announced 10 days before the show</strong>
+                      </div>
                     </div>
                   </div>
 

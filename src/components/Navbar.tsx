@@ -23,6 +23,17 @@ export default function Navbar({ activeTab, setActiveTab }: NavbarProps) {
 
   return (
     <header className="sticky top-0 z-50 bg-[#0d0f17]/95 backdrop-blur-md border-b border-amber-500/20">
+      {/* Event Location & Schedule Top Announcement */}
+      <div className="bg-gradient-to-r from-amber-950/90 via-[#221a0f] to-amber-950/90 border-b border-amber-500/30 py-1.5 px-4 text-center text-[11px] sm:text-xs text-amber-200/90 flex flex-wrap items-center justify-center gap-x-3 gap-y-1">
+        <span className="flex items-center space-x-1.5 text-amber-300 font-semibold">
+          <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+          <span>RUNWAY SHOW 2026:</span>
+        </span>
+        <span>Event Location: <strong className="text-white">Chennai (City Center — Not outer)</strong></span>
+        <span className="text-amber-400/40 hidden sm:inline">•</span>
+        <span>Venue &amp; Timings: <strong className="text-white">Announced 10 days before the event</strong></span>
+      </div>
+
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-20">
           {/* Brand & Emblem */}

@@ -10,7 +10,8 @@ import {
   Copy, 
   Check,
   Calendar,
-  QrCode
+  QrCode,
+  MapPin
 } from 'lucide-react';
 import { getPaymentInfo, lookupParticipant, submitBalancePayment } from '../lib/api';
 import { uploadFileToR2 } from '../lib/storage';
@@ -234,13 +235,17 @@ export default function BalancePaymentPage({ initialRegId, setActiveTab, setLook
             </div>
           </div>
 
-          <div className="p-4 rounded-xl bg-[#171a24] border border-zinc-800 text-xs text-zinc-300 text-left mb-8 space-y-1.5">
+          <div className="p-4 rounded-xl bg-[#171a24] border border-zinc-800 text-xs text-zinc-300 text-left mb-8 space-y-2">
             <p className="font-bold text-white flex items-center space-x-1.5">
               <ShieldCheck className="w-4 h-4 text-amber-400" />
-              <span>Verification Policy:</span>
+              <span>Verification Policy &amp; Event Notice:</span>
             </p>
             <p>
               Payments are verified against bank settlement statements. Your updated balance and confirmed digital pass will be available once administrator approval is granted.
+            </p>
+            <p className="text-amber-300/90 border-t border-zinc-800 pt-2 flex items-center space-x-1.5 text-[11px]">
+              <MapPin className="w-3.5 h-3.5 text-amber-400 shrink-0" />
+              <span>Event location is in <strong>Chennai (City Center — Not outer)</strong>. Venue address &amp; show schedule announced 10 days before the show.</span>
             </p>
           </div>
 
@@ -312,6 +317,31 @@ export default function BalancePaymentPage({ initialRegId, setActiveTab, setLook
           <p className="text-zinc-400">
             Important Notice: This portal is exclusively for existing participants. Your payment submission will be reviewed by our team before your balance is updated.
           </p>
+        </div>
+      </div>
+
+      {/* Prominent Venue & Schedule Announcement */}
+      <div className="bg-gradient-to-r from-amber-950/40 via-[#1d1610] to-[#12151e] border-2 border-amber-500/50 rounded-2xl p-5 mb-8 shadow-xl relative overflow-hidden">
+        <div className="flex items-start space-x-3.5">
+          <div className="w-10 h-10 rounded-xl bg-amber-500/20 border border-amber-500/40 flex items-center justify-center shrink-0 text-amber-400 mt-0.5 shadow">
+            <MapPin className="w-5 h-5" />
+          </div>
+          <div className="space-y-1 flex-1">
+            <div className="flex flex-wrap items-center gap-2">
+              <span className="text-xs font-bold uppercase tracking-widest text-amber-300">
+                Event Location &amp; Announcement Schedule
+              </span>
+              <span className="px-2.5 py-0.5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/30 text-[10px] font-bold uppercase tracking-wider">
+                Chennai (City Center — Not Outer)
+              </span>
+            </div>
+            <p className="text-xs sm:text-sm text-zinc-200 leading-relaxed">
+              <strong className="text-white">Event Location:</strong> Hosted within <strong className="text-amber-300">Chennai city center (prime location, not outer areas)</strong>.
+            </p>
+            <p className="text-xs sm:text-sm text-zinc-300 leading-relaxed">
+              <strong className="text-white">Venue Address &amp; Event Timings:</strong> The exact venue location and timing schedule will be <strong className="text-amber-300">officially announced 10 days before the show</strong> and shared with all participants via registered WhatsApp.
+            </p>
+          </div>
         </div>
       </div>
 

@@ -251,6 +251,9 @@ export default function RegistrationPage({ setActiveTab, setLookupRegId }: Regis
                 <strong className="text-white">Verification Process:</strong> Our team will review your submitted details and verify the payment proof against official records. Verification is generally completed within 24–48 hours.
               </li>
               <li>
+                <strong className="text-white">Venue &amp; Timing Announcement:</strong> The event location is in <strong className="text-amber-300">Chennai (City Center / Prime City, not outer areas)</strong>. The exact venue address and show schedule will be officially announced <strong className="text-amber-300">10 days before the show</strong> and sent to your registered WhatsApp.
+              </li>
+              <li>
                 <strong className="text-white">WhatsApp Outreach:</strong> You will receive an official update on your registered WhatsApp number ({whatsapp}) once verification is complete.
               </li>
               <li>
@@ -359,6 +362,24 @@ export default function RegistrationPage({ setActiveTab, setLookupRegId }: Regis
                     <span>WhatsApp</span>
                   </a>
                 </div>
+
+                {/* Event Location & Schedule Notice in Founder Card */}
+                <div className="p-3.5 rounded-2xl bg-amber-500/10 border border-amber-500/30 space-y-2 mt-2">
+                  <div className="flex items-center space-x-2 text-amber-300 text-xs font-bold">
+                    <MapPin className="w-3.5 h-3.5 text-amber-400 shrink-0" />
+                    <span>Location: Chennai (City Center)</span>
+                  </div>
+                  <p className="text-[11px] text-zinc-300 leading-normal">
+                    Hosted exclusively in <strong>central Chennai</strong> (prime city, not outer areas).
+                  </p>
+                  <div className="flex items-center space-x-2 text-amber-300 text-xs font-bold pt-1.5 border-t border-amber-500/20">
+                    <Calendar className="w-3.5 h-3.5 text-amber-400 shrink-0" />
+                    <span>Schedule &amp; Venue Details</span>
+                  </div>
+                  <p className="text-[11px] text-zinc-300 leading-normal">
+                    Exact venue address and event timings will be <strong>officially announced 10 days before the show</strong>.
+                  </p>
+                </div>
               </div>
             </div>
           </div>
@@ -409,6 +430,31 @@ export default function RegistrationPage({ setActiveTab, setLookupRegId }: Regis
           <p>
             <strong className="text-zinc-200">Important Notice:</strong> Registration is subject to verification and approval by SKYRA CREATIONS. Please complete the applicable payment and upload the transaction proof during registration. All registration fees are non-refundable, subject to the terms and conditions accepted during registration.
           </p>
+        </div>
+      </div>
+
+      {/* Prominent Venue & Schedule Announcement */}
+      <div className="bg-gradient-to-r from-amber-950/50 via-[#1f1710] to-[#12151e] border-2 border-amber-500/50 rounded-2xl p-5 shadow-2xl relative overflow-hidden">
+        <div className="flex items-start space-x-3.5">
+          <div className="w-10 h-10 rounded-xl bg-amber-500/20 border border-amber-500/40 flex items-center justify-center shrink-0 text-amber-400 mt-0.5 shadow-md">
+            <MapPin className="w-5 h-5" />
+          </div>
+          <div className="space-y-1.5 flex-1">
+            <div className="flex flex-wrap items-center gap-2">
+              <span className="text-xs font-extrabold uppercase tracking-widest text-amber-300">
+                Important Venue &amp; Schedule Announcement
+              </span>
+              <span className="px-2.5 py-0.5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/30 text-[10px] font-bold uppercase tracking-wider">
+                Chennai (City Center — Not Outer)
+              </span>
+            </div>
+            <p className="text-xs sm:text-sm text-zinc-200 leading-relaxed">
+              <strong className="text-white">Event Location:</strong> The runway show is hosted within <strong className="text-amber-300">Chennai city center (prime location, not outer areas)</strong>.
+            </p>
+            <p className="text-xs sm:text-sm text-zinc-300 leading-relaxed">
+              <strong className="text-white">Venue Address &amp; Event Timings:</strong> The exact venue address and show schedule will be <strong className="text-amber-300">officially announced 10 days before the show</strong> and communicated directly to your registered WhatsApp number as well as published on this portal.
+            </p>
+          </div>
         </div>
       </div>
 
@@ -866,6 +912,7 @@ export default function RegistrationPage({ setActiveTab, setLookupRegId }: Regis
             <ul className="list-disc list-inside space-y-1 text-zinc-400">
               <li>All registration fees are non-refundable.</li>
               <li>SKYRA CREATIONS reserves the right to accept or reject registrations.</li>
+              <li>Event Location: Chennai (Prime City Center — Not outer). Exact venue details and show schedule will be officially announced 10 days before the event.</li>
               <li>Rehearsal schedules and venue entry are subject to the applicable verification requirements and issuance of a valid digital entry pass.</li>
               <li>Official event communications will be sent to the WhatsApp number provided during registration.</li>
             </ul>
