@@ -1,20 +1,4 @@
 import React, { useState } from 'react';
-import { 
-  Sparkles, 
-  ArrowRight, 
-  Calendar, 
-  MapPin, 
-  CheckCircle2, 
-  ChevronDown, 
-  ChevronUp, 
-  ShieldCheck, 
-  CreditCard, 
-  Camera, 
-  ExternalLink,
-  ChevronRight,
-  Clock,
-  Layers
-} from 'lucide-react';
 import { PaymentInfo } from '../types/index';
 
 interface LandingPageProps {
@@ -29,378 +13,347 @@ export default function LandingPage({ setActiveTab, paymentInfo }: LandingPagePr
     setOpenFaq(openFaq === index ? null : index);
   };
 
-  const steps = [
+  const experienceCards = [
     {
-      step: '01',
-      title: 'Complete Registration Form',
-      desc: 'Fill in your model profile, measurements, contact details, and runway category.',
+      phase: 'PHASE // 01',
+      title: 'Elite Open Casting',
+      icon: 'center_focus_strong',
+      desc: 'Direct evaluation by Paris and Milan casting directors with real-time digital polaroid review sessions.',
+      tags: ['Catwalk Walk', 'Book Review'],
     },
     {
-      step: '02',
-      title: 'Submit Manual UPI Payment',
-      desc: 'Scan the official UPI QR code or pay to the verified merchant ID via GPay/PhonePe.',
+      phase: 'PHASE // 02',
+      title: 'Couture Masterclass',
+      icon: 'straighten',
+      desc: 'Intensive poise, choreography, and backstage protocol guided by legendary runway trainers and stylists.',
+      tags: ['Posture & Pacing', 'Lighting Sync'],
     },
     {
-      step: '03',
-      title: 'Upload Payment Proof & UTR',
-      desc: 'Upload your high-resolution screenshot and input the exact 12-digit transaction reference number.',
+      phase: 'PHASE // 03',
+      title: 'Agency Spotlights',
+      icon: 'globe_asia',
+      desc: 'Private scouting salon connects finalists directly with premier European and North American agencies.',
+      tags: ['Representation', 'Lookbook Deal'],
+    },
+  ];
+
+  const protocolSteps = [
+    {
+      num: '01',
+      title: 'Online Identity',
+      desc: 'Submit structural metrics, agency history, and verified contact profiles.',
+      badge: 'check_circle',
+      isBadgeIcon: true,
     },
     {
-      step: '04',
-      title: 'Admin Statement Verification',
-      desc: 'Our finance team verifies the credit directly against bank records (pending payments do not reduce balance).',
+      num: '02',
+      title: 'Digital Portfolio Upload',
+      desc: 'Unretouched polaroids (profile, full-length, mid-bust, emotive motion clip).',
+      badge: 'RAW / RAW+',
+      isBadgeIcon: false,
     },
     {
-      step: '05',
-      title: 'Access Digital Runway Pass',
-      desc: 'Receive your unique Registration ID and download your dynamic QR entry badge.',
+      num: '03',
+      title: 'Casting Verification Fee',
+      desc: 'Covers official accreditation dossier, security credentials, and backstage pass.',
+      badge: `₹${paymentInfo?.default_total_fee?.toLocaleString('en-IN') || '5,000'}`,
+      isBadgeIcon: false,
+    },
+    {
+      num: '04',
+      title: 'Official Call-Up & Pass',
+      desc: 'Encrypted QR pass pushed directly to your SKYRA wallet for stage access.',
+      badge: 'Pass Issued',
+      isBadgeIcon: false,
     },
   ];
 
   const faqs = [
     {
-      q: 'What is the fee structure for the Runway Show?',
-      a: `The standard total registration fee is ₹${paymentInfo?.default_total_fee?.toLocaleString('en-IN') || '5,000'}. You can choose to pay the full fee immediately or start with an advance payment of ₹1,500 or ₹2,000 to lock in your slot.`,
+      q: 'Who is eligible for Season 2026 casting?',
+      a: 'Open to both signed and independent models aged 17+. All genders and international applicants are welcome provided valid travel documentation is held for the runway venue.',
     },
     {
-      q: 'How does the Balance Payment portal work?',
-      a: 'After your advance registration is verified, you can pay your remaining balance anytime in convenient installments (₹500 to ₹3,500) using your Registration ID on the Balance Portal.',
+      q: 'What are the digital portfolio guidelines?',
+      a: 'Submissions must include natural, non-filtered digital snapshots: one headshot, one profile view, and two full-length poses wearing fitted dark attire with minimal styling.',
     },
     {
-      q: 'How long does payment verification take?',
-      a: 'All transactions undergo manual bank verification to ensure complete credit security. This typically takes 2 to 24 hours. Once verified, your status immediately transitions and updates your remaining balance.',
+      q: 'When are audition call-backs dispatched?',
+      a: 'Official digital invites and scheduled time-slots are pushed within 24–72 hours of portfolio clearance directly into your SKYRA portal dashboard.',
     },
     {
-      q: 'What should I bring to the runway event?',
-      a: 'Bring your official Digital Entry Pass (generated on the Status Portal after registration) along with a valid government photo ID.',
-    },
-    {
-      q: 'Can I update my model portfolio photos later?',
-      a: 'Yes, your profile and portfolio photos can be reviewed or updated during official backstage fittings or via our WhatsApp coordinator.',
+      q: 'How are fees and accreditation processed?',
+      a: 'Verification payments are encrypted and manual bank statement reconciled. Slots are locked upon initial advance verification, with remaining balances settled prior to stage briefing.',
     },
   ];
 
   return (
-    <div className="min-h-screen bg-charcoal text-ivory">
-      {/* 1. HERO SECTION */}
-      <section className="relative min-h-[92vh] flex items-center justify-center overflow-hidden border-b border-charcoal-border">
-        {/* Background Editorial Styling with Subtle Gradient & Mesh */}
-        <div className="absolute inset-0 bg-[#101213]">
-          <div className="absolute inset-0 bg-radial-gradient opacity-60 mix-blend-overlay"></div>
-          {/* Subtle runway atmospheric lighting */}
-          <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[400px] bg-lime-accent/5 rounded-full blur-[140px] pointer-events-none"></div>
-          <div className="absolute bottom-10 right-10 w-[500px] h-[300px] bg-charcoal-surface/40 rounded-full blur-[100px] pointer-events-none"></div>
-        </div>
+    <div className="flex flex-col w-full text-on-surface bg-surface min-h-screen pb-20">
+      {/* 1. Hero Editorial Frame */}
+      <section className="relative w-full overflow-hidden bg-surface-container-lowest">
+        <div className="relative w-full min-h-[520px] sm:min-h-[620px] flex items-end">
+          {/* Background image */}
+          <img 
+            alt="Haute couture runway model walking beneath architectural directional spotlight" 
+            className="absolute inset-0 w-full h-full object-cover object-top opacity-85" 
+            src="https://lh3.googleusercontent.com/aida-public/AB6AXuAKeZflp9UikHo-HozhgG8VYrRbUyHe5lqDYK0xT6GgClkNjfRgqksyHxqdmbqv_tVnbQbxdvO1fcUgiIrwMwqzZ3RiNuj2Lbo6wvB-4gpiZ45nHi893Jltg4UvO4ARkQHPNDTRCtnsHPB1Cm4-zLzcSNRNP_PDXaDKaA_ONlhjXpHAyfzsI95-f5uIeeGjQCaIleGALfrZIDEeADHk2XNvssbGQrOBA4SDphLbrkY"
+          />
 
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 sm:py-28 text-center flex flex-col items-center z-10">
-          {/* Editorial Badge */}
-          <div className="inline-flex items-center space-x-2.5 px-4 py-1.5 rounded-full bg-charcoal-card border border-charcoal-border text-xs uppercase tracking-widest text-lime-accent mb-8 shadow-card-subtle">
-            <span className="w-2 h-2 rounded-full bg-lime-accent animate-pulse"></span>
-            <span>{paymentInfo?.event_name || 'SKYRA CREATIONS — RUNWAY SHOW'}</span>
-            <span className="text-charcoal-muted">•</span>
-            <span className="text-charcoal-muted">Edition 2026</span>
+          {/* Editorial Radial & Linear Scrims */}
+          <div className="absolute inset-0 bg-gradient-to-t from-surface via-surface/60 to-transparent"></div>
+          <div className="absolute inset-0 bg-gradient-to-r from-surface-dim/70 via-transparent to-surface-dim/40"></div>
+
+          {/* Top Live Dispatch Bar Overlay */}
+          <div className="absolute top-4 left-4 right-4 flex items-center justify-between pointer-events-none max-w-7xl mx-auto">
+            <div className="flex items-center gap-2 px-3 py-1 rounded-full bg-surface-container-high/80 backdrop-blur-md">
+              <span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse"></span>
+              <span className="font-data-mono uppercase text-primary tracking-widest text-[10px]">Casting Window Live</span>
+            </div>
+            <span className="font-data-mono text-secondary text-[11px] tracking-widest px-2.5 py-1 rounded bg-surface-container-lowest/80 backdrop-blur-md">
+              PARIS // MILAN
+            </span>
           </div>
 
-          {/* Large Editorial Headline */}
-          <h1 className="font-editorial text-5xl sm:text-7xl lg:text-8xl font-normal tracking-tight text-ivory max-w-5xl leading-[1.08] mb-6">
-            OWN THE STAGE.<br />
-            <span className="italic font-light text-lime-accent">DEFINE THE MOMENT.</span>
-          </h1>
-
-          {/* Short Supporting Description */}
-          <p className="text-lg sm:text-xl text-charcoal-muted max-w-2xl font-light leading-relaxed mb-10">
-            Step into an experience where confidence meets creativity. Discover the next chapter of SKYRA CREATIONS on the premier high-fashion runway.
-          </p>
-
-          {/* Actions */}
-          <div className="flex flex-col sm:flex-row items-center gap-4 sm:gap-6 w-full sm:w-auto">
-            <button
-              onClick={() => setActiveTab('register')}
-              className="w-full sm:w-auto px-8 py-4 rounded-btn bg-lime-accent text-charcoal font-semibold text-sm tracking-wide uppercase hover:bg-[#c9f556] active:scale-[0.98] transition-all shadow-lime-glow flex items-center justify-center space-x-2"
-            >
-              <span>Register Now</span>
-              <ArrowRight className="w-4 h-4" />
-            </button>
-
-            <button
-              onClick={() => {
-                const el = document.getElementById('event-details');
-                el?.scrollIntoView({ behavior: 'smooth' });
-              }}
-              className="w-full sm:w-auto px-8 py-4 rounded-btn bg-charcoal-surface border border-charcoal-border text-ivory text-sm tracking-wide uppercase font-medium hover:bg-charcoal-card hover:border-lime-accent/40 active:scale-[0.98] transition-all flex items-center justify-center space-x-2"
-            >
-              <span>Explore Event</span>
-              <ChevronDown className="w-4 h-4 text-charcoal-muted" />
-            </button>
-
-            <button
-              onClick={() => setActiveTab('balance')}
-              className="w-full sm:w-auto px-6 py-4 rounded-btn border border-charcoal-border text-charcoal-muted text-sm tracking-wide hover:text-lime-accent hover:border-lime-accent/30 transition-all flex items-center justify-center space-x-2"
-            >
-              <CreditCard className="w-4 h-4" />
-              <span>Pay Balance</span>
-            </button>
-          </div>
-
-          {/* Event Quick Info Strip */}
-          <div className="mt-16 sm:mt-24 grid grid-cols-2 sm:grid-cols-4 gap-4 sm:gap-8 w-full max-w-4xl pt-8 border-t border-charcoal-border/70 text-left">
-            <div className="bg-charcoal-card/40 p-4 rounded-card border border-charcoal-border/50">
-              <span className="block text-xs uppercase tracking-wider text-charcoal-muted mb-1 font-mono">Date</span>
-              <span className="text-sm sm:text-base font-medium text-ivory">Runway 2026 Edition</span>
-            </div>
-            <div className="bg-charcoal-card/40 p-4 rounded-card border border-charcoal-border/50">
-              <span className="block text-xs uppercase tracking-wider text-charcoal-muted mb-1 font-mono">Stage</span>
-              <span className="text-sm sm:text-base font-medium text-ivory">Main Fashion Hall</span>
-            </div>
-            <div className="bg-charcoal-card/40 p-4 rounded-card border border-charcoal-border/50">
-              <span className="block text-xs uppercase tracking-wider text-charcoal-muted mb-1 font-mono">Total Fee</span>
-              <span className="text-sm sm:text-base font-medium text-lime-accent tabular-nums">₹{paymentInfo?.default_total_fee?.toLocaleString('en-IN') || '5,000'}</span>
-            </div>
-            <div className="bg-charcoal-card/40 p-4 rounded-card border border-charcoal-border/50">
-              <span className="block text-xs uppercase tracking-wider text-charcoal-muted mb-1 font-mono">Registration</span>
-              <span className="text-sm sm:text-base font-medium text-status-success flex items-center space-x-1.5">
-                <span className="w-2 h-2 rounded-full bg-status-success"></span>
-                <span>Active</span>
+          {/* Hero Typography Anchor */}
+          <div className="relative z-10 p-5 sm:p-10 max-w-4xl mx-auto w-full flex flex-col gap-3">
+            <div className="flex items-center gap-2">
+              <span className="px-2.5 py-0.5 rounded-full bg-surface-variant/90 text-on-surface-variant font-label-caps text-label-caps tracking-widest uppercase">
+                EDITION 2026 // RUNWAY COUTURE
               </span>
             </div>
-          </div>
-        </div>
-      </section>
 
-      {/* 2. EVENT DETAILS SECTION */}
-      <section id="event-details" className="py-24 bg-[#101213] border-b border-charcoal-border">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-6">
-            <div>
-              <span className="text-xs uppercase tracking-widest text-lime-accent font-mono block mb-2">Editorial Briefing</span>
-              <h2 className="font-editorial text-4xl sm:text-5xl font-normal text-ivory">The Runway Experience</h2>
-            </div>
-            <p className="text-charcoal-muted max-w-md text-sm leading-relaxed">
-              Curated for aspiring and seasoned models seeking career visibility, high-fashion portfolio shoots, and industry jury exposure.
+            <h1 className="font-headline-lg-mobile text-3xl sm:text-6xl text-on-surface tracking-tight leading-[1.08] font-headline-lg">
+              OWN THE STAGE.<br/>
+              <span className="italic font-headline-md text-tertiary">DEFINE THE MOMENT.</span>
+            </h1>
+
+            <p className="font-body-md text-sm sm:text-base text-secondary max-w-md leading-relaxed">
+              Where confidence meets creativity. Step into the next chapter of <span className="text-on-surface font-medium">SKYRA CREATIONS</span>.
             </p>
-          </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div className="bg-charcoal-card border border-charcoal-border rounded-card p-8 flex flex-col justify-between hover:border-lime-accent/30 transition-all">
-              <div>
-                <div className="w-12 h-12 rounded-btn bg-charcoal-surface border border-charcoal-border flex items-center justify-center text-lime-accent mb-6">
-                  <Sparkles className="w-6 h-6" />
-                </div>
-                <h3 className="font-editorial text-2xl text-ivory mb-3">Runway Showcase</h3>
-                <p className="text-charcoal-muted text-sm leading-relaxed">
-                  Walk in curated designer outfits before celebrated industry directors, talent scouts, and fashion media photographers.
-                </p>
-              </div>
-              <div className="pt-6 mt-6 border-t border-charcoal-border text-xs text-lime-accent font-mono">
-                Category: Runway Model
-              </div>
-            </div>
-
-            <div className="bg-charcoal-card border border-charcoal-border rounded-card p-8 flex flex-col justify-between hover:border-lime-accent/30 transition-all">
-              <div>
-                <div className="w-12 h-12 rounded-btn bg-charcoal-surface border border-charcoal-border flex items-center justify-center text-lime-accent mb-6">
-                  <Camera className="w-6 h-6" />
-                </div>
-                <h3 className="font-editorial text-2xl text-ivory mb-3">Portfolio & Coverage</h3>
-                <p className="text-charcoal-muted text-sm leading-relaxed">
-                  High-definition runway photographs and backstage reels archived directly in Cloudflare R2 private storage for participant access.
-                </p>
-              </div>
-              <div className="pt-6 mt-6 border-t border-charcoal-border text-xs text-lime-accent font-mono">
-                Asset Resolution: 4K Editorial
-              </div>
-            </div>
-
-            <div className="bg-charcoal-card border border-charcoal-border rounded-card p-8 flex flex-col justify-between hover:border-lime-accent/30 transition-all">
-              <div>
-                <div className="w-12 h-12 rounded-btn bg-charcoal-surface border border-charcoal-border flex items-center justify-center text-lime-accent mb-6">
-                  <ShieldCheck className="w-6 h-6" />
-                </div>
-                <h3 className="font-editorial text-2xl text-ivory mb-3">Verified Accreditation</h3>
-                <p className="text-charcoal-muted text-sm leading-relaxed">
-                  Official digital entry pass with secure QR verification code, verified payments record, and certificate of participation.
-                </p>
-              </div>
-              <div className="pt-6 mt-6 border-t border-charcoal-border text-xs text-lime-accent font-mono">
-                Accreditation: Skyra Official
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* 3. STEP-BY-STEP REGISTRATION PROCESS */}
-      <section className="py-24 bg-charcoal border-b border-charcoal-border">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center max-w-2xl mx-auto mb-16">
-            <span className="text-xs uppercase tracking-widest text-lime-accent font-mono block mb-2">Participant Journey</span>
-            <h2 className="font-editorial text-4xl sm:text-5xl font-normal text-ivory mb-4">Registration & Verification</h2>
-            <p className="text-charcoal-muted text-sm">
-              Our transparent 5-step registration and bank reconciliation workflow guarantees verified slots without automated gateway surcharges.
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-5 gap-6">
-            {steps.map((st, i) => (
-              <div 
-                key={st.step} 
-                className="bg-charcoal-card border border-charcoal-border rounded-card p-6 flex flex-col justify-between hover:border-lime-accent/40 transition-all relative group"
+            {/* CTAs */}
+            <div className="flex flex-wrap items-center gap-3 pt-2">
+              <button 
+                onClick={() => setActiveTab('register')}
+                className="h-11 px-6 flex items-center justify-center gap-2 rounded-full bg-primary text-on-primary font-label-md text-label-md tracking-wider uppercase transition-transform active:scale-[0.98] shadow-md hover:bg-primary-fixed"
               >
-                <div>
-                  <span className="font-editorial text-4xl text-lime-accent/40 group-hover:text-lime-accent transition-colors block mb-4">
-                    {st.step}
-                  </span>
-                  <h4 className="font-medium text-ivory text-base mb-2">{st.title}</h4>
-                  <p className="text-xs text-charcoal-muted leading-relaxed">{st.desc}</p>
+                <span>Register Now</span>
+                <span className="material-symbols-outlined text-lg">arrow_forward</span>
+              </button>
+
+              <a 
+                href="#experience"
+                className="h-11 px-6 flex items-center justify-center rounded-full bg-surface-container-high text-on-surface font-label-md text-label-md tracking-wider uppercase hover:bg-surface-bright transition-colors"
+              >
+                Explore
+              </a>
+
+              <button 
+                onClick={() => setActiveTab('balance')}
+                className="h-11 px-6 flex items-center justify-center gap-1.5 rounded-full bg-surface-container text-primary font-label-md text-label-md tracking-wider uppercase hover:bg-surface-container-high transition-colors"
+              >
+                <span className="material-symbols-outlined text-base">account_balance_wallet</span>
+                <span>Balance Portal</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* 2. Monolithic Stats Strip */}
+      <section className="w-full px-4 py-8 bg-surface max-w-7xl mx-auto">
+        <div className="grid grid-cols-3 gap-2 p-4 sm:p-6 rounded-xl bg-surface-container-low shadow-sm">
+          <div className="flex flex-col items-center text-center">
+            <span className="font-display-xl-mobile sm:text-5xl text-3xl text-primary tracking-tight font-headline-lg">350+</span>
+            <span className="font-label-caps text-[10px] sm:text-xs uppercase text-secondary tracking-widest mt-1">Models Cast</span>
+          </div>
+          <div className="flex flex-col items-center text-center border-x-0 bg-surface-container/40 rounded-lg py-1">
+            <span className="font-display-xl-mobile sm:text-5xl text-3xl text-on-surface tracking-tight font-headline-lg">24</span>
+            <span className="font-label-caps text-[10px] sm:text-xs uppercase text-secondary tracking-widest mt-1">Haute Houses</span>
+          </div>
+          <div className="flex flex-col items-center text-center">
+            <span className="font-display-xl-mobile sm:text-5xl text-3xl text-primary tracking-tight font-headline-lg">1.2M</span>
+            <span className="font-label-caps text-[10px] sm:text-xs uppercase text-secondary tracking-widest mt-1">Live Reach</span>
+          </div>
+        </div>
+      </section>
+
+      {/* 3. The Runway Experience */}
+      <section className="w-full px-4 py-8 flex flex-col gap-6 bg-surface max-w-7xl mx-auto" id="experience">
+        <div className="flex flex-col gap-1.5">
+          <span className="font-label-caps text-label-caps text-primary tracking-widest uppercase">Curated Access</span>
+          <h2 className="font-headline-md text-2xl sm:text-4xl text-on-surface">The Runway Experience</h2>
+          <p className="font-body-sm text-sm text-secondary">Engineered for transcendent discovery. From scouting calls to worldwide broadcast syndication.</p>
+        </div>
+
+        {/* Experience Cards Stack */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          {experienceCards.map((card, idx) => (
+            <div 
+              key={idx}
+              className="p-6 rounded-xl bg-surface-container flex flex-col justify-between gap-4 transition-all hover:bg-surface-container-high border border-surface-variant/30"
+            >
+              <div>
+                <div className="flex items-center justify-between mb-4">
+                  <div className="w-10 h-10 rounded-lg bg-surface-container-highest flex items-center justify-center text-primary">
+                    <span className="material-symbols-outlined text-2xl">{card.icon}</span>
+                  </div>
+                  <span className="font-data-mono text-xs text-secondary tracking-widest">{card.phase}</span>
                 </div>
-                <div className="mt-6 pt-4 border-t border-charcoal-border/50 flex items-center text-[11px] text-charcoal-muted group-hover:text-lime-accent font-mono transition-colors">
-                  <span>Step {i + 1} of 5</span>
-                  <ChevronRight className="w-3.5 h-3.5 ml-1" />
+                <h3 className="font-headline-sm text-xl text-on-surface mb-2">{card.title}</h3>
+                <p className="font-body-sm text-sm text-secondary leading-relaxed">
+                  {card.desc}
+                </p>
+              </div>
+
+              <div className="flex items-center gap-2 pt-2 border-t border-surface-variant/30">
+                {card.tags.map((t, i) => (
+                  <span key={i} className="px-2 py-0.5 rounded bg-surface-container-lowest text-on-surface-variant font-data-mono text-[10px] tracking-wider uppercase">
+                    {t}
+                  </span>
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* 4. Registration Steps Flow */}
+      <section className="w-full px-4 py-10 bg-surface-container-lowest">
+        <div className="max-w-7xl mx-auto">
+          <div className="flex flex-col gap-2 mb-8">
+            <span className="font-label-caps text-label-caps text-primary tracking-widest uppercase">The Protocol</span>
+            <h2 className="font-headline-md text-2xl sm:text-4xl text-on-surface">Registration Process</h2>
+            <p className="font-body-sm text-sm text-secondary">Four measured milestones to qualify for the 2026 runway circuit.</p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+            {protocolSteps.map((step) => (
+              <div key={step.num} className="flex flex-col gap-3 p-5 rounded-xl bg-surface-container-low border border-surface-variant/30">
+                <div className="flex items-center justify-between">
+                  <span className="font-data-mono text-data-mono text-primary font-bold px-2.5 py-1 rounded bg-surface-container">
+                    {step.num}
+                  </span>
+                  {step.isBadgeIcon ? (
+                    <span className="material-symbols-outlined text-primary text-base">check_circle</span>
+                  ) : (
+                    <span className="font-data-mono text-[10px] text-primary tracking-widest uppercase px-2 py-0.5 rounded bg-surface-container">
+                      {step.badge}
+                    </span>
+                  )}
+                </div>
+                <div>
+                  <h4 className="font-subheading text-base text-on-surface font-semibold mb-1">{step.title}</h4>
+                  <p className="font-body-sm text-xs text-secondary leading-relaxed">{step.desc}</p>
                 </div>
               </div>
             ))}
           </div>
 
-          <div className="mt-12 text-center">
+          <div className="mt-8 text-center">
             <button
               onClick={() => setActiveTab('register')}
-              className="inline-flex items-center space-x-2 px-8 py-3.5 rounded-btn bg-lime-accent text-charcoal font-semibold text-sm uppercase tracking-wide hover:bg-[#c9f556] transition-all shadow-lime-glow"
+              className="h-11 px-8 rounded-full bg-primary text-on-primary font-label-md text-xs uppercase tracking-wider font-semibold inline-flex items-center gap-2 hover:bg-primary-fixed transition-all"
             >
-              <span>Begin Registration</span>
-              <ArrowRight className="w-4 h-4" />
+              <span>Start Registration</span>
+              <span className="material-symbols-outlined text-lg">arrow_forward</span>
             </button>
           </div>
         </div>
       </section>
 
-      {/* 4. ABOUT SKYRA CREATIONS */}
-      <section className="py-24 bg-[#101213] border-b border-charcoal-border">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
-            <div>
-              <span className="text-xs uppercase tracking-widest text-lime-accent font-mono block mb-2">The Brand</span>
-              <h2 className="font-editorial text-4xl sm:text-5xl font-normal text-ivory mb-6 leading-tight">
-                Crafting Modern Runway Standards with Precision
-              </h2>
-              <div className="space-y-4 text-charcoal-muted text-sm sm:text-base leading-relaxed">
-                <p>
-                  SKYRA CREATIONS is an event management and fashion production house dedicated to elevating contemporary runway talent. We bridge creative vision, structured backstage production, and authentic participant empowerment.
-                </p>
-                <p>
-                  Our operational platform operates with full financial transparency: every participant receives an individualized Registration ID, clear installment schedules, and direct access to their accredited digital pass.
-                </p>
-              </div>
+      {/* 5. Curated Lookbook Gallery */}
+      <section className="w-full px-4 py-10 bg-surface max-w-7xl mx-auto">
+        <div className="flex items-end justify-between mb-6">
+          <div>
+            <span className="font-label-caps text-label-caps text-primary tracking-widest uppercase">Lookbook Archive</span>
+            <h2 className="font-headline-md text-2xl sm:text-4xl text-on-surface">Curated Visuals</h2>
+          </div>
+          <button 
+            onClick={() => setActiveTab('register')}
+            className="font-label-md text-xs text-primary flex items-center gap-1 uppercase tracking-wider hover:underline"
+          >
+            <span>Audition Roster</span>
+            <span className="material-symbols-outlined text-sm">north_east</span>
+          </button>
+        </div>
 
-              <div className="mt-8 pt-8 border-t border-charcoal-border grid grid-cols-2 sm:grid-cols-3 gap-6">
-                <div>
-                  <span className="block font-editorial text-3xl text-lime-accent">100%</span>
-                  <span className="text-xs text-charcoal-muted">Bank Verified</span>
-                </div>
-                <div>
-                  <span className="block font-editorial text-3xl text-ivory">Tier-1</span>
-                  <span className="text-xs text-charcoal-muted">Cloudflare R2 Storage</span>
-                </div>
-                <div>
-                  <span className="block font-editorial text-3xl text-ivory">Direct</span>
-                  <span className="text-xs text-charcoal-muted">UPI Settlement</span>
-                </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div className="flex flex-col gap-2">
+            <div className="relative w-full aspect-[3/4] rounded-lg overflow-hidden bg-surface-container">
+              <img 
+                alt="Editorial close-up fashion photograph of an avant-garde model" 
+                className="w-full h-full object-cover" 
+                src="https://lh3.googleusercontent.com/aida-public/AB6AXuDAjxJBqSnk2Nl9R-X4atighBY7ZNZHHtPoGZLC6KBi1Ku8SQpqOaTa85B-wyJQKRc94VK2c-HQNMHPsWGIwDh5harIhbk5AX_4fLnJ6A0YNCY4AT22g1mJ69851I66gFamX7XJ0JQnFgjnTN6jIPmWQXHxhteh3ACBrSckjKo-imu-s54RAlY42huI6a6kTz1UIsjZU7XSjG9C_nudKrOLMGS6zZNNEnUdoAoJjas"
+              />
+              <div className="absolute bottom-2 left-2 px-2 py-0.5 rounded bg-surface-container-lowest/80 backdrop-blur-md">
+                <span className="font-data-mono text-[10px] text-on-surface tracking-wider uppercase">Look 01 // Vesper</span>
               </div>
             </div>
+            <div className="flex justify-between items-baseline px-0.5">
+              <span className="font-subheading text-[13px] text-on-surface font-medium truncate">Maison de L'Ombre</span>
+              <span className="font-data-mono text-[11px] text-secondary">AW26</span>
+            </div>
+          </div>
 
-            {/* Visual Art Block */}
-            <div className="bg-charcoal-card border border-charcoal-border rounded-section p-8 relative overflow-hidden shadow-luxury">
-              <div className="aspect-[4/3] rounded-card bg-charcoal-surface border border-charcoal-border/70 flex flex-col items-center justify-center p-8 text-center relative overflow-hidden">
-                <div className="w-16 h-16 rounded-full bg-lime-accent/10 border border-lime-accent/30 flex items-center justify-center text-lime-accent mb-4">
-                  <Sparkles className="w-8 h-8" />
-                </div>
-                <span className="font-editorial text-3xl text-ivory font-light italic mb-2">SKYRA CREATIONS</span>
-                <p className="text-xs text-charcoal-muted max-w-xs font-mono">
-                  Official Runway Showcase 2026 • Curated Production
-                </p>
-                <div className="mt-6 flex items-center space-x-2 text-xs text-lime-accent">
-                  <CheckCircle2 className="w-4 h-4" />
-                  <span>Verified Identity & Accreditation</span>
-                </div>
+          <div className="flex flex-col gap-2">
+            <div className="relative w-full aspect-[3/4] rounded-lg overflow-hidden bg-surface-container">
+              <img 
+                alt="High fashion runway shot of a tall model in sheer architectural pleated organza gown" 
+                className="w-full h-full object-cover" 
+                src="https://lh3.googleusercontent.com/aida-public/AB6AXuBiuBlGmp5YFREy6Y_uxsMz_jTb23gtcSUk8efblW64BtjEzsDW0R1R1_LuL826mV1PAsKA2qNX2XFimBra8oVIM2DiaUmcg3G9l6QvwkPeG12aWWKpjgINbSx6A3PbBRUockNhs9ILWC6Jy7lNhviI2why7wg8mVL5_b0QP3gKaamOUgVcaZ1m_El5Qer9zlGCJxyjWpJfouiZxi_mMN5TsZyDGmcz9jLoO0x1mPA"
+              />
+              <div className="absolute bottom-2 left-2 px-2 py-0.5 rounded bg-surface-container-lowest/80 backdrop-blur-md">
+                <span className="font-data-mono text-[10px] text-on-surface tracking-wider uppercase">Look 04 // Kinetic</span>
               </div>
             </div>
+            <div className="flex justify-between items-baseline px-0.5">
+              <span className="font-subheading text-[13px] text-on-surface font-medium truncate">Atelier Kaelen</span>
+              <span className="font-data-mono text-[11px] text-secondary">SS26</span>
+            </div>
+          </div>
+        </div>
+
+        {/* Backstage Feature Banner */}
+        <div className="mt-4 relative w-full aspect-[16/9] max-h-72 rounded-xl overflow-hidden bg-surface-container">
+          <img 
+            alt="Cinematic wide runway backstage photograph" 
+            className="w-full h-full object-cover" 
+            src="https://lh3.googleusercontent.com/aida-public/AB6AXuByRT__Ld8LPvee0wPVtjo6b7At7Zx8adNf86RpgNHVoooOtFufFWERi0popJa7sTYJkJL_JxdkQ61UVatVYzOm2Ws2h_2cUofHRmMK76Xe6SbcEckPpQ96R_8tN3hpYMjnlLyIc8iUVYu_qhjOGhEEb-lg6jjesVBZ6wzOYa6dY3W6R6rlrjKWYkB9sX2iEZ1FpkFLY31K5-Xxrit7zZcP0g47ItTJOZUlWF_rIB8"
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-surface-container-lowest via-surface-container-lowest/40 to-transparent flex flex-col justify-end p-5">
+            <span className="font-label-caps text-label-caps text-primary tracking-widest uppercase">Behind The Runway</span>
+            <h3 className="font-headline-sm text-xl text-on-surface mt-0.5">Backstage Synergy & Production</h3>
+            <p className="font-body-sm text-xs text-secondary truncate">Exclusive access to couture dressers, head stylists, and runway direction.</p>
           </div>
         </div>
       </section>
 
-      {/* 5. EDITORIAL GALLERY PRESENTATION */}
-      <section className="py-24 bg-charcoal border-b border-charcoal-border">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-6">
-            <div>
-              <span className="text-xs uppercase tracking-widest text-lime-accent font-mono block mb-2">Visual Showcase</span>
-              <h2 className="font-editorial text-4xl sm:text-5xl font-normal text-ivory">Editorial Runway Archive</h2>
-            </div>
-            <p className="text-charcoal-muted max-w-sm text-sm">
-              Atmospheric moments from production staging, rehearsal runs, and high-fashion presentations.
-            </p>
+      {/* 6. Interactive FAQ Accordion */}
+      <section className="w-full px-4 py-10 bg-surface-container-lowest">
+        <div className="max-w-3xl mx-auto">
+          <div className="flex flex-col gap-1 mb-6 text-center sm:text-left">
+            <span className="font-label-caps text-label-caps text-primary tracking-widest uppercase">Inquiries</span>
+            <h2 className="font-headline-md text-2xl sm:text-3xl text-on-surface">Frequently Asked Questions</h2>
+            <p className="font-body-sm text-xs text-secondary">Everything required prior to physical check-in and stage audition.</p>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            <div className="aspect-[3/4] bg-charcoal-card border border-charcoal-border rounded-card p-6 flex flex-col justify-end relative overflow-hidden group hover:border-lime-accent/50 transition-all">
-              <div className="absolute inset-0 bg-gradient-to-t from-charcoal-dark via-charcoal/40 to-transparent"></div>
-              <div className="relative z-10">
-                <span className="text-[11px] font-mono text-lime-accent uppercase tracking-wider block mb-1">Look 01</span>
-                <h4 className="font-editorial text-2xl text-ivory mb-1">Couture Silhouettes</h4>
-                <p className="text-xs text-charcoal-muted">Experimental drape & sculptural lines</p>
-              </div>
-            </div>
-
-            <div className="aspect-[3/4] bg-charcoal-card border border-charcoal-border rounded-card p-6 flex flex-col justify-end relative overflow-hidden group hover:border-lime-accent/50 transition-all">
-              <div className="absolute inset-0 bg-gradient-to-t from-charcoal-dark via-charcoal/40 to-transparent"></div>
-              <div className="relative z-10">
-                <span className="text-[11px] font-mono text-lime-accent uppercase tracking-wider block mb-1">Look 02</span>
-                <h4 className="font-editorial text-2xl text-ivory mb-1">The Walk & Poise</h4>
-                <p className="text-xs text-charcoal-muted">Masterclass choreography on the center runway</p>
-              </div>
-            </div>
-
-            <div className="aspect-[3/4] bg-charcoal-card border border-charcoal-border rounded-card p-6 flex flex-col justify-end relative overflow-hidden group hover:border-lime-accent/50 transition-all">
-              <div className="absolute inset-0 bg-gradient-to-t from-charcoal-dark via-charcoal/40 to-transparent"></div>
-              <div className="relative z-10">
-                <span className="text-[11px] font-mono text-lime-accent uppercase tracking-wider block mb-1">Look 03</span>
-                <h4 className="font-editorial text-2xl text-ivory mb-1">Backstage Lighting</h4>
-                <p className="text-xs text-charcoal-muted">Behind-the-scenes precision before the curtains rise</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* 6. FAQ ACCORDION */}
-      <section className="py-24 bg-[#101213] border-b border-charcoal-border">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <span className="text-xs uppercase tracking-widest text-lime-accent font-mono block mb-2">Participant Inquiries</span>
-            <h2 className="font-editorial text-4xl sm:text-5xl font-normal text-ivory mb-4">Frequently Asked Questions</h2>
-            <p className="text-charcoal-muted text-sm">
-              Everything you need to know about fees, payment verification, and event day guidelines.
-            </p>
-          </div>
-
-          <div className="space-y-4">
+          <div className="flex flex-col gap-2.5">
             {faqs.map((faq, index) => {
               const isOpen = openFaq === index;
               return (
-                <div 
-                  key={index}
-                  className="bg-charcoal-card border border-charcoal-border rounded-card overflow-hidden transition-all"
-                >
-                  <button
+                <div key={index} className="rounded-xl bg-surface-container-low overflow-hidden border border-surface-variant/30">
+                  <button 
                     onClick={() => toggleFaq(index)}
-                    className="w-full px-6 py-5 text-left flex items-center justify-between hover:bg-charcoal-surface/60 transition-colors"
+                    className="w-full p-4 flex items-center justify-between text-left focus:outline-none hover:bg-surface-container transition-colors"
                   >
-                    <span className="font-medium text-base text-ivory pr-4">{faq.q}</span>
-                    <span className="text-lime-accent">
-                      {isOpen ? <ChevronUp className="w-5 h-5" /> : <ChevronDown className="w-5 h-5" />}
+                    <span className="font-subheading text-sm text-on-surface font-medium pr-2">{faq.q}</span>
+                    <span className={`material-symbols-outlined text-secondary transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`}>
+                      expand_more
                     </span>
                   </button>
                   {isOpen && (
-                    <div className="px-6 pb-6 pt-1 text-sm text-charcoal-muted leading-relaxed border-t border-charcoal-border/50">
+                    <div className="px-4 pb-4 text-secondary font-body-sm text-xs leading-relaxed border-t border-surface-variant/20 pt-2">
                       {faq.a}
                     </div>
                   )}
@@ -411,30 +364,45 @@ export default function LandingPage({ setActiveTab, paymentInfo }: LandingPagePr
         </div>
       </section>
 
-      {/* 7. CTA STRIP */}
-      <section className="py-20 bg-charcoal relative overflow-hidden">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
-          <h2 className="font-editorial text-4xl sm:text-6xl font-normal text-ivory mb-6">
-            Ready to Take the Runway?
-          </h2>
-          <p className="text-charcoal-muted text-base max-w-xl mx-auto mb-8 font-light">
-            Secure your slot today with initial advance registration. Verification opens immediately upon submission.
+      {/* 7. Closing Editorial Callout */}
+      <section className="w-full px-4 pt-10 pb-12 bg-surface max-w-4xl mx-auto">
+        <div className="relative p-6 sm:p-10 rounded-2xl bg-surface-container-high overflow-hidden flex flex-col items-center text-center gap-4 border border-surface-variant/40">
+          <div className="absolute -top-16 left-1/2 -translate-x-1/2 w-48 h-32 bg-primary/10 rounded-full blur-2xl pointer-events-none"></div>
+          <span className="font-label-caps text-label-caps text-primary uppercase tracking-widest">SKYRA CREATIONS // ARCHIVE 2026</span>
+          <h3 className="font-headline-lg-mobile text-2xl sm:text-4xl text-on-surface font-headline-lg">
+            The Spotlight Awaits.
+          </h3>
+          <p className="font-body-sm text-xs sm:text-sm text-secondary max-w-sm">
+            Limited slots remain for global runway casting. Secure your profile accreditation before submissions conclude.
           </p>
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-            <button
-              onClick={() => setActiveTab('register')}
-              className="w-full sm:w-auto px-8 py-4 rounded-btn bg-lime-accent text-charcoal font-semibold text-sm uppercase tracking-wide hover:bg-[#c9f556] transition-all shadow-lime-glow flex items-center justify-center space-x-2"
-            >
-              <span>Register Now</span>
-              <ArrowRight className="w-4 h-4" />
-            </button>
-            <button
-              onClick={() => setActiveTab('status')}
-              className="w-full sm:w-auto px-8 py-4 rounded-btn bg-charcoal-surface border border-charcoal-border text-ivory text-sm uppercase tracking-wide hover:bg-charcoal-card transition-all"
-            >
-              <span>Check Existing Pass</span>
-            </button>
+
+          <button 
+            onClick={() => setActiveTab('register')}
+            className="w-full sm:w-auto px-8 h-12 flex items-center justify-center gap-2 rounded-full bg-primary text-on-primary font-label-md text-xs tracking-wider uppercase font-semibold transition-transform active:scale-[0.98] shadow-md hover:bg-primary-fixed"
+          >
+            <span>Apply for Season 2026</span>
+            <span className="material-symbols-outlined text-lg">east</span>
+          </button>
+
+          <div className="flex items-center gap-4 text-secondary font-data-mono text-[11px] pt-1">
+            <span>CURATED BY SKYRA</span>
+            <span>•</span>
+            <span>PARIS COUTURE WEEK</span>
           </div>
+        </div>
+
+        {/* Editorial Micro Footer */}
+        <div className="mt-8 flex flex-col items-center gap-3 text-center">
+          <div className="flex items-center gap-4 text-on-surface-variant font-label-caps text-[10px] tracking-widest uppercase">
+            <span className="cursor-pointer hover:text-primary">Privacy Codex</span>
+            <span>•</span>
+            <span className="cursor-pointer hover:text-primary">Casting Terms</span>
+            <span>•</span>
+            <span className="cursor-pointer hover:text-primary">Press Accreditation</span>
+          </div>
+          <p className="font-data-mono text-[10px] text-secondary/60">
+            © 2026 SKYRA CREATIONS INTERNATIONALE. ALL RIGHTS RESERVED.
+          </p>
         </div>
       </section>
     </div>

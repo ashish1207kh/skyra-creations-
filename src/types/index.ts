@@ -35,6 +35,8 @@ export interface Participant {
   height?: string | null;
   instagram?: string | null;
   experience?: string | null;
+  profile_photo_url?: string | null;
+  photos?: string[];
   total_fee: number;
   amount_paid: number;
   balance_due: number;
