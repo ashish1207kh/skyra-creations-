@@ -1,9 +1,10 @@
 @echo off
 echo ========================================================
-echo       Starting Skyra Creations Platform
+echo       Starting Skyra Creations Platform (Vercel Stack)
+echo       Frontend + Vercel Serverless API on Vite
 echo ========================================================
 echo.
-cd /d "%~dp0backend"
-echo Launching unified FastAPI server on http://127.0.0.1:8000 ...
-py -m uvicorn app.main:app --host 127.0.0.1 --port 8000 --reload
+cd /d "%~dp0"
+echo Launching development server on http://localhost:5173 ...
+call npm.cmd run dev
 pause
