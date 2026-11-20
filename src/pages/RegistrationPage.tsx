@@ -45,8 +45,7 @@ export default function RegistrationPage({ setActiveTab, setLookupRegId }: Regis
   const [city, setCity] = useState('');
 
   // 3.2 Modelling Profile
-  const [category, setCategory] = useState('Runway Model');
-  const [height, setHeight] = useState('');
+  const [category] = useState('Runway Model');
   const [instagram, setInstagram] = useState('');
   const [experience, setExperience] = useState('');
 
@@ -177,7 +176,7 @@ export default function RegistrationPage({ setActiveTab, setLookupRegId }: Regis
         whatsapp: whatsapp.trim(),
         city: city.trim(),
         category,
-        height: height.trim() || null,
+        height: null,
         instagram: instagram.trim() || null,
         experience: experience.trim() || null,
         amount: getEffectiveAmount(),
@@ -512,55 +511,19 @@ export default function RegistrationPage({ setActiveTab, setLookupRegId }: Regis
           </div>
         </div>
 
-        {/* 3.2 MODELLING PROFILE */}
+        {/* 3.2 MODELLING & SOCIAL PROFILE (OPTIONAL) */}
         <div className="bg-[#12151e]/90 border border-zinc-800 rounded-2xl p-6 sm:p-8 shadow-md">
           <div className="border-b border-zinc-800 pb-4 mb-6">
             <h2 className="font-serif text-xl sm:text-2xl font-bold text-white flex items-center space-x-2">
               <Sparkles className="w-5 h-5 text-amber-400" />
-              <span>Your Modelling Profile</span>
+              <span>Modelling &amp; Social Profile <span className="text-xs text-zinc-500 font-sans font-normal">(Optional)</span></span>
             </h2>
             <p className="text-xs sm:text-sm text-zinc-400 mt-1">
-              Tell us a little about your modelling interests and experience.
+              Share your social handle and any prior fashion experience (if any).
             </p>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-            {/* Participation Category */}
-            <div>
-              <label className="block text-xs font-semibold text-zinc-300 mb-1">
-                Participation Category <span className="text-amber-400">*</span>
-              </label>
-              <select
-                value={category}
-                onChange={(e) => setCategory(e.target.value)}
-                className="w-full bg-[#0a0c12] border border-zinc-700 rounded-xl px-4 py-3 text-white text-sm focus:outline-none focus:border-amber-400 focus:ring-1 focus:ring-amber-400 transition-colors"
-              >
-                <option value="Runway Model">Runway Model</option>
-                <option value="Kids Model">Kids Model</option>
-                <option value="Plus Size Model">Plus Size Model</option>
-                <option value="Fitness Model">Fitness Model</option>
-                <option value="Designer Showcase">Designer Showcase</option>
-              </select>
-              <p className="text-[11px] text-zinc-500 mt-1">
-                Choose the runway category you wish to participate in.
-              </p>
-            </div>
-
-            {/* Height */}
-            <div>
-              <label className="block text-xs font-semibold text-zinc-300 mb-1">
-                Height <span className="text-zinc-500">(Optional)</span>
-              </label>
-              <input
-                type="text"
-                value={height}
-                onChange={(e) => setHeight(e.target.value)}
-                placeholder="5 ft 8 in / 173 cm"
-                className="w-full bg-[#0a0c12] border border-zinc-700 rounded-xl px-4 py-3 text-white placeholder-zinc-500 text-sm focus:outline-none focus:border-amber-400 focus:ring-1 focus:ring-amber-400 transition-colors"
-              />
-              <p className="text-[11px] text-zinc-500 mt-1">Enter your height in your preferred format.</p>
-            </div>
-
             {/* Instagram Profile */}
             <div className="sm:col-span-2">
               <label className="block text-xs font-semibold text-zinc-300 mb-1">
