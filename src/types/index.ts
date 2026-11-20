@@ -39,6 +39,7 @@ export interface Participant {
   amount_paid: number;
   balance_due: number;
   status: ParticipantStatus;
+  pass_token?: string;
   created_at: string;
   updated_at: string;
   payments?: Payment[];

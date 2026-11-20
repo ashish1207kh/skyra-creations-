@@ -1,10 +1,16 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { getAllPayments } from '../_lib/supabaseAdmin.js';
 import { generatePresignedViewUrl } from '../_lib/r2Client.js';
+import { verifyAdminAuth } from '../_lib/adminAuth.js';
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   if (req.method !== 'GET') {
     return res.status(405).json({ detail: 'Method not allowed' });
+  }
+
+  const auth = verifyAdminAuth(req);
+  if (!auth.valid) {
+    return res.status(401).json({ detail: auth.error || 'Unauthorized' });
   }
 
   try {
@@ -17,7 +23,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
           const view_url = await generatePresignedViewUrl(pay.r2_object_key);
           return { ...pay, view_url };
         } catch {
-          return { ...pay, view_url: '/qr_code.png' };
+          return { ...pay, view_url: '/logo.png' };
         }
       })
     );

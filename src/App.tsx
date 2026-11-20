@@ -12,38 +12,40 @@ export default function App() {
 
   return (
     <div className="min-h-screen flex flex-col bg-[#0b0d13] text-zinc-100">
+      {/* Navigation Header */}
       <Navbar activeTab={activeTab} setActiveTab={setActiveTab} />
 
+      {/* Main Content View */}
       <main className="flex-1">
         {activeTab === 'register' && (
-          <RegistrationPage
-            setActiveTab={setActiveTab}
+          <RegistrationPage 
+            setActiveTab={setActiveTab} 
             setLookupRegId={(id) => {
               setLookupRegId(id);
               setActiveTab('status');
-            }}
+            }} 
           />
         )}
 
         {activeTab === 'balance' && (
-          <BalancePaymentPage
-            initialRegId={balanceRegId}
+          <BalancePaymentPage 
+            initialRegId={balanceRegId} 
             setActiveTab={setActiveTab}
             setLookupRegId={(id) => {
               setLookupRegId(id);
               setActiveTab('status');
-            }}
+            }} 
           />
         )}
 
         {activeTab === 'status' && (
-          <StatusPassPage
-            initialRegId={lookupRegId}
+          <StatusPassPage 
+            initialRegId={lookupRegId} 
             setActiveTab={setActiveTab}
             setBalanceRegId={(id) => {
               setBalanceRegId(id);
               setActiveTab('balance');
-            }}
+            }} 
           />
         )}
 
@@ -52,49 +54,55 @@ export default function App() {
         )}
       </main>
 
-      {/* Footer */}
-      <footer className="bg-[#090b10] border-t border-zinc-800/80 py-10 text-xs text-zinc-500">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4">
-          <div className="flex items-center space-x-3">
-            <img src="/logo.png" alt="Skyra Creations Logo" className="w-8 h-8 object-contain rounded-md bg-black border border-amber-500/30 p-0.5" />
-            <div className="flex items-center space-x-2">
-              <span className="font-serif font-bold text-amber-400">SKYRA CREATIONS</span>
-              <span>•</span>
-              <span>Runway Show 2026 Portal</span>
-              <span>•</span>
-              <span className="text-[10px] px-2 py-0.5 rounded bg-zinc-800 text-zinc-400">Vercel • Supabase • Cloudflare R2</span>
+      {/* Footer Content */}
+      <footer className="bg-[#090b10] border-t border-zinc-800/80 py-12 text-xs text-zinc-400">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
+          <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6 pb-8 border-b border-zinc-800/60">
+            {/* Brand & Description */}
+            <div className="space-y-2 max-w-md">
+              <div className="flex items-center space-x-3">
+                <div className="w-10 h-10 rounded-xl bg-black border border-amber-500/30 p-1 flex items-center justify-center shadow-lg">
+                  <img src="/logo.png" alt="Skyra Creations Logo" className="w-full h-full object-contain" />
+                </div>
+                <span className="font-serif text-lg font-bold tracking-wider text-white">SKYRA CREATIONS</span>
+              </div>
+              <p className="text-xs text-zinc-400 leading-relaxed">
+                Creating opportunities for aspiring and professional models through fashion, modelling and runway experiences.
+              </p>
+            </div>
+
+            {/* Quick Links */}
+            <div className="flex flex-wrap items-center gap-6 text-xs text-zinc-300 font-medium">
+              <button 
+                onClick={() => setActiveTab('register')}
+                className="hover:text-amber-400 transition-colors"
+              >
+                Runway Registration
+              </button>
+              <button 
+                onClick={() => setActiveTab('balance')}
+                className="hover:text-amber-400 transition-colors"
+              >
+                Balance Payment
+              </button>
+              <button 
+                onClick={() => setActiveTab('status')}
+                className="hover:text-amber-400 transition-colors"
+              >
+                Check Status &amp; Pass
+              </button>
+              <button 
+                onClick={() => setActiveTab('admin')}
+                className="hover:text-amber-400 transition-colors"
+              >
+                Admin Portal
+              </button>
             </div>
           </div>
 
-          <div className="flex items-center space-x-6 text-zinc-400">
-            <button 
-              onClick={() => setActiveTab('register')}
-              className="hover:text-amber-400 transition-colors"
-            >
-              Registration
-            </button>
-            <button 
-              onClick={() => setActiveTab('balance')}
-              className="hover:text-amber-400 transition-colors"
-            >
-              Balance Portal
-            </button>
-            <button 
-              onClick={() => setActiveTab('status')}
-              className="hover:text-amber-400 transition-colors"
-            >
-              Check Pass
-            </button>
-            <button 
-              onClick={() => setActiveTab('admin')}
-              className="hover:text-amber-400 transition-colors"
-            >
-              Staff Portal
-            </button>
-          </div>
-
-          <div>
-            <span>© 2026 Skyra Creations. All rights reserved.</span>
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-4 text-[11px] text-zinc-500">
+            <span>© 2026 SKYRA CREATIONS. All rights reserved.</span>
+            <span>Runway Show 2026 Registration Portal</span>
           </div>
         </div>
       </footer>

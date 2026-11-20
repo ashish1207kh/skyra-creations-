@@ -1,12 +1,50 @@
 import { Participant, Payment, PaymentInfo, AdminStats } from '../types/index';
 
+const ADMIN_TOKEN_KEY = 'skyra_admin_session_token';
+
+export function getAdminToken(): string | null {
+  return typeof window !== 'undefined' ? sessionStorage.getItem(ADMIN_TOKEN_KEY) || localStorage.getItem(ADMIN_TOKEN_KEY) : null;
+}
+
+export function setAdminToken(token: string) {
+  if (typeof window !== 'undefined') {
+    sessionStorage.setItem(ADMIN_TOKEN_KEY, token);
+  }
+}
+
+export function clearAdminToken() {
+  if (typeof window !== 'undefined') {
+    sessionStorage.removeItem(ADMIN_TOKEN_KEY);
+    localStorage.removeItem(ADMIN_TOKEN_KEY);
+  }
+}
+
 async function fetchJson<T>(url: string, options?: RequestInit): Promise<T> {
-  const res = await fetch(url, options);
+  const token = getAdminToken();
+  const headers = new Headers(options?.headers);
+
+  if (url.includes('/api/admin') && token) {
+    headers.set('Authorization', `Bearer ${token}`);
+  }
+
+  const res = await fetch(url, { ...options, headers });
   if (!res.ok) {
     const errorData = await res.json().catch(() => ({}));
     throw new Error(errorData.detail || `Request failed with status ${res.status}`);
   }
   return res.json();
+}
+
+export async function adminLogin(email: string, password: string): Promise<{ success: boolean; token: string; user: any }> {
+  const data = await fetchJson<{ success: boolean; token: string; user: any }>('/api/admin/login', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ email, password }),
+  });
+  if (data?.token) {
+    setAdminToken(data.token);
+  }
+  return data;
 }
 
 export async function getPaymentInfo(): Promise<PaymentInfo> {
@@ -60,8 +98,8 @@ export async function getAdminStats(): Promise<AdminStats> {
   return fetchJson<AdminStats>('/api/admin/stats');
 }
 
-export async function getAdminParticipants(): Promise<{ items: Participant[]; total: number }> {
-  return fetchJson('/api/admin/participants');
+export async function getAdminParticipants(): Promise<Participant[]> {
+  return fetchJson<Participant[]>('/api/admin/participants');
 }
 
 export async function getAdminPayments(): Promise<Payment[]> {
@@ -85,12 +123,15 @@ export async function verifyPayment(
 }
 
 export function getZipDownloadUrl(keys?: string[]): string {
+  const token = getAdminToken();
+  const tokenParam = token ? `&token=${encodeURIComponent(token)}` : '';
   if (keys && keys.length > 0) {
-    return `/api/admin/download-zip?keys=${encodeURIComponent(keys.join(','))}`;
+    return `/api/admin/download-zip?keys=${encodeURIComponent(keys.join(','))}${tokenParam}`;
   }
-  return '/api/admin/download-zip';
+  return `/api/admin/download-zip?${tokenParam.replace('&', '')}`;
 }
 
 export function getCsvExportUrl(): string {
-  return '/api/admin/export';
+  const token = getAdminToken();
+  return token ? `/api/admin/export?token=${encodeURIComponent(token)}` : '/api/admin/export';
 }

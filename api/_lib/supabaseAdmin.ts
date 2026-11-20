@@ -23,6 +23,11 @@ export function getSupabaseAdmin(): SupabaseClient {
   return supabaseAdminClient;
 }
 
+export function generatePassToken(reg_id: string): string {
+  const hash = crypto.createHash('sha256').update(reg_id + '_skyra_runway_salt_2026').digest('hex').slice(0, 16).toUpperCase();
+  return `SKYRA-PASS-${hash}`;
+}
+
 // In-memory fallback repository for local testing before user plugs in Supabase keys
 interface InMemParticipant {
   id: string;
@@ -42,6 +47,7 @@ interface InMemParticipant {
   amount_paid: number;
   balance_due: number;
   status: 'PENDING_VERIFICATION' | 'PARTIALLY_PAID' | 'FULLY_PAID' | 'REJECTED';
+  pass_token?: string;
   created_at: string;
   updated_at: string;
 }
@@ -93,6 +99,7 @@ let memParticipants: InMemParticipant[] = [
     amount_paid: 5000,
     balance_due: 0,
     status: 'FULLY_PAID',
+    pass_token: generatePassToken('SC-2026-1001'),
     created_at: new Date().toISOString(),
     updated_at: new Date().toISOString(),
   },
@@ -114,6 +121,7 @@ let memParticipants: InMemParticipant[] = [
     amount_paid: 2000,
     balance_due: 3000,
     status: 'PARTIALLY_PAID',
+    pass_token: generatePassToken('SC-2026-1002'),
     created_at: new Date().toISOString(),
     updated_at: new Date().toISOString(),
   },
@@ -127,7 +135,7 @@ let memParticipants: InMemParticipant[] = [
     mobile: '+919445123987',
     whatsapp: '+919445123987',
     city: 'Coimbatore',
-    category: 'Teen / Fresher Runway',
+    category: 'Runway Model',
     height: '5ft 7in',
     instagram: '@meera.k_fashion',
     experience: 'Fresher looking for first runway launch',
@@ -135,6 +143,7 @@ let memParticipants: InMemParticipant[] = [
     amount_paid: 0,
     balance_due: 5000,
     status: 'PENDING_VERIFICATION',
+    pass_token: generatePassToken('SC-2026-1003'),
     created_at: new Date().toISOString(),
     updated_at: new Date().toISOString(),
   },
@@ -148,10 +157,10 @@ let memPayments: InMemPayment[] = [
     reg_id: 'SC-2026-1001',
     payment_type: 'INITIAL_REGISTRATION',
     amount: 2500,
-    transaction_id: 'UPI/428901823901',
+    transaction_id: 'UPI/430019283740',
     r2_object_key: 'proofs/sample_1.png',
     status: 'VERIFIED',
-    verified_by: 'Admin',
+    verified_by: 'Admin Director',
     verified_at: new Date().toISOString(),
     created_at: new Date().toISOString(),
   },
@@ -162,10 +171,10 @@ let memPayments: InMemPayment[] = [
     reg_id: 'SC-2026-1001',
     payment_type: 'BALANCE_PAYMENT',
     amount: 2500,
-    transaction_id: 'UPI/428999482103',
+    transaction_id: 'UPI/430029384751',
     r2_object_key: 'proofs/sample_2.png',
     status: 'VERIFIED',
-    verified_by: 'Admin',
+    verified_by: 'Admin Director',
     verified_at: new Date().toISOString(),
     created_at: new Date().toISOString(),
   },
@@ -176,10 +185,10 @@ let memPayments: InMemPayment[] = [
     reg_id: 'SC-2026-1002',
     payment_type: 'INITIAL_REGISTRATION',
     amount: 2000,
-    transaction_id: 'UPI/429103948572',
+    transaction_id: 'UPI/430099887766',
     r2_object_key: 'proofs/sample_3.png',
     status: 'VERIFIED',
-    verified_by: 'Admin',
+    verified_by: 'Admin Director',
     verified_at: new Date().toISOString(),
     created_at: new Date().toISOString(),
   },
@@ -232,6 +241,57 @@ export async function lookupParticipant(query: string) {
   return { ...p, payments };
 }
 
+// Public sanitized lookup ensuring NO personal PII (email, mobile, whatsapp, raw storage keys) is leaked
+export async function lookupPublicParticipant(query: string) {
+  const p = await lookupParticipant(query);
+  if (!p) return null;
+
+  const passToken = p.pass_token || generatePassToken(p.reg_id);
+
+  return {
+    reg_id: p.reg_id,
+    full_name: p.full_name,
+    category: p.category,
+    city: p.city,
+    total_fee: Number(p.total_fee || 5000),
+    amount_paid: Number(p.amount_paid || 0),
+    balance_due: Number(p.balance_due || 0),
+    status: p.status,
+    pass_token: passToken,
+    created_at: p.created_at,
+    payments: (p.payments || []).map((pay: any) => ({
+      payment_id: pay.payment_id,
+      payment_type: pay.payment_type,
+      amount: Number(pay.amount),
+      status: pay.status,
+      created_at: pay.created_at,
+      verified_at: pay.verified_at,
+    })),
+  };
+}
+
+export async function verifyPassToken(token: string) {
+  const clean = token.trim().toUpperCase();
+  const all = await getAllParticipants();
+  for (const p of all) {
+    const expected = (p.pass_token || generatePassToken(p.reg_id)).toUpperCase();
+    if (expected === clean) {
+      return {
+        valid: true,
+        reg_id: p.reg_id,
+        full_name: p.full_name,
+        category: p.category,
+        city: p.city,
+        status: p.status,
+        amount_paid: p.amount_paid,
+        balance_due: p.balance_due,
+        event_entry_status: p.status === 'FULLY_PAID' ? 'CONFIRMED_ALL_ACCESS' : 'PARTIAL_ACCESS_VERIFIED',
+      };
+    }
+  }
+  return { valid: false, detail: 'Invalid or unrecognized entry pass token.' };
+}
+
 export async function createParticipantAndPayment(params: {
   participantData: Omit<InMemParticipant, 'id' | 'reg_id' | 'amount_paid' | 'balance_due' | 'status' | 'created_at' | 'updated_at'>;
   paymentData: {
@@ -243,6 +303,7 @@ export async function createParticipantAndPayment(params: {
   };
 }) {
   const { participantData, paymentData } = params;
+  const cleanTxId = paymentData.transaction_id.trim();
 
   if (isSupabaseConfigured) {
     const supabase = getSupabaseAdmin();
@@ -258,14 +319,27 @@ export async function createParticipantAndPayment(params: {
       throw new Error(`Already registered under Registration ID ${existing.reg_id}. Use Balance Payment.`);
     }
 
+    // Check duplicate transaction ID
+    const { data: existingTx } = await supabase
+      .from('payments')
+      .select('payment_id')
+      .ilike('transaction_id', cleanTxId)
+      .maybeSingle();
+
+    if (existingTx) {
+      throw new Error(`Transaction reference / UTR "${cleanTxId}" has already been submitted.`);
+    }
+
     const { count } = await supabase.from('participants').select('*', { count: 'exact', head: true });
     const reg_id = `SC-2026-${(count || 0) + 1004}`;
+    const pass_token = generatePassToken(reg_id);
 
     const { data: participant, error: pErr } = await supabase
       .from('participants')
       .insert({
         ...participantData,
         reg_id,
+        pass_token,
         amount_paid: 0.00,
         balance_due: participantData.total_fee,
         status: 'PENDING_VERIFICATION',
@@ -284,7 +358,7 @@ export async function createParticipantAndPayment(params: {
         reg_id: participant.reg_id,
         payment_type: 'INITIAL_REGISTRATION',
         amount: paymentData.amount,
-        transaction_id: paymentData.transaction_id,
+        transaction_id: cleanTxId,
         r2_object_key: paymentData.r2_object_key,
         file_mime: paymentData.file_mime,
         file_size: paymentData.file_size,
@@ -305,12 +379,22 @@ export async function createParticipantAndPayment(params: {
     throw new Error(`Already registered under Registration ID ${existing.reg_id}. Use Balance Payment.`);
   }
 
+  const existingTx = memPayments.find(
+    (p) => p.transaction_id.toLowerCase().trim() === cleanTxId.toLowerCase()
+  );
+  if (existingTx) {
+    throw new Error(`Transaction reference / UTR "${cleanTxId}" has already been submitted.`);
+  }
+
   const reg_id = `SC-2026-${memParticipants.length + 1004}`;
   const pId = `p-${Date.now()}`;
+  const pass_token = generatePassToken(reg_id);
+
   const newParticipant: InMemParticipant = {
     ...participantData,
     id: pId,
     reg_id,
+    pass_token,
     amount_paid: 0,
     balance_due: participantData.total_fee,
     status: 'PENDING_VERIFICATION',
@@ -327,7 +411,7 @@ export async function createParticipantAndPayment(params: {
     reg_id,
     payment_type: 'INITIAL_REGISTRATION',
     amount: paymentData.amount,
-    transaction_id: paymentData.transaction_id,
+    transaction_id: cleanTxId,
     r2_object_key: paymentData.r2_object_key,
     status: 'PENDING',
     created_at: new Date().toISOString(),
@@ -346,6 +430,7 @@ export async function addBalancePayment(params: {
   file_size?: number;
 }) {
   const { reg_id, amount, transaction_id, r2_object_key, file_mime, file_size } = params;
+  const cleanTxId = transaction_id.trim();
 
   if (isSupabaseConfigured) {
     const supabase = getSupabaseAdmin();
@@ -359,6 +444,21 @@ export async function addBalancePayment(params: {
       throw new Error(`Registration ID ${reg_id} was not found.`);
     }
 
+    if (amount > participant.balance_due) {
+      throw new Error(`Payment amount of ₹${amount} exceeds current outstanding balance of ₹${participant.balance_due}.`);
+    }
+
+    // Check duplicate transaction ID
+    const { data: existingTx } = await supabase
+      .from('payments')
+      .select('payment_id')
+      .ilike('transaction_id', cleanTxId)
+      .maybeSingle();
+
+    if (existingTx) {
+      throw new Error(`Transaction reference / UTR "${cleanTxId}" has already been submitted.`);
+    }
+
     const payment_id = `PAY-BAL-${crypto.randomUUID().slice(0, 8).toUpperCase()}`;
     const { data: payment, error: payErr } = await supabase
       .from('payments')
@@ -368,7 +468,7 @@ export async function addBalancePayment(params: {
         reg_id,
         payment_type: 'BALANCE_PAYMENT',
         amount,
-        transaction_id,
+        transaction_id: cleanTxId,
         r2_object_key,
         file_mime,
         file_size,
@@ -385,6 +485,17 @@ export async function addBalancePayment(params: {
   const p = memParticipants.find((item) => item.reg_id.toUpperCase() === reg_id.toUpperCase());
   if (!p) throw new Error(`Registration ID ${reg_id} was not found.`);
 
+  if (amount > p.balance_due) {
+    throw new Error(`Payment amount of ₹${amount} exceeds current outstanding balance of ₹${p.balance_due}.`);
+  }
+
+  const existingTx = memPayments.find(
+    (pay) => pay.transaction_id.toLowerCase().trim() === cleanTxId.toLowerCase()
+  );
+  if (existingTx) {
+    throw new Error(`Transaction reference / UTR "${cleanTxId}" has already been submitted.`);
+  }
+
   const payment_id = `PAY-BAL-${crypto.randomUUID().slice(0, 8).toUpperCase()}`;
   const newPayment: InMemPayment = {
     id: `pay-${Date.now()}`,
@@ -393,7 +504,7 @@ export async function addBalancePayment(params: {
     reg_id: p.reg_id,
     payment_type: 'BALANCE_PAYMENT',
     amount,
-    transaction_id,
+    transaction_id: cleanTxId,
     r2_object_key,
     status: 'PENDING',
     created_at: new Date().toISOString(),

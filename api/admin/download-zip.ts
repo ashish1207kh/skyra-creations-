@@ -5,10 +5,16 @@ import fs from 'fs';
 import path from 'path';
 import { isR2Configured, getObjectStream } from '../_lib/r2Client.js';
 import { getAllPayments } from '../_lib/supabaseAdmin.js';
+import { verifyAdminAuth } from '../_lib/adminAuth.js';
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   if (req.method !== 'GET') {
     return res.status(405).json({ detail: 'Method not allowed' });
+  }
+
+  const auth = verifyAdminAuth(req);
+  if (!auth.valid) {
+    return res.status(401).json({ detail: auth.error || 'Unauthorized' });
   }
 
   const selectedKeys = req.query.keys ? (req.query.keys as string).split(',') : null;
@@ -32,7 +38,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
     if (!isR2Configured) {
       // Local development fallback: bundle available sample images
-      const samplePath = path.resolve(process.cwd(), 'public', 'qr_code.png');
+      const samplePath = path.resolve(process.cwd(), 'public', 'logo.png');
       if (fs.existsSync(samplePath)) {
         const stream = fs.createReadStream(samplePath);
         archive.append(stream, { name: 'sample_payment_proof.png' });
@@ -49,15 +55,14 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
             const entryName = path.basename(key);
             archive.append(bodyStream as any, { name: entryName });
           }
-        } catch (e) {
-          console.error(`Error fetching key ${key} from R2`, e);
+        } catch (fileErr) {
+          console.error(`Failed to stream object ${key}:`, fileErr);
         }
       }
     }
 
     await archive.finalize();
   } catch (err: any) {
-    console.error('ZIP archive error', err);
     if (!res.headersSent) {
       return res.status(500).json({ detail: err.message });
     }
