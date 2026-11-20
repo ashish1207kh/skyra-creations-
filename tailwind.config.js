@@ -7,29 +7,47 @@ export default {
   theme: {
     extend: {
       colors: {
-        gold: {
-          50: '#fffbf0',
-          100: '#fef5d6',
-          200: '#fde7a6',
-          300: '#fcd36c',
-          400: '#f9b932',
-          500: '#f39c12',
-          600: '#d77a0b',
-          700: '#b1580c',
-          800: '#8e4410',
-          900: '#753910',
+        charcoal: {
+          dark: '#101213',     // Secondary background
+          DEFAULT: '#17191B',  // Primary background
+          card: '#25292B',     // Card background
+          surface: '#2D3234',  // Elevated surface
+          border: '#373C3E',   // Borders
+          muted: '#A5AAA5',    // Secondary text on dark
+          text: '#17191B',     // Primary dark text on light
         },
-        onyx: {
-          900: '#0c0d10',
-          850: '#12141a',
-          800: '#181b22',
-          750: '#20242e',
-          700: '#2a2f3c',
+        lime: {
+          accent: '#B8E34B',   // Primary accent (Electric Lime)
+          soft: '#E4EDCB',     // Soft accent
+          DEFAULT: '#B8E34B',
+        },
+        ivory: {
+          DEFAULT: '#F6F8F2',  // Primary light background / text
+          muted: '#EDEFE8',    // Muted background
+        },
+        status: {
+          success: '#22C55E',
+          pending: '#F59E0B',
+          rejected: '#EF4444',
+          info: '#3B82F6',
         }
       },
       fontFamily: {
-        serif: ['Playfair Display', 'Cinzel', 'Georgia', 'serif'],
-        sans: ['Plus Jakarta Sans', 'Inter', 'system-ui', 'sans-serif'],
+        serif: ['Cormorant Garamond', 'Playfair Display', 'Georgia', 'serif'],
+        display: ['Playfair Display', 'Cormorant Garamond', 'Georgia', 'serif'],
+        sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
+        mono: ['ui-monospace', 'SFMono-Regular', 'Menlo', 'monospace'],
+      },
+      borderRadius: {
+        'input': '8px',
+        'btn': '8px',
+        'card': '12px',
+        'section': '16px',
+      },
+      boxShadow: {
+        'luxury': '0 20px 40px -15px rgba(0, 0, 0, 0.7)',
+        'lime-glow': '0 0 25px -5px rgba(184, 227, 75, 0.25)',
+        'card-subtle': '0 4px 20px -2px rgba(0, 0, 0, 0.4)',
       }
     },
   },

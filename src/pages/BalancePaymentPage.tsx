@@ -8,7 +8,10 @@ import {
   Search, 
   User, 
   ShieldCheck, 
-  Eye
+  Eye,
+  Copy,
+  Check,
+  ArrowRight
 } from 'lucide-react';
 import { getPaymentInfo, lookupParticipant, submitBalancePayment } from '../lib/api';
 import { uploadFileToR2 } from '../lib/storage';
@@ -26,6 +29,7 @@ export default function BalancePaymentPage({ initialRegId, setActiveTab, setLook
   const [participantData, setParticipantData] = useState<Participant | null>(null);
   const [lookupLoading, setLookupLoading] = useState(false);
   const [lookupError, setLookupError] = useState('');
+  const [copiedUpi, setCopiedUpi] = useState(false);
 
   // Form Fields
   const [fullName, setFullName] = useState('');
@@ -99,6 +103,13 @@ export default function BalancePaymentPage({ initialRegId, setActiveTab, setLook
     }
   };
 
+  const copyUpiId = () => {
+    const id = paymentInfo?.upi_id || 'mr.death4646@oksbi';
+    navigator.clipboard.writeText(id);
+    setCopiedUpi(true);
+    setTimeout(() => setCopiedUpi(false), 2000);
+  };
+
   const getEffectiveAmount = () => {
     if (selectedAmount === 'custom') {
       return parseFloat(customAmount) || 0;
@@ -111,15 +122,15 @@ export default function BalancePaymentPage({ initialRegId, setActiveTab, setLook
     setSubmitError('');
 
     if (!termsConfirmed) {
-      setSubmitError('Please confirm the terms and conditions checkbox.');
+      setSubmitError('Please confirm the terms and conditions declaration.');
       return;
     }
     if (!screenshotFile) {
-      setSubmitError('Please upload your payment screenshot.');
+      setSubmitError('Please upload your payment screenshot proof.');
       return;
     }
     if (!transactionId.trim()) {
-      setSubmitError('Please enter your Transaction ID / UTR ID.');
+      setSubmitError('Please enter your 12-digit UPI Transaction ID / UTR.');
       return;
     }
 
@@ -132,12 +143,12 @@ export default function BalancePaymentPage({ initialRegId, setActiveTab, setLook
     try {
       setLoading(true);
       setUploadPercent(0);
-      setUploadStatusText('Uploading proof directly to Cloudflare R2...');
+      setUploadStatusText('Uploading proof directly to Cloudflare R2 storage...');
 
       // 1. Upload to Cloudflare R2 via presigned PUT URL
       const objectKey = await uploadFileToR2(screenshotFile, 'proofs', (p) => setUploadPercent(p));
 
-      setUploadStatusText('Recording balance payment in database...');
+      setUploadStatusText('Recording balance payment installment...');
 
       // 2. Submit to serverless API
       const res = await submitBalancePayment({
@@ -156,9 +167,10 @@ export default function BalancePaymentPage({ initialRegId, setActiveTab, setLook
       });
 
       confetti({
-        particleCount: 100,
-        spread: 70,
-        origin: { y: 0.6 }
+        particleCount: 120,
+        spread: 80,
+        origin: { y: 0.6 },
+        colors: ['#B8E34B', '#FFFFFF', '#A5AAA5']
       });
     } catch (err: any) {
       setSubmitError(err.message || 'An error occurred while submitting balance payment.');
@@ -171,40 +183,41 @@ export default function BalancePaymentPage({ initialRegId, setActiveTab, setLook
   // SUCCESS CONFIRMATION VIEW
   if (successResult) {
     return (
-      <div className="max-w-3xl mx-auto py-12 px-4 sm:px-6">
-        <div className="bg-gradient-to-b from-[#141824] to-[#0d1017] border border-amber-500/40 rounded-2xl p-8 sm:p-10 shadow-2xl text-center relative overflow-hidden">
-          <div className="w-20 h-20 bg-amber-500/20 text-amber-400 rounded-full flex items-center justify-center mx-auto mb-6 border border-amber-500/30">
-            <CheckCircle2 className="w-10 h-10" />
+      <div className="max-w-2xl mx-auto py-16 px-4 sm:px-6">
+        <div className="bg-charcoal-card border border-charcoal-border rounded-section p-8 sm:p-12 shadow-luxury text-center relative overflow-hidden">
+          <div className="w-16 h-16 bg-charcoal-surface border border-lime-accent/40 text-lime-accent rounded-full flex items-center justify-center mx-auto mb-6 shadow-lime-glow">
+            <CheckCircle2 className="w-8 h-8" />
           </div>
 
-          <h2 className="font-serif text-3xl font-bold text-white mb-2">
-            Balance Payment Submitted!
+          <span className="text-xs uppercase tracking-widest text-lime-accent font-mono block mb-2">Installment Submitted</span>
+          <h2 className="font-editorial text-3xl sm:text-4xl font-normal text-ivory mb-3">
+            Balance Payment Recorded
           </h2>
-          <p className="text-zinc-300 max-w-lg mx-auto mb-6 text-sm">
-            Thank you, <span className="font-semibold text-white">{fullName}</span>. Your installment payment has been recorded and queued for admin verification.
+          <p className="text-charcoal-muted text-sm max-w-md mx-auto mb-8 font-light">
+            Thank you, <strong className="text-ivory font-medium">{fullName}</strong>. Your payment screenshot and UTR have been transmitted for administrative bank review.
           </p>
 
-          <div className="bg-[#0b0d13]/80 border border-zinc-800 rounded-xl p-6 max-w-md mx-auto mb-8 text-left space-y-2 text-sm">
-            <div className="flex justify-between items-center pb-2 border-b border-zinc-800">
-              <span className="text-zinc-400 text-xs uppercase">Registration ID</span>
-              <span className="font-mono text-base font-bold text-amber-400">{successResult.reg_id}</span>
+          <div className="bg-[#101213] border border-charcoal-border rounded-card p-6 max-w-md mx-auto mb-8 text-left space-y-3">
+            <div className="flex justify-between items-center pb-3 border-b border-charcoal-border">
+              <span className="text-xs uppercase tracking-wider text-charcoal-muted font-mono">Registration ID</span>
+              <span className="font-mono text-base font-bold text-lime-accent">{successResult.reg_id}</span>
             </div>
-            <div className="flex justify-between py-1">
-              <span className="text-zinc-400">Payment ID:</span>
-              <span className="text-zinc-300 font-mono text-xs">{successResult.payment_id}</span>
+            <div className="flex justify-between text-xs sm:text-sm">
+              <span className="text-charcoal-muted">Payment Ref ID:</span>
+              <span className="text-ivory font-mono text-xs">{successResult.payment_id}</span>
             </div>
-            <div className="flex justify-between py-1">
-              <span className="text-zinc-400">Amount Paid Now:</span>
-              <span className="text-white font-bold">₹{getEffectiveAmount()}</span>
+            <div className="flex justify-between text-xs sm:text-sm">
+              <span className="text-charcoal-muted">Amount Submitted:</span>
+              <span className="text-lime-accent font-bold tabular-nums">₹{getEffectiveAmount().toLocaleString('en-IN')}</span>
             </div>
-            <div className="flex justify-between py-1">
-              <span className="text-zinc-400">Transaction / UTR:</span>
-              <span className="text-zinc-300 font-mono text-xs">{transactionId}</span>
+            <div className="flex justify-between text-xs sm:text-sm">
+              <span className="text-charcoal-muted">Transaction ID / UTR:</span>
+              <span className="text-charcoal-muted font-mono text-xs">{transactionId}</span>
             </div>
-            <div className="pt-2 flex justify-between items-center border-t border-zinc-800">
-              <span className="text-zinc-400">Verification:</span>
-              <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-semibold bg-amber-500/10 text-amber-400 border border-amber-500/30">
-                In Review
+            <div className="pt-3 flex justify-between items-center text-xs sm:text-sm border-t border-charcoal-border">
+              <span className="text-charcoal-muted">Review Status:</span>
+              <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-status-pending/10 text-status-pending border border-status-pending/20">
+                Pending Bank Verification
               </span>
             </div>
           </div>
@@ -215,10 +228,10 @@ export default function BalancePaymentPage({ initialRegId, setActiveTab, setLook
                 if (setLookupRegId) setLookupRegId(successResult.reg_id);
                 setActiveTab('status');
               }}
-              className="w-full sm:w-auto px-6 py-3 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 text-black font-semibold hover:from-amber-400 transition-all flex items-center justify-center space-x-2"
+              className="w-full sm:w-auto px-6 py-3.5 rounded-btn bg-lime-accent text-charcoal font-semibold text-xs uppercase tracking-wider hover:bg-[#c9f556] transition-all flex items-center justify-center space-x-2 shadow-lime-glow"
             >
               <Eye className="w-4 h-4" />
-              <span>Check Verification & Status</span>
+              <span>Check Verification & Pass</span>
             </button>
             <button
               onClick={() => {
@@ -228,9 +241,9 @@ export default function BalancePaymentPage({ initialRegId, setActiveTab, setLook
                 setTransactionId('');
                 setTermsConfirmed(false);
               }}
-              className="w-full sm:w-auto px-6 py-3 rounded-xl bg-zinc-800 hover:bg-zinc-700 text-zinc-300 font-medium transition-all"
+              className="w-full sm:w-auto px-6 py-3.5 rounded-btn bg-charcoal-surface border border-charcoal-border hover:bg-charcoal text-charcoal-muted hover:text-ivory text-xs uppercase tracking-wider transition-all"
             >
-              Make Another Payment
+              Submit Another Installment
             </button>
           </div>
         </div>
@@ -239,120 +252,123 @@ export default function BalancePaymentPage({ initialRegId, setActiveTab, setLook
   }
 
   return (
-    <div className="max-w-4xl mx-auto py-10 px-4 sm:px-6">
-      {/* Official Master Spec Banner */}
-      <div className="relative overflow-hidden bg-gradient-to-r from-[#171a24] via-[#1b1f2c] to-[#171a24] border border-amber-500/30 rounded-2xl p-6 sm:p-8 mb-8 shadow-xl">
-        <div className="flex items-center space-x-2 text-amber-400 text-xs font-semibold tracking-widest uppercase mb-2">
-          <CreditCard className="w-4 h-4" />
-          <span>Official Balance Payment Form</span>
+    <div className="max-w-4xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
+      {/* Editorial Header */}
+      <div className="text-center mb-10">
+        <div className="inline-flex items-center space-x-2 px-3.5 py-1 rounded-full bg-charcoal-card border border-charcoal-border text-xs uppercase tracking-widest text-lime-accent mb-3 font-mono">
+          <CreditCard className="w-3.5 h-3.5" />
+          <span>Official Balance Settlement</span>
         </div>
-
-        <h1 className="font-serif text-2xl sm:text-4xl font-extrabold text-white mb-3">
-          Skyra Creations Balance
+        <h1 className="font-editorial text-3xl sm:text-5xl font-normal text-ivory mb-3">
+          SKYRA CREATIONS — BALANCE PORTAL
         </h1>
-
-        <div className="space-y-1.5 text-sm text-zinc-300 border-l-2 border-amber-500/50 pl-4 py-1">
-          <p className="font-medium text-amber-200">
-            This form is only for participants who have already registered and wish to make the remaining payment.
-          </p>
-          <p className="text-zinc-400">
-            Please enter your registration id correctly and upload your payment proof.
-          </p>
-        </div>
+        <p className="text-charcoal-muted text-sm max-w-xl mx-auto font-light leading-relaxed">
+          For contestants who have completed advance registration. Enter your Registration ID to inspect your balance and submit your installment proof.
+        </p>
       </div>
 
       {submitError && (
-        <div className="mb-6 p-4 rounded-xl bg-red-950/40 border border-red-500/40 text-red-200 text-sm flex items-start space-x-3">
-          <AlertCircle className="w-5 h-5 text-red-400 shrink-0 mt-0.5" />
+        <div className="mb-8 p-4 rounded-card bg-status-rejected/10 border border-status-rejected/30 text-ivory text-xs sm:text-sm flex items-start space-x-3">
+          <AlertCircle className="w-4 h-4 text-status-rejected shrink-0 mt-0.5" />
           <div>
-            <p className="font-semibold">Notice</p>
-            <p>{submitError}</p>
+            <p className="font-semibold text-status-rejected">Notice</p>
+            <p className="text-charcoal-muted mt-0.5">{submitError}</p>
           </div>
         </div>
       )}
 
-      {/* STEP 1: Registration ID Lookup */}
-      <div className="bg-[#12151e]/90 border border-zinc-800 rounded-2xl p-6 sm:p-8 shadow-md mb-8">
-        <div className="flex items-center space-x-3 mb-4 pb-3 border-b border-zinc-800/80">
-          <div className="w-8 h-8 rounded-lg bg-amber-500/10 text-amber-400 flex items-center justify-center font-bold">1</div>
+      {/* Step 1: Registration ID Lookup */}
+      <div className="bg-charcoal-card border border-charcoal-border rounded-section p-6 sm:p-8 shadow-card-subtle mb-8">
+        <div className="flex items-center space-x-3 mb-6 pb-4 border-b border-charcoal-border">
+          <div className="w-7 h-7 rounded-btn bg-charcoal-surface border border-charcoal-border text-lime-accent flex items-center justify-center font-mono text-xs font-semibold">
+            01
+          </div>
           <div>
-            <h2 className="text-base font-bold text-white">Find Your Registration</h2>
-            <p className="text-xs text-zinc-400">Enter the Registration ID shared by the Skyra Creations team</p>
+            <h2 className="font-editorial text-2xl text-ivory">Participant Account Lookup</h2>
+            <p className="text-xs text-charcoal-muted">Search by Registration ID or registered mobile number</p>
           </div>
         </div>
 
         <div className="flex flex-col sm:flex-row gap-3">
           <div className="relative flex-1">
-            <Search className="absolute left-3.5 top-3.5 w-4 h-4 text-zinc-500" />
+            <Search className="absolute left-3.5 top-3.5 w-4 h-4 text-charcoal-muted" />
             <input
               type="text"
-              placeholder="e.g. SC-2026-1002 or your registered mobile number"
+              placeholder="e.g. SC-2026-1001 or mobile number"
               value={regIdInput}
               onChange={(e) => setRegIdInput(e.target.value)}
               onKeyDown={(e) => { if (e.key === 'Enter') handleLookup(); }}
-              className="w-full bg-[#0a0c12] border border-zinc-700/80 rounded-xl pl-10 pr-4 py-3 text-white placeholder-zinc-600 focus:outline-none focus:border-amber-400 text-sm font-mono"
+              className="w-full bg-[#101213] border border-charcoal-border rounded-input pl-10 pr-4 py-3 text-ivory placeholder-charcoal-muted/50 focus:outline-none focus:border-lime-accent font-mono text-sm"
             />
           </div>
           <button
             type="button"
             onClick={() => handleLookup()}
             disabled={lookupLoading || !regIdInput.trim()}
-            className="px-6 py-3 bg-amber-500 hover:bg-amber-400 text-black font-semibold rounded-xl text-sm transition-all shrink-0 disabled:opacity-50"
+            className="px-6 py-3 bg-lime-accent hover:bg-[#c9f556] text-charcoal font-semibold rounded-btn text-xs uppercase tracking-wider transition-all shrink-0 disabled:opacity-50 shadow-lime-glow"
           >
             {lookupLoading ? 'Searching...' : 'Lookup Balance'}
           </button>
         </div>
 
         {lookupError && (
-          <div className="mt-4 p-3 bg-red-950/30 border border-red-500/30 rounded-xl text-xs text-red-300">
+          <div className="mt-4 p-3 bg-status-rejected/10 border border-status-rejected/30 rounded-card text-xs text-status-rejected">
             {lookupError}
           </div>
         )}
 
         {/* Live Lookup Profile Card */}
         {participantData && (
-          <div className="mt-6 bg-[#0a0c12] border border-amber-500/30 rounded-xl p-5">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-4 border-b border-zinc-800 gap-2">
+          <div className="mt-6 bg-[#101213] border border-charcoal-border rounded-card p-6">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-4 border-b border-charcoal-border gap-2">
               <div>
-                <span className="text-[11px] text-amber-400 uppercase tracking-widest font-semibold">Registered Participant</span>
-                <h3 className="text-lg font-bold text-white">{participantData.full_name}</h3>
-                <p className="text-xs text-zinc-400">{participantData.category} • {participantData.city}</p>
+                <span className="text-[11px] font-mono text-lime-accent uppercase tracking-widest block mb-1">
+                  Verified Contestant
+                </span>
+                <h3 className="font-editorial text-2xl text-ivory">{participantData.full_name}</h3>
+                <p className="text-xs text-charcoal-muted">{participantData.category} • {participantData.city}</p>
               </div>
-              <div className="text-right">
-                <span className="text-xs text-zinc-400">Registration ID:</span>
-                <span className="block font-mono text-sm font-bold text-amber-300">{participantData.reg_id}</span>
+              <div className="sm:text-right">
+                <span className="text-xs text-charcoal-muted block font-mono">Registration ID</span>
+                <span className="font-mono text-base font-bold text-lime-accent">{participantData.reg_id}</span>
               </div>
             </div>
 
-            <div className="grid grid-cols-3 gap-3 pt-4 text-center">
-              <div className="bg-[#12151e] p-3 rounded-lg border border-zinc-800">
-                <div className="text-[11px] text-zinc-400 uppercase">Total Event Fee</div>
-                <div className="text-base font-bold text-white">₹{participantData.total_fee}</div>
+            <div className="grid grid-cols-3 gap-3 pt-5 text-center">
+              <div className="bg-charcoal-card p-4 rounded-card border border-charcoal-border">
+                <div className="text-[11px] font-mono uppercase text-charcoal-muted mb-1">Total Fee</div>
+                <div className="text-base sm:text-lg font-bold text-ivory tabular-nums">
+                  ₹{participantData.total_fee.toLocaleString('en-IN')}
+                </div>
               </div>
-              <div className="bg-[#12151e] p-3 rounded-lg border border-zinc-800">
-                <div className="text-[11px] text-zinc-400 uppercase">Verified Paid</div>
-                <div className="text-base font-bold text-emerald-400">₹{participantData.amount_paid}</div>
+              <div className="bg-charcoal-card p-4 rounded-card border border-charcoal-border">
+                <div className="text-[11px] font-mono uppercase text-charcoal-muted mb-1">Verified Paid</div>
+                <div className="text-base sm:text-lg font-bold text-status-success tabular-nums">
+                  ₹{participantData.amount_paid.toLocaleString('en-IN')}
+                </div>
               </div>
-              <div className="bg-amber-500/10 p-3 rounded-lg border border-amber-500/30">
-                <div className="text-[11px] text-amber-400 uppercase font-semibold">Balance Due</div>
-                <div className="text-base font-bold text-amber-300">₹{participantData.balance_due}</div>
+              <div className="bg-charcoal-surface p-4 rounded-card border border-lime-accent/40 shadow-sm">
+                <div className="text-[11px] font-mono uppercase text-lime-accent font-semibold mb-1">Balance Due</div>
+                <div className="text-base sm:text-lg font-bold text-lime-accent tabular-nums">
+                  ₹{participantData.balance_due.toLocaleString('en-IN')}
+                </div>
               </div>
             </div>
 
             {participantData.balance_due <= 0 && (
-              <div className="mt-4 p-3 rounded-lg bg-emerald-950/30 border border-emerald-500/30 text-emerald-300 text-xs flex items-center justify-between">
-                <div className="flex items-center space-x-2">
-                  <CheckCircle2 className="w-4 h-4 text-emerald-400" />
-                  <span>You have fully cleared all event registration payments! No further balance is required.</span>
+              <div className="mt-5 p-4 rounded-card bg-status-success/10 border border-status-success/30 text-ivory text-xs flex flex-col sm:flex-row items-center justify-between gap-3">
+                <div className="flex items-center space-x-2 text-status-success">
+                  <CheckCircle2 className="w-4 h-4 shrink-0" />
+                  <span>Your registration fee has been 100% verified and cleared! No outstanding balance.</span>
                 </div>
                 <button
                   onClick={() => {
                     if (setLookupRegId) setLookupRegId(participantData.reg_id);
                     setActiveTab('status');
                   }}
-                  className="px-3 py-1 bg-emerald-500 text-black font-semibold rounded text-xs hover:bg-emerald-400"
+                  className="px-4 py-2 bg-status-success text-charcoal font-semibold rounded-btn text-xs uppercase tracking-wider hover:opacity-90"
                 >
-                  View Pass
+                  View Digital Pass
                 </button>
               </div>
             )}
@@ -362,59 +378,61 @@ export default function BalancePaymentPage({ initialRegId, setActiveTab, setLook
 
       {/* Main Payment Form */}
       <form onSubmit={handleSubmit} className="space-y-8">
-        {/* Section: Registration ID & Full Name */}
-        <div className="bg-[#12151e]/90 border border-zinc-800 rounded-2xl p-6 sm:p-8 shadow-md">
-          <div className="flex items-center space-x-3 mb-6 pb-4 border-b border-zinc-800/80">
-            <div className="w-8 h-8 rounded-lg bg-amber-500/10 text-amber-400 flex items-center justify-center font-bold">2</div>
+        {/* Step 2: Participant Verification */}
+        <div className="bg-charcoal-card border border-charcoal-border rounded-section p-6 sm:p-8 shadow-card-subtle">
+          <div className="flex items-center space-x-3 mb-6 pb-4 border-b border-charcoal-border">
+            <div className="w-7 h-7 rounded-btn bg-charcoal-surface border border-charcoal-border text-lime-accent flex items-center justify-center font-mono text-xs font-semibold">
+              02
+            </div>
             <div>
-              <h2 className="text-base font-bold text-white">Participant Verification</h2>
-              <p className="text-xs text-zinc-400">Confirm the exact details used during registration</p>
+              <h2 className="font-editorial text-2xl text-ivory">Confirm Participant Identity</h2>
+              <p className="text-xs text-charcoal-muted">Confirm the exact details registered in the event database</p>
             </div>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
             <div>
-              <label className="block text-sm font-medium text-zinc-200 mb-1">
-                Registration ID <span className="text-amber-400">*</span>
+              <label className="block text-xs uppercase tracking-wider text-charcoal-muted font-mono mb-2">
+                Registration ID <span className="text-lime-accent">*</span>
               </label>
-              <p className="text-xs text-zinc-400 mb-2">Enter the Registration ID shared by the Skyra Creations team.</p>
               <input
                 type="text"
                 required
-                placeholder="e.g. SC-2026-1002"
+                placeholder="e.g. SC-2026-1001"
                 value={regIdInput}
                 onChange={(e) => setRegIdInput(e.target.value)}
-                className="w-full bg-[#0a0c12] border border-zinc-700/80 rounded-xl px-4 py-3 text-white placeholder-zinc-600 focus:outline-none focus:border-amber-400 font-mono text-sm"
+                className="w-full bg-[#101213] border border-charcoal-border rounded-input px-4 py-3 text-ivory placeholder-charcoal-muted/50 focus:outline-none focus:border-lime-accent font-mono text-sm"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-zinc-200 mb-1">
-                Full Name <span className="text-amber-400">*</span>
+              <label className="block text-xs uppercase tracking-wider text-charcoal-muted font-mono mb-2">
+                Full Registered Name <span className="text-lime-accent">*</span>
               </label>
-              <p className="text-xs text-zinc-400 mb-2">Please enter the same full name you used during registration.</p>
               <div className="relative">
-                <User className="absolute left-3.5 top-3.5 w-4 h-4 text-zinc-500" />
+                <User className="absolute left-3.5 top-3.5 w-4 h-4 text-charcoal-muted" />
                 <input
                   type="text"
                   required
                   placeholder="Your full name"
                   value={fullName}
                   onChange={(e) => setFullName(e.target.value)}
-                  className="w-full bg-[#0a0c12] border border-zinc-700/80 rounded-xl pl-10 pr-4 py-3 text-white placeholder-zinc-600 focus:outline-none focus:border-amber-400 text-sm"
+                  className="w-full bg-[#101213] border border-charcoal-border rounded-input pl-10 pr-4 py-3 text-ivory placeholder-charcoal-muted/50 focus:outline-none focus:border-lime-accent text-sm"
                 />
               </div>
             </div>
           </div>
         </div>
 
-        {/* Section: Amount Paying Now */}
-        <div className="bg-[#12151e]/90 border border-zinc-800 rounded-2xl p-6 sm:p-8 shadow-md">
-          <div className="flex items-center space-x-3 mb-6 pb-4 border-b border-zinc-800/80">
-            <div className="w-8 h-8 rounded-lg bg-amber-500/10 text-amber-400 flex items-center justify-center font-bold">3</div>
+        {/* Step 3: Amount Paying Now */}
+        <div className="bg-charcoal-card border border-charcoal-border rounded-section p-6 sm:p-8 shadow-card-subtle">
+          <div className="flex items-center space-x-3 mb-6 pb-4 border-b border-charcoal-border">
+            <div className="w-7 h-7 rounded-btn bg-charcoal-surface border border-charcoal-border text-lime-accent flex items-center justify-center font-mono text-xs font-semibold">
+              03
+            </div>
             <div>
-              <h2 className="text-base font-bold text-white">Amount Paying Now (₹) <span className="text-amber-400">*</span></h2>
-              <p className="text-xs text-zinc-400">Please ensure that the selected amount matches the payment screenshot you upload.</p>
+              <h2 className="font-editorial text-2xl text-ivory">Amount Paying Now (₹)</h2>
+              <p className="text-xs text-charcoal-muted">Ensure your selected amount matches the payment screenshot you upload</p>
             </div>
           </div>
 
@@ -422,10 +440,10 @@ export default function BalancePaymentPage({ initialRegId, setActiveTab, setLook
             {predefinedAmounts.map((amt) => (
               <label
                 key={amt}
-                className={`p-3.5 rounded-xl border cursor-pointer text-center transition-all ${
+                className={`p-3.5 rounded-card border cursor-pointer text-center transition-all ${
                   selectedAmount === String(amt)
-                    ? 'border-amber-500 bg-amber-500/20 text-white font-bold'
-                    : 'border-zinc-800 bg-[#0a0c12] text-zinc-300 hover:border-zinc-700'
+                    ? 'border-lime-accent bg-charcoal-surface text-lime-accent shadow-sm'
+                    : 'border-charcoal-border bg-[#101213] text-charcoal-muted hover:border-charcoal-border hover:text-ivory'
                 }`}
               >
                 <input
@@ -439,15 +457,15 @@ export default function BalancePaymentPage({ initialRegId, setActiveTab, setLook
                   }}
                   className="sr-only"
                 />
-                <span className="text-base font-bold">₹{amt}</span>
+                <span className="text-base font-bold tabular-nums">₹{amt}</span>
               </label>
             ))}
 
             <label
-              className={`p-3.5 rounded-xl border cursor-pointer text-center transition-all ${
+              className={`p-3.5 rounded-card border cursor-pointer text-center transition-all ${
                 selectedAmount === 'custom'
-                  ? 'border-amber-500 bg-amber-500/20 text-white font-bold'
-                  : 'border-zinc-800 bg-[#0a0c12] text-zinc-300 hover:border-zinc-700'
+                  ? 'border-lime-accent bg-charcoal-surface text-lime-accent shadow-sm'
+                  : 'border-charcoal-border bg-[#101213] text-charcoal-muted hover:border-charcoal-border hover:text-ivory'
               }`}
             >
               <input
@@ -458,83 +476,100 @@ export default function BalancePaymentPage({ initialRegId, setActiveTab, setLook
                 onChange={() => setSelectedAmount('custom')}
                 className="sr-only"
               />
-              <span className="text-xs font-semibold">Other Amount</span>
+              <span className="text-xs font-semibold uppercase tracking-wider font-mono">Custom</span>
             </label>
           </div>
 
           {selectedAmount === 'custom' && (
             <div className="mt-3 max-w-xs">
-              <label className="block text-xs text-zinc-400 mb-1">Enter custom amount in ₹</label>
+              <label className="block text-xs uppercase tracking-wider text-charcoal-muted font-mono mb-1">
+                Custom Installment (₹)
+              </label>
               <input
                 type="number"
                 placeholder="e.g. 1750"
                 value={customAmount}
                 onChange={(e) => setCustomAmount(e.target.value)}
-                className="w-full bg-[#0a0c12] border border-amber-500/50 rounded-xl px-4 py-2.5 text-white font-bold"
+                className="w-full bg-[#101213] border border-lime-accent/50 rounded-input px-4 py-2.5 text-ivory font-bold tabular-nums"
               />
             </div>
           )}
 
-          <div className="mt-6 pt-6 border-t border-zinc-800/80">
-            <label className="block text-sm font-medium text-zinc-200 mb-1">
-              Transaction ID / UTR ID <span className="text-amber-400">*</span>
+          <div className="mt-6 pt-6 border-t border-charcoal-border">
+            <label className="block text-xs uppercase tracking-wider text-charcoal-muted font-mono mb-2">
+              Transaction ID / UTR Number <span className="text-lime-accent">*</span>
             </label>
-            <p className="text-xs text-zinc-400 mb-2">12-digit UPI reference number</p>
             <input
               type="text"
               required
-              placeholder="e.g. UPI/428901823901"
+              placeholder="12-digit UPI reference number from your receipt"
               value={transactionId}
               onChange={(e) => setTransactionId(e.target.value)}
-              className="w-full bg-[#0a0c12] border border-zinc-700/80 rounded-xl px-4 py-3 text-white placeholder-zinc-600 focus:outline-none focus:border-amber-400 font-mono text-sm"
+              className="w-full bg-[#101213] border border-charcoal-border rounded-input px-4 py-3 text-ivory placeholder-charcoal-muted/50 focus:outline-none focus:border-lime-accent font-mono text-sm"
             />
           </div>
         </div>
 
-        {/* Section: Scan and Pay QR Code + Upload Screenshot */}
-        <div className="bg-[#12151e]/90 border border-zinc-800 rounded-2xl p-6 sm:p-8 shadow-md">
-          <div className="flex items-center space-x-3 mb-6 pb-4 border-b border-zinc-800/80">
-            <div className="w-8 h-8 rounded-lg bg-amber-500/10 text-amber-400 flex items-center justify-center font-bold">4</div>
+        {/* Step 4: Scan and Pay QR Code + Upload Screenshot */}
+        <div className="bg-charcoal-card border border-charcoal-border rounded-section p-6 sm:p-8 shadow-card-subtle">
+          <div className="flex items-center space-x-3 mb-6 pb-4 border-b border-charcoal-border">
+            <div className="w-7 h-7 rounded-btn bg-charcoal-surface border border-charcoal-border text-lime-accent flex items-center justify-center font-mono text-xs font-semibold">
+              04
+            </div>
             <div>
-              <h2 className="text-base font-bold text-white">Scan and Pay</h2>
-              <p className="text-xs text-zinc-400">Scan via Google Pay or any UPI app & upload proof</p>
+              <h2 className="font-editorial text-2xl text-ivory">Manual UPI Transfer & Proof</h2>
+              <p className="text-xs text-charcoal-muted">Transfer exact amount to official merchant UPI</p>
             </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center bg-[#0a0c12] border border-zinc-800/80 rounded-2xl p-6 mb-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center bg-[#101213] border border-charcoal-border rounded-card p-6 mb-6">
             <div className="flex flex-col items-center text-center">
-              <span className="text-xs uppercase font-bold tracking-widest text-amber-400 mb-2">Scan & Pay ₹{getEffectiveAmount()}</span>
-              <div className="w-52 h-52 bg-white p-3 rounded-2xl shadow-xl flex items-center justify-center">
+              <span className="text-xs uppercase font-mono tracking-widest text-lime-accent mb-3">
+                Scan & Pay ₹{getEffectiveAmount().toLocaleString('en-IN')}
+              </span>
+              <div className="w-52 h-52 bg-white p-3 rounded-card shadow-lg flex items-center justify-center">
                 <img
                   src={paymentInfo?.qr_code_url || "/qr_code.png"}
-                  alt="Skyra Creations Google Pay QR Code"
+                  alt="Skyra Creations UPI QR Code"
                   className="w-full h-full object-contain"
                 />
               </div>
-              <div className="mt-2 text-xs text-zinc-400">
-                <span>Google Pay • PhonePe • Paytm • UPI</span>
-              </div>
+              <span className="mt-3 text-[11px] font-mono text-charcoal-muted">
+                Google Pay • PhonePe • Paytm • BHIM UPI
+              </span>
             </div>
 
             <div className="space-y-4">
-              <div className="bg-[#12151e] p-4 rounded-xl border border-zinc-800">
-                <div className="text-xs text-zinc-400">UPI ID:</div>
-                <div className="font-mono text-base font-bold text-amber-400 select-all">
-                  {paymentInfo?.upi_id || "mr.death4646@oksbi"}
+              <div className="bg-charcoal-card p-4 rounded-card border border-charcoal-border">
+                <span className="text-[11px] font-mono uppercase text-charcoal-muted block mb-1">Verified Merchant UPI ID</span>
+                <div className="flex items-center justify-between">
+                  <span className="font-mono text-base font-bold text-lime-accent select-all">
+                    {paymentInfo?.upi_id || "mr.death4646@oksbi"}
+                  </span>
+                  <button
+                    type="button"
+                    onClick={copyUpiId}
+                    className="p-1.5 rounded-btn bg-charcoal-surface border border-charcoal-border hover:border-lime-accent text-charcoal-muted hover:text-lime-accent"
+                    title="Copy UPI ID"
+                  >
+                    {copiedUpi ? <Check className="w-4 h-4 text-lime-accent" /> : <Copy className="w-4 h-4" />}
+                  </button>
                 </div>
-                <div className="text-xs text-zinc-400 mt-1">Recipient: <span className="text-white font-medium">{paymentInfo?.upi_name || "Sanjay Mass"}</span></div>
+                <span className="text-xs text-charcoal-muted mt-1.5 block">
+                  Payee: <strong className="text-ivory font-medium">{paymentInfo?.upi_name || "Sanjay Mass"}</strong>
+                </span>
               </div>
 
-              <div className="bg-[#12151e] p-4 rounded-xl border border-zinc-800">
-                <div className="flex justify-between items-center text-sm">
-                  <span className="text-zinc-400">Paying now:</span>
-                  <span className="text-xl font-bold text-amber-400">₹{getEffectiveAmount()}</span>
-                </div>
+              <div className="bg-charcoal-card p-4 rounded-card border border-charcoal-border flex justify-between items-center">
+                <span className="text-xs text-charcoal-muted">Paying now:</span>
+                <span className="text-xl font-bold text-lime-accent tabular-nums">
+                  ₹{getEffectiveAmount().toLocaleString('en-IN')}
+                </span>
               </div>
 
               <a
                 href={`upi://pay?pa=${paymentInfo?.upi_id || 'mr.death4646@oksbi'}&pn=${encodeURIComponent(paymentInfo?.upi_name || 'Sanjay Mass')}&am=${getEffectiveAmount()}&cu=INR`}
-                className="inline-flex items-center justify-center space-x-2 w-full py-3 rounded-xl bg-zinc-800 hover:bg-zinc-700 text-amber-400 text-sm font-semibold border border-amber-500/30 transition-colors"
+                className="inline-flex items-center justify-center space-x-2 w-full py-3 rounded-btn bg-charcoal-surface hover:bg-charcoal-card text-lime-accent text-xs uppercase font-mono tracking-wider border border-charcoal-border transition-colors"
               >
                 <CreditCard className="w-4 h-4" />
                 <span>Pay via UPI App</span>
@@ -544,14 +579,14 @@ export default function BalancePaymentPage({ initialRegId, setActiveTab, setLook
 
           {/* Screenshot Upload */}
           <div>
-            <label className="block text-sm font-medium text-zinc-200 mb-1">
-              Upload payment screenshot <span className="text-amber-400">*</span>
+            <label className="block text-xs uppercase tracking-wider text-charcoal-muted font-mono mb-2">
+              Upload Payment Screenshot <span className="text-lime-accent">*</span>
             </label>
-            <p className="text-xs text-zinc-400 mb-2">
-              Stored securely in Cloudflare R2. Must show amount, Transaction id, date and time. Upload 1 supported file. Max 10 MB.
+            <p className="text-xs text-charcoal-muted mb-2 font-light">
+              Stored securely in Cloudflare R2 private bucket. Must clearly show amount, UTR/Transaction ID, date and time. Max 10 MB.
             </p>
 
-            <div className="relative border-2 border-dashed border-zinc-700 hover:border-amber-500/60 rounded-xl p-5 text-center cursor-pointer bg-[#0a0c12] transition-colors">
+            <div className="relative border-2 border-dashed border-charcoal-border hover:border-lime-accent/50 rounded-card p-5 text-center cursor-pointer bg-[#101213] transition-colors">
               <input
                 type="file"
                 required
@@ -561,65 +596,65 @@ export default function BalancePaymentPage({ initialRegId, setActiveTab, setLook
               />
               {screenshotPreview ? (
                 <div className="flex items-center space-x-4">
-                  <img src={screenshotPreview} alt="Screenshot preview" className="w-16 h-16 object-cover rounded-lg border border-zinc-700" />
-                  <div className="text-left text-xs text-zinc-300 truncate">
-                    <p className="font-semibold text-amber-400">{screenshotFile?.name}</p>
-                    <p className="text-zinc-500">{((screenshotFile?.size || 0) / 1024).toFixed(0)} KB • Click to choose another file</p>
+                  <img src={screenshotPreview} alt="Screenshot preview" className="w-16 h-16 object-cover rounded-btn border border-charcoal-border" />
+                  <div className="text-left text-xs truncate">
+                    <p className="font-semibold text-lime-accent">{screenshotFile?.name}</p>
+                    <p className="text-charcoal-muted">{((screenshotFile?.size || 0) / 1024).toFixed(0)} KB • Click to choose another file</p>
                   </div>
                 </div>
               ) : (
                 <div className="flex flex-col items-center justify-center py-4">
-                  <Upload className="w-8 h-8 text-zinc-400 mb-2" />
-                  <span className="text-sm font-medium text-zinc-200">Add file</span>
-                  <span className="text-xs text-zinc-500 mt-1">Upload 1 supported file. Max 10 MB.</span>
+                  <Upload className="w-6 h-6 text-charcoal-muted mb-2" />
+                  <span className="text-xs font-medium text-ivory">Click to upload payment screenshot</span>
+                  <span className="text-[11px] text-charcoal-muted font-mono mt-0.5">JPG, PNG, WebP up to 10 MB</span>
                 </div>
               )}
             </div>
           </div>
         </div>
 
-        {/* Section: Terms and Condition from PDF */}
-        <div className="bg-[#12151e]/90 border border-zinc-800 rounded-2xl p-6 sm:p-8 shadow-md">
-          <h2 className="text-base font-bold text-white mb-3">Terms and Condition</h2>
-          <ul className="text-xs text-zinc-400 space-y-1.5 mb-6 list-disc list-inside bg-[#0a0c12] p-4 rounded-xl border border-zinc-800/80">
-            <li>Registration will be confirmed only after payment verification.</li>
-            <li>Registration fee is non-refundable .</li>
-            <li>False information may lead to rejection.</li>
-            <li>Participants must follow the instructions.</li>
-            <li>Skyra Creations reserves the right to accept or reject any registration.</li>
+        {/* Step 5: Terms and Conditions */}
+        <div className="bg-charcoal-card border border-charcoal-border rounded-section p-6 sm:p-8 shadow-card-subtle">
+          <h2 className="font-editorial text-2xl text-ivory mb-3">Terms & Conditions Declaration</h2>
+          <ul className="text-xs text-charcoal-muted space-y-1.5 mb-6 list-disc list-inside bg-[#101213] p-4 rounded-card border border-charcoal-border">
+            <li>Payment will be credited to your account only after verification against our bank statement.</li>
+            <li>Registration and balance fees are non-refundable.</li>
+            <li>False information or fabricated screenshots will lead to permanent blacklisting.</li>
+            <li>Participants must adhere to the instructions of Skyra Creations coordinators.</li>
+            <li>SKYRA CREATIONS reserves the right to accept or reject any registration.</li>
           </ul>
 
-          <label className="flex items-start space-x-3 p-4 rounded-xl bg-amber-500/10 border border-amber-500/30 cursor-pointer">
+          <label className="flex items-start space-x-3 p-4 rounded-card bg-charcoal-surface border border-charcoal-border cursor-pointer hover:border-lime-accent/40 transition-colors">
             <input
               type="checkbox"
               required
               checked={termsConfirmed}
               onChange={(e) => setTermsConfirmed(e.target.checked)}
-              className="mt-0.5 rounded border-amber-500 text-amber-500 focus:ring-0 w-4 h-4"
+              className="mt-0.5 rounded border-charcoal-border bg-[#101213] text-lime-accent focus:ring-0 w-4 h-4"
             />
-            <span className="text-xs sm:text-sm text-zinc-200 font-medium">
-              I confirm that the above details are correct. <span className="text-amber-400">*</span>
+            <span className="text-xs sm:text-sm text-ivory font-medium">
+              I confirm that the above payment details are authentic. <span className="text-lime-accent">*</span>
             </span>
           </label>
         </div>
 
-        {/* Submit & Clear Buttons */}
-        <div className="flex items-center space-x-4">
+        {/* Actions */}
+        <div className="flex flex-col sm:flex-row items-center gap-4">
           <button
             type="submit"
             disabled={loading}
-            className={`flex-1 py-4 rounded-xl font-bold text-base shadow-xl flex items-center justify-center space-x-3 transition-all ${
+            className={`w-full sm:flex-1 py-4 rounded-btn font-semibold text-xs uppercase tracking-wider shadow-lime-glow flex items-center justify-center space-x-3 transition-all ${
               loading
-                ? 'bg-zinc-700 text-zinc-400 cursor-not-allowed'
-                : 'bg-gradient-to-r from-amber-500 via-amber-400 to-yellow-400 text-black hover:opacity-95 hover:scale-[1.01]'
+                ? 'bg-charcoal-surface text-charcoal-muted cursor-not-allowed border border-charcoal-border'
+                : 'bg-lime-accent text-charcoal hover:bg-[#c9f556] active:scale-[0.99]'
             }`}
           >
             {loading ? (
               <span>{uploadStatusText} ({uploadPercent}%)</span>
             ) : (
               <>
-                <ShieldCheck className="w-5 h-5" />
-                <span>Submit Balance Payment (₹{getEffectiveAmount()})</span>
+                <ShieldCheck className="w-4 h-4" />
+                <span>Submit Balance Payment (₹{getEffectiveAmount().toLocaleString('en-IN')})</span>
               </>
             )}
           </button>
@@ -636,9 +671,9 @@ export default function BalancePaymentPage({ initialRegId, setActiveTab, setLook
               setTermsConfirmed(false);
               setParticipantData(null);
             }}
-            className="px-6 py-4 rounded-xl bg-zinc-800 hover:bg-zinc-700 text-zinc-400 text-sm font-medium transition-colors"
+            className="w-full sm:w-auto px-6 py-4 rounded-btn bg-charcoal-surface border border-charcoal-border hover:bg-charcoal text-charcoal-muted hover:text-ivory text-xs uppercase tracking-wider transition-all"
           >
-            Clear form
+            Reset
           </button>
         </div>
       </form>

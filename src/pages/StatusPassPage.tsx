@@ -8,7 +8,10 @@ import {
   CreditCard, 
   Printer, 
   Sparkles, 
-  XCircle
+  XCircle,
+  ShieldCheck,
+  ChevronRight,
+  User
 } from 'lucide-react';
 import { lookupParticipant } from '../lib/api';
 import { Participant } from '../types/index';
@@ -52,28 +55,28 @@ export default function StatusPassPage({ initialRegId, setActiveTab, setBalanceR
     switch (status) {
       case 'FULLY_PAID':
         return (
-          <span className="inline-flex items-center space-x-1.5 px-3 py-1 rounded-full text-xs font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/40">
+          <span className="inline-flex items-center space-x-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-status-success/15 text-status-success border border-status-success/30 font-mono">
             <CheckCircle2 className="w-3.5 h-3.5" />
-            <span>Fully Confirmed & Cleared</span>
+            <span>Fully Cleared & Accredited</span>
           </span>
         );
       case 'PARTIALLY_PAID':
         return (
-          <span className="inline-flex items-center space-x-1.5 px-3 py-1 rounded-full text-xs font-bold bg-amber-500/20 text-amber-300 border border-amber-500/40">
+          <span className="inline-flex items-center space-x-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-status-pending/15 text-status-pending border border-status-pending/30 font-mono">
             <Clock className="w-3.5 h-3.5" />
             <span>Advance Verified (Balance Pending)</span>
           </span>
         );
       case 'REJECTED':
         return (
-          <span className="inline-flex items-center space-x-1.5 px-3 py-1 rounded-full text-xs font-bold bg-red-500/20 text-red-300 border border-red-500/40">
+          <span className="inline-flex items-center space-x-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-status-rejected/15 text-status-rejected border border-status-rejected/30 font-mono">
             <XCircle className="w-3.5 h-3.5" />
-            <span>Payment Rejected</span>
+            <span>Verification Rejected</span>
           </span>
         );
       default:
         return (
-          <span className="inline-flex items-center space-x-1.5 px-3 py-1 rounded-full text-xs font-bold bg-blue-500/20 text-blue-300 border border-blue-500/40">
+          <span className="inline-flex items-center space-x-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-status-info/15 text-status-info border border-status-info/30 font-mono">
             <Clock className="w-3.5 h-3.5" />
             <span>Verification In Progress</span>
           </span>
@@ -82,225 +85,239 @@ export default function StatusPassPage({ initialRegId, setActiveTab, setBalanceR
   };
 
   return (
-    <div className="max-w-4xl mx-auto py-10 px-4 sm:px-6">
-      <div className="text-center mb-8">
-        <div className="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-amber-500/10 border border-amber-500/30 text-amber-400 text-xs font-semibold mb-3">
+    <div className="max-w-4xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
+      {/* Editorial Header */}
+      <div className="text-center mb-10">
+        <div className="inline-flex items-center space-x-2 px-3.5 py-1 rounded-full bg-charcoal-card border border-charcoal-border text-xs uppercase tracking-widest text-lime-accent mb-3 font-mono">
           <Sparkles className="w-3.5 h-3.5" />
-          <span>Participant Self-Service Portal</span>
+          <span>Accreditation & Self-Service</span>
         </div>
-        <h1 className="font-serif text-3xl sm:text-4xl font-bold text-white mb-2">
-          Check Registration & Entry Pass
+        <h1 className="font-editorial text-3xl sm:text-5xl font-normal text-ivory mb-3">
+          PARTICIPANT PASS & STATUS
         </h1>
-        <p className="text-sm text-zinc-400 max-w-md mx-auto">
-          Enter your Registration ID, registered phone number, or email to track payment verification and view your pass.
+        <p className="text-charcoal-muted text-sm max-w-xl mx-auto font-light leading-relaxed">
+          Search with your Registration ID or email to view real-time bank verification status, balance history, and access your digital runway pass.
         </p>
       </div>
 
       {/* Search Bar */}
-      <div className="bg-[#12151e]/90 border border-zinc-800 rounded-2xl p-4 sm:p-6 mb-8 shadow-lg">
-        <form 
-          onSubmit={(e) => {
-            e.preventDefault();
-            handleSearch();
-          }}
-          className="flex flex-col sm:flex-row gap-3"
-        >
+      <div className="bg-charcoal-card border border-charcoal-border rounded-section p-6 sm:p-8 shadow-card-subtle mb-8">
+        <div className="flex flex-col sm:flex-row gap-3">
           <div className="relative flex-1">
-            <Search className="absolute left-3.5 top-3.5 w-4 h-4 text-zinc-500" />
+            <Search className="absolute left-3.5 top-3.5 w-4 h-4 text-charcoal-muted" />
             <input
               type="text"
-              placeholder="Enter Registration ID (e.g. SC-2026-1001) or Mobile Number"
+              placeholder="Enter Registration ID (e.g. SC-2026-1001) or Email Address"
               value={query}
               onChange={(e) => setQuery(e.target.value)}
-              className="w-full bg-[#0a0c12] border border-zinc-700/80 rounded-xl pl-10 pr-4 py-3 text-white placeholder-zinc-600 focus:outline-none focus:border-amber-400 text-sm font-mono"
+              onKeyDown={(e) => { if (e.key === 'Enter') handleSearch(); }}
+              className="w-full bg-[#101213] border border-charcoal-border rounded-input pl-10 pr-4 py-3 text-ivory placeholder-charcoal-muted/50 focus:outline-none focus:border-lime-accent font-mono text-sm"
             />
           </div>
           <button
-            type="submit"
+            onClick={() => handleSearch()}
             disabled={loading || !query.trim()}
-            className="px-6 py-3 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 text-black font-semibold rounded-xl text-sm transition-all shrink-0 disabled:opacity-50"
+            className="px-6 py-3 bg-lime-accent hover:bg-[#c9f556] text-charcoal font-semibold rounded-btn text-xs uppercase tracking-wider transition-all shrink-0 disabled:opacity-50 shadow-lime-glow"
           >
-            {loading ? 'Checking...' : 'Check Status'}
+            {loading ? 'Searching...' : 'Search Record'}
           </button>
-        </form>
+        </div>
 
         {errorMsg && (
-          <div className="mt-4 p-3 bg-red-950/30 border border-red-500/30 rounded-xl text-xs text-red-300 flex items-center space-x-2">
-            <AlertCircle className="w-4 h-4 text-red-400 shrink-0" />
+          <div className="mt-4 p-4 rounded-card bg-status-rejected/10 border border-status-rejected/30 text-status-rejected text-xs flex items-center space-x-2">
+            <AlertCircle className="w-4 h-4 shrink-0" />
             <span>{errorMsg}</span>
           </div>
         )}
       </div>
 
-      {/* Participant Results */}
+      {/* Participant Profile and Pass Section */}
       {participant && (
-        <div className="space-y-8">
-          {/* Status & Financial Summary */}
-          <div className="bg-[#12151e] border border-zinc-800 rounded-2xl p-6 sm:p-8">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-zinc-800">
+        <div className="space-y-8 animate-fadeIn">
+          {/* Status Overview Card */}
+          <div className="bg-charcoal-card border border-charcoal-border rounded-section p-6 sm:p-8 shadow-card-subtle">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-6 border-b border-charcoal-border gap-4">
               <div>
-                <span className="text-xs text-amber-400 font-mono tracking-wider uppercase font-semibold">{participant.reg_id}</span>
-                <h2 className="text-2xl font-bold text-white mt-1">{participant.full_name}</h2>
-                <p className="text-xs text-zinc-400 mt-1">{participant.category} • {participant.city}</p>
+                <div className="flex items-center space-x-3 mb-1">
+                  <h2 className="font-editorial text-2xl sm:text-3xl font-normal text-ivory">{participant.full_name}</h2>
+                  <span className="font-mono text-xs px-2.5 py-0.5 rounded-full bg-charcoal-surface text-lime-accent border border-charcoal-border">
+                    {participant.reg_id}
+                  </span>
+                </div>
+                <p className="text-xs text-charcoal-muted">
+                  {participant.category} • {participant.city} • Registered on {new Date(participant.created_at).toLocaleDateString()}
+                </p>
               </div>
               <div>
                 {getStatusBadge(participant.status)}
               </div>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 my-6">
-              <div className="bg-[#0a0c12] p-4 rounded-xl border border-zinc-800">
-                <span className="text-xs text-zinc-400">Total Registration Fee</span>
-                <p className="text-xl font-bold text-white mt-1">₹{participant.total_fee}</p>
+            {/* Financial Overview Tiles */}
+            <div className="grid grid-cols-3 gap-4 pt-6 text-center">
+              <div className="bg-[#101213] p-4 rounded-card border border-charcoal-border">
+                <span className="text-[11px] font-mono uppercase text-charcoal-muted block mb-1">Total Fee</span>
+                <span className="text-base sm:text-xl font-bold text-ivory tabular-nums">
+                  ₹{participant.total_fee.toLocaleString('en-IN')}
+                </span>
               </div>
-              <div className="bg-[#0a0c12] p-4 rounded-xl border border-zinc-800">
-                <span className="text-xs text-zinc-400">Verified Paid to Date</span>
-                <p className="text-xl font-bold text-emerald-400 mt-1">₹{participant.amount_paid}</p>
+              <div className="bg-[#101213] p-4 rounded-card border border-charcoal-border">
+                <span className="text-[11px] font-mono uppercase text-charcoal-muted block mb-1">Verified Paid</span>
+                <span className="text-base sm:text-xl font-bold text-status-success tabular-nums">
+                  ₹{participant.amount_paid.toLocaleString('en-IN')}
+                </span>
               </div>
-              <div className="bg-[#0a0c12] p-4 rounded-xl border border-amber-500/30">
-                <span className="text-xs text-amber-400 font-semibold">Remaining Balance Due</span>
-                <p className="text-xl font-bold text-amber-300 mt-1">₹{participant.balance_due}</p>
+              <div className="bg-charcoal-surface p-4 rounded-card border border-lime-accent/40 shadow-sm">
+                <span className="text-[11px] font-mono uppercase text-lime-accent font-semibold block mb-1">Balance Due</span>
+                <span className="text-base sm:text-xl font-bold text-lime-accent tabular-nums">
+                  ₹{participant.balance_due.toLocaleString('en-IN')}
+                </span>
               </div>
             </div>
 
             {participant.balance_due > 0 && (
-              <div className="bg-amber-950/20 border border-amber-500/40 rounded-xl p-4 flex flex-col sm:flex-row items-center justify-between gap-3">
-                <div className="text-xs text-zinc-300">
-                  <span className="font-semibold text-amber-300">Outstanding Balance: ₹{participant.balance_due}</span>
-                  <p className="text-zinc-400 mt-0.5">Please clear your balance to receive full runway confirmation.</p>
+              <div className="mt-6 p-4 rounded-card bg-charcoal-surface border border-charcoal-border flex flex-col sm:flex-row items-center justify-between gap-3">
+                <div className="text-xs text-charcoal-muted">
+                  You have an outstanding balance of <strong className="text-lime-accent tabular-nums">₹{participant.balance_due.toLocaleString('en-IN')}</strong>. Complete payment to finalize accreditation.
                 </div>
                 <button
                   onClick={() => {
                     if (setBalanceRegId) setBalanceRegId(participant.reg_id);
                     setActiveTab('balance');
                   }}
-                  className="px-4 py-2 bg-amber-500 hover:bg-amber-400 text-black font-bold rounded-lg text-xs transition-all flex items-center space-x-1.5 shrink-0"
+                  className="px-4 py-2 bg-lime-accent hover:bg-[#c9f556] text-charcoal font-semibold rounded-btn text-xs uppercase tracking-wider transition-all shrink-0 shadow-lime-glow flex items-center space-x-1.5"
                 >
                   <CreditCard className="w-3.5 h-3.5" />
-                  <span>Pay Remaining ₹{participant.balance_due}</span>
+                  <span>Pay Balance</span>
                 </button>
               </div>
             )}
           </div>
 
-          {/* Official Runway Show Digital Pass Card */}
-          <div className="relative overflow-hidden bg-gradient-to-br from-[#191e2b] via-[#12151f] to-[#0c0e14] border-2 border-amber-500/50 rounded-3xl p-6 sm:p-8 shadow-2xl">
-            <div className="flex items-center justify-between border-b border-amber-500/20 pb-4 mb-6">
+          {/* Luxury Digital Pass */}
+          <div className="bg-[#101213] border border-charcoal-border rounded-section p-8 sm:p-10 shadow-luxury relative overflow-hidden">
+            {/* Background luxury watermark */}
+            <div className="absolute right-0 bottom-0 translate-x-12 translate-y-12 opacity-5 pointer-events-none select-none font-editorial text-[200px] text-white">
+              SC
+            </div>
+
+            <div className="flex flex-col sm:flex-row items-center justify-between pb-6 border-b border-charcoal-border gap-4">
               <div className="flex items-center space-x-3">
-                <div className="w-10 h-10 rounded-full bg-amber-500/20 border border-amber-500/40 flex items-center justify-center font-serif text-amber-400 font-bold">
-                  SC
+                <div className="w-10 h-10 rounded-btn bg-charcoal-surface border border-charcoal-border flex items-center justify-center">
+                  <span className="font-editorial text-lg text-lime-accent font-bold">SC</span>
                 </div>
                 <div>
-                  <h3 className="font-serif font-bold text-white text-lg tracking-wider">SKYRA CREATIONS</h3>
-                  <p className="text-[10px] tracking-widest uppercase text-amber-400 font-medium">Official Runway Entry Pass</p>
+                  <h3 className="font-editorial text-xl text-ivory tracking-wider">SKYRA CREATIONS</h3>
+                  <span className="text-[10px] font-mono text-lime-accent uppercase tracking-widest block">
+                    Official Runway Pass • 2026 Edition
+                  </span>
                 </div>
               </div>
               <button
                 onClick={() => window.print()}
-                className="flex items-center space-x-1.5 px-3 py-1.5 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-zinc-300 text-xs transition-colors"
+                className="px-3.5 py-1.5 rounded-btn bg-charcoal-surface border border-charcoal-border text-charcoal-muted hover:text-ivory hover:border-lime-accent text-xs uppercase font-mono tracking-wider flex items-center space-x-1.5 transition-colors"
               >
                 <Printer className="w-3.5 h-3.5" />
-                <span>Print Pass</span>
+                <span>Print / Save Pass</span>
               </button>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-center">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 items-center py-8">
               <div className="md:col-span-2 space-y-4">
                 <div>
-                  <span className="text-[11px] uppercase tracking-wider text-zinc-400">Contestant Name</span>
-                  <div className="text-xl sm:text-2xl font-bold text-white">{participant.full_name}</div>
+                  <span className="text-[10px] font-mono uppercase tracking-wider text-charcoal-muted block">Contestant Name</span>
+                  <span className="font-editorial text-2xl sm:text-3xl text-ivory font-normal block">{participant.full_name}</span>
                 </div>
 
-                <div className="grid grid-cols-2 gap-4 text-xs">
+                <div className="grid grid-cols-2 gap-4 text-xs font-mono">
                   <div>
-                    <span className="text-zinc-500 block">Registration ID</span>
-                    <span className="font-mono text-amber-400 font-bold text-sm">{participant.reg_id}</span>
+                    <span className="text-charcoal-muted uppercase block">Registration ID</span>
+                    <span className="text-lime-accent font-bold text-sm">{participant.reg_id}</span>
                   </div>
                   <div>
-                    <span className="text-zinc-500 block">Category</span>
-                    <span className="text-white font-medium">{participant.category}</span>
+                    <span className="text-charcoal-muted uppercase block">Category</span>
+                    <span className="text-ivory font-medium">{participant.category}</span>
                   </div>
                   <div>
-                    <span className="text-zinc-500 block">City</span>
-                    <span className="text-white font-medium">{participant.city}</span>
+                    <span className="text-charcoal-muted uppercase block">City</span>
+                    <span className="text-ivory font-medium">{participant.city}</span>
                   </div>
                   <div>
-                    <span className="text-zinc-500 block">Contact Phone</span>
-                    <span className="text-zinc-300 font-mono">{participant.mobile}</span>
+                    <span className="text-charcoal-muted uppercase block">Accreditation</span>
+                    <span className="text-status-success font-medium">Stage Ready</span>
                   </div>
-                </div>
-
-                <div className="pt-2 flex items-center space-x-3 text-xs">
-                  <span className="text-zinc-400">Pass Clearance:</span>
-                  {participant.status === 'FULLY_PAID' ? (
-                    <span className="text-emerald-400 font-semibold flex items-center space-x-1">
-                      <CheckCircle2 className="w-3.5 h-3.5" />
-                      <span>Full Event Entry Confirmed</span>
-                    </span>
-                  ) : participant.status === 'PARTIALLY_PAID' ? (
-                    <span className="text-amber-400 font-semibold flex items-center space-x-1">
-                      <Clock className="w-3.5 h-3.5" />
-                      <span>Advance Cleared (Balance Due on Arrival)</span>
-                    </span>
-                  ) : (
-                    <span className="text-zinc-400">Verification Pending</span>
-                  )}
                 </div>
               </div>
 
-              {/* QR Code on Pass */}
-              <div className="flex flex-col items-center justify-center p-4 bg-white rounded-2xl shadow-xl">
+              {/* Dynamic QR Badge */}
+              <div className="flex flex-col items-center justify-center bg-white p-4 rounded-card shadow-lg mx-auto">
                 <QRCodeSVG
-                  value={`SKYRA-PASS:${participant.reg_id}:${participant.full_name}:${participant.status}`}
+                  value={`https://skyra-creations.vercel.app/verify/${participant.reg_id}`}
                   size={140}
                   level="H"
-                  includeMargin={true}
                 />
-                <span className="text-[10px] text-zinc-600 font-mono mt-1 font-semibold">{participant.reg_id}</span>
+                <span className="text-[10px] text-black font-mono font-bold mt-2 tracking-wider">
+                  {participant.reg_id}
+                </span>
               </div>
             </div>
-          </div>
 
-          {/* Payment History Audit Trail */}
-          <div className="bg-[#12151e] border border-zinc-800 rounded-2xl p-6 sm:p-8">
-            <h3 className="text-base font-bold text-white mb-4">Payment Submission History</h3>
-
-            <div className="space-y-3">
-              {participant.payments && participant.payments.length > 0 ? (
-                participant.payments.map((p, idx) => (
-                  <div
-                    key={p.payment_id || idx}
-                    className="flex flex-col sm:flex-row sm:items-center justify-between p-4 bg-[#0a0c12] border border-zinc-800 rounded-xl gap-3"
-                  >
-                    <div>
-                      <div className="flex items-center space-x-2">
-                        <span className="text-xs uppercase font-semibold px-2 py-0.5 rounded bg-zinc-800 text-zinc-300">
-                          {p.payment_type === 'INITIAL_REGISTRATION' ? 'Initial Registration' : 'Balance Installment'}
-                        </span>
-                        <span className="text-xs text-zinc-400 font-mono">{p.payment_id}</span>
-                      </div>
-                      <p className="text-xs text-zinc-400 mt-1">UTR: <span className="text-zinc-300 font-mono">{p.transaction_id}</span></p>
-                    </div>
-
-                    <div className="flex items-center space-x-4">
-                      <span className="text-base font-bold text-white">₹{p.amount}</span>
-                      <span className={`px-2.5 py-1 rounded text-xs font-semibold ${
-                        p.status === 'VERIFIED'
-                          ? 'bg-emerald-500/15 text-emerald-400 border border-emerald-500/30'
-                          : p.status === 'REJECTED'
-                          ? 'bg-red-500/15 text-red-400 border border-red-500/30'
-                          : 'bg-amber-500/15 text-amber-400 border border-amber-500/30'
-                      }`}>
-                        {p.status}
-                      </span>
-                    </div>
-                  </div>
-                ))
-              ) : (
-                <p className="text-xs text-zinc-500">No payment records found.</p>
-              )}
+            <div className="pt-4 border-t border-charcoal-border flex items-center justify-between text-[11px] font-mono text-charcoal-muted">
+              <span>Security Hash: Verified Database Record</span>
+              <span>Valid with Government Photo ID</span>
             </div>
           </div>
+
+          {/* Payment History & Timeline */}
+          {participant.payments && participant.payments.length > 0 && (
+            <div className="bg-charcoal-card border border-charcoal-border rounded-section p-6 sm:p-8 shadow-card-subtle">
+              <h3 className="font-editorial text-2xl text-ivory mb-6">Payment History & Verification Trail</h3>
+              
+              <div className="space-y-4">
+                {participant.payments.map((p, idx) => (
+                  <div
+                    key={p.id || idx}
+                    className="bg-[#101213] border border-charcoal-border rounded-card p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3"
+                  >
+                    <div>
+                      <div className="flex items-center space-x-2 mb-1">
+                        <span className="font-mono text-xs text-lime-accent uppercase">
+                          {p.payment_type === 'INITIAL_REGISTRATION' ? 'Initial Advance' : 'Balance Installment'}
+                        </span>
+                        <span className="text-charcoal-muted">•</span>
+                        <span className="text-xs text-charcoal-muted font-mono">{p.payment_id}</span>
+                      </div>
+                      <p className="text-xs text-charcoal-muted font-mono">
+                        UTR: <strong className="text-ivory">{p.transaction_id}</strong> • Submitted: {new Date(p.created_at).toLocaleString()}
+                      </p>
+                      {p.rejection_reason && (
+                        <p className="text-xs text-status-rejected mt-1">
+                          Reason: {p.rejection_reason}
+                        </p>
+                      )}
+                    </div>
+
+                    <div className="flex items-center space-x-4 sm:text-right">
+                      <div className="text-right">
+                        <span className="text-base font-bold text-ivory tabular-nums block">
+                          ₹{p.amount.toLocaleString('en-IN')}
+                        </span>
+                        <span className={`text-[10px] font-mono uppercase tracking-wider block ${
+                          p.status === 'VERIFIED'
+                            ? 'text-status-success'
+                            : p.status === 'REJECTED'
+                            ? 'text-status-rejected'
+                            : 'text-status-pending'
+                        }`}>
+                          {p.status}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
       )}
     </div>
