@@ -29,29 +29,32 @@ export default function MarqueeStrip({
   ], 
   reverse = false, 
   className = '',
-  baseVelocity = 0.7,
+  baseVelocity = 0.06,
 }: MarqueeStripProps) {
   const repeated = [...text, ...text, ...text, ...text];
   const baseX = useMotionValue(reverse ? -25 : 0);
+  const [isHovered, setIsHovered] = React.useState(false);
   
   const { scrollY } = useScroll();
   const scrollVelocity = useVelocity(scrollY);
   const smoothVelocity = useSpring(scrollVelocity, {
-    damping: 50,
-    stiffness: 300,
+    damping: 60,
+    stiffness: 200,
   });
 
-  const velocityFactor = useTransform(smoothVelocity, [0, 1000], [0, 4], {
+  const velocityFactor = useTransform(smoothVelocity, [0, 1000], [0, 1], {
     clamp: false,
   });
 
   useAnimationFrame((_, delta) => {
+    if (isHovered) return;
     const dir = reverse ? 1 : -1;
+    // Calibrated cinematic crawl: calm, legible, high-fashion pace
     let moveBy = dir * baseVelocity * (delta / 16);
 
     const vFactor = velocityFactor.get();
     if (Math.abs(vFactor) > 0.05) {
-      moveBy += dir * Math.abs(vFactor) * 1.5;
+      moveBy += dir * Math.abs(vFactor) * 0.06;
     }
 
     let next = baseX.get() + moveBy;
@@ -67,7 +70,9 @@ export default function MarqueeStrip({
 
   return (
     <div 
-      className={`overflow-hidden py-3.5 select-none flex ${className}`}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+      className={`overflow-hidden py-3.5 select-none flex cursor-default ${className}`}
       style={{
         backgroundColor: '#0c0d11',
         borderTop: '1px solid rgba(255, 255, 255, 0.08)',
