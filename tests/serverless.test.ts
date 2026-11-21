@@ -400,7 +400,15 @@ async function runTests() {
 
   // 16. Test Database Abstraction Layer & PII Masking
   console.log('16. Testing Database Abstraction Layer & PII Masking...');
-  const { getActiveDatabaseDriver, maskPII } = await import('../api/_lib/database.js');
+  const { 
+    getActiveDatabaseDriver, 
+    maskPII, 
+    getEventConfig, 
+    registerParticipant,
+    submitBalancePayment,
+    updatePaymentVerification,
+    OFFICIAL_DECLARATION_TEXT 
+  } = await import('../api/_lib/database.js');
   const activeDriver = await getActiveDatabaseDriver();
   assert(['mongodb', 'supabase', 'in-memory'].includes(activeDriver), 'Must resolve to a valid driver');
   
@@ -429,6 +437,111 @@ async function runTests() {
   assert(masked.email.includes('****'), 'Email must be masked for unprivileged viewers');
   assert.strictEqual(masked.dob, '**-**-****', 'DOB must be masked for unprivileged viewers');
   console.log('   ✓ Database driver resolved to [' + activeDriver + '] and PII masking verified');
+
+  // 17. Test ₹3,000 Event Fee, Allowed Token Advances, Model Photograph Upload & Terms Acceptance
+  console.log('17. Testing ₹3,000 Event Fee, Token Advances & Model Photograph Flow...');
+  const evt = await getEventConfig('EVT-CHX-2026');
+  assert.strictEqual(evt.total_fee, 3000, 'Total event fee must be ₹3,000');
+  assert.deepStrictEqual(evt.allowed_token_advances, [500, 1000, 1500], 'Allowed token advances must be [500, 1000, 1500]');
+  assert.strictEqual(evt.terms_version, '2026.2', 'Terms version must be 2026.2');
+  console.log('   ✓ Authoritative event configuration verified (Fee ₹3,000, Advances: [500, 1000, 1500], Terms: 2026.2)');
+
+  // Test photo upload presigning
+  const photoPresign = await generatePresignedUploadUrl({
+    fileName: 'model_headshot.jpg',
+    mimeType: 'image/jpeg',
+    fileSizeBytes: 350000,
+    folder: 'photos',
+  });
+  assert(photoPresign.objectKey.startsWith('photos/'), 'Model photo key must be in photos/ folder');
+  console.log('   ✓ Model photo presigned upload URL generated under photos/ folder:', photoPresign.objectKey);
+
+  // Test rejection of invalid token advance amount
+  try {
+    await registerParticipant({
+      full_name: 'Invalid Amount Tester',
+      email: `badamt.${Date.now()}@example.com`,
+      dob: '2001-01-01',
+      gender: 'Female',
+      mobile: `+9199${Math.floor(10000000 + Math.random() * 90000000)}`,
+      whatsapp: '+919900000000',
+      city: 'Chennai',
+      model_photo_r2_key: photoPresign.objectKey,
+      amount: 2000, // Invalid token advance (must be 500, 1000, or 1500)
+      transaction_id: `TX_BAD_${Date.now()}`,
+      r2_object_key: presignResult.objectKey,
+      terms_confirmed: true,
+    });
+    assert.fail('Should have rejected non-allowed token advance of ₹2000');
+  } catch (err: any) {
+    assert(err.message.includes('Token advance must be one of'), 'Must reject disallowed advance amount');
+    console.log('   ✓ Disallowed token advance amount correctly rejected');
+  }
+
+  // Test successful registration with ₹1,000 token advance & model photograph
+  const validRegTx = `TX_OK_${Date.now()}`;
+  const regResult = await registerParticipant({
+    full_name: 'Pooja Hegde Model',
+    email: `pooja.${Date.now()}@example.com`,
+    dob: '1998-05-10',
+    gender: 'Female',
+    mobile: `+9198${Math.floor(10000000 + Math.random() * 90000000)}`,
+    whatsapp: '+919800000000',
+    city: 'Chennai',
+    model_photo_r2_key: photoPresign.objectKey,
+    amount: 1000,
+    transaction_id: validRegTx,
+    r2_object_key: presignResult.objectKey,
+    terms_confirmed: true,
+  });
+
+  assert(regResult.participant.reg_id.startsWith('SC-2026-'));
+  assert.strictEqual(regResult.participant.total_fee, 3000, 'New registration total fee must be ₹3,000');
+  assert.strictEqual(regResult.participant.amount_paid, 0, 'Initial verified paid amount must be 0 until verified');
+  assert.strictEqual(regResult.participant.balance_due, 3000, 'Initial balance due must equal total fee');
+  assert.strictEqual(regResult.participant.status, 'PENDING_VERIFICATION');
+  assert.strictEqual(regResult.participant.model_photo_r2_key, photoPresign.objectKey);
+  assert.strictEqual(regResult.participant.terms_version, '2026.2');
+  assert.strictEqual(regResult.participant.terms_accepted, true);
+  assert.strictEqual(regResult.participant.declaration_text, OFFICIAL_DECLARATION_TEXT);
+  assert.strictEqual(regResult.payment.amount, 1000);
+  assert.strictEqual(regResult.payment.status, 'PENDING');
+  console.log('   ✓ Registration completed with ₹1,000 advance, total fee ₹3,000, model photo key saved & terms accepted');
+
+  // Verify payment and check that balance reduces from ₹3,000 to ₹2,000
+  const verifyRes = await updatePaymentVerification(
+    regResult.payment.payment_id,
+    regResult.participant.reg_id,
+    'VERIFIED',
+    'Admin Director'
+  );
+  assert.strictEqual(verifyRes.participant?.amount_paid, 1000, 'Paid amount must reflect ₹1,000');
+  assert.strictEqual(verifyRes.participant?.balance_due, 2000, 'Balance due must reflect ₹2,000 (3000 - 1000)');
+  assert.strictEqual(verifyRes.participant?.status, 'PARTIALLY_PAID');
+  console.log('   ✓ Payment verification reduced balance from ₹3,000 to ₹2,000 (status: PARTIALLY_PAID)');
+
+  // Submit remaining ₹2,000 balance payment
+  const balTx = `TX_BAL_${Date.now()}`;
+  const balRes = await submitBalancePayment({
+    reg_id: regResult.participant.reg_id,
+    amount: 2000,
+    transaction_id: balTx,
+    r2_object_key: presignResult.objectKey,
+  });
+  assert.strictEqual(balRes.payment.amount, 2000);
+  assert.strictEqual(balRes.payment.status, 'PENDING');
+
+  // Verify second payment and confirm FULLY_PAID status with ₹0 balance
+  const finalVerifyRes = await updatePaymentVerification(
+    balRes.payment.payment_id,
+    regResult.participant.reg_id,
+    'VERIFIED',
+    'Admin Director'
+  );
+  assert.strictEqual(finalVerifyRes.participant?.amount_paid, 3000, 'Total paid must equal ₹3,000');
+  assert.strictEqual(finalVerifyRes.participant?.balance_due, 0, 'Remaining balance must equal ₹0');
+  assert.strictEqual(finalVerifyRes.participant?.status, 'FULLY_PAID');
+  console.log('   ✓ Remaining ₹2,000 verified: total paid ₹3,000, balance due ₹0, status FULLY_PAID');
 
   console.log('\n=========================================');
   console.log('ALL SERVERLESS & STORAGE SUITES PASSED! ✓');

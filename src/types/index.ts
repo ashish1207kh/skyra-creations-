@@ -35,6 +35,11 @@ export interface Participant {
   height?: string | null;
   instagram?: string | null;
   experience?: string | null;
+  model_photo_r2_key?: string | null;
+  terms_accepted?: boolean;
+  terms_accepted_at?: string;
+  terms_version?: string;
+  declaration_text?: string;
   total_fee: number;
   amount_paid: number;
   balance_due: number;
@@ -46,11 +51,17 @@ export interface Participant {
 }
 
 export interface PaymentInfo {
+  event_id?: string;
   event_name: string;
+  location?: string;
+  bank_name?: string;
   upi_id: string;
   upi_name: string;
   default_total_fee: number;
+  allowed_token_advances?: number[];
   allowed_balance_amounts: number[];
+  terms_version?: string;
+  photo_required?: boolean;
   qr_code_url: string;
 }
 

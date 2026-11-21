@@ -1,16 +1,16 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { z } from 'zod';
-import { addBalancePayment } from './_lib/supabaseAdmin.js';
+import { submitBalancePayment } from './_lib/database.js';
 import { checkRateLimit } from './_lib/rateLimit.js';
 
 const balanceSchema = z.object({
-  reg_id: z.string().min(4),
-  full_name: z.string().min(2),
-  amount: z.number().positive(),
-  transaction_id: z.string().min(4),
-  r2_object_key: z.string().min(5),
+  reg_id: z.string().min(4, 'Registration ID is required'),
+  full_name: z.string().min(2, 'Full name is required'),
+  amount: z.number().positive('Payment amount must be greater than 0'),
+  transaction_id: z.string().min(4, 'Please enter a valid UPI reference / UTR number'),
+  r2_object_key: z.string().min(5, 'Payment screenshot proof is required'),
   terms_confirmed: z.boolean().refine((val) => val === true, {
-    message: 'You must confirm terms and conditions.',
+    message: 'You must confirm event terms and conditions.',
   }),
 });
 
@@ -28,7 +28,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   try {
     const data = balanceSchema.parse(req.body);
 
-    const { participant, payment } = await addBalancePayment({
+    const { participant, payment } = await submitBalancePayment({
       reg_id: data.reg_id.trim().toUpperCase(),
       amount: data.amount,
       transaction_id: data.transaction_id.trim(),

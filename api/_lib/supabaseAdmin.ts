@@ -43,6 +43,11 @@ interface InMemParticipant {
   height?: string | null;
   instagram?: string | null;
   experience?: string | null;
+  model_photo_r2_key?: string | null;
+  terms_accepted?: boolean;
+  terms_accepted_at?: string;
+  terms_version?: string;
+  declaration_text?: string;
   total_fee: number;
   amount_paid: number;
   balance_due: number;

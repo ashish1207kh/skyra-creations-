@@ -42,7 +42,7 @@ export interface PresignUploadOptions {
   fileName: string;
   mimeType: string;
   fileSizeBytes: number;
-  folder?: 'proofs' | 'portfolios';
+  folder?: 'proofs' | 'portfolios' | 'photos';
 }
 
 export async function generatePresignedUploadUrl(opts: PresignUploadOptions): Promise<{

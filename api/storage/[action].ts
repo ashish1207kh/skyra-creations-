@@ -7,7 +7,7 @@ const uploadSchema = z.object({
   fileName: z.string().min(1).max(255),
   mimeType: z.enum(['image/jpeg', 'image/png', 'image/webp']),
   fileSizeBytes: z.number().int().positive().max(10 * 1024 * 1024), // Max 10MB
-  folder: z.enum(['proofs', 'portfolios']).optional(),
+  folder: z.enum(['proofs', 'portfolios', 'photos']).optional(),
 });
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {

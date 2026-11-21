@@ -1,5 +1,5 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
-import { lookupPublicParticipant } from './_lib/supabaseAdmin.js';
+import { lookupPublicParticipantRecord } from './_lib/database.js';
 import { checkRateLimit } from './_lib/rateLimit.js';
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
@@ -16,11 +16,11 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
   const query = (req.query.query as string || req.query.q as string || '').trim();
   if (!query) {
-    return res.status(400).json({ detail: 'Please enter a valid Registration ID or registered email address.' });
+    return res.status(400).json({ detail: 'Please enter a valid Registration ID or registered email/mobile.' });
   }
 
   try {
-    const participant = await lookupPublicParticipant(query);
+    const participant = await lookupPublicParticipantRecord(query);
     if (!participant) {
       return res.status(404).json({ detail: `No registration record found matching "${query}".` });
     }

@@ -63,10 +63,12 @@ export async function registerContestant(payload: {
   height?: string | null;
   instagram?: string | null;
   experience?: string | null;
+  model_photo_r2_key: string;
   amount: number;
   transaction_id: string;
   r2_object_key: string;
   terms_confirmed: boolean;
+  terms_version?: string;
 }): Promise<{ success: boolean; message: string; reg_id: string; participant: Participant; payment: Payment }> {
   return fetchJson('/api/register', {
     method: 'POST',

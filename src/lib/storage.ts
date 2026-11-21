@@ -2,7 +2,7 @@ import { PresignedUploadResponse } from '../types/index';
 
 export async function uploadFileToR2(
   file: File,
-  folder: 'proofs' | 'portfolios' = 'proofs',
+  folder: 'proofs' | 'portfolios' | 'photos' = 'proofs',
   onProgress?: (percent: number) => void
 ): Promise<string> {
   // 1. Client-side preliminary validation

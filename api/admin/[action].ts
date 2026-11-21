@@ -7,12 +7,14 @@ import path from 'path';
 
 import { createAdminSession, verifyAdminAuth } from '../_lib/adminAuth.js';
 import { 
-  isSupabaseConfigured, 
-  getSupabaseAdmin, 
   getDashboardStats, 
-  getAllParticipants, 
-  getAllPayments, 
-  verifyPaymentRecord 
+  listRegistrations, 
+  listAllPayments, 
+  updatePaymentVerification 
+} from '../_lib/database.js';
+import { 
+  isSupabaseConfigured, 
+  getSupabaseAdmin 
 } from '../_lib/supabaseAdmin.js';
 import { generatePresignedViewUrl, isR2Configured, getObjectStream } from '../_lib/r2Client.js';
 import { checkRateLimit } from '../_lib/rateLimit.js';
@@ -122,7 +124,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       return res.status(405).json({ detail: 'Method not allowed' });
     }
     try {
-      const participants = await getAllParticipants();
+      const participants = await listRegistrations();
       return res.status(200).json(participants);
     } catch (err: any) {
       return res.status(500).json({ detail: err.message });
@@ -135,7 +137,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       return res.status(405).json({ detail: 'Method not allowed' });
     }
     try {
-      const rawPayments = await getAllPayments();
+      const rawPayments = await listAllPayments();
       const paymentsWithUrls = await Promise.all(
         rawPayments.map(async (pay: any) => {
           try {
@@ -169,13 +171,13 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
       const adminDisplayName = data.admin_name || auth.session?.email || 'Operations Director';
 
-      const result = await verifyPaymentRecord({
-        payment_id: data.payment_id,
-        action: data.action,
-        reason: data.rejection_reason,
-        adminName: adminDisplayName,
-        ipAddress: clientIp,
-      });
+      const result = await updatePaymentVerification(
+        data.payment_id,
+        undefined,
+        data.action === 'VERIFY' ? 'VERIFIED' : 'REJECTED',
+        adminDisplayName,
+        data.rejection_reason
+      );
 
       return res.status(200).json({
         success: true,
@@ -195,7 +197,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     }
 
     try {
-      const participants = await getAllParticipants();
+      const participants = await listRegistrations();
       const rows = [
         [
           'Registration ID',
@@ -213,6 +215,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
           'Verified Amount Paid (INR)',
           'Outstanding Balance (INR)',
           'Registration Status',
+          'Model Photo Key',
+          'Terms Version',
           'Registration Date',
         ],
         ...participants.map((p: any) => [
@@ -231,6 +235,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
           p.amount_paid,
           p.balance_due,
           p.status,
+          p.model_photo_r2_key || '',
+          p.terms_version || '2026.2',
           p.created_at,
         ]),
       ];
@@ -275,7 +281,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       if (selectedKeys && selectedKeys.length > 0) {
         keysToInclude = selectedKeys;
       } else {
-        const allPayments = await getAllPayments();
+        const allPayments = await listAllPayments();
         keysToInclude = allPayments.map((p: any) => p.r2_object_key).filter(Boolean);
       }
 

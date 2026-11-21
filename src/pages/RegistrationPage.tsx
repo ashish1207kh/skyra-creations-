@@ -15,7 +15,15 @@ import {
   Copy, 
   Check,
   QrCode,
-  MessageSquare
+  MessageSquare,
+  Camera,
+  Award,
+  Star,
+  Gift,
+  AlertTriangle,
+  X,
+  Image as ImageIcon,
+  CheckCheck
 } from 'lucide-react';
 import { getPaymentInfo, registerContestant } from '../lib/api';
 import { uploadFileToR2 } from '../lib/storage';
@@ -45,13 +53,17 @@ export default function RegistrationPage({ setActiveTab, setLookupRegId }: Regis
   const [email, setEmail] = useState('');
   const [city, setCity] = useState('');
 
+  // Model Photograph
+  const [modelPhotoFile, setModelPhotoFile] = useState<File | null>(null);
+  const [modelPhotoPreview, setModelPhotoPreview] = useState<string | null>(null);
+
   // 3.2 Modelling Profile
   const [category] = useState('Runway Model');
   const [instagram, setInstagram] = useState('');
   const [experience, setExperience] = useState('');
 
-  // 3.3 Registration Payment
-  const [paymentOption, setPaymentOption] = useState<'advance_1500' | 'half_2500' | 'full_5000'>('advance_1500');
+  // 3.3 Registration Payment — Allowed Token Advances: ₹500, ₹1,000, ₹1,500
+  const [tokenAdvance, setTokenAdvance] = useState<number>(1000);
   const [transactionId, setTransactionId] = useState('');
   const [screenshotFile, setScreenshotFile] = useState<File | null>(null);
   const [screenshotPreview, setScreenshotPreview] = useState<string | null>(null);
@@ -61,9 +73,19 @@ export default function RegistrationPage({ setActiveTab, setLookupRegId }: Regis
 
   useEffect(() => {
     getPaymentInfo()
-      .then(data => setPaymentInfo(data))
+      .then(data => {
+        setPaymentInfo(data);
+        if (data.allowed_token_advances && data.allowed_token_advances.length > 0) {
+          if (!data.allowed_token_advances.includes(tokenAdvance)) {
+            setTokenAdvance(data.allowed_token_advances[1] || data.allowed_token_advances[0]);
+          }
+        }
+      })
       .catch(err => console.error("Error loading payment info", err));
   }, []);
+
+  const totalFee = paymentInfo?.default_total_fee ?? 3000;
+  const remainingBalance = Math.max(0, totalFee - tokenAdvance);
 
   const handleMobileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const val = e.target.value;
@@ -81,11 +103,43 @@ export default function RegistrationPage({ setActiveTab, setLookupRegId }: Regis
     }
   };
 
+  const handleModelPhotoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const allowedTypes = ['image/jpeg', 'image/png', 'image/webp'];
+      if (!allowedTypes.includes(file.type)) {
+        setErrorMsg('Invalid photo format. Please upload JPG, PNG, or WebP.');
+        return;
+      }
+      if (file.size > 10 * 1024 * 1024) {
+        setErrorMsg('Model photograph file size exceeds the 10 MB maximum limit.');
+        return;
+      }
+      setModelPhotoFile(file);
+      setErrorMsg('');
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setModelPhotoPreview(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleRemoveModelPhoto = () => {
+    setModelPhotoFile(null);
+    setModelPhotoPreview(null);
+  };
+
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
+      const allowedTypes = ['image/jpeg', 'image/png', 'image/webp'];
+      if (!allowedTypes.includes(file.type)) {
+        setErrorMsg('Invalid payment screenshot format. Please upload JPG, PNG, or WebP.');
+        return;
+      }
       if (file.size > 10 * 1024 * 1024) {
-        setErrorMsg('Screenshot file size exceeds 10 MB limit.');
+        setErrorMsg('Payment screenshot file size exceeds the 10 MB maximum limit.');
         return;
       }
       setScreenshotFile(file);
@@ -96,12 +150,6 @@ export default function RegistrationPage({ setActiveTab, setLookupRegId }: Regis
       };
       reader.readAsDataURL(file);
     }
-  };
-
-  const getEffectiveAmount = () => {
-    if (paymentOption === 'full_5000') return 5000;
-    if (paymentOption === 'half_2500') return 2500;
-    return 1500;
   };
 
   const handleCopyUpi = () => {
@@ -115,7 +163,7 @@ export default function RegistrationPage({ setActiveTab, setLookupRegId }: Regis
     e.preventDefault();
     setErrorMsg('');
 
-    // Field Validations
+    // Personal Details Validations
     if (!fullName.trim() || fullName.trim().length < 2) {
       setErrorMsg('Please enter your full name as mentioned on your official identification.');
       return;
@@ -141,6 +189,12 @@ export default function RegistrationPage({ setActiveTab, setLookupRegId }: Regis
       return;
     }
 
+    // Model Photo Validation (Mandatory)
+    if (!modelPhotoFile) {
+      setErrorMsg('Please upload your recent model photograph with your face clearly visible.');
+      return;
+    }
+
     // Payment Validations
     const cleanTx = transactionId.trim();
     if (!cleanTx || cleanTx.length < 6) {
@@ -148,23 +202,28 @@ export default function RegistrationPage({ setActiveTab, setLookupRegId }: Regis
       return;
     }
     if (!screenshotFile) {
-      setErrorMsg('Please upload a clear screenshot of your completed UPI payment.');
+      setErrorMsg('Please upload a clear screenshot of your completed UPI token advance payment.');
       return;
     }
     if (!termsConfirmed) {
-      setErrorMsg('You must review and accept the declaration and terms to register.');
+      setErrorMsg('You must review and accept the Official Terms & Event Policies and Participant Declaration to register.');
       return;
     }
 
     setLoading(true);
     setUploadPercent(10);
-    setUploadStatusText('Preparing secure payment proof upload...');
+    setUploadStatusText('Uploading recent model photograph to secure storage...');
 
     try {
-      // 1. Upload screenshot directly to Cloudflare R2 via presigned PUT
-      setUploadStatusText('Uploading transaction screenshot to secure storage...');
+      // 1. Upload Model Photograph directly to Cloudflare R2 ('photos' folder)
+      const modelPhotoKey = await uploadFileToR2(modelPhotoFile, 'photos', (percent) => {
+        setUploadPercent(Math.round(percent * 0.45));
+      });
+
+      // 2. Upload Payment Screenshot to Cloudflare R2 ('proofs' folder)
+      setUploadStatusText('Uploading payment screenshot to secure storage...');
       const r2ObjectKey = await uploadFileToR2(screenshotFile, 'proofs', (percent) => {
-        setUploadPercent(percent);
+        setUploadPercent(45 + Math.round(percent * 0.45));
       });
 
       setUploadStatusText('Registering participant record with SKYRA CREATIONS...');
@@ -180,10 +239,12 @@ export default function RegistrationPage({ setActiveTab, setLookupRegId }: Regis
         height: null,
         instagram: instagram.trim() || null,
         experience: experience.trim() || null,
-        amount: getEffectiveAmount(),
+        model_photo_r2_key: modelPhotoKey,
+        amount: tokenAdvance,
         transaction_id: cleanTx,
         r2_object_key: r2ObjectKey,
         terms_confirmed: true,
+        terms_version: paymentInfo?.terms_version || '2026.2',
       });
 
       confetti({
@@ -478,6 +539,167 @@ export default function RegistrationPage({ setActiveTab, setLookupRegId }: Regis
         </div>
       </div>
 
+      {/* ⚠️ IMPORTANT SHOW INFORMATION & PARTICIPANT BENEFITS */}
+      <section className="bg-gradient-to-b from-[#161a26] to-[#11131c] border-2 border-amber-500/40 rounded-3xl p-6 sm:p-8 shadow-2xl relative overflow-hidden">
+        <div className="flex items-center space-x-3 mb-3">
+          <span className="text-2xl">⚠️</span>
+          <div>
+            <h2 className="font-serif text-xl sm:text-2xl font-extrabold text-white tracking-wide">
+              IMPORTANT SHOW INFORMATION &amp; PARTICIPANT BENEFITS
+            </h2>
+            <p className="text-xs text-amber-400 font-medium mt-0.5">
+              Please review these official guidelines and provisions before completing your registration.
+            </p>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-6">
+          {/* Card 1 */}
+          <div className="bg-[#0c0e15] border border-zinc-800 hover:border-amber-500/40 rounded-2xl p-4 transition-all">
+            <div className="flex items-center justify-between mb-2">
+              <span className="w-7 h-7 rounded-lg bg-amber-500/10 border border-amber-500/30 text-amber-400 text-xs font-bold flex items-center justify-center">1</span>
+              <User className="w-4 h-4 text-amber-400" />
+            </div>
+            <h3 className="text-sm font-bold text-white mb-1">Open Participation</h3>
+            <p className="text-xs text-zinc-300 leading-relaxed">
+              No age limit or restrictions on body type, skin tone, or modelling experience. Freshers are welcome.
+            </p>
+          </div>
+
+          {/* Card 2 */}
+          <div className="bg-[#0c0e15] border border-zinc-800 hover:border-amber-500/40 rounded-2xl p-4 transition-all">
+            <div className="flex items-center justify-between mb-2">
+              <span className="w-7 h-7 rounded-lg bg-amber-500/10 border border-amber-500/30 text-amber-400 text-xs font-bold flex items-center justify-center">2</span>
+              <Sparkles className="w-4 h-4 text-amber-400" />
+            </div>
+            <h3 className="text-sm font-bold text-white mb-1">Complete Runway Experience</h3>
+            <p className="text-xs text-zinc-300 leading-relaxed">
+              Participants will receive professional runway training, grooming guidance, choreography, and stage preparation.
+            </p>
+          </div>
+
+          {/* Card 3 */}
+          <div className="bg-[#0c0e15] border border-zinc-800 hover:border-amber-500/40 rounded-2xl p-4 transition-all">
+            <div className="flex items-center justify-between mb-2">
+              <span className="w-7 h-7 rounded-lg bg-amber-500/10 border border-amber-500/30 text-amber-400 text-xs font-bold flex items-center justify-center">3</span>
+              <Sparkles className="w-4 h-4 text-pink-400" />
+            </div>
+            <h3 className="text-sm font-bold text-white mb-1">Professional Make-Up</h3>
+            <p className="text-xs text-zinc-300 leading-relaxed">
+              Professional make-up artists will be arranged for the participants.
+            </p>
+          </div>
+
+          {/* Card 4 */}
+          <div className="bg-[#0c0e15] border border-zinc-800 hover:border-amber-500/40 rounded-2xl p-4 transition-all">
+            <div className="flex items-center justify-between mb-2">
+              <span className="w-7 h-7 rounded-lg bg-amber-500/10 border border-amber-500/30 text-amber-400 text-xs font-bold flex items-center justify-center">4</span>
+              <Sparkles className="w-4 h-4 text-purple-400" />
+            </div>
+            <h3 className="text-sm font-bold text-white mb-1">Costume</h3>
+            <p className="text-xs text-zinc-300 leading-relaxed">
+              Rental costumes will be provided for the show as per the assigned theme and requirements.
+            </p>
+          </div>
+
+          {/* Card 5 */}
+          <div className="bg-[#0c0e15] border border-zinc-800 hover:border-amber-500/40 rounded-2xl p-4 transition-all">
+            <div className="flex items-center justify-between mb-2">
+              <span className="w-7 h-7 rounded-lg bg-amber-500/10 border border-amber-500/30 text-amber-400 text-xs font-bold flex items-center justify-center">5</span>
+              <Camera className="w-4 h-4 text-blue-400" />
+            </div>
+            <h3 className="text-sm font-bold text-white mb-1">Photoshoot</h3>
+            <p className="text-xs text-zinc-300 leading-relaxed">
+              Participants will receive professional photoshoot opportunities as part of the event experience.
+            </p>
+          </div>
+
+          {/* Card 6 */}
+          <div className="bg-[#0c0e15] border border-zinc-800 hover:border-amber-500/40 rounded-2xl p-4 transition-all">
+            <div className="flex items-center justify-between mb-2">
+              <span className="w-7 h-7 rounded-lg bg-amber-500/10 border border-amber-500/30 text-amber-400 text-xs font-bold flex items-center justify-center">6</span>
+              <Award className="w-4 h-4 text-yellow-400" />
+            </div>
+            <h3 className="text-sm font-bold text-white mb-1">Certificates &amp; Trophies</h3>
+            <p className="text-xs text-zinc-300 leading-relaxed">
+              Participation certificates and trophies will be provided as applicable to the event.
+            </p>
+          </div>
+
+          {/* Card 7 */}
+          <div className="bg-[#0c0e15] border border-zinc-800 hover:border-amber-500/40 rounded-2xl p-4 transition-all">
+            <div className="flex items-center justify-between mb-2">
+              <span className="w-7 h-7 rounded-lg bg-amber-500/10 border border-amber-500/30 text-amber-400 text-xs font-bold flex items-center justify-center">7</span>
+              <Star className="w-4 h-4 text-amber-400" />
+            </div>
+            <h3 className="text-sm font-bold text-white mb-1">Rewards &amp; Recognition</h3>
+            <p className="text-xs text-zinc-300 leading-relaxed">
+              Top performers may be eligible for special rewards, recognition, and exclusive opportunities.
+            </p>
+          </div>
+
+          {/* Card 8 */}
+          <div className="bg-[#0c0e15] border border-zinc-800 hover:border-amber-500/40 rounded-2xl p-4 transition-all">
+            <div className="flex items-center justify-between mb-2">
+              <span className="w-7 h-7 rounded-lg bg-amber-500/10 border border-amber-500/30 text-amber-400 text-xs font-bold flex items-center justify-center">8</span>
+              <Sparkles className="w-4 h-4 text-emerald-400" />
+            </div>
+            <h3 className="text-sm font-bold text-white mb-1">Future Opportunities</h3>
+            <p className="text-xs text-zinc-300 leading-relaxed">
+              Participants may get opportunities to be considered for upcoming SKYRA CREATIONS shows and projects.
+            </p>
+          </div>
+
+          {/* Card 9 */}
+          <div className="bg-[#0c0e15] border border-zinc-800 hover:border-amber-500/40 rounded-2xl p-4 transition-all">
+            <div className="flex items-center justify-between mb-2">
+              <span className="w-7 h-7 rounded-lg bg-amber-500/10 border border-amber-500/30 text-amber-400 text-xs font-bold flex items-center justify-center">9</span>
+              <Gift className="w-4 h-4 text-indigo-400" />
+            </div>
+            <h3 className="text-sm font-bold text-white mb-1">Referral Benefits</h3>
+            <p className="text-xs text-zinc-300 leading-relaxed">
+              Referral offers and special benefits may be available for eligible participants.
+            </p>
+          </div>
+
+          {/* Card 10 */}
+          <div className="bg-[#0c0e15] border border-red-500/30 hover:border-red-500/60 rounded-2xl p-4 transition-all">
+            <div className="flex items-center justify-between mb-2">
+              <span className="w-7 h-7 rounded-lg bg-red-500/10 border border-red-500/30 text-red-400 text-xs font-bold flex items-center justify-center">10</span>
+              <AlertTriangle className="w-4 h-4 text-red-400" />
+            </div>
+            <h3 className="text-sm font-bold text-red-300 mb-1">Non-Refundable Policy</h3>
+            <p className="text-xs text-zinc-300 leading-relaxed">
+              All registration payments are strictly non-refundable once paid.
+            </p>
+          </div>
+
+          {/* Card 11 */}
+          <div className="bg-[#0c0e15] border border-zinc-800 hover:border-amber-500/40 rounded-2xl p-4 transition-all">
+            <div className="flex items-center justify-between mb-2">
+              <span className="w-7 h-7 rounded-lg bg-amber-500/10 border border-amber-500/30 text-amber-400 text-xs font-bold flex items-center justify-center">11</span>
+              <ShieldCheck className="w-4 h-4 text-amber-400" />
+            </div>
+            <h3 className="text-sm font-bold text-white mb-1">Registration Approval</h3>
+            <p className="text-xs text-zinc-300 leading-relaxed">
+              Registrations are subject to payment verification, slot availability, and approval by SKYRA CREATIONS.
+            </p>
+          </div>
+
+          {/* Card 12 */}
+          <div className="bg-[#0c0e15] border border-zinc-800 hover:border-amber-500/40 rounded-2xl p-4 transition-all">
+            <div className="flex items-center justify-between mb-2">
+              <span className="w-7 h-7 rounded-lg bg-amber-500/10 border border-amber-500/30 text-amber-400 text-xs font-bold flex items-center justify-center">12</span>
+              <CheckCheck className="w-4 h-4 text-emerald-400" />
+            </div>
+            <h3 className="text-sm font-bold text-white mb-1">Participant Commitment</h3>
+            <p className="text-xs text-zinc-300 leading-relaxed">
+              Participants are expected to attend rehearsals, follow instructions, and maintain professional conduct throughout the event.
+            </p>
+          </div>
+        </div>
+      </section>
+
       {errorMsg && (
         <div className="mb-6 p-4 rounded-xl bg-red-950/50 border border-red-500/40 text-red-200 text-sm flex items-start space-x-3">
           <AlertCircle className="w-5 h-5 text-red-400 shrink-0 mt-0.5" />
@@ -652,6 +874,95 @@ export default function RegistrationPage({ setActiveTab, setLookupRegId }: Regis
               </div>
               <p className="text-[11px] text-zinc-500 mt-1">Enter your current city and state.</p>
             </div>
+
+            {/* Upload Your Recent Model Photograph (Mandatory) */}
+            <div className="sm:col-span-2 pt-6 border-t border-zinc-800">
+              <div className="flex items-center justify-between mb-1.5 flex-wrap gap-2">
+                <label className="text-sm font-bold text-white flex items-center space-x-2">
+                  <Camera className="w-4 h-4 text-amber-400" />
+                  <span>Upload Your Recent Model Photograph</span>
+                  <span className="text-amber-400">*</span>
+                </label>
+                <span className="text-[11px] text-amber-300 font-semibold uppercase tracking-wider bg-amber-500/10 border border-amber-500/30 px-2.5 py-0.5 rounded-full">
+                  Mandatory Field
+                </span>
+              </div>
+
+              <p className="text-xs text-zinc-300 mb-3 leading-relaxed">
+                Please upload a clear, recent photograph in which your face is fully visible. Avoid photographs with sunglasses, masks, heavy filters, face coverings, or images that hide your facial features. Your face should be clearly recognizable.
+              </p>
+
+              {/* Visual Warning Box */}
+              <div className="mb-4 p-3.5 rounded-xl bg-amber-500/10 border border-amber-500/40 text-xs text-amber-200 flex items-start space-x-2.5 shadow-sm">
+                <AlertTriangle className="w-4 h-4 text-amber-400 shrink-0 mt-0.5" />
+                <div>
+                  <strong className="text-amber-300 uppercase tracking-wide">IMPORTANT: </strong>
+                  <span>Upload a clear photograph with your face fully visible. Please do not upload photos where your face is hidden, covered or unclear.</span>
+                </div>
+              </div>
+
+              {/* Upload Dropzone / Preview */}
+              <div className="border-2 border-dashed border-zinc-700 hover:border-amber-500/50 rounded-2xl p-6 text-center bg-[#0a0c12] transition-colors relative">
+                {modelPhotoPreview ? (
+                  <div className="space-y-3">
+                    <div className="relative inline-block">
+                      <img
+                        src={modelPhotoPreview}
+                        alt="Selected Model Photograph"
+                        className="max-h-60 max-w-xs mx-auto rounded-xl border border-amber-500/40 object-cover shadow-2xl"
+                      />
+                      <button
+                        type="button"
+                        onClick={handleRemoveModelPhoto}
+                        className="absolute -top-2 -right-2 w-7 h-7 rounded-full bg-red-600 hover:bg-red-500 text-white flex items-center justify-center shadow-lg transition-colors"
+                        title="Remove photograph"
+                      >
+                        <X className="w-4 h-4" />
+                      </button>
+                    </div>
+                    <div className="text-xs text-zinc-300 flex items-center justify-center space-x-2">
+                      <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+                      <span className="font-medium text-white">{modelPhotoFile?.name}</span>
+                      <span className="text-zinc-500">({(modelPhotoFile?.size ? modelPhotoFile.size / 1024 : 0).toFixed(0)} KB)</span>
+                    </div>
+                    <div>
+                      <label className="inline-flex items-center space-x-1.5 px-3.5 py-2 bg-zinc-800 hover:bg-zinc-700 text-zinc-200 rounded-xl text-xs font-semibold cursor-pointer transition-colors border border-zinc-700 shadow-sm">
+                        <Camera className="w-3.5 h-3.5 text-amber-400" />
+                        <span>Replace Photograph</span>
+                        <input
+                          type="file"
+                          accept="image/jpeg,image/png,image/webp"
+                          onChange={handleModelPhotoChange}
+                          className="hidden"
+                        />
+                      </label>
+                    </div>
+                  </div>
+                ) : (
+                  <div>
+                    <div className="w-14 h-14 rounded-2xl bg-amber-500/10 border border-amber-500/30 text-amber-400 flex items-center justify-center mx-auto mb-3 shadow-inner">
+                      <Camera className="w-7 h-7" />
+                    </div>
+                    <p className="text-sm font-bold text-white mb-1">
+                      Choose Your Recent Model Photograph
+                    </p>
+                    <p className="text-xs text-zinc-400 mb-3 max-w-md mx-auto leading-relaxed">
+                      Click browse to select your photograph from your device or gallery. Accepted formats: JPG, JPEG, PNG, and WebP (up to 10 MB).
+                    </p>
+                    <label className="inline-flex items-center space-x-2 px-5 py-2.5 bg-gradient-to-r from-amber-500 to-amber-400 hover:from-amber-400 hover:to-amber-300 text-black font-bold rounded-xl text-xs cursor-pointer transition-all shadow-lg shadow-amber-500/20">
+                      <Upload className="w-3.5 h-3.5" />
+                      <span>Browse Photograph</span>
+                      <input
+                        type="file"
+                        accept="image/jpeg,image/png,image/webp"
+                        onChange={handleModelPhotoChange}
+                        className="hidden"
+                      />
+                    </label>
+                  </div>
+                )}
+              </div>
+            </div>
           </div>
         </div>
 
@@ -710,86 +1021,69 @@ export default function RegistrationPage({ setActiveTab, setLookupRegId }: Regis
                 <CreditCard className="w-5 h-5 text-amber-400" />
                 <span>Registration Payment</span>
               </h2>
-              <span className="text-xs uppercase tracking-wider px-3 py-1 rounded-full bg-amber-500/10 text-amber-400 border border-amber-500/30 font-semibold">
-                Total Event Fee: ₹5,000
+              <span className="text-xs uppercase tracking-wider px-3 py-1 rounded-full bg-amber-500/10 text-amber-400 border border-amber-500/30 font-bold">
+                Total Event Fee: ₹{totalFee.toLocaleString('en-IN')}
               </span>
             </div>
-            <p className="text-xs sm:text-sm text-zinc-400 mt-1">
-              Complete your initial payment using the official payment details below. Select the amount you intend to pay and submit the transaction reference along with your payment screenshot.
+            <p className="text-xs sm:text-sm text-zinc-300 mt-1">
+              Select your token advance amount, complete your UPI payment using the official details below, and enter your 12-digit transaction UTR number along with the payment screenshot.
             </p>
           </div>
 
-          {/* Amount Options */}
+          {/* Token Advance Amount Selection */}
           <div className="mb-6">
-            <label className="block text-xs font-semibold text-zinc-300 mb-3">
-              Select Initial Payment Amount <span className="text-amber-400">*</span>
+            <label className="block text-xs font-semibold text-zinc-300 mb-2">
+              Select Your Token Advance <span className="text-amber-400">*</span>
             </label>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-              {/* Option 1: Token Advance ₹1,500 */}
-              <button
-                type="button"
-                onClick={() => setPaymentOption('advance_1500')}
-                className={`p-4 rounded-xl border text-left transition-all ${
-                  paymentOption === 'advance_1500'
-                    ? 'bg-amber-500/20 border-amber-400 text-white shadow-md shadow-amber-500/10'
-                    : 'bg-[#0a0c12] border-zinc-800 text-zinc-400 hover:border-zinc-700'
-                }`}
-              >
-                <div className="flex items-center justify-between mb-1">
-                  <span className="text-xs font-bold uppercase tracking-wider text-amber-400">Token Advance</span>
-                  <div className={`w-4 h-4 rounded-full border flex items-center justify-center ${
-                    paymentOption === 'advance_1500' ? 'border-amber-400 bg-amber-400' : 'border-zinc-700'
-                  }`}>
-                    {paymentOption === 'advance_1500' && <div className="w-1.5 h-1.5 rounded-full bg-black"></div>}
-                  </div>
-                </div>
-                <div className="text-xl font-extrabold text-white">₹1,500</div>
-                <div className="text-[11px] text-zinc-400 mt-1">Remaining: ₹3,500 balance</div>
-              </button>
+              {[500, 1000, 1500].map((amt) => {
+                const isSelected = tokenAdvance === amt;
+                const bal = totalFee - amt;
+                return (
+                  <button
+                    key={amt}
+                    type="button"
+                    onClick={() => setTokenAdvance(amt)}
+                    className={`p-4 rounded-xl border text-left transition-all ${
+                      isSelected
+                        ? 'bg-amber-500/20 border-amber-400 text-white shadow-lg shadow-amber-500/10'
+                        : 'bg-[#0a0c12] border-zinc-800 text-zinc-400 hover:border-zinc-700'
+                    }`}
+                  >
+                    <div className="flex items-center justify-between mb-1">
+                      <span className="text-xs font-bold uppercase tracking-wider text-amber-400">Token Advance</span>
+                      <div className={`w-4 h-4 rounded-full border flex items-center justify-center ${
+                        isSelected ? 'border-amber-400 bg-amber-400' : 'border-zinc-700'
+                      }`}>
+                        {isSelected && <div className="w-1.5 h-1.5 rounded-full bg-black"></div>}
+                      </div>
+                    </div>
+                    <div className="text-2xl font-extrabold text-white">₹{amt.toLocaleString('en-IN')}</div>
+                    <div className="text-[11px] text-zinc-400 mt-1">
+                      Remaining: <strong className="text-zinc-200">₹{bal.toLocaleString('en-IN')}</strong> balance
+                    </div>
+                  </button>
+                );
+              })}
+            </div>
 
-              {/* Option 2: Half Payment ₹2,500 */}
-              <button
-                type="button"
-                onClick={() => setPaymentOption('half_2500')}
-                className={`p-4 rounded-xl border text-left transition-all ${
-                  paymentOption === 'half_2500'
-                    ? 'bg-amber-500/20 border-amber-400 text-white shadow-md shadow-amber-500/10'
-                    : 'bg-[#0a0c12] border-zinc-800 text-zinc-400 hover:border-zinc-700'
-                }`}
-              >
-                <div className="flex items-center justify-between mb-1">
-                  <span className="text-xs font-bold uppercase tracking-wider text-amber-400">Half Payment</span>
-                  <div className={`w-4 h-4 rounded-full border flex items-center justify-center ${
-                    paymentOption === 'half_2500' ? 'border-amber-400 bg-amber-400' : 'border-zinc-700'
-                  }`}>
-                    {paymentOption === 'half_2500' && <div className="w-1.5 h-1.5 rounded-full bg-black"></div>}
-                  </div>
+            {/* Dynamic Payment Summary Card */}
+            <div className="mt-4 p-4 rounded-2xl bg-[#0a0c12] border border-amber-500/30">
+              <div className="text-xs uppercase tracking-wider font-bold text-amber-400 mb-2">Payment Summary</div>
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs sm:text-sm">
+                <div className="flex justify-between sm:block">
+                  <span className="text-zinc-400">Total Event Fee:</span>
+                  <div className="font-bold text-white text-base">₹{totalFee.toLocaleString('en-IN')}</div>
                 </div>
-                <div className="text-xl font-extrabold text-white">₹2,500</div>
-                <div className="text-[11px] text-zinc-400 mt-1">Remaining: ₹2,500 balance</div>
-              </button>
-
-              {/* Option 3: Full Payment ₹5,000 */}
-              <button
-                type="button"
-                onClick={() => setPaymentOption('full_5000')}
-                className={`p-4 rounded-xl border text-left transition-all ${
-                  paymentOption === 'full_5000'
-                    ? 'bg-amber-500/20 border-amber-400 text-white shadow-md shadow-amber-500/10'
-                    : 'bg-[#0a0c12] border-zinc-800 text-zinc-400 hover:border-zinc-700'
-                }`}
-              >
-                <div className="flex items-center justify-between mb-1">
-                  <span className="text-xs font-bold uppercase tracking-wider text-emerald-400">Full Payment</span>
-                  <div className={`w-4 h-4 rounded-full border flex items-center justify-center ${
-                    paymentOption === 'full_5000' ? 'border-amber-400 bg-amber-400' : 'border-zinc-700'
-                  }`}>
-                    {paymentOption === 'full_5000' && <div className="w-1.5 h-1.5 rounded-full bg-black"></div>}
-                  </div>
+                <div className="flex justify-between sm:block">
+                  <span className="text-zinc-400">Token Advance Selected:</span>
+                  <div className="font-bold text-amber-400 text-base">₹{tokenAdvance.toLocaleString('en-IN')}</div>
                 </div>
-                <div className="text-xl font-extrabold text-white">₹5,000</div>
-                <div className="text-[11px] text-zinc-400 mt-1">Remaining: ₹0 balance</div>
-              </button>
+                <div className="flex justify-between sm:block">
+                  <span className="text-zinc-400">Remaining Balance:</span>
+                  <div className="font-bold text-emerald-400 text-base">₹{remainingBalance.toLocaleString('en-IN')}</div>
+                </div>
+              </div>
             </div>
           </div>
 
@@ -805,7 +1099,7 @@ export default function RegistrationPage({ setActiveTab, setLookupRegId }: Regis
                   <div>
                     <span className="text-xs text-zinc-500 block">Official Payee</span>
                     <strong className="text-white text-base">{paymentInfo?.upi_name || 'B Sriram'}</strong>
-                    <span className="text-[11px] text-zinc-400 block">Founder & CEO, Skyra Creations (Indian Bank)</span>
+                    <span className="text-[11px] text-zinc-400 block">Founder & CEO, Skyra Creations (Indian Bank 5056)</span>
                   </div>
                   <div>
                     <span className="text-xs text-zinc-500 block">Official UPI ID</span>
@@ -828,7 +1122,7 @@ export default function RegistrationPage({ setActiveTab, setLookupRegId }: Regis
                   </div>
                   <div>
                     <span className="text-xs text-zinc-500 block">Amount to Pay</span>
-                    <strong className="text-amber-400 text-lg">₹{getEffectiveAmount().toLocaleString('en-IN')}</strong>
+                    <strong className="text-amber-400 text-xl font-bold">₹{tokenAdvance.toLocaleString('en-IN')}</strong>
                   </div>
                 </div>
               </div>
@@ -919,38 +1213,78 @@ export default function RegistrationPage({ setActiveTab, setLookupRegId }: Regis
           </div>
         </div>
 
-        {/* 3.4 DECLARATION AND TERMS */}
-        <div className="bg-[#12151e]/90 border border-zinc-800 rounded-2xl p-6 sm:p-8 shadow-md">
-          <div className="border-b border-zinc-800 pb-3 mb-4">
-            <h3 className="font-serif text-lg sm:text-xl font-bold text-white flex items-center space-x-2">
-              <ShieldCheck className="w-5 h-5 text-amber-400" />
-              <span>Declaration &amp; Agreement</span>
-            </h3>
+        {/* 3.4 OFFICIAL TERMS & EVENT POLICIES AND PARTICIPANT DECLARATION */}
+        <div className="bg-[#12151e]/90 border border-zinc-800 rounded-2xl p-6 sm:p-8 shadow-md space-y-6">
+          {/* Section 1: Official Terms & Event Policies */}
+          <div>
+            <div className="border-b border-zinc-800 pb-3 mb-4">
+              <h3 className="font-serif text-lg sm:text-xl font-bold text-white flex items-center space-x-2">
+                <ShieldCheck className="w-5 h-5 text-amber-400" />
+                <span>OFFICIAL TERMS &amp; EVENT POLICIES</span>
+              </h3>
+            </div>
+
+            <div className="bg-[#0a0c12] border border-zinc-800/80 rounded-2xl p-5 text-xs sm:text-sm text-zinc-300 space-y-3.5">
+              <div className="flex items-start space-x-3">
+                <span className="w-6 h-6 rounded-full bg-amber-500/20 text-amber-400 font-bold text-xs flex items-center justify-center shrink-0 mt-0.5">1</span>
+                <p className="leading-relaxed">
+                  <strong className="text-white">Non-Refundable &amp; Non-Transferable:</strong> All registration fees are strictly non-refundable and non-transferable.
+                </p>
+              </div>
+
+              <div className="flex items-start space-x-3">
+                <span className="w-6 h-6 rounded-full bg-amber-500/20 text-amber-400 font-bold text-xs flex items-center justify-center shrink-0 mt-0.5">2</span>
+                <p className="leading-relaxed">
+                  <strong className="text-white">Organizer Authority:</strong> SKYRA CREATIONS reserves the right to approve, decline, or cancel any registration based on event requirements and eligibility.
+                </p>
+              </div>
+
+              <div className="flex items-start space-x-3">
+                <span className="w-6 h-6 rounded-full bg-amber-500/20 text-amber-400 font-bold text-xs flex items-center justify-center shrink-0 mt-0.5">3</span>
+                <p className="leading-relaxed">
+                  <strong className="text-white">Event Venue &amp; Schedule:</strong> The event will be conducted in Chennai City Centre and selected nearby locations. The exact venue address and official event schedule will be announced 10 days prior to the event.
+                </p>
+              </div>
+
+              <div className="flex items-start space-x-3">
+                <span className="w-6 h-6 rounded-full bg-amber-500/20 text-amber-400 font-bold text-xs flex items-center justify-center shrink-0 mt-0.5">4</span>
+                <p className="leading-relaxed">
+                  <strong className="text-white">Attendance &amp; Verification:</strong> Rehearsal schedules, reporting times, and venue access are mandatory for all registered participants. Entry may be subject to identity verification and a valid digital entry pass.
+                </p>
+              </div>
+
+              <div className="flex items-start space-x-3">
+                <span className="w-6 h-6 rounded-full bg-amber-500/20 text-amber-400 font-bold text-xs flex items-center justify-center shrink-0 mt-0.5">5</span>
+                <p className="leading-relaxed">
+                  <strong className="text-white">Official Communication:</strong> All official updates, event instructions, and important announcements will be communicated through the WhatsApp number provided during registration. Participants are responsible for staying updated.
+                </p>
+              </div>
+            </div>
           </div>
 
-          <div className="bg-[#0a0c12] border border-zinc-800/80 rounded-xl p-4 mb-4 text-xs text-zinc-300 space-y-2">
-            <p className="font-bold text-amber-300 uppercase tracking-wider text-[11px]">Official Event Policies:</p>
-            <ul className="list-disc list-inside space-y-1 text-zinc-400">
-              <li>All registration fees are non-refundable.</li>
-              <li>SKYRA CREATIONS reserves the right to accept or reject registrations.</li>
-              <li>Event Location: Chennai (Prime City Center — Not outer). Exact venue details and show schedule will be officially announced 10 days before the event.</li>
-              <li>Rehearsal schedules and venue entry are subject to the applicable verification requirements and issuance of a valid digital entry pass.</li>
-              <li>Official event communications will be sent to the WhatsApp number provided during registration.</li>
-            </ul>
-          </div>
+          {/* Section 2: Participant Declaration */}
+          <div className="pt-4 border-t border-zinc-800">
+            <h4 className="text-sm font-bold text-amber-300 uppercase tracking-wider mb-2">
+              PARTICIPANT DECLARATION
+            </h4>
+            
+            <p className="text-xs sm:text-sm text-zinc-300 bg-[#0a0c12] border border-zinc-800 rounded-xl p-4 leading-relaxed mb-4 italic">
+              "I hereby confirm that all information provided during registration is accurate and complete. I have read, understood, and agreed to the event policies, including the non-refundable registration fee policy. I agree to comply with all rehearsal schedules, reporting times, dress codes, event instructions, and guidelines issued by SKYRA CREATIONS. I understand that failure to comply with the event rules or instructions may affect my participation."
+            </p>
 
-          <label className="flex items-start space-x-3 cursor-pointer">
-            <input
-              type="checkbox"
-              required
-              checked={termsConfirmed}
-              onChange={(e) => setTermsConfirmed(e.target.checked)}
-              className="mt-1 w-4 h-4 rounded border-zinc-700 bg-zinc-900 text-amber-500 focus:ring-amber-400 shrink-0"
-            />
-            <span className="text-xs sm:text-sm text-zinc-300 leading-relaxed">
-              I confirm that the information provided in this registration form is accurate and complete. I understand that registration fees are non-refundable under the stated policy. I agree to follow the code of conduct, rehearsal schedules, event instructions and guidelines issued by SKYRA CREATIONS.
-            </span>
-          </label>
+            <label className="flex items-start space-x-3 cursor-pointer p-3 rounded-xl bg-amber-500/5 hover:bg-amber-500/10 border border-amber-500/30 transition-colors">
+              <input
+                type="checkbox"
+                required
+                checked={termsConfirmed}
+                onChange={(e) => setTermsConfirmed(e.target.checked)}
+                className="mt-1 w-4 h-4 rounded border-zinc-700 bg-zinc-900 text-amber-500 focus:ring-amber-400 shrink-0"
+              />
+              <span className="text-xs sm:text-sm text-white font-medium leading-relaxed">
+                I have read, understood and agree to the Official Terms &amp; Event Policies and Participant Declaration.
+              </span>
+            </label>
+          </div>
         </div>
 
         {/* 3.5 SUBMISSION BUTTON */}

@@ -132,6 +132,24 @@ export default function AdminDashboard() {
     }
   };
 
+  const handleViewPhoto = async (photoKey?: string | null) => {
+    if (!photoKey) {
+      alert('No model photograph uploaded for this participant.');
+      return;
+    }
+    try {
+      const res = await fetch(`/api/storage/presigned-view?key=${encodeURIComponent(photoKey)}`);
+      const data = await res.json();
+      if (data.view_url) {
+        setActiveScreenshot(data.view_url);
+      } else {
+        alert('Could not generate view URL.');
+      }
+    } catch (err: any) {
+      alert('Failed to load model photograph: ' + err.message);
+    }
+  };
+
   // WhatsApp manual outreach trigger
   const openWhatsApp = (phone: string, name: string, regId: string, status: string) => {
     const cleanPhone = phone.replace(/[^0-9]/g, '');
@@ -521,12 +539,14 @@ export default function AdminDashboard() {
               <thead className="bg-[#0a0c12] text-zinc-400 uppercase tracking-wider text-[11px] border-b border-zinc-800">
                 <tr>
                   <th className="py-3.5 px-4">Reg ID</th>
+                  <th className="py-3.5 px-4">Model Photo</th>
                   <th className="py-3.5 px-4">Full Name</th>
                   <th className="py-3.5 px-4">Category</th>
                   <th className="py-3.5 px-4">Contact</th>
                   <th className="py-3.5 px-4">Total Fee</th>
                   <th className="py-3.5 px-4">Verified Paid</th>
                   <th className="py-3.5 px-4">Outstanding</th>
+                  <th className="py-3.5 px-4">Terms</th>
                   <th className="py-3.5 px-4">Status</th>
                   <th className="py-3.5 px-4 text-right">Outreach</th>
                 </tr>
@@ -535,12 +555,27 @@ export default function AdminDashboard() {
                 {participants.map((p) => (
                   <tr key={p.id} className="hover:bg-zinc-800/30 transition-colors">
                     <td className="py-3.5 px-4 font-mono font-bold text-amber-300">{p.reg_id}</td>
+                    <td className="py-3.5 px-4">
+                      {p.model_photo_r2_key ? (
+                        <button
+                          onClick={() => handleViewPhoto(p.model_photo_r2_key)}
+                          className="inline-flex items-center space-x-1 px-2.5 py-1 rounded-lg bg-amber-500/10 hover:bg-amber-500/20 text-amber-300 border border-amber-500/30 text-xs transition-colors"
+                          title="View Model Photograph"
+                        >
+                          <ZoomIn className="w-3 h-3 text-amber-400" />
+                          <span>Photo</span>
+                        </button>
+                      ) : (
+                        <span className="text-zinc-600 text-[11px] italic">None</span>
+                      )}
+                    </td>
                     <td className="py-3.5 px-4 font-medium text-white">{p.full_name}</td>
                     <td className="py-3.5 px-4 text-zinc-300">{p.category}</td>
                     <td className="py-3.5 px-4 text-zinc-400">{p.whatsapp || p.mobile}</td>
                     <td className="py-3.5 px-4 font-bold text-white">₹{p.total_fee}</td>
                     <td className="py-3.5 px-4 font-bold text-emerald-400">₹{p.amount_paid}</td>
                     <td className="py-3.5 px-4 font-bold text-amber-400">₹{p.balance_due}</td>
+                    <td className="py-3.5 px-4 font-mono text-zinc-400 text-[11px]">{p.terms_version || '2026.2'}</td>
                     <td className="py-3.5 px-4">
                       <span className={`inline-block px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase ${
                         p.status === 'FULLY_PAID'

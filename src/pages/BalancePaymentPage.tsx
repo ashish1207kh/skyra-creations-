@@ -46,7 +46,7 @@ export default function BalancePaymentPage({ initialRegId, setActiveTab, setLook
   const [copiedUpi, setCopiedUpi] = useState(false);
   const [successResult, setSuccessResult] = useState<{ reg_id: string; payment_id: string; amount: number } | null>(null);
 
-  const allAmounts = [500, 1000, 1500, 2000, 2500, 3000, 3500];
+  const allAmounts = paymentInfo?.allowed_balance_amounts || [500, 1000, 1500, 2000, 2500];
 
   useEffect(() => {
     getPaymentInfo()
@@ -75,7 +75,7 @@ export default function BalancePaymentPage({ initialRegId, setActiveTab, setLook
       
       // Default payment amount selection logic
       if (data.balance_due > 0) {
-        if (data.balance_due <= 3500 && allAmounts.includes(data.balance_due)) {
+        if (data.balance_due <= 3000 && allAmounts.includes(data.balance_due)) {
           setSelectedAmount(data.balance_due);
           setIsFullRemainingSelected(true);
         } else {
