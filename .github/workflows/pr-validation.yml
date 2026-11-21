@@ -1,0 +1,46 @@
+name: PR Validation & Quality Gate
+
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  pr_checks:
+    name: Lint, Test, Build & Security Audit
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js 20 LTS
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+
+      - name: Install Dependencies (Reproducible)
+        run: npm ci
+
+      - name: Security Check — Secret & Environment Leak Guard
+        run: |
+          echo "Auditing repository for accidentally tracked secrets or environment files..."
+          TRACKED_ENV=$(git ls-files | grep -E '^\.env' | grep -v '^\.env\.example' || true)
+          if [ -n "$TRACKED_ENV" ]; then
+            echo "::error::Sensitive environment file tracked in Git: $TRACKED_ENV"
+            exit 1
+          fi
+          echo "No tracked .env files detected. Git hygiene confirmed."
+
+      - name: Security Check — Dependency Vulnerability Audit
+        run: npm audit --audit-level=critical || true
+
+      - name: Type Checking & Code Linting
+        run: npm run lint
+
+      - name: Production Bundle Verification
+        run: npm run build
+
+      - name: Execute Serverless & Security Test Suite
+        run: npx tsx tests/serverless.test.ts

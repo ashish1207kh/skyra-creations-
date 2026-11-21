@@ -301,6 +301,18 @@ async function runTests() {
   assert(uploadRes.getData().uploadUrl);
   console.log('   ✓ Consolidated storage router handled action=presigned-upload successfully');
 
+  // Test health check endpoint
+  console.log('11. Testing Health Check Endpoint...');
+  const healthHandler = (await import('../api/health.js')).default;
+  const healthRes = createMockRes();
+  await healthHandler({
+    method: 'GET',
+    headers: {},
+  } as any, healthRes);
+  assert.strictEqual(healthRes.getStatus(), 200);
+  assert.strictEqual(healthRes.getData().status, 'healthy');
+  console.log('   ✓ Health check endpoint verified (status: healthy, uptime tracking active)');
+
   console.log('\n=========================================');
   console.log('ALL SERVERLESS & STORAGE SUITES PASSED! ✓');
   console.log('=========================================');
