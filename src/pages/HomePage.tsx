@@ -1,12 +1,14 @@
-import React, { useRef } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import { 
   Sparkles, 
   ArrowRight, 
   ChevronRight,
+  ChevronDown,
+  ArrowUp,
   Eye,
   Check
 } from 'lucide-react';
-import { motion, useScroll, useTransform } from 'motion/react';
+import { motion, useScroll, useTransform, AnimatePresence } from 'motion/react';
 import VirtualRunwayScene from '../components/VirtualRunwayScene';
 import TiltCard from '../components/TiltCard';
 import MarqueeStrip from '../components/MarqueeStrip';
@@ -17,7 +19,47 @@ interface HomePageProps {
   onSelectEvent?: (eventId: string) => void;
 }
 
+const faqs = [
+  {
+    question: "What is the total participation fee and advance token structure?",
+    answer: "The total participation fee for Runway Show 2026 is ₹3,000. To reserve your audition slot, you can commit an advance token (₹500, ₹1,000, or full ₹3,000). The remaining balance can be cleared anytime prior to the event date through the Balance Settlement portal."
+  },
+  {
+    question: "Where and when is Runway Show 2026 hosted?",
+    answer: "The flagship showcase will take place in central Chennai at Chennai City Center Auditorium. The exact venue address, call times, and backstage rehearsal schedule are dispatched directly to your registered WhatsApp 10 days before the show."
+  },
+  {
+    question: "Who is eligible to participate and what are the categories?",
+    answer: "We welcome all aspiring and experienced models! There are curated competitive and showcase categories: Kids (Ages 4–12), Teens (Ages 13–17), Adults (Ages 18–35), Plus-Size, and Classic (up to 50). No prior portfolio is required."
+  },
+  {
+    question: "What is the advance token refund policy?",
+    answer: "Because venue staging, choreographer allocations, and model slots are locked upon reservation, all registration token advances are strictly non-refundable and non-transferable under all circumstances once committed."
+  },
+  {
+    question: "When and how do I receive my official digital Runway Pass?",
+    answer: "Once your payment is submitted with the 12-digit UPI reference (UTR), our accounts verification team cross-checks it directly with bank settlement statements. Upon approval, your verified digital pass and unique pass token are immediately unlocked on the Check Status portal for download and print."
+  }
+];
+
 export default function HomePage({ setActiveTab, onSelectEvent }: HomePageProps) {
+  const [openFaqIndex, setOpenFaqIndex] = useState<number | null>(0);
+  const [scrollProgress, setScrollProgress] = useState(0);
+  const [showBackToTop, setShowBackToTop] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const totalHeight = document.documentElement.scrollHeight - window.innerHeight;
+      if (totalHeight > 0) {
+        const progress = Math.min(100, Math.max(0, (window.scrollY / totalHeight) * 100));
+        setScrollProgress(progress);
+      }
+      setShowBackToTop(window.scrollY > 400);
+    };
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
   // Section 1: Hero Cinematic Parallax
   const heroRef = useRef<HTMLDivElement>(null);
   const { scrollYProgress: heroProgress } = useScroll({
@@ -533,16 +575,40 @@ export default function HomePage({ setActiveTab, onSelectEvent }: HomePageProps)
           >
             <div className="relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
               <div className="lg:col-span-7 space-y-5">
-                <div 
-                  className="inline-flex items-center space-x-2 px-3 py-1 rounded-full font-mono-editorial text-[10px] font-bold tracking-wider"
-                  style={{ 
-                    backgroundColor: 'rgba(0,0,0,0.4)', 
-                    border: '1px solid var(--border)',
-                    color: 'var(--accent)' 
-                  }}
-                >
-                  <span className="w-1.5 h-1.5 rounded-full animate-pulse" style={{ backgroundColor: 'var(--accent)' }} />
-                  <span>REGISTRATIONS ACTIVE</span>
+                <div className="flex flex-wrap items-center gap-2.5">
+                  <div 
+                    className="inline-flex items-center space-x-2 px-3 py-1 rounded-full font-mono-editorial text-[10px] font-bold tracking-wider"
+                    style={{ 
+                      backgroundColor: 'rgba(0,0,0,0.4)', 
+                      border: '1px solid var(--border)',
+                      color: 'var(--accent)' 
+                    }}
+                  >
+                    <span className="w-1.5 h-1.5 rounded-full animate-pulse" style={{ backgroundColor: 'var(--accent)' }} />
+                    <span>REGISTRATIONS ACTIVE</span>
+                  </div>
+
+                  <div className="flex items-center space-x-2 font-mono-editorial text-[10px] text-[#C6FF00] bg-[#C6FF00]/10 border border-[#C6FF00]/30 px-3 py-1 rounded-full">
+                    <span className="w-1.5 h-1.5 rounded-full bg-[#C6FF00] animate-ping" />
+                    <span className="font-bold">84% SLOTS COMMITTED</span>
+                  </div>
+                </div>
+
+                {/* Live Slot Allocation Visualizer */}
+                <div className="space-y-1.5 max-w-md">
+                  <div className="flex justify-between font-mono-editorial text-[9px] text-[#BFC3C7] tracking-wider uppercase">
+                    <span>Audition Slot Availability</span>
+                    <span className="text-[#C6FF00] font-bold">16% Slots Left</span>
+                  </div>
+                  <div className="w-full bg-black/50 h-1.5 rounded-full overflow-hidden border border-white/10">
+                    <motion.div 
+                      initial={{ width: 0 }}
+                      whileInView={{ width: '84%' }}
+                      viewport={{ once: true }}
+                      transition={{ duration: 1.4, ease: [0.16, 1, 0.3, 1] }}
+                      className="h-full bg-gradient-to-r from-[#C6FF00] via-[#D8FF33] to-[#E5FF7F] rounded-full shadow-[0_0_12px_rgba(198,255,0,0.6)]"
+                    />
+                  </div>
                 </div>
 
                 <h3 className="font-editorial text-3xl sm:text-4xl lg:text-5xl font-bold leading-tight" style={{ color: 'var(--text-primary)' }}>
@@ -737,6 +803,81 @@ export default function HomePage({ setActiveTab, onSelectEvent }: HomePageProps)
       </section>
 
       {/* ──────────────────────────────────────────────────────────
+          SECTION 6.5: AUDITION & PARTICIPATION FAQ (ACCORDION)
+      ────────────────────────────────────────────────────────── */}
+      <section className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
+        <div className="text-center max-w-2xl mx-auto space-y-2">
+          <span className="font-mono-editorial block text-[11px] tracking-widest text-[#C6FF00]">
+            05 // FREQUENTLY ASKED QUESTIONS
+          </span>
+          <h2 className="font-editorial text-3xl sm:text-5xl font-bold text-white">
+            EVERYTHING YOU NEED TO KNOW.
+          </h2>
+          <p className="text-xs sm:text-sm text-[#9DA1AF]">
+            Transparent guidelines, fee breakdowns, and venue protocols for contestants.
+          </p>
+        </div>
+
+        <div className="space-y-3 pt-2">
+          {faqs.map((faq, idx) => {
+            const isOpen = openFaqIndex === idx;
+            return (
+              <motion.div
+                key={idx}
+                initial={{ opacity: 0, y: 15 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.4, delay: idx * 0.08 }}
+                className="bg-[#12141a] border border-white/10 rounded-sm overflow-hidden transition-all duration-300 hover:border-white/20"
+                style={{
+                  borderColor: isOpen ? 'rgba(198, 255, 0, 0.4)' : undefined,
+                  boxShadow: isOpen ? '0 0 25px rgba(198, 255, 0, 0.06)' : undefined,
+                }}
+              >
+                <button
+                  type="button"
+                  onClick={() => setOpenFaqIndex(isOpen ? null : idx)}
+                  className="w-full p-5 sm:p-6 text-left flex items-center justify-between gap-4 transition-colors"
+                >
+                  <div className="flex items-center space-x-3.5">
+                    <span className="font-mono-editorial text-xs font-bold text-[#C6FF00]">
+                      0{idx + 1}
+                    </span>
+                    <h3 className="font-editorial text-base sm:text-lg font-bold text-white tracking-wide">
+                      {faq.question}
+                    </h3>
+                  </div>
+                  <motion.div
+                    animate={{ rotate: isOpen ? 180 : 0 }}
+                    transition={{ duration: 0.25, ease: 'easeInOut' }}
+                    className="p-1.5 rounded-sm bg-white/5 text-[#C6FF00] shrink-0"
+                  >
+                    <ChevronDown className="w-4 h-4" />
+                  </motion.div>
+                </button>
+
+                <AnimatePresence initial={false}>
+                  {isOpen && (
+                    <motion.div
+                      initial={{ height: 0, opacity: 0 }}
+                      animate={{ height: 'auto', opacity: 1 }}
+                      exit={{ height: 0, opacity: 0 }}
+                      transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
+                      className="overflow-hidden"
+                    >
+                      <div className="px-5 sm:px-6 pb-6 pt-1 text-xs sm:text-sm text-[#BFC3C7] font-light leading-relaxed border-t border-white/5">
+                        {faq.answer}
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </motion.div>
+            );
+          })}
+        </div>
+      </section>
+
+      {/* ──────────────────────────────────────────────────────────
           SECTION 7: FINAL CALL TO ACTION (POWERFUL CLOSING)
       ────────────────────────────────────────────────────────── */}
       <section ref={sec7Ref} className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -778,6 +919,44 @@ export default function HomePage({ setActiveTab, onSelectEvent }: HomePageProps)
           </div>
         </motion.div>
       </section>
+
+      {/* Floating Luxury Back to Top Dial with Radial Progress Circle */}
+      <AnimatePresence>
+        {showBackToTop && (
+          <motion.button
+            initial={{ opacity: 0, scale: 0.8, y: 20 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.8, y: 20 }}
+            onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+            className="fixed bottom-6 right-6 z-40 w-12 h-12 rounded-full bg-[#12141a]/90 backdrop-blur-md border border-white/20 text-[#C6FF00] hover:text-white hover:border-[#C6FF00] flex items-center justify-center shadow-2xl transition-all group"
+            aria-label="Scroll to top"
+          >
+            <svg className="absolute inset-0 w-full h-full -rotate-90 pointer-events-none" viewBox="0 0 48 48">
+              <circle
+                cx="24"
+                cy="24"
+                r="20"
+                stroke="rgba(255, 255, 255, 0.1)"
+                strokeWidth="2.5"
+                fill="none"
+              />
+              <circle
+                cx="24"
+                cy="24"
+                r="20"
+                stroke="#C6FF00"
+                strokeWidth="2.5"
+                fill="none"
+                strokeDasharray={125.66}
+                strokeDashoffset={125.66 - (125.66 * scrollProgress) / 100}
+                strokeLinecap="round"
+                className="transition-all duration-150 ease-out"
+              />
+            </svg>
+            <ArrowUp className="w-4 h-4 group-hover:-translate-y-0.5 transition-transform" />
+          </motion.button>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
