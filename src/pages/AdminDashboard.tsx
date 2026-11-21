@@ -23,7 +23,9 @@ import {
   Activity,
   AlertTriangle,
   Info,
-  User
+  User,
+  Eye,
+  EyeOff
 } from 'lucide-react';
 import { 
   getAdminStats, 
@@ -46,6 +48,8 @@ export default function AdminDashboard() {
   // Login form state (no hardcoded passwords)
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [showEmail, setShowEmail] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
   const [loginLoading, setLoginLoading] = useState(false);
   const [loginError, setLoginError] = useState('');
   const [isCaptchaVerified, setIsCaptchaVerified] = useState(false);
@@ -213,29 +217,83 @@ export default function AdminDashboard() {
             </div>
           )}
 
-          <form onSubmit={handleLogin} className="space-y-4">
+          <form onSubmit={handleLogin} className="space-y-4" autoComplete="off">
             <div>
-              <label className="block font-mono-editorial text-[10px] uppercase text-[#BFC3C7] mb-1.5">Administrator Email / Username</label>
-              <input
-                type="text"
-                required
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="admin@skyracreations.com"
-                className="w-full bg-[#080808] border border-white/15 rounded-sm px-4 py-3 text-white text-xs sm:text-sm focus:outline-none focus:border-[#C6FF00]"
-              />
+              <div className="flex items-center justify-between mb-1.5">
+                <label className="block font-mono-editorial text-[10px] uppercase text-[#BFC3C7]">Administrator Username / Email</label>
+                <button
+                  type="button"
+                  onClick={() => setShowEmail(!showEmail)}
+                  className="font-mono-editorial text-[9px] text-zinc-400 hover:text-[#C6FF00] inline-flex items-center space-x-1 transition-colors"
+                  tabIndex={-1}
+                >
+                  {showEmail ? <EyeOff className="w-3 h-3" /> : <Eye className="w-3 h-3" />}
+                  <span>{showEmail ? 'HIDE' : 'SHOW'}</span>
+                </button>
+              </div>
+              <div className="relative">
+                <input
+                  type={showEmail ? 'text' : 'password'}
+                  required
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="••••••••••••••••"
+                  autoComplete="off"
+                  autoCorrect="off"
+                  autoCapitalize="none"
+                  spellCheck={false}
+                  data-lpignore="true"
+                  className="w-full bg-[#080808] border border-white/15 rounded-sm px-4 py-3 pr-11 text-white text-xs sm:text-sm font-mono focus:outline-none focus:border-[#C6FF00] tracking-wider"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowEmail(!showEmail)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-zinc-500 hover:text-[#C6FF00] transition-colors p-1"
+                  title={showEmail ? 'Hide username while inserting' : 'Reveal username'}
+                  tabIndex={-1}
+                >
+                  {showEmail ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                </button>
+              </div>
             </div>
 
             <div>
-              <label className="block font-mono-editorial text-[10px] uppercase text-[#BFC3C7] mb-1.5">Password</label>
-              <input
-                type="password"
-                required
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                placeholder="Enter administrator password"
-                className="w-full bg-[#080808] border border-white/15 rounded-sm px-4 py-3 text-white text-xs sm:text-sm focus:outline-none focus:border-[#C6FF00]"
-              />
+              <div className="flex items-center justify-between mb-1.5">
+                <label className="block font-mono-editorial text-[10px] uppercase text-[#BFC3C7]">Password</label>
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="font-mono-editorial text-[9px] text-zinc-400 hover:text-[#C6FF00] inline-flex items-center space-x-1 transition-colors"
+                  tabIndex={-1}
+                >
+                  {showPassword ? <EyeOff className="w-3 h-3" /> : <Eye className="w-3 h-3" />}
+                  <span>{showPassword ? 'HIDE' : 'SHOW'}</span>
+                </button>
+              </div>
+              <div className="relative">
+                <input
+                  type={showPassword ? 'text' : 'password'}
+                  required
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  placeholder="••••••••••••••••"
+                  autoComplete="new-password"
+                  autoCorrect="off"
+                  autoCapitalize="none"
+                  spellCheck={false}
+                  data-lpignore="true"
+                  className="w-full bg-[#080808] border border-white/15 rounded-sm px-4 py-3 pr-11 text-white text-xs sm:text-sm font-mono focus:outline-none focus:border-[#C6FF00] tracking-wider"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-zinc-500 hover:text-[#C6FF00] transition-colors p-1"
+                  title={showPassword ? 'Hide password while inserting' : 'Reveal password'}
+                  tabIndex={-1}
+                >
+                  {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                </button>
+              </div>
             </div>
 
             {/* Anti-Brute-Force Security Challenge */}
