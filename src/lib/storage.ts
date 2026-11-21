@@ -32,7 +32,13 @@ export async function uploadFileToR2(
     throw new Error(errData.detail || 'Failed to authorize file upload.');
   }
 
-  const { upload_url, object_key }: PresignedUploadResponse = await presignRes.json();
+  const resData = await presignRes.json().catch(() => null);
+  const upload_url = resData?.upload_url || resData?.uploadUrl;
+  const object_key = resData?.object_key || resData?.objectKey;
+
+  if (!upload_url || typeof upload_url !== 'string' || !object_key) {
+    throw new Error('Server returned an invalid storage upload response.');
+  }
 
   // 3. Upload binary directly to Cloudflare R2 via signed PUT URL
   // If in local mock mode without R2, bypass direct PUT

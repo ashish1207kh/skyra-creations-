@@ -3,6 +3,29 @@ import react from '@vitejs/plugin-react'
 import path from 'path'
 import fs from 'fs'
 
+// Load environment variables into process.env for local API serverless handlers
+function loadEnvToProcessEnv() {
+  for (const envFile of ['.env', '.env.local']) {
+    const fullPath = path.resolve(__dirname, envFile);
+    if (fs.existsSync(fullPath)) {
+      const content = fs.readFileSync(fullPath, 'utf8');
+      for (const line of content.split('\n')) {
+        const trimmed = line.trim();
+        if (!trimmed || trimmed.startsWith('#')) continue;
+        const eqIdx = trimmed.indexOf('=');
+        if (eqIdx !== -1) {
+          const key = trimmed.slice(0, eqIdx).trim();
+          const val = trimmed.slice(eqIdx + 1).trim().replace(/^['"]|['"]$/g, '');
+          if (!process.env[key]) {
+            process.env[key] = val;
+          }
+        }
+      }
+    }
+  }
+}
+loadEnvToProcessEnv();
+
 function vercelDevServerPlugin(): Plugin {
   return {
     name: 'vercel-dev-server',
@@ -32,15 +55,35 @@ function vercelDevServerPlugin(): Plugin {
           return;
         }
 
-        // Try exact match or with .ts
+        // 1. Try exact match or with .ts
         let filePath = path.resolve(__dirname, 'api', apiRelativePath + '.ts');
+        let matchedAction: string | undefined;
+
         if (!fs.existsSync(filePath)) {
+          // 2. Try index file
           const indexFilePath = path.resolve(__dirname, 'api', apiRelativePath, 'index.ts');
           if (fs.existsSync(indexFilePath)) {
             filePath = indexFilePath;
           } else {
-            return next();
+            // 3. Dynamic route matching (e.g. /api/admin/login -> api/admin/[action].ts)
+            const segments = apiRelativePath.split('/').filter(Boolean);
+            if (segments.length === 2) {
+              const folder = segments[0];
+              const action = segments[1];
+              const dynamicPath = path.resolve(__dirname, 'api', folder, '[action].ts');
+              if (fs.existsSync(dynamicPath)) {
+                filePath = dynamicPath;
+                matchedAction = action;
+              }
+            }
           }
+        }
+
+        if (!fs.existsSync(filePath)) {
+          res.statusCode = 404;
+          res.setHeader('Content-Type', 'application/json');
+          res.end(JSON.stringify({ detail: `API endpoint /api/${apiRelativePath} not found` }));
+          return;
         }
 
         try {
@@ -49,6 +92,9 @@ function vercelDevServerPlugin(): Plugin {
           urlObj.searchParams.forEach((val, key) => {
             query[key] = val;
           });
+          if (matchedAction && !query.action) {
+            query.action = matchedAction;
+          }
           req.query = query;
 
           // Parse body if request contains payload

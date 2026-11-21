@@ -1,4 +1,10 @@
 import { MongoClient, Db } from 'mongodb';
+import dns from 'dns';
+
+// Ensure resilient SRV record resolution across local Windows dev environments and edge networks
+try {
+  dns.setServers(['8.8.8.8', '1.1.1.1']);
+} catch {}
 
 interface MongoConnection {
   client: MongoClient;
@@ -18,7 +24,8 @@ const MONGODB_DB_NAME = process.env.MONGODB_DB_NAME || 'skyra_production';
  * Returns null if MONGODB_URI is not set.
  */
 export async function getMongoConnection(): Promise<MongoConnection | null> {
-  if (!MONGODB_URI) {
+  const uri = process.env.MONGODB_URI || MONGODB_URI;
+  if (!uri) {
     return null;
   }
 
@@ -27,7 +34,7 @@ export async function getMongoConnection(): Promise<MongoConnection | null> {
   }
 
   const connectPromise = (async () => {
-    const client = new MongoClient(MONGODB_URI, {
+    const client = new MongoClient(uri, {
       maxPoolSize: 10,
       minPoolSize: 1,
       maxIdleTimeMS: 30000,

@@ -38,7 +38,14 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         folder: validated.folder,
       });
 
-      return res.status(200).json(presigned);
+      return res.status(200).json({
+        uploadUrl: presigned.uploadUrl,
+        objectKey: presigned.objectKey,
+        expiresInSeconds: presigned.expiresInSeconds,
+        upload_url: presigned.uploadUrl,
+        object_key: presigned.objectKey,
+        expires_in_seconds: presigned.expiresInSeconds,
+      });
     } catch (err: any) {
       const msg = err.errors ? err.errors.map((e: any) => e.message).join(', ') : err.message;
       return res.status(400).json({ detail: msg });
