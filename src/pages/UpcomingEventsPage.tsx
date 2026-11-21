@@ -39,14 +39,14 @@ export default function UpcomingEventsPage({ setActiveTab, onSelectEvent }: Upco
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-12 animate-fadeIn">
       {/* Page Header */}
       <div className="text-center max-w-3xl mx-auto space-y-4">
-        <span className="px-3 py-1 rounded-full bg-amber-500/10 text-amber-500 border border-amber-500/20 text-xs font-bold uppercase tracking-widest inline-block">
+        <span className="px-3.5 py-1 rounded-full bg-[#C6FF00]/10 text-[#789900] dark:text-[#C6FF00] border border-[#C6FF00]/30 text-xs font-bold uppercase tracking-widest inline-block">
           Official Event Calendar
         </span>
-        <h1 className="font-editorial text-4xl sm:text-5xl md:text-6xl font-bold text-zinc-900 dark:text-white leading-tight">
-          Upcoming Fashion &amp; Runway Events
+        <h1 className="font-editorial text-4xl sm:text-6xl md:text-7xl font-bold text-zinc-900 dark:text-white leading-tight">
+          THE RUNWAY AWAITS.
         </h1>
-        <p className="text-sm sm:text-base text-zinc-600 dark:text-zinc-300 font-light leading-relaxed">
-          Discover verified fashion runway showcases and model auditions organized by SKYRA CREATIONS. Select an event below to inspect details or register.
+        <p className="text-base sm:text-lg text-zinc-600 dark:text-zinc-300 font-light leading-relaxed">
+          Explore upcoming fashion experiences and discover your next opportunity.
         </p>
       </div>
 

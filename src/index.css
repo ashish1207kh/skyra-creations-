@@ -3,27 +3,31 @@
 @tailwind utilities;
 
 @layer base {
-  :root {
-    --bg-primary: #0a0c12;
-    --bg-secondary: #11141d;
-    --bg-elevated: #171b26;
-    --border-color: #232a3b;
-    --text-primary: #f8fafc;
-    --text-secondary: #94a3b8;
-    --text-muted: #64748b;
-    --accent-lime: #d4ff14;
+  :root, :root[data-theme="dark"], html.dark {
+    --bg-primary: #080808;
+    --bg-secondary: #111111;
+    --bg-surface: #181818;
+    --bg-elevated: #222222;
+    --border-color: #303030;
+    --text-primary: #F5F5F5;
+    --text-secondary: #A8A8A8;
+    --text-muted: #71717a;
+    --accent-lime: #C6FF00;
+    --silver-metallic: #BFC3C7;
     --accent-amber: #f59e0b;
   }
 
-  html.light {
-    --bg-primary: #f8fafc;
-    --bg-secondary: #ffffff;
-    --bg-elevated: #f1f5f9;
-    --border-color: #e2e8f0;
-    --text-primary: #0f172a;
-    --text-secondary: #475569;
-    --text-muted: #64748b;
-    --accent-lime: #16a34a;
+  :root[data-theme="light"], html.light {
+    --bg-primary: #F6F6F2;
+    --bg-secondary: #FFFFFF;
+    --bg-surface: #ECEDE8;
+    --bg-elevated: #FFFFFF;
+    --border-color: #DCDDD6;
+    --text-primary: #151515;
+    --text-secondary: #666666;
+    --text-muted: #8C9298;
+    --accent-lime: #789900;
+    --silver-metallic: #8C9298;
     --accent-amber: #d97706;
   }
 
@@ -46,26 +50,26 @@
   width: 7px;
   height: 7px;
 }
-html.dark ::-webkit-scrollbar-track {
-  background: #090b10;
+html.dark ::-webkit-scrollbar-track, :root[data-theme="dark"] ::-webkit-scrollbar-track {
+  background: #080808;
 }
-html.dark ::-webkit-scrollbar-thumb {
-  background: #232a3b;
+html.dark ::-webkit-scrollbar-thumb, :root[data-theme="dark"] ::-webkit-scrollbar-thumb {
+  background: #202020;
   border-radius: 4px;
 }
-html.dark ::-webkit-scrollbar-thumb:hover {
-  background: #38425d;
+html.dark ::-webkit-scrollbar-thumb:hover, :root[data-theme="dark"] ::-webkit-scrollbar-thumb:hover {
+  background: #303030;
 }
 
-html.light ::-webkit-scrollbar-track {
-  background: #f1f5f9;
+html.light ::-webkit-scrollbar-track, :root[data-theme="light"] ::-webkit-scrollbar-track {
+  background: #F6F6F2;
 }
-html.light ::-webkit-scrollbar-thumb {
-  background: #cbd5e1;
+html.light ::-webkit-scrollbar-thumb, :root[data-theme="light"] ::-webkit-scrollbar-thumb {
+  background: #DCDDD6;
   border-radius: 4px;
 }
-html.light ::-webkit-scrollbar-thumb:hover {
-  background: #94a3b8;
+html.light ::-webkit-scrollbar-thumb:hover, :root[data-theme="light"] ::-webkit-scrollbar-thumb:hover {
+  background: #8C9298;
 }
 
 /* Fashion editorial animations */
@@ -79,7 +83,7 @@ html.light ::-webkit-scrollbar-thumb:hover {
 }
 
 .glow-lime {
-  box-shadow: 0 0 25px rgba(212, 255, 20, 0.15);
+  box-shadow: 0 0 25px rgba(198, 255, 0, 0.18);
 }
 
 .glow-amber {
