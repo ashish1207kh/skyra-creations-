@@ -17,13 +17,8 @@ import {
   QrCode,
   MessageSquare,
   Camera,
-  Award,
-  Star,
-  Gift,
-  AlertTriangle,
   X,
   Image as ImageIcon,
-  CheckCheck,
   ChevronRight,
   ArrowRight
 } from 'lucide-react';
@@ -608,58 +603,6 @@ export default function RegistrationPage({ setActiveTab, setLookupRegId, onProce
             </div>
           </div>
 
-          {/* 12 PARTICIPANT BENEFITS & GUIDELINES */}
-          <section className="bg-[#12141a] border border-white/10 rounded-sm p-6 sm:p-8 shadow-2xl space-y-6">
-            <div className="border-b border-white/10 pb-4">
-              <div className="flex items-center space-x-2 text-[#C6FF00] font-mono-editorial text-[10px] uppercase tracking-widest mb-1">
-                <span>01 // PROVISIONS &amp; PARTICIPATION SPECIFICATION</span>
-              </div>
-              <h2 className="font-display text-2xl sm:text-3xl font-bold text-white tracking-wide">
-                PARTICIPANT BENEFITS &amp; GUIDELINES
-              </h2>
-              <p className="text-xs text-[#BFC3C7] font-light mt-1">
-                Please review these verified provisions included with your Runway Show 2026 showcase entry.
-              </p>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3.5">
-              {[
-                { num: '01', title: 'Open Participation', desc: 'No height or skin tone barriers. Freshers and experienced walkers are equally welcome.', icon: User },
-                { num: '02', title: 'Runway Experience', desc: 'Professional ramp choreography, posture grooming, pacing, and stage preparation.', icon: Sparkles },
-                { num: '03', title: 'Professional Make-Up', desc: 'Curated hair and makeup styling arranged by certified industry HMUA teams.', icon: Sparkles },
-                { num: '04', title: 'Show Wardrobe', desc: 'Rental show garments provided matching your assigned collection theme.', icon: Sparkles },
-                { num: '05', title: 'Photoshoot & Media', desc: 'High-resolution stage action captures for your professional portfolio.', icon: Camera },
-                { num: '06', title: 'Certificates & Trophies', desc: 'Official Certificate of Participation and category trophies awarded.', icon: Award },
-                { num: '07', title: 'Rewards & Recognition', desc: 'Top stage performers are eligible for special citations and media highlights.', icon: Star },
-                { num: '08', title: 'Future Agency Castings', desc: 'Direct consideration for subsequent SKYRA productions, shoots, and campaigns.', icon: Sparkles },
-                { num: '09', title: 'Referral Privileges', desc: 'Referral credits and special partner privileges for eligible participants.', icon: Gift },
-                { num: '10', title: 'Strict Non-Refundable', desc: 'All registration advance tokens are strictly non-refundable once committed.', icon: AlertTriangle, highlight: true },
-                { num: '11', title: 'Registration Approval', desc: 'Submissions are subject to payment verification, slot capacity, and desk approval.', icon: ShieldCheck },
-                { num: '12', title: 'Participant Conduct', desc: 'Contestants are expected to attend mandatory rehearsals with professional discipline.', icon: CheckCheck },
-              ].map((item, idx) => (
-                <div 
-                  key={idx}
-                  className={`bg-[#080808] border rounded-sm p-4 transition-all hover:border-[#C6FF00]/40 group ${
-                    item.highlight ? 'border-red-500/30' : 'border-white/10'
-                  }`}
-                >
-                  <div className="flex items-center justify-between mb-2">
-                    <span className="font-mono-editorial text-[10px] font-bold text-[#C6FF00]">
-                      {item.num}
-                    </span>
-                    <item.icon className={`w-4 h-4 ${item.highlight ? 'text-red-400' : 'text-zinc-400 group-hover:text-[#C6FF00]'}`} />
-                  </div>
-                  <h3 className={`text-xs font-bold uppercase tracking-wider mb-1 font-mono-editorial ${item.highlight ? 'text-red-300' : 'text-white'}`}>
-                    {item.title}
-                  </h3>
-                  <p className="text-[11px] text-[#BFC3C7] leading-relaxed font-light">
-                    {item.desc}
-                  </p>
-                </div>
-              ))}
-            </div>
-          </section>
-
           {errorMsg && (
             <motion.div 
               initial={{ opacity: 0, y: -8 }}
@@ -680,7 +623,7 @@ export default function RegistrationPage({ setActiveTab, setLookupRegId, onProce
             <div className="bg-[#12141a] border border-white/10 rounded-sm p-6 sm:p-8 shadow-xl">
               <div className="border-b border-white/10 pb-4 mb-6">
                 <div className="flex items-center space-x-2 text-[#C6FF00] font-mono-editorial text-[10px] uppercase tracking-widest mb-1">
-                  <span>SECTION 02 // CANDIDATE CREDENTIALS</span>
+                  <span>SECTION 01 // CANDIDATE CREDENTIALS</span>
                 </div>
                 <h2 className="font-display text-2xl sm:text-3xl font-bold text-white flex items-center space-x-2">
                   <User className="w-5 h-5 text-[#C6FF00]" />
@@ -916,7 +859,7 @@ export default function RegistrationPage({ setActiveTab, setLookupRegId, onProce
             <div className="bg-[#12141a] border border-white/10 rounded-sm p-6 sm:p-8 shadow-xl">
               <div className="border-b border-white/10 pb-4 mb-6">
                 <div className="flex items-center space-x-2 text-[#C6FF00] font-mono-editorial text-[10px] uppercase tracking-widest mb-1">
-                  <span>SECTION 03 // PORTFOLIO LINKS</span>
+                  <span>SECTION 02 // PORTFOLIO LINKS</span>
                 </div>
                 <h2 className="font-display text-2xl sm:text-3xl font-bold text-white flex items-center space-x-2">
                   <Sparkles className="w-5 h-5 text-[#C6FF00]" />
