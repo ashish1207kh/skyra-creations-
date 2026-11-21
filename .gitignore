@@ -16,14 +16,21 @@ build/
 .env.production.local
 vercel.env
 
+# Uploads, screenshots, and temporary media artifacts
+backend/uploads/
+uploads/
+extracted_assets/
+screenshots/
+*.tmp
+*.png.tmp
+*.jpg.tmp
+
 # Python artifacts
 __pycache__/
 *.py[cod]
 *$py.class
 .pytest_cache/
 *.db
-backend/uploads/screenshots/*
-!backend/uploads/screenshots/sample_receipt_*.png
 
 # Logs
 npm-debug.log*
