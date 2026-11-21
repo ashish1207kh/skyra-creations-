@@ -44,43 +44,43 @@ export default function HomePage({ setActiveTab, onSelectEvent }: HomePageProps)
         />
 
         <div className="relative z-20 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-6 pt-8 sm:pt-12">
-          {/* Official SKYRA CREATIONS Haute Couture Emblem */}
+          {/* Official SKYRA CREATIONS Brandmark Showcase */}
           <motion.div
-            initial={{ opacity: 0, scale: 0.8, y: -12 }}
+            initial={{ opacity: 0, scale: 0.88, y: -12 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
-            className="flex justify-center pb-1"
+            className="flex justify-center pb-2"
           >
             <div 
               onClick={() => setActiveTab('about')}
               className="relative group cursor-pointer select-none"
               title="SKYRA CREATIONS — Certified Fashion & Runway Platform"
             >
-              {/* Dynamic Multicolored Ambient Glow (Red + Lime + Silver) */}
+              {/* Dynamic Multicolored Ambient Glow */}
               <div 
-                className="absolute -inset-3 rounded-full blur-xl opacity-50 group-hover:opacity-90 transition-opacity duration-700 pointer-events-none"
+                className="absolute -inset-4 rounded-3xl blur-2xl opacity-40 group-hover:opacity-80 transition-opacity duration-700 pointer-events-none"
                 style={{
-                  background: 'radial-gradient(circle, rgba(220, 38, 38, 0.6) 0%, rgba(198, 255, 0, 0.35) 45%, transparent 75%)',
+                  background: 'radial-gradient(ellipse at center, rgba(220, 38, 38, 0.5) 0%, rgba(198, 255, 0, 0.3) 45%, transparent 70%)',
                 }}
               />
               
-              {/* Luxury Haute Couture Circular Ring Bezel */}
               <div 
-                className="relative w-24 h-24 sm:w-28 sm:h-28 rounded-full p-[2px] shadow-2xl transition-all duration-700 group-hover:scale-105"
+                className="relative px-6 py-3.5 sm:px-8 sm:py-4 rounded-2xl transition-all duration-500 group-hover:scale-105"
                 style={{
-                  background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.65) 0%, rgba(198, 255, 0, 0.45) 45%, rgba(220, 38, 38, 0.65) 100%)',
-                  boxShadow: '0 0 40px rgba(0,0,0,0.9), 0 0 25px rgba(198,255,0,0.2)',
+                  backgroundColor: 'rgba(0, 0, 0, 0.65)',
+                  border: '1px solid rgba(255, 255, 255, 0.14)',
+                  boxShadow: '0 20px 40px -15px rgba(0,0,0,0.9), 0 0 25px rgba(198,255,0,0.1)',
+                  backdropFilter: 'blur(12px)',
                 }}
               >
-                <div className="w-full h-full rounded-full bg-black overflow-hidden flex items-center justify-center p-1">
-                  <img
-                    src="/logo.png"
-                    alt="SKYRA CREATIONS Official Haute Couture Emblem"
-                    width={112}
-                    height={112}
-                    className="w-full h-full object-cover rounded-full scale-[1.08] group-hover:scale-[1.14] transition-transform duration-700"
-                  />
-                </div>
+                <img
+                  src="/logo-clean.png"
+                  alt="SKYRA CREATIONS Official Logo"
+                  className="h-16 sm:h-20 md:h-24 w-auto object-contain transition-transform duration-500"
+                  style={{
+                    filter: 'drop-shadow(0 4px 16px rgba(0,0,0,0.95)) contrast(1.08)',
+                  }}
+                />
               </div>
             </div>
           </motion.div>

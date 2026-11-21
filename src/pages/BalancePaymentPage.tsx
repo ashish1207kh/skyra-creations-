@@ -304,26 +304,24 @@ export default function BalancePaymentPage({ initialRegId, setActiveTab, setLook
 
           <div className="shrink-0 relative group self-start sm:self-center select-none">
             <div 
-              className="absolute -inset-2 rounded-full blur-xl opacity-50 pointer-events-none"
+              className="absolute -inset-2 rounded-2xl blur-xl opacity-45 pointer-events-none"
               style={{
-                background: 'radial-gradient(circle, rgba(220, 38, 38, 0.5) 0%, rgba(198, 255, 0, 0.35) 45%, transparent 75%)',
+                background: 'radial-gradient(ellipse at center, rgba(220, 38, 38, 0.45) 0%, rgba(198, 255, 0, 0.25) 50%, transparent 70%)',
               }}
             />
             <div 
-              className="relative w-24 h-24 sm:w-28 sm:h-28 rounded-full p-[2px] shadow-2xl"
+              className="relative px-5 py-3 rounded-2xl shadow-2xl"
               style={{
-                background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.6) 0%, rgba(198, 255, 0, 0.4) 40%, rgba(220, 38, 38, 0.6) 100%)',
+                backgroundColor: 'rgba(0, 0, 0, 0.7)',
+                border: '1px solid rgba(255, 255, 255, 0.12)',
               }}
             >
-              <div className="w-full h-full rounded-full bg-black overflow-hidden flex items-center justify-center p-1">
-                <img 
-                  src="/logo.png" 
-                  alt="SKYRA CREATIONS — Balance Payment Portal Emblem" 
-                  width={112}
-                  height={112}
-                  className="w-full h-full object-cover rounded-full scale-[1.08]" 
-                />
-              </div>
+              <img 
+                src="/logo-clean.png" 
+                alt="SKYRA CREATIONS — Balance Payment Portal Emblem" 
+                className="h-14 sm:h-16 w-auto object-contain"
+                style={{ filter: 'drop-shadow(0 2px 10px rgba(0,0,0,0.85))' }}
+              />
             </div>
           </div>
         </div>

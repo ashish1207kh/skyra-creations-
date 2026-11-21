@@ -310,16 +310,13 @@ export default function StatusPassPage({ initialRegId, setActiveTab, setBalanceR
               {/* Pass Card Header */}
               <div className="flex items-center justify-between border-b border-amber-500/20 pb-5 mb-6">
                 <div className="flex items-center space-x-4">
-                  <div className="relative w-14 h-14 sm:w-16 sm:h-16 rounded-full p-[1.5px] bg-gradient-to-tr from-white/60 via-amber-400/60 to-red-600/60 shadow-xl shrink-0">
-                    <div className="w-full h-full rounded-full bg-black overflow-hidden flex items-center justify-center p-0.5">
-                      <img 
-                        src="/logo.png" 
-                        alt="SKYRA CREATIONS — Digital Entry Pass Official Seal" 
-                        width={64}
-                        height={64}
-                        className="w-full h-full object-cover rounded-full scale-[1.08]" 
-                      />
-                    </div>
+                  <div className="relative px-3 py-1.5 rounded-xl bg-black/80 border border-amber-500/30 shadow-xl shrink-0">
+                    <img 
+                      src="/logo-clean.png" 
+                      alt="SKYRA CREATIONS — Digital Entry Pass Official Seal" 
+                      className="h-10 sm:h-12 w-auto object-contain" 
+                      style={{ filter: 'drop-shadow(0 2px 8px rgba(0,0,0,0.85))' }}
+                    />
                   </div>
                   <div>
                     <h3 className="font-serif font-bold text-white text-xl tracking-wider">

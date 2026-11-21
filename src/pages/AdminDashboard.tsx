@@ -186,12 +186,10 @@ export default function AdminDashboard() {
     return (
       <div className="max-w-md mx-auto py-16 px-4">
         <div className="bg-[#12151e] border border-amber-500/30 rounded-3xl p-8 shadow-2xl">
-          <div className="relative w-20 h-20 mx-auto mb-4 group select-none">
-            <div className="absolute -inset-2 rounded-full blur-lg opacity-60 bg-gradient-to-r from-red-600/40 via-amber-500/30 to-white/20 pointer-events-none" />
-            <div className="relative w-full h-full rounded-full p-[2px] bg-gradient-to-tr from-white/50 via-amber-400/40 to-red-600/50 shadow-2xl">
-              <div className="w-full h-full rounded-full bg-black overflow-hidden flex items-center justify-center p-1">
-                <img src="/logo.png" alt="Skyra Creations Logo" className="w-full h-full object-cover rounded-full scale-[1.08]" />
-              </div>
+          <div className="relative mx-auto mb-5 group select-none flex justify-center">
+            <div className="absolute -inset-2 rounded-2xl blur-lg opacity-40 bg-gradient-to-r from-red-600/40 via-amber-500/30 to-white/20 pointer-events-none" />
+            <div className="relative px-5 py-3 rounded-2xl bg-black/80 border border-white/15 shadow-2xl">
+              <img src="/logo-clean.png" alt="Skyra Creations Logo" className="h-14 sm:h-16 w-auto object-contain" />
             </div>
           </div>
           <h2 className="font-serif text-2xl font-bold text-white text-center mb-1">
@@ -269,10 +267,8 @@ export default function AdminDashboard() {
       {/* 6. Dashboard Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-6 mb-6 border-b border-zinc-800 gap-4">
         <div className="flex items-center space-x-4">
-          <div className="relative w-14 h-14 rounded-full p-[1.5px] bg-gradient-to-tr from-white/50 via-amber-400/40 to-red-600/50 shadow-xl shrink-0 select-none">
-            <div className="w-full h-full rounded-full bg-black overflow-hidden flex items-center justify-center p-0.5">
-              <img src="/logo.png" alt="Skyra Creations Logo" className="w-full h-full object-cover rounded-full scale-[1.08]" />
-            </div>
+          <div className="relative px-3 py-1.5 rounded-xl bg-black/80 border border-white/15 shadow-lg shrink-0 select-none">
+            <img src="/logo-clean.png" alt="Skyra Creations Logo" className="h-10 sm:h-12 w-auto object-contain" />
           </div>
           <div>
             <div className="flex items-center space-x-2">
