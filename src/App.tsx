@@ -17,6 +17,7 @@ import { updatePageSeo } from './lib/seo';
 import { motion, useScroll, useSpring, AnimatePresence } from 'motion/react';
 import { Globe, Phone, ShieldCheck, X } from 'lucide-react';
 import InstagramIcon from './components/InstagramIcon';
+import LuxuryPageLoader from './components/LuxuryPageLoader';
 
 function getTabFromPath(pathname: string): string {
   const p = pathname.toLowerCase().replace(/\/+$/, '');
@@ -62,6 +63,7 @@ export default function App() {
   const [paymentMode, setPaymentMode] = useState<'balance' | 'register'>('register');
   const [showTermsModal, setShowTermsModal] = useState<boolean>(false);
   const [showPrivacyModal, setShowPrivacyModal] = useState<boolean>(false);
+  const [isNavigating, setIsNavigating] = useState(false);
 
   // Haute Couture Global Scroll Progress
   const { scrollYProgress } = useScroll();
@@ -72,6 +74,8 @@ export default function App() {
   });
 
   const setActiveTab = (tab: string) => {
+    setIsNavigating(true);
+    setTimeout(() => setIsNavigating(false), 380);
     setActiveTabState(tab);
     updatePageSeo(tab);
     if (typeof window !== 'undefined') {
@@ -101,6 +105,26 @@ export default function App() {
       className="min-h-screen flex flex-col transition-colors relative"
       style={{ backgroundColor: 'var(--bg-primary)', color: 'var(--text-primary)' }}
     >
+        {/* Luxury Haute Couture First-Load Preloader */}
+        <LuxuryPageLoader durationMs={850} />
+
+        {/* High-Speed Route Switcher Laser Loading Beam */}
+        <AnimatePresence>
+          {isNavigating && (
+            <motion.div
+              initial={{ scaleX: 0, opacity: 1 }}
+              animate={{ scaleX: 1, opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
+              className="fixed top-0 left-0 right-0 h-[3px] z-[9999] origin-left pointer-events-none"
+              style={{
+                background: 'linear-gradient(90deg, #C6FF00 0%, #FFFFFF 80%, #C6FF00 100%)',
+                boxShadow: '0 0 14px #C6FF00, 0 0 4px #FFFFFF',
+              }}
+            />
+          )}
+        </AnimatePresence>
+
         {/* Precision Haute Couture Global Scroll Progress Beam */}
         <motion.div
           className="fixed top-0 left-0 right-0 h-[2.5px] z-50 origin-left pointer-events-none"
@@ -119,10 +143,10 @@ export default function App() {
           <AnimatePresence mode="wait">
             <motion.div
               key={activeTab}
-              initial={{ opacity: 0, y: 16, scale: 0.99, filter: 'blur(4px)' }}
+              initial={{ opacity: 0, y: 14, scale: 0.99, filter: 'blur(4px)' }}
               animate={{ opacity: 1, y: 0, scale: 1, filter: 'blur(0px)' }}
-              exit={{ opacity: 0, y: -16, scale: 0.99, filter: 'blur(4px)' }}
-              transition={{ duration: 0.42, ease: [0.22, 1, 0.36, 1] }}
+              exit={{ opacity: 0, y: -14, scale: 0.99, filter: 'blur(4px)' }}
+              transition={{ duration: 0.38, ease: [0.16, 1, 0.3, 1] }}
             >
               {activeTab === 'home' && (
                 <HomePage 

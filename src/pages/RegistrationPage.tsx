@@ -25,7 +25,8 @@ import {
   Award,
   Clock,
   Sparkle,
-  HelpCircle
+  HelpCircle,
+  RefreshCw
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { getPaymentInfo, registerContestant } from '../lib/api';
@@ -93,6 +94,7 @@ export default function RegistrationPage({ setActiveTab, setLookupRegId, onProce
   const [screenshotFile, setScreenshotFile] = useState<File | null>(null);
   const [screenshotPreview, setScreenshotPreview] = useState<string | null>(null);
   const [isCaptchaVerified, setIsCaptchaVerified] = useState(false);
+  const [stepDirection, setStepDirection] = useState<'forward' | 'backward'>('forward');
 
   useEffect(() => {
     getPaymentInfo()
@@ -214,6 +216,7 @@ export default function RegistrationPage({ setActiveTab, setLookupRegId, onProce
       return;
     }
 
+    setStepDirection('forward');
     setCurrentStep(2);
     scrollToTop();
   };
@@ -228,6 +231,7 @@ export default function RegistrationPage({ setActiveTab, setLookupRegId, onProce
       return;
     }
 
+    setStepDirection('forward');
     setCurrentStep(3);
     scrollToTop();
   };
@@ -246,6 +250,7 @@ export default function RegistrationPage({ setActiveTab, setLookupRegId, onProce
       return;
     }
 
+    setStepDirection('forward');
     setCurrentStep(4);
     scrollToTop();
   };
@@ -333,11 +338,29 @@ export default function RegistrationPage({ setActiveTab, setLookupRegId, onProce
         terms_version: paymentInfo?.terms_version || '2026.2',
       });
 
+      // Multi-wave haute couture celebration confetti burst
       confetti({
-        particleCount: 120,
-        spread: 80,
+        particleCount: 90,
+        spread: 75,
         origin: { y: 0.6 },
+        colors: ['#C6FF00', '#D8FF33', '#FFD700', '#FFFFFF', '#38BDF8'],
       });
+      setTimeout(() => {
+        confetti({
+          particleCount: 50,
+          angle: 60,
+          spread: 60,
+          origin: { x: 0, y: 0.65 },
+          colors: ['#C6FF00', '#FFD700', '#FFFFFF'],
+        });
+        confetti({
+          particleCount: 50,
+          angle: 120,
+          spread: 60,
+          origin: { x: 1, y: 0.65 },
+          colors: ['#C6FF00', '#FFD700', '#FFFFFF'],
+        });
+      }, 250);
 
       setSuccessResult({
         reg_id: regResponse.reg_id,
@@ -488,6 +511,7 @@ export default function RegistrationPage({ setActiveTab, setLookupRegId, onProce
                 disabled={currentStep < s.number}
                 onClick={() => {
                   if (currentStep > s.number) {
+                    setStepDirection(s.number < currentStep ? 'backward' : 'forward');
                     setCurrentStep(s.number);
                     setErrorMsg('');
                     scrollToTop();
@@ -639,10 +663,10 @@ export default function RegistrationPage({ setActiveTab, setLookupRegId, onProce
             {currentStep === 1 && (
               <motion.div
                 key="step-1"
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -20 }}
-                transition={{ duration: 0.35 }}
+                initial={{ opacity: 0, x: stepDirection === 'forward' ? 36 : -36, filter: 'blur(3px)' }}
+                animate={{ opacity: 1, x: 0, filter: 'blur(0px)' }}
+                exit={{ opacity: 0, x: stepDirection === 'forward' ? -36 : 36, filter: 'blur(3px)' }}
+                transition={{ duration: 0.38, ease: [0.16, 1, 0.3, 1] }}
                 className="bg-[#12141a] border border-white/10 rounded-sm p-6 sm:p-10 shadow-2xl space-y-6"
               >
                 <div className="border-b border-white/10 pb-5">
@@ -815,10 +839,10 @@ export default function RegistrationPage({ setActiveTab, setLookupRegId, onProce
             {currentStep === 2 && (
               <motion.div
                 key="step-2"
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -20 }}
-                transition={{ duration: 0.35 }}
+                initial={{ opacity: 0, x: stepDirection === 'forward' ? 36 : -36, filter: 'blur(3px)' }}
+                animate={{ opacity: 1, x: 0, filter: 'blur(0px)' }}
+                exit={{ opacity: 0, x: stepDirection === 'forward' ? -36 : 36, filter: 'blur(3px)' }}
+                transition={{ duration: 0.38, ease: [0.16, 1, 0.3, 1] }}
                 className="bg-[#12141a] border border-white/10 rounded-sm p-6 sm:p-10 shadow-2xl space-y-6"
               >
                 <div className="border-b border-white/10 pb-5">
@@ -847,23 +871,28 @@ export default function RegistrationPage({ setActiveTab, setLookupRegId, onProce
                           <div
                             key={opt.id}
                             onClick={() => setCategory(opt.id)}
-                            className={`p-4 rounded-sm border cursor-pointer transition-all ${
+                            className={`p-4 rounded-sm border cursor-pointer transition-all relative overflow-hidden group select-none active:scale-[0.98] ${
                               isSelected
-                                ? 'bg-[#C6FF00]/10 border-[#C6FF00] text-white shadow-lg shadow-[#C6FF00]/10'
-                                : 'bg-[#080808] border-white/15 text-zinc-300 hover:border-white/30'
+                                ? 'bg-[#C6FF00]/10 border-[#C6FF00] text-white shadow-xl shadow-[#C6FF00]/15'
+                                : 'bg-[#080808] border-white/15 text-zinc-300 hover:border-white/35 hover:bg-white/[0.02]'
                             }`}
                           >
+                            {isSelected && (
+                              <div className="absolute top-0 right-0 w-8 h-8 pointer-events-none overflow-hidden">
+                                <div className="absolute transform rotate-45 bg-[#C6FF00] text-black font-bold text-[8px] py-0.5 right-[-18px] top-[4px] w-[50px] text-center" />
+                              </div>
+                            )}
                             <div className="flex items-center justify-between">
-                              <span className="font-editorial text-sm font-bold text-white">
-                                {opt.label}
+                              <span className="font-editorial text-sm font-bold text-white flex items-center space-x-1.5">
+                                <span>{opt.label}</span>
                               </span>
-                              <div className={`w-4 h-4 rounded-full border flex items-center justify-center ${
-                                isSelected ? 'border-[#C6FF00] bg-[#C6FF00]' : 'border-zinc-600'
+                              <div className={`w-4 h-4 rounded-full border flex items-center justify-center transition-all ${
+                                isSelected ? 'border-[#C6FF00] bg-[#C6FF00] scale-110 shadow-[0_0_8px_#C6FF00]' : 'border-zinc-600'
                               }`}>
-                                {isSelected && <div className="w-1.5 h-1.5 rounded-full bg-black" />}
+                                {isSelected && <Check className="w-3 h-3 text-black stroke-[3]" />}
                               </div>
                             </div>
-                            <p className="text-xs text-zinc-400 mt-1 font-light leading-relaxed">
+                            <p className="text-xs text-zinc-400 mt-1.5 font-light leading-relaxed">
                               {opt.desc}
                             </p>
                           </div>
@@ -930,24 +959,28 @@ export default function RegistrationPage({ setActiveTab, setLookupRegId, onProce
                     <div className="border border-dashed border-white/20 hover:border-[#C6FF00]/50 rounded-sm p-6 text-center bg-[#080808] transition-colors">
                       {modelPhotoPreview ? (
                         <div className="space-y-4">
-                          <div className="relative inline-block">
+                          <div className="relative inline-block overflow-hidden rounded-sm border border-[#C6FF00]/40 shadow-2xl group">
                             <img
                               src={modelPhotoPreview}
                               alt="Model Preview"
-                              className="max-h-64 max-w-xs mx-auto rounded-sm border border-white/20 object-cover shadow-2xl"
+                              className="max-h-64 max-w-xs mx-auto object-cover"
                             />
+                            {/* Scanning Laser Beam */}
+                            <div className="absolute inset-x-0 h-1 bg-gradient-to-r from-transparent via-[#C6FF00] to-transparent shadow-[0_0_12px_#C6FF00] animate-scanline pointer-events-none" />
+                            
                             <button
                               type="button"
                               onClick={handleRemoveModelPhoto}
-                              className="absolute -top-2 -right-2 w-7 h-7 rounded-sm bg-red-600 hover:bg-red-500 text-white flex items-center justify-center shadow-lg transition-colors"
+                              className="absolute top-2 right-2 w-7 h-7 rounded-sm bg-red-600/90 hover:bg-red-600 text-white flex items-center justify-center shadow-lg transition-colors z-10"
                               title="Remove photo"
                             >
                               <X className="w-4 h-4" />
                             </button>
                           </div>
-                          <div className="text-xs text-[#BFC3C7] flex items-center justify-center space-x-2 font-mono">
-                            <CheckCircle2 className="w-4 h-4 text-emerald-400" />
-                            <span className="text-white">{modelPhotoFile?.name}</span>
+
+                          <div className="inline-flex items-center space-x-2 px-3 py-1.5 rounded-sm bg-emerald-950/60 border border-emerald-500/40 text-emerald-300 font-mono-editorial text-[10px] tracking-wider">
+                            <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+                            <span>PORTRAIT VERIFIED • READY FOR RUNWAY EVALUATION</span>
                           </div>
                           <div>
                             <label className="inline-flex items-center space-x-1.5 px-4 py-2 bg-white/10 hover:bg-white/20 text-white rounded-sm text-xs font-mono-editorial cursor-pointer border border-white/15">
@@ -991,6 +1024,7 @@ export default function RegistrationPage({ setActiveTab, setLookupRegId, onProce
                     <button
                       type="button"
                       onClick={() => {
+                        setStepDirection('backward');
                         setCurrentStep(1);
                         setErrorMsg('');
                         scrollToTop();
@@ -1019,10 +1053,10 @@ export default function RegistrationPage({ setActiveTab, setLookupRegId, onProce
             {currentStep === 3 && (
               <motion.div
                 key="step-3"
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -20 }}
-                transition={{ duration: 0.35 }}
+                initial={{ opacity: 0, x: stepDirection === 'forward' ? 36 : -36, filter: 'blur(3px)' }}
+                animate={{ opacity: 1, x: 0, filter: 'blur(0px)' }}
+                exit={{ opacity: 0, x: stepDirection === 'forward' ? -36 : 36, filter: 'blur(3px)' }}
+                transition={{ duration: 0.38, ease: [0.16, 1, 0.3, 1] }}
                 className="bg-[#12141a] border border-white/10 rounded-sm p-6 sm:p-10 shadow-2xl space-y-6"
               >
                 <div className="border-b border-white/10 pb-5">
@@ -1167,6 +1201,7 @@ export default function RegistrationPage({ setActiveTab, setLookupRegId, onProce
                     <button
                       type="button"
                       onClick={() => {
+                        setStepDirection('backward');
                         setCurrentStep(2);
                         setErrorMsg('');
                         scrollToTop();
@@ -1195,10 +1230,10 @@ export default function RegistrationPage({ setActiveTab, setLookupRegId, onProce
             {currentStep === 4 && (
               <motion.div
                 key="step-4"
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -20 }}
-                transition={{ duration: 0.35 }}
+                initial={{ opacity: 0, x: stepDirection === 'forward' ? 36 : -36, filter: 'blur(3px)' }}
+                animate={{ opacity: 1, x: 0, filter: 'blur(0px)' }}
+                exit={{ opacity: 0, x: stepDirection === 'forward' ? -36 : 36, filter: 'blur(3px)' }}
+                transition={{ duration: 0.38, ease: [0.16, 1, 0.3, 1] }}
                 className="bg-[#12141a] border border-white/10 rounded-sm p-6 sm:p-10 shadow-2xl space-y-6"
               >
                 <div className="border-b border-white/10 pb-5">
@@ -1344,18 +1379,36 @@ export default function RegistrationPage({ setActiveTab, setLookupRegId, onProce
 
                   {/* Upload Progress Indicator */}
                   {loading && (
-                    <div className="p-4 rounded-sm bg-black/60 border border-white/15 space-y-2">
-                      <div className="flex justify-between text-xs font-mono">
-                        <span className="text-zinc-300">{uploadStatusText}</span>
-                        <span className="text-[#C6FF00] font-bold">{uploadPercent}%</span>
+                    <motion.div
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      className="p-5 rounded-sm bg-[#080808] border border-[#C6FF00]/40 space-y-3 shadow-2xl relative overflow-hidden"
+                    >
+                      {/* Laser beam scan */}
+                      <div className="absolute top-0 left-0 right-0 h-[1.5px] bg-gradient-to-r from-transparent via-[#C6FF00] to-transparent animate-laser pointer-events-none" />
+
+                      <div className="flex items-center justify-between text-xs font-mono">
+                        <div className="flex items-center space-x-2 text-white">
+                          <RefreshCw className="w-3.5 h-3.5 text-[#C6FF00] animate-spin" />
+                          <span className="font-mono-editorial text-[11px] text-zinc-300">{uploadStatusText}</span>
+                        </div>
+                        <span className="text-[#C6FF00] font-bold font-mono text-sm">{uploadPercent}%</span>
                       </div>
-                      <div className="w-full h-1.5 bg-white/10 rounded-full overflow-hidden">
-                        <div
-                          className="h-full bg-[#C6FF00] transition-all duration-300"
+
+                      <div className="w-full h-2 bg-white/10 rounded-full overflow-hidden relative">
+                        <motion.div
+                          className="h-full bg-gradient-to-r from-[#99CC00] via-[#C6FF00] to-white relative rounded-full transition-all duration-300"
                           style={{ width: `${uploadPercent}%` }}
-                        />
+                        >
+                          <div className="absolute right-0 top-0 bottom-0 w-2 bg-white shadow-[0_0_8px_#C6FF00]" />
+                        </motion.div>
                       </div>
-                    </div>
+
+                      <div className="flex justify-between text-[10px] font-mono-editorial text-zinc-500 pt-0.5">
+                        <span>STAGE 04 // CRYPTOGRAPHIC VAULT</span>
+                        <span>DO NOT REFRESH</span>
+                      </div>
+                    </motion.div>
                   )}
 
                   {/* Actions */}
@@ -1364,6 +1417,7 @@ export default function RegistrationPage({ setActiveTab, setLookupRegId, onProce
                       type="button"
                       disabled={loading}
                       onClick={() => {
+                        setStepDirection('backward');
                         setCurrentStep(3);
                         setErrorMsg('');
                         scrollToTop();
