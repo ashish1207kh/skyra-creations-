@@ -13,7 +13,6 @@ import StatusPassPage from './pages/StatusPassPage';
 import AdminDashboard from './pages/AdminDashboard';
 import NotFoundPage from './pages/NotFoundPage';
 import { updatePageSeo } from './lib/seo';
-import { ThemeProvider } from './lib/theme';
 import { Globe, Phone, ShieldCheck, X } from 'lucide-react';
 import InstagramIcon from './components/InstagramIcon';
 
@@ -84,11 +83,10 @@ export default function App() {
   }, []);
 
   return (
-    <ThemeProvider>
-      <div 
-        className="min-h-screen flex flex-col transition-colors"
-        style={{ backgroundColor: 'var(--bg-primary)', color: 'var(--text-primary)' }}
-      >
+    <div 
+      className="min-h-screen flex flex-col transition-colors"
+      style={{ backgroundColor: 'var(--bg-primary)', color: 'var(--text-primary)' }}
+    >
         {/* Navigation Header */}
         <Navbar activeTab={activeTab} setActiveTab={setActiveTab} />
 
@@ -391,6 +389,5 @@ export default function App() {
           </div>
         )}
       </div>
-    </ThemeProvider>
   );
 }
