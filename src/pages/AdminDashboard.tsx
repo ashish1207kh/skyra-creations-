@@ -126,8 +126,8 @@ export default function AdminDashboard() {
         getStorageMetrics().catch(() => null),
       ]);
       setStats(statsData);
-      setPayments(paymentsData);
-      setParticipants(participantsData);
+      setPayments(Array.isArray(paymentsData) ? paymentsData : (paymentsData as any)?.items || []);
+      setParticipants(Array.isArray(participantsData) ? participantsData : (participantsData as any)?.items || []);
       if (storageData) {
         setStorageMetrics(storageData);
       }

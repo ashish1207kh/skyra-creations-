@@ -167,6 +167,18 @@ export default defineConfig({
   server: {
     port: 5173,
     host: true,
+    watch: {
+      ignored: [
+        '**/public/videos/**',
+        '**/public/images/**',
+        '**/*.mp4',
+        '**/*.jpg',
+        '**/*.png',
+        '**/*.avif',
+        '**/.git/**',
+        '**/dist/**',
+      ],
+    },
   },
   esbuild: {
     drop: ['console', 'debugger'],
