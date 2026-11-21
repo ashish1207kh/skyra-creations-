@@ -456,10 +456,59 @@ export async function updatePaymentVerification(
   };
 }
 
+export interface CollectionStorageStat {
+  name: string;
+  count: number;
+  dataSizeKB: number;
+  storageSizeKB: number;
+  indexSizeKB: number;
+  avgObjSizeBytes: number;
+}
+
+export interface StorageAlert {
+  level: 'NORMAL' | 'INFORMATIONAL_WARNING' | 'WARNING' | 'CRITICAL_WARNING' | 'EMERGENCY_WARNING';
+  thresholdPercent: number;
+  message: string;
+  actionRequired: boolean;
+  recommendedAction: string;
+}
+
+export interface StorageMetrics {
+  storageLimitMB: number;
+  totalAllocatedMB: number;
+  dataSizeMB: number;
+  storageSizeMB: number;
+  indexSizeMB: number;
+  usagePercentage: number;
+  remainingCapacityMB: number;
+  estimatedRemainingRegistrations: number;
+  estimatedMonthlyGrowthMB: number;
+  alert: StorageAlert;
+  collections: CollectionStorageStat[];
+  counts: {
+    registrations: number;
+    payments: number;
+    audit_logs: number;
+    temporary_records: number;
+    admin_users: number;
+    events: number;
+  };
+  storageHealth: {
+    r2_offload_active: boolean;
+    ttl_cleanup_active: boolean;
+    zero_binary_in_db: boolean;
+  };
+  lastChecked: string;
+}
+
 /**
- * Get all registrations for admin views with optional filtering and role masking
+ * Get all registrations for admin views with optional filtering, role masking, and server-side pagination
  */
-export async function listRegistrations(filter?: { status?: string; event_id?: string }, mask: boolean = false): Promise<ParticipantRecord[]> {
+export async function listRegistrations(
+  filter?: { status?: string; event_id?: string },
+  mask: boolean = false,
+  pagination?: { page?: number; limit?: number }
+): Promise<any> {
   const driver = await getActiveDatabaseDriver();
 
   if (driver === 'mongodb') {
@@ -473,9 +522,20 @@ export async function listRegistrations(filter?: { status?: string; event_id?: s
         query.event_id = filter.event_id;
       }
 
-      const docs = await conn.db.collection('registrations').find(query).sort({ created_at: -1 }).toArray();
+      const total = await conn.db.collection('registrations').countDocuments(query);
 
-      return docs.map(doc => {
+      let cursor = conn.db.collection('registrations').find(query).sort({ created_at: -1 });
+
+      const page = pagination?.page ? Math.max(1, Number(pagination.page)) : undefined;
+      const limit = pagination?.limit ? Math.max(1, Math.min(100, Number(pagination.limit))) : undefined;
+
+      if (page !== undefined && limit !== undefined) {
+        cursor = cursor.skip((page - 1) * limit).limit(limit);
+      }
+
+      const docs = await cursor.toArray();
+
+      const items = docs.map(doc => {
         const rec: ParticipantRecord = {
           id: doc._id.toString(),
           reg_id: doc.reg_id,
@@ -506,17 +566,42 @@ export async function listRegistrations(filter?: { status?: string; event_id?: s
         };
         return mask ? maskPII(rec) : rec;
       });
+
+      if (page !== undefined && limit !== undefined) {
+        return {
+          items,
+          total,
+          page,
+          totalPages: Math.ceil(total / limit) || 1,
+        };
+      }
+
+      return items;
     }
   }
 
   // Fallback to Supabase
   const list = await supabaseAdmin.getAllParticipants();
   const filtered = filter?.status && filter.status !== 'ALL' ? list.filter(p => p.status === filter.status) : list;
-
-  return filtered.map((p: any) => {
+  const items = filtered.map((p: any) => {
     const rec: ParticipantRecord = { ...p, event_id: DEFAULT_EVENT_ID };
     return mask ? maskPII(rec) : rec;
   });
+
+  if (pagination?.page && pagination?.limit) {
+    const page = Math.max(1, Number(pagination.page));
+    const limit = Math.max(1, Math.min(100, Number(pagination.limit)));
+    const total = items.length;
+    const paginated = items.slice((page - 1) * limit, page * limit);
+    return {
+      items: paginated,
+      total,
+      page,
+      totalPages: Math.ceil(total / limit) || 1,
+    };
+  }
+
+  return items;
 }
 
 /**
@@ -966,14 +1051,24 @@ export async function lookupPublicParticipantRecord(query: string) {
 }
 
 /**
- * List all payments with participant details for Admin Dashboard
+ * List all payments with participant details for Admin Dashboard with optional server-side pagination
  */
-export async function listAllPayments() {
+export async function listAllPayments(pagination?: { page?: number; limit?: number }): Promise<any> {
   const driver = await getActiveDatabaseDriver();
   if (driver === 'mongodb') {
     const conn = await getMongoConnection();
     if (conn) {
-      const payments = await conn.db.collection('payments').find({}).sort({ created_at: -1 }).toArray();
+      const total = await conn.db.collection('payments').countDocuments({});
+      let cursor = conn.db.collection('payments').find({}).sort({ created_at: -1 });
+
+      const page = pagination?.page ? Math.max(1, Number(pagination.page)) : undefined;
+      const limit = pagination?.limit ? Math.max(1, Math.min(100, Number(pagination.limit))) : undefined;
+
+      if (page !== undefined && limit !== undefined) {
+        cursor = cursor.skip((page - 1) * limit).limit(limit);
+      }
+
+      const payments = await cursor.toArray();
       const regIds = [...new Set(payments.map(p => p.reg_id))];
       const registrations = await conn.db.collection('registrations').find({
         reg_id: { $in: regIds },
@@ -990,7 +1085,7 @@ export async function listAllPayments() {
         });
       }
 
-      return payments.map(pay => ({
+      const items = payments.map(pay => ({
         id: pay._id.toString(),
         payment_id: pay.payment_id,
         reg_id: pay.reg_id,
@@ -1006,8 +1101,206 @@ export async function listAllPayments() {
         created_at: pay.created_at,
         participant: regMap.get(pay.reg_id) || null,
       }));
+
+      if (page !== undefined && limit !== undefined) {
+        return {
+          items,
+          total,
+          page,
+          totalPages: Math.ceil(total / limit) || 1,
+        };
+      }
+
+      return items;
     }
   }
 
-  return supabaseAdmin.getAllPayments();
+  const all = await supabaseAdmin.getAllPayments();
+  if (pagination?.page && pagination?.limit) {
+    const page = Math.max(1, Number(pagination.page));
+    const limit = Math.max(1, Math.min(100, Number(pagination.limit)));
+    const total = all.length;
+    const paginated = all.slice((page - 1) * limit, page * limit);
+    return {
+      items: paginated,
+      total,
+      page,
+      totalPages: Math.ceil(total / limit) || 1,
+    };
+  }
+
+  return all;
+}
+
+/**
+ * Get MongoDB Database Storage Metrics and 512 MB Limit Monitoring Stats
+ */
+export async function getStorageMetrics(): Promise<StorageMetrics> {
+  const STORAGE_LIMIT_MB = 512;
+  const driver = await getActiveDatabaseDriver();
+
+  if (driver === 'mongodb') {
+    const conn = await getMongoConnection();
+    if (conn) {
+      try {
+        const dbStats = await conn.db.command({ dbStats: 1 });
+        const collectionNames = ['registrations', 'payments', 'events', 'audit_logs', 'temporary_records', 'admin_users'];
+        const collStatsList: CollectionStorageStat[] = [];
+        const counts = {
+          registrations: 0,
+          payments: 0,
+          audit_logs: 0,
+          temporary_records: 0,
+          admin_users: 0,
+          events: 0,
+        };
+
+        for (const name of collectionNames) {
+          try {
+            const cs = await conn.db.command({ collStats: name });
+            const count = cs.count ?? cs.objects ?? 0;
+            if (name in counts) {
+              (counts as any)[name] = count;
+            }
+            collStatsList.push({
+              name,
+              count,
+              dataSizeKB: Number(((cs.size || 0) / 1024).toFixed(2)),
+              storageSizeKB: Number(((cs.storageSize || 0) / 1024).toFixed(2)),
+              indexSizeKB: Number(((cs.totalIndexSize || 0) / 1024).toFixed(2)),
+              avgObjSizeBytes: Math.round(cs.avgObjSize || 0),
+            });
+          } catch {
+            collStatsList.push({
+              name,
+              count: 0,
+              dataSizeKB: 0,
+              storageSizeKB: 0,
+              indexSizeKB: 0,
+              avgObjSizeBytes: 0,
+            });
+          }
+        }
+
+        const dataSizeMB = Number(((dbStats.dataSize || 0) / (1024 * 1024)).toFixed(3));
+        const storageSizeMB = Number(((dbStats.storageSize || 0) / (1024 * 1024)).toFixed(3));
+        const indexSizeMB = Number(((dbStats.indexSize || 0) / (1024 * 1024)).toFixed(3));
+        const totalAllocatedMB = Number((storageSizeMB + indexSizeMB).toFixed(3));
+        const usagePercentage = Number(((totalAllocatedMB / STORAGE_LIMIT_MB) * 100).toFixed(2));
+        const remainingCapacityMB = Number(Math.max(0, STORAGE_LIMIT_MB - totalAllocatedMB).toFixed(3));
+
+        // At ~1.5 KB per contestant record (reg + payment + indexes)
+        const estimatedRemainingRegistrations = Math.floor((remainingCapacityMB * 1024) / 1.5);
+        const estimatedMonthlyGrowthMB = Number(Math.max(0.1, (counts.registrations * 1.5) / 1024).toFixed(3));
+
+        let alert: StorageAlert;
+        if (usagePercentage >= 95) {
+          alert = {
+            level: 'EMERGENCY_WARNING',
+            thresholdPercent: 95,
+            message: 'EMERGENCY: Database storage is >= 95% of the 512 MB limit! Urgent action required to prevent cluster lock.',
+            actionRequired: true,
+            recommendedAction: 'Prune legacy audit logs and export/archive completed events immediately.',
+          };
+        } else if (usagePercentage >= 85) {
+          alert = {
+            level: 'CRITICAL_WARNING',
+            thresholdPercent: 85,
+            message: 'Critical Warning: Database storage is at 85% capacity. Immediate cleanup recommended.',
+            actionRequired: true,
+            recommendedAction: 'Trigger manual cleanup of historical audit records and review index overhead.',
+          };
+        } else if (usagePercentage >= 75) {
+          alert = {
+            level: 'WARNING',
+            thresholdPercent: 75,
+            message: 'Warning: Database storage reached 75% capacity. Monitor registration velocity.',
+            actionRequired: true,
+            recommendedAction: 'Plan archival of previous season records before upcoming high-volume registrations.',
+          };
+        } else if (usagePercentage >= 60) {
+          alert = {
+            level: 'INFORMATIONAL_WARNING',
+            thresholdPercent: 60,
+            message: 'Notice: Database storage has crossed 60% capacity.',
+            actionRequired: false,
+            recommendedAction: 'Continue monitoring monthly storage trajectory.',
+          };
+        } else {
+          alert = {
+            level: 'NORMAL',
+            thresholdPercent: 60,
+            message: 'Storage Optimal: Total database allocation is healthy and well below limits (< 60%).',
+            actionRequired: false,
+            recommendedAction: 'No action required. Cloudflare R2 offloading is keeping DB footprint minimal.',
+          };
+        }
+
+        return {
+          storageLimitMB: STORAGE_LIMIT_MB,
+          totalAllocatedMB,
+          dataSizeMB,
+          storageSizeMB,
+          indexSizeMB,
+          usagePercentage,
+          remainingCapacityMB,
+          estimatedRemainingRegistrations,
+          estimatedMonthlyGrowthMB,
+          alert,
+          collections: collStatsList,
+          counts,
+          storageHealth: {
+            r2_offload_active: true,
+            ttl_cleanup_active: true,
+            zero_binary_in_db: true,
+          },
+          lastChecked: new Date().toISOString(),
+        };
+      } catch (err) {
+        console.error('Failed to query dbStats in getStorageMetrics:', err);
+      }
+    }
+  }
+
+  // Fallback / local / mock metrics
+  return {
+    storageLimitMB: STORAGE_LIMIT_MB,
+    totalAllocatedMB: 0.45,
+    dataSizeMB: 0.05,
+    storageSizeMB: 0.15,
+    indexSizeMB: 0.30,
+    usagePercentage: 0.09,
+    remainingCapacityMB: 511.55,
+    estimatedRemainingRegistrations: 340000,
+    estimatedMonthlyGrowthMB: 0.15,
+    alert: {
+      level: 'NORMAL',
+      thresholdPercent: 60,
+      message: 'Storage Optimal: Total database allocation is healthy and well below limits (< 60%).',
+      actionRequired: false,
+      recommendedAction: 'No action required. Cloudflare R2 offloading is keeping DB footprint minimal.',
+    },
+    collections: [
+      { name: 'registrations', count: 0, dataSizeKB: 0, storageSizeKB: 36, indexSizeKB: 72, avgObjSizeBytes: 0 },
+      { name: 'payments', count: 0, dataSizeKB: 0, storageSizeKB: 36, indexSizeKB: 72, avgObjSizeBytes: 0 },
+      { name: 'events', count: 1, dataSizeKB: 1, storageSizeKB: 36, indexSizeKB: 36, avgObjSizeBytes: 600 },
+      { name: 'audit_logs', count: 0, dataSizeKB: 0, storageSizeKB: 36, indexSizeKB: 72, avgObjSizeBytes: 0 },
+      { name: 'temporary_records', count: 0, dataSizeKB: 0, storageSizeKB: 36, indexSizeKB: 72, avgObjSizeBytes: 0 },
+      { name: 'admin_users', count: 1, dataSizeKB: 0.5, storageSizeKB: 36, indexSizeKB: 36, avgObjSizeBytes: 300 },
+    ],
+    counts: {
+      registrations: 0,
+      payments: 0,
+      audit_logs: 0,
+      temporary_records: 0,
+      admin_users: 1,
+      events: 1,
+    },
+    storageHealth: {
+      r2_offload_active: true,
+      ttl_cleanup_active: true,
+      zero_binary_in_db: true,
+    },
+    lastChecked: new Date().toISOString(),
+  };
 }

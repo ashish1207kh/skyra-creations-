@@ -10,7 +10,8 @@ import {
   getDashboardStats, 
   listRegistrations, 
   listAllPayments, 
-  updatePaymentVerification 
+  updatePaymentVerification,
+  getStorageMetrics
 } from '../_lib/database.js';
 import { 
   isSupabaseConfigured, 
@@ -124,7 +125,10 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       return res.status(405).json({ detail: 'Method not allowed' });
     }
     try {
-      const participants = await listRegistrations();
+      const page = req.query.page ? Number(req.query.page) : undefined;
+      const limit = req.query.limit ? Number(req.query.limit) : undefined;
+      const pagination = page ? { page, limit: limit || 20 } : undefined;
+      const participants = await listRegistrations(undefined, false, pagination);
       return res.status(200).json(participants);
     } catch (err: any) {
       return res.status(500).json({ detail: err.message });
@@ -137,9 +141,32 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       return res.status(405).json({ detail: 'Method not allowed' });
     }
     try {
-      const rawPayments = await listAllPayments();
+      const page = req.query.page ? Number(req.query.page) : undefined;
+      const limit = req.query.limit ? Number(req.query.limit) : undefined;
+      const pagination = page ? { page, limit: limit || 20 } : undefined;
+      const rawRes = await listAllPayments(pagination);
+
+      // Handle paginated object { items, total, page, totalPages }
+      if (rawRes && Array.isArray(rawRes.items)) {
+        const paymentsWithUrls = await Promise.all(
+          rawRes.items.map(async (pay: any) => {
+            try {
+              const view_url = await generatePresignedViewUrl(pay.r2_object_key);
+              return { ...pay, view_url };
+            } catch {
+              return { ...pay, view_url: '/logo.png' };
+            }
+          })
+        );
+        return res.status(200).json({
+          ...rawRes,
+          items: paymentsWithUrls,
+        });
+      }
+
+      // Backward compatible array response
       const paymentsWithUrls = await Promise.all(
-        rawPayments.map(async (pay: any) => {
+        (rawRes || []).map(async (pay: any) => {
           try {
             const view_url = await generatePresignedViewUrl(pay.r2_object_key);
             return { ...pay, view_url };
@@ -149,6 +176,19 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         })
       );
       return res.status(200).json(paymentsWithUrls);
+    } catch (err: any) {
+      return res.status(500).json({ detail: err.message });
+    }
+  }
+
+  // 4.5. GET /api/admin/storage-stats (MongoDB 512 MB Storage Monitoring)
+  if (action === 'storage-stats') {
+    if (req.method !== 'GET') {
+      return res.status(405).json({ detail: 'Method not allowed' });
+    }
+    try {
+      const storageMetrics = await getStorageMetrics();
+      return res.status(200).json(storageMetrics);
     } catch (err: any) {
       return res.status(500).json({ detail: err.message });
     }
@@ -244,7 +284,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       const csvContent = rows
         .map((row) =>
           row
-            .map((cell) => {
+            .map((cell: any) => {
               const str = String(cell ?? '').replace(/"/g, '""');
               return `"${str}"`;
             })

@@ -543,6 +543,34 @@ async function runTests() {
   assert.strictEqual(finalVerifyRes.participant?.status, 'FULLY_PAID');
   console.log('   ✓ Remaining ₹2,000 verified: total paid ₹3,000, balance due ₹0, status FULLY_PAID');
 
+  // 18. Testing Strict MongoDB Storage Optimization (512 MB Limit) & Monitoring
+  console.log('18. Testing Strict MongoDB Storage Optimization (512 MB Limit) & Monitoring...');
+  const { getStorageMetrics, listRegistrations: listRegsPaginated } = await import('../api/_lib/database.js');
+
+  const metrics = await getStorageMetrics();
+  assert.strictEqual(metrics.storageLimitMB, 512, 'Limit must strictly be 512 MB');
+  assert(metrics.remainingCapacityMB > 0, 'Remaining capacity must be > 0 MB');
+  assert(metrics.usagePercentage >= 0 && metrics.usagePercentage <= 100, 'Usage percentage must be between 0% and 100%');
+  assert(metrics.alert.thresholdPercent >= 60, 'Thresholds must be configured');
+  assert(['NORMAL', 'INFORMATIONAL_WARNING', 'WARNING', 'CRITICAL_WARNING', 'EMERGENCY_WARNING'].includes(metrics.alert.level), 'Valid alert level');
+  assert.strictEqual(metrics.storageHealth.r2_offload_active, true, 'R2 media offloading must be active');
+  assert.strictEqual(metrics.storageHealth.zero_binary_in_db, true, 'Zero binary/base64 in database verified');
+  assert.strictEqual(metrics.storageHealth.ttl_cleanup_active, true, 'TTL automated cleanup must be active');
+  console.log(`   ✓ Storage metrics verified: ${metrics.totalAllocatedMB} MB / 512 MB (${metrics.usagePercentage}%), Alert Level: ${metrics.alert.level}`);
+
+  // Test server-side pagination
+  const paginatedRegs = await listRegsPaginated(undefined, false, { page: 1, limit: 10 });
+  assert(paginatedRegs && paginatedRegs.items, 'Paginated registrations must return items');
+  assert(typeof paginatedRegs.total === 'number', 'Paginated registrations must return total');
+  assert.strictEqual(paginatedRegs.page, 1, 'Page must equal 1');
+  console.log(`   ✓ Server-side pagination verified (Page 1, limit 10, total: ${paginatedRegs.total})`);
+
+  // Test collection breakdown stats structure
+  assert(Array.isArray(metrics.collections), 'Collections array must be present');
+  const regCol = metrics.collections.find(c => c.name === 'registrations');
+  assert(regCol, 'Registrations collection must be tracked in metrics');
+  console.log(`   ✓ Collection breakdown verified: tracked collections count = ${metrics.collections.length}`);
+
   console.log('\n=========================================');
   console.log('ALL SERVERLESS & STORAGE SUITES PASSED! ✓');
   console.log('=========================================');

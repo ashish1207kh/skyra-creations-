@@ -1,4 +1,4 @@
-import { Participant, Payment, PaymentInfo, AdminStats } from '../types/index';
+import { Participant, Payment, PaymentInfo, AdminStats, StorageMetrics } from '../types/index';
 
 const ADMIN_TOKEN_KEY = 'skyra_admin_session_token';
 
@@ -136,4 +136,8 @@ export function getZipDownloadUrl(keys?: string[]): string {
 export function getCsvExportUrl(): string {
   const token = getAdminToken();
   return token ? `/api/admin/export?token=${encodeURIComponent(token)}` : '/api/admin/export';
+}
+
+export async function getStorageMetrics(): Promise<StorageMetrics> {
+  return fetchJson<StorageMetrics>('/api/admin/storage-stats');
 }

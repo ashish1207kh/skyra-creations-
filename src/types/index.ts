@@ -94,3 +94,48 @@ export interface AuditLog {
   details?: Record<string, any>;
   created_at: string;
 }
+
+export interface CollectionStorageStat {
+  name: string;
+  count: number;
+  dataSizeKB: number;
+  storageSizeKB: number;
+  indexSizeKB: number;
+  avgObjSizeBytes: number;
+}
+
+export interface StorageAlert {
+  level: 'NORMAL' | 'INFORMATIONAL_WARNING' | 'WARNING' | 'CRITICAL_WARNING' | 'EMERGENCY_WARNING';
+  thresholdPercent: number;
+  message: string;
+  actionRequired: boolean;
+  recommendedAction: string;
+}
+
+export interface StorageMetrics {
+  storageLimitMB: number;
+  totalAllocatedMB: number;
+  dataSizeMB: number;
+  storageSizeMB: number;
+  indexSizeMB: number;
+  usagePercentage: number;
+  remainingCapacityMB: number;
+  estimatedRemainingRegistrations: number;
+  estimatedMonthlyGrowthMB: number;
+  alert: StorageAlert;
+  collections: CollectionStorageStat[];
+  counts: {
+    registrations: number;
+    payments: number;
+    audit_logs: number;
+    temporary_records: number;
+    admin_users: number;
+    events: number;
+  };
+  storageHealth: {
+    r2_offload_active: boolean;
+    ttl_cleanup_active: boolean;
+    zero_binary_in_db: boolean;
+  };
+  lastChecked: string;
+}
