@@ -19,6 +19,7 @@ export interface Payment {
   verified_at?: string | null;
   created_at: string;
   view_url?: string; // Signed GET URL generated for admin view
+  model_photo_url?: string | null; // Signed GET URL for model portrait photograph
 }
 
 export interface Participant {
@@ -36,6 +37,7 @@ export interface Participant {
   instagram?: string | null;
   experience?: string | null;
   model_photo_r2_key?: string | null;
+  model_photo_url?: string | null; // Signed GET URL for model portrait photograph
   terms_accepted?: boolean;
   terms_accepted_at?: string;
   terms_version?: string;

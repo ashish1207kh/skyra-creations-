@@ -681,14 +681,20 @@ export async function getAllParticipants() {
 export async function getAllPayments() {
   if (isSupabaseConfigured) {
     const supabase = getSupabaseAdmin();
-    const { data } = await supabase.from('payments').select('*, participant:participants(full_name, mobile, whatsapp, city)').order('created_at', { ascending: false });
+    const { data } = await supabase.from('payments').select('*, participant:participants(full_name, mobile, whatsapp, city, model_photo_r2_key)').order('created_at', { ascending: false });
     return data || [];
   }
   return memPayments.map((pay) => {
-    const p = memParticipants.find((item) => item.id === pay.participant_id);
+    const p = memParticipants.find((item) => item.id === pay.participant_id || item.reg_id === pay.reg_id);
     return {
       ...pay,
-      participant: p ? { full_name: p.full_name, mobile: p.mobile, whatsapp: p.whatsapp, city: p.city } : null,
+      participant: p ? { 
+        full_name: p.full_name, 
+        mobile: p.mobile, 
+        whatsapp: p.whatsapp, 
+        city: p.city,
+        model_photo_r2_key: p.model_photo_r2_key || null,
+      } : null,
     };
   });
 }

@@ -22,7 +22,8 @@ import {
   Server,
   Activity,
   AlertTriangle,
-  Info
+  Info,
+  User
 } from 'lucide-react';
 import { 
   getAdminStats, 
@@ -511,6 +512,7 @@ export default function AdminDashboard() {
               <thead className="bg-[#0a0c12] text-zinc-400 uppercase tracking-wider text-[11px] border-b border-zinc-800">
                 <tr>
                   <th className="py-3.5 px-4">Registration ID</th>
+                  <th className="py-3.5 px-4">Model Photo</th>
                   <th className="py-3.5 px-4">Participant Name</th>
                   <th className="py-3.5 px-4">Payment Type</th>
                   <th className="py-3.5 px-4">Amount</th>
@@ -523,7 +525,7 @@ export default function AdminDashboard() {
               <tbody className="divide-y divide-zinc-800/80">
                 {filteredPayments.length === 0 ? (
                   <tr>
-                    <td colSpan={8} className="py-8 text-center text-zinc-500">
+                    <td colSpan={9} className="py-8 text-center text-zinc-500">
                       No payment submissions found matching your filters.
                     </td>
                   </tr>
@@ -531,10 +533,44 @@ export default function AdminDashboard() {
                   filteredPayments.map((pay) => {
                     const participantName = (pay as any).participant?.full_name || 'Participant';
                     const mobile = (pay as any).participant?.whatsapp || (pay as any).participant?.mobile || '';
+                    const photoUrl = pay.model_photo_url || null;
+                    const photoKey = (pay as any).participant?.model_photo_r2_key;
 
                     return (
                       <tr key={pay.id} className="hover:bg-zinc-800/30 transition-colors">
                         <td className="py-3.5 px-4 font-mono font-bold text-[#C6FF00]">{pay.reg_id}</td>
+                        <td className="py-3.5 px-4">
+                          {photoUrl ? (
+                            <div
+                              onClick={() => setActiveScreenshot(photoUrl)}
+                              className="group relative w-11 h-11 rounded-sm overflow-hidden border border-white/20 bg-black cursor-pointer hover:border-[#C6FF00] transition-all shadow-md shrink-0"
+                              title={`Click to preview full-size portrait of ${participantName}`}
+                            >
+                              <img
+                                src={photoUrl}
+                                alt={participantName}
+                                className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
+                              />
+                              <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity">
+                                <ZoomIn className="w-3.5 h-3.5 text-[#C6FF00]" />
+                              </div>
+                            </div>
+                          ) : photoKey ? (
+                            <button
+                              type="button"
+                              onClick={() => handleViewPhoto(photoKey)}
+                              className="w-11 h-11 rounded-sm border border-dashed border-white/20 bg-white/5 flex flex-col items-center justify-center text-zinc-400 hover:text-[#C6FF00] hover:border-[#C6FF00] transition-all group shrink-0"
+                              title={`Load portrait of ${participantName}`}
+                            >
+                              <User className="w-4 h-4 group-hover:scale-110 transition-transform" />
+                              <span className="text-[9px] font-mono-editorial mt-0.5">VIEW</span>
+                            </button>
+                          ) : (
+                            <div className="w-11 h-11 rounded-sm border border-white/10 bg-white/5 flex items-center justify-center text-zinc-600 shrink-0" title="No photo uploaded">
+                              <User className="w-4 h-4 text-zinc-600" />
+                            </div>
+                          )}
+                        </td>
                         <td className="py-3.5 px-4 font-medium text-white">{participantName}</td>
                         <td className="py-3.5 px-4">
                           <span className={`px-2 py-0.5 rounded-sm font-mono-editorial text-[10px] font-semibold uppercase ${
@@ -642,17 +678,35 @@ export default function AdminDashboard() {
                   <tr key={p.id} className="hover:bg-zinc-800/30 transition-colors">
                     <td className="py-3.5 px-4 font-mono font-bold text-[#C6FF00]">{p.reg_id}</td>
                     <td className="py-3.5 px-4">
-                      {p.model_photo_r2_key ? (
+                      {p.model_photo_url ? (
+                        <div
+                          onClick={() => setActiveScreenshot(p.model_photo_url!)}
+                          className="group relative w-11 h-11 rounded-sm overflow-hidden border border-white/20 bg-black cursor-pointer hover:border-[#C6FF00] transition-all shadow-md shrink-0"
+                          title={`Click to preview full-size portrait of ${p.full_name}`}
+                        >
+                          <img
+                            src={p.model_photo_url}
+                            alt={p.full_name}
+                            className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
+                          />
+                          <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity">
+                            <ZoomIn className="w-3.5 h-3.5 text-[#C6FF00]" />
+                          </div>
+                        </div>
+                      ) : p.model_photo_r2_key ? (
                         <button
+                          type="button"
                           onClick={() => handleViewPhoto(p.model_photo_r2_key)}
-                          className="inline-flex items-center space-x-1 px-2.5 py-1 rounded-sm bg-white/5 hover:bg-white/10 text-white border border-white/15 text-xs transition-colors"
+                          className="w-11 h-11 rounded-sm border border-dashed border-white/20 bg-white/5 flex flex-col items-center justify-center text-zinc-400 hover:text-[#C6FF00] hover:border-[#C6FF00] transition-all group shrink-0"
                           title="View Model Photograph"
                         >
-                          <ZoomIn className="w-3 h-3 text-[#C6FF00]" />
-                          <span>Photo</span>
+                          <ZoomIn className="w-3.5 h-3.5 text-[#C6FF00] group-hover:scale-110 transition-transform" />
+                          <span className="text-[9px] font-mono-editorial mt-0.5">PHOTO</span>
                         </button>
                       ) : (
-                        <span className="text-zinc-600 text-[11px] italic">None</span>
+                        <div className="w-11 h-11 rounded-sm border border-white/10 bg-white/5 flex items-center justify-center text-zinc-600 shrink-0" title="No photo uploaded">
+                          <User className="w-4 h-4 text-zinc-600" />
+                        </div>
                       )}
                     </td>
                     <td className="py-3.5 px-4 font-medium text-white">{p.full_name}</td>

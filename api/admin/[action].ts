@@ -137,6 +137,42 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       const limit = req.query.limit ? Number(req.query.limit) : undefined;
       const pagination = page ? { page, limit: limit || 20 } : undefined;
       const participants = await listRegistrations(undefined, false, pagination);
+
+      // Generate presigned photo view URLs for participants
+      if (participants && Array.isArray(participants.items)) {
+        const itemsWithPhotos = await Promise.all(
+          participants.items.map(async (p: any) => {
+            let model_photo_url = null;
+            if (p.model_photo_r2_key) {
+              try {
+                model_photo_url = await generatePresignedViewUrl(p.model_photo_r2_key);
+              } catch {
+                model_photo_url = null;
+              }
+            }
+            return { ...p, model_photo_url };
+          })
+        );
+        return res.status(200).json({ ...participants, items: itemsWithPhotos });
+      }
+
+      if (Array.isArray(participants)) {
+        const itemsWithPhotos = await Promise.all(
+          participants.map(async (p: any) => {
+            let model_photo_url = null;
+            if (p.model_photo_r2_key) {
+              try {
+                model_photo_url = await generatePresignedViewUrl(p.model_photo_r2_key);
+              } catch {
+                model_photo_url = null;
+              }
+            }
+            return { ...p, model_photo_url };
+          })
+        );
+        return res.status(200).json(itemsWithPhotos);
+      }
+
       return res.status(200).json(participants);
     } catch (err: any) {
       return res.status(500).json({ detail: err.message });
@@ -158,12 +194,22 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       if (rawRes && Array.isArray(rawRes.items)) {
         const paymentsWithUrls = await Promise.all(
           rawRes.items.map(async (pay: any) => {
+            let view_url = '/logo.png';
+            let model_photo_url = null;
             try {
-              const view_url = await generatePresignedViewUrl(pay.r2_object_key);
-              return { ...pay, view_url };
+              view_url = await generatePresignedViewUrl(pay.r2_object_key);
             } catch {
-              return { ...pay, view_url: '/logo.png' };
+              view_url = '/logo.png';
             }
+            const photoKey = pay.participant?.model_photo_r2_key;
+            if (photoKey) {
+              try {
+                model_photo_url = await generatePresignedViewUrl(photoKey);
+              } catch {
+                model_photo_url = null;
+              }
+            }
+            return { ...pay, view_url, model_photo_url };
           })
         );
         return res.status(200).json({
@@ -175,12 +221,22 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       // Backward compatible array response
       const paymentsWithUrls = await Promise.all(
         (rawRes || []).map(async (pay: any) => {
+          let view_url = '/logo.png';
+          let model_photo_url = null;
           try {
-            const view_url = await generatePresignedViewUrl(pay.r2_object_key);
-            return { ...pay, view_url };
+            view_url = await generatePresignedViewUrl(pay.r2_object_key);
           } catch {
-            return { ...pay, view_url: '/logo.png' };
+            view_url = '/logo.png';
           }
+          const photoKey = pay.participant?.model_photo_r2_key;
+          if (photoKey) {
+            try {
+              model_photo_url = await generatePresignedViewUrl(photoKey);
+            } catch {
+              model_photo_url = null;
+            }
+          }
+          return { ...pay, view_url, model_photo_url };
         })
       );
       return res.status(200).json(paymentsWithUrls);
