@@ -531,13 +531,13 @@ export default function PaymentPage({
   // MAIN PAYMENT PORTAL
   // ───────────────────────────────────────────────────────────────────
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 space-y-10">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-10 space-y-6 sm:space-y-8">
       {/* Editorial Page Header */}
-      <div className="text-center max-w-3xl mx-auto space-y-4">
-        <span className="font-mono-editorial text-[11px] tracking-widest text-[#C6FF00] uppercase block">
+      <div className="text-center max-w-3xl mx-auto space-y-3 sm:space-y-4">
+        <span className="font-mono-editorial text-[10px] sm:text-[11px] tracking-widest text-[#C6FF00] uppercase block">
           OFFICIAL FINANCIAL GATEWAY // CHENNAI 2026
         </span>
-        <h1 className="font-display text-4xl sm:text-6xl md:text-7xl font-bold leading-[1.05] text-white">
+        <h1 className="font-display text-3xl sm:text-5xl md:text-6xl font-bold leading-[1.08] text-white">
           PAYMENT &amp; BALANCE SETTLEMENT
         </h1>
         <p className="text-xs sm:text-sm text-[#BFC3C7] font-light leading-relaxed max-w-2xl mx-auto">
@@ -545,12 +545,12 @@ export default function PaymentPage({
         </p>
 
         {/* Dual Mode Switcher Tabs */}
-        <div className="pt-4 flex items-center justify-center w-full">
+        <div className="pt-2 sm:pt-4 flex items-center justify-center w-full">
           <div className="grid grid-cols-1 sm:grid-cols-2 p-1 rounded-sm bg-[#12141a] border border-white/15 w-full max-w-xl gap-1">
             <button
               type="button"
               onClick={() => setMode('register')}
-              className={`px-3 sm:px-5 py-3 sm:py-2.5 rounded-sm font-mono-editorial text-[11px] sm:text-xs font-bold uppercase tracking-wider transition-all flex items-center justify-center space-x-2 ${
+              className={`px-3 sm:px-5 py-2.5 rounded-sm font-mono-editorial text-[11px] sm:text-xs font-bold uppercase tracking-wider transition-all flex items-center justify-center space-x-2 ${
                 mode === 'register'
                   ? 'bg-[#C6FF00] text-black shadow-lg shadow-[#C6FF00]/20'
                   : 'text-zinc-400 hover:text-white'
@@ -563,7 +563,7 @@ export default function PaymentPage({
             <button
               type="button"
               onClick={() => setMode('balance')}
-              className={`px-3 sm:px-5 py-3 sm:py-2.5 rounded-sm font-mono-editorial text-[11px] sm:text-xs font-bold uppercase tracking-wider transition-all flex items-center justify-center space-x-2 ${
+              className={`px-3 sm:px-5 py-2.5 rounded-sm font-mono-editorial text-[11px] sm:text-xs font-bold uppercase tracking-wider transition-all flex items-center justify-center space-x-2 ${
                 mode === 'balance'
                   ? 'bg-[#C6FF00] text-black shadow-lg shadow-[#C6FF00]/20'
                   : 'text-zinc-400 hover:text-white'
@@ -580,9 +580,9 @@ export default function PaymentPage({
           MODE A: CLEAR REMAINING BALANCE
       ───────────────────────────────────────────────────────────── */}
       {mode === 'balance' && (
-        <div className="space-y-10">
+        <div className="space-y-6 sm:space-y-8">
           {/* Step 1: Participant Lookup */}
-          <div className="bg-[#12141a] border border-white/10 rounded-sm p-6 sm:p-8 shadow-xl max-w-4xl mx-auto">
+          <div className="bg-[#12141a] border border-white/10 rounded-sm p-5 sm:p-7 shadow-xl max-w-4xl mx-auto">
             <div className="border-b border-white/10 pb-4 mb-6">
               <span className="font-mono-editorial text-[10px] text-[#C6FF00] uppercase tracking-widest block mb-1">
                 STEP 01 // IDENTITY VERIFICATION
@@ -651,10 +651,10 @@ export default function PaymentPage({
               initial={{ opacity: 0, y: 16 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5 }}
-              className="space-y-10"
+              className="space-y-6 sm:space-y-8"
             >
               {/* Contestant Financial Status Card */}
-              <div className="bg-[#12141a] border border-white/10 rounded-sm p-6 sm:p-8 shadow-2xl max-w-5xl mx-auto">
+              <div className="bg-[#12141a] border border-white/10 rounded-sm p-5 sm:p-7 shadow-2xl max-w-5xl mx-auto">
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-white/10 pb-6 mb-6">
                   <div>
                     <span className="font-mono-editorial text-[10px] text-[#C6FF00] uppercase tracking-widest block mb-1">
@@ -832,14 +832,17 @@ export default function PaymentPage({
                             setSelectedBalanceAmount(participantData.balance_due);
                             setIsFullRemainingSelected(true);
                           }}
-                          className={`mt-2.5 w-full p-3.5 rounded-sm border font-mono-editorial text-xs font-bold uppercase tracking-wider transition-all flex items-center justify-between ${
+                          className={`mt-2.5 w-full p-3 sm:p-3.5 rounded-sm border font-mono-editorial text-xs font-bold uppercase tracking-wider transition-all flex flex-col sm:flex-row sm:items-center justify-between gap-1 text-left sm:text-center ${
                             isFullRemainingSelected || selectedBalanceAmount === participantData.balance_due
                               ? 'bg-[#C6FF00] text-black border-[#C6FF00] shadow-lg shadow-[#C6FF00]/20'
                               : 'bg-[#080808] border-[#C6FF00]/40 text-[#C6FF00] hover:bg-[#C6FF00]/10'
                           }`}
                         >
-                          <span>PAY FULL REMAINING BALANCE (CLEAR ALL DUES)</span>
-                          <span className="font-mono text-sm">₹{participantData.balance_due.toLocaleString('en-IN')}</span>
+                          <div className="flex items-center space-x-2">
+                            <span>CLEAR FULL BALANCE</span>
+                            <span className="text-[10px] opacity-80 font-normal">(ALL OUTSTANDING DUES)</span>
+                          </div>
+                          <span className="font-mono text-sm sm:text-base font-black">₹{participantData.balance_due.toLocaleString('en-IN')}</span>
                         </button>
                       </div>
 

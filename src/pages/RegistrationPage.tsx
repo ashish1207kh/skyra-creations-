@@ -475,9 +475,9 @@ export default function RegistrationPage({ setActiveTab, setLookupRegId, onProce
   ];
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 space-y-8">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-8 space-y-5 sm:space-y-6">
       {/* ─── TOP WIZARD PROGRESS BAR (DESKTOP & MOBILE RESPONSIVE) ─────────── */}
-      <div className="bg-[#12141a] border border-white/10 rounded-sm p-4 sm:p-6 shadow-xl">
+      <div className="bg-[#12141a] border border-white/10 rounded-sm p-3.5 sm:p-5 shadow-xl">
         {/* Mobile Header / Step Indicator */}
         <div className="sm:hidden space-y-3">
           <div className="flex items-center justify-between">

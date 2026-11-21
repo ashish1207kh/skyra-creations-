@@ -139,7 +139,7 @@ export default function App() {
         <Navbar activeTab={activeTab} setActiveTab={setActiveTab} />
 
         {/* Main Content Area with Smooth Page Transitions */}
-        <main className={`flex-1 ${activeTab === 'home' ? '' : 'pt-20 sm:pt-24'}`}>
+        <main className={`flex-1 ${activeTab === 'home' ? '' : 'pt-16 sm:pt-20'}`}>
           <AnimatePresence mode="wait">
             <motion.div
               key={activeTab}
@@ -237,15 +237,15 @@ export default function App() {
 
         {/* Unified Editorial Footer */}
         <footer 
-          className="py-16 text-xs transition-colors"
+          className="py-8 sm:py-12 text-xs transition-colors"
           style={{ 
             backgroundColor: 'var(--bg-secondary)', 
             borderTop: '1px solid var(--border)',
             color: 'var(--text-secondary)'
           }}
         >
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10">
-            <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-8 pb-10" style={{ borderBottom: '1px solid var(--border)' }}>
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6 sm:space-y-8">
+            <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6 sm:gap-8 pb-6 sm:pb-8" style={{ borderBottom: '1px solid var(--border)' }}>
               {/* Brand & Description */}
               <div className="space-y-4 max-w-md">
                 <div 

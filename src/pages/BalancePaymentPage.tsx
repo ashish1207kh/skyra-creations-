@@ -294,7 +294,7 @@ export default function BalancePaymentPage({ initialRegId, setActiveTab, setLook
   const validAmounts = allAmounts.filter(amount => amount <= currentBalance);
 
   return (
-    <div className="max-w-4xl mx-auto py-12 px-4 sm:px-6 space-y-8">
+    <div className="max-w-4xl mx-auto py-6 sm:py-10 px-4 sm:px-6 space-y-6 sm:space-y-8">
       {/* Master Spec Banner */}
       <div className="relative overflow-hidden bg-[#12141a] border border-white/10 rounded-sm p-6 sm:p-10 shadow-2xl">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6 mb-6">

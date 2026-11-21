@@ -70,7 +70,7 @@ export default function StatusPassPage({ initialRegId, setActiveTab, setBalanceR
   const currentStage = participant ? getTimelineStage(participant) : 1;
 
   return (
-    <div className="max-w-4xl mx-auto py-12 px-4 sm:px-6 space-y-8">
+    <div className="max-w-4xl mx-auto py-6 sm:py-10 px-4 sm:px-6 space-y-6 sm:space-y-8">
       {/* Page Header */}
       <div className="text-center space-y-4 max-w-2xl mx-auto">
         <div className="inline-flex items-center space-x-2 px-3.5 py-1 rounded-sm bg-[#C6FF00]/10 border border-[#C6FF00]/30 text-[#C6FF00] font-mono-editorial text-[10px] font-bold uppercase tracking-widest">

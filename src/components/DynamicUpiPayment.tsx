@@ -283,9 +283,9 @@ export default function DynamicUpiPayment({
   );
 
   return (
-    <div className="bg-[#0b0c10] border border-white/10 rounded-sm p-5 sm:p-7 shadow-2xl space-y-6">
+    <div className="bg-[#0b0c10] border border-white/10 rounded-sm p-4 sm:p-6 shadow-2xl space-y-4 sm:space-y-5">
       {/* Official Verified Payee Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-white/10 pb-5">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4 border-b border-white/10 pb-3.5 sm:pb-4">
         <div>
           <div className="flex items-center space-x-2">
             <span className="px-2.5 py-0.5 rounded-sm bg-[#C6FF00]/10 text-[#C6FF00] border border-[#C6FF00]/30 font-mono-editorial text-[10px] font-bold uppercase tracking-wider flex items-center space-x-1.5">
@@ -295,10 +295,10 @@ export default function DynamicUpiPayment({
             <span className="text-white/30 text-xs">•</span>
             <span className="text-[#BFC3C7] text-xs font-mono-editorial">B Sriram (Indian Bank 5056)</span>
           </div>
-          <h4 className="text-white text-xl font-bold font-editorial mt-1.5 tracking-tight">
+          <h4 className="text-white text-lg sm:text-xl font-bold font-editorial mt-1 tracking-tight">
             Dynamic UPI Payment Gateway
           </h4>
-          <p className="text-xs text-zinc-400 font-light mt-0.5">
+          <p className="text-[11px] sm:text-xs text-zinc-400 font-light mt-0.5">
             Encrypted, server-controlled NPCI payment with pre-filled exact token amount.
           </p>
         </div>
@@ -307,7 +307,7 @@ export default function DynamicUpiPayment({
           <button
             type="button"
             onClick={() => setIsModalOpen(true)}
-            className="px-4 py-2 rounded-sm bg-white/5 hover:bg-white/10 text-[#C6FF00] border border-[#C6FF00]/40 font-mono-editorial text-xs font-semibold inline-flex items-center space-x-2 transition-all shrink-0 self-start sm:self-auto hover:border-[#C6FF00]"
+            className="px-3.5 py-1.5 rounded-sm bg-white/5 hover:bg-white/10 text-[#C6FF00] border border-[#C6FF00]/40 font-mono-editorial text-xs font-semibold inline-flex items-center space-x-2 transition-all shrink-0 self-start sm:self-auto hover:border-[#C6FF00]"
           >
             <ExternalLink className="w-3.5 h-3.5" />
             <span>EXPAND PAYMENT QR</span>
@@ -316,11 +316,11 @@ export default function DynamicUpiPayment({
       </div>
 
       {/* Main Grid: Details + Dynamic QR Code */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-center">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 items-center">
         {/* Left Column: Official Recipient & Action Details */}
-        <div className="space-y-4">
+        <div className="space-y-3 sm:space-y-4">
           {/* Recipient Details Card */}
-          <div className="bg-[#12141a] border border-white/10 rounded-sm p-5 space-y-3.5">
+          <div className="bg-[#12141a] border border-white/10 rounded-sm p-4 sm:p-5 space-y-3">
             <div>
               <span className="font-mono-editorial text-[10px] text-[#BFC3C7] uppercase tracking-widest block font-medium">
                 OFFICIAL BENEFICIARY NAME

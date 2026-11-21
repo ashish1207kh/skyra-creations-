@@ -133,7 +133,7 @@ export default function HomePage({ setActiveTab, onSelectEvent }: HomePageProps)
   const sec7Opacity = useTransform(sec7Progress, [0, 0.45], [0.4, 1]);
 
   return (
-    <div className="space-y-28 sm:space-y-36 pb-24 overflow-x-hidden relative">
+    <div className="space-y-12 sm:space-y-20 pb-12 sm:pb-16 overflow-x-hidden relative">
       {/* Continuous Drifting Ambient Runway Glow Orb */}
       <motion.div
         animate={{
@@ -155,7 +155,7 @@ export default function HomePage({ setActiveTab, onSelectEvent }: HomePageProps)
       {/* ──────────────────────────────────────────────────────────
           SECTION 1: 100svh VIRTUAL RUNWAY HERO WITH SCROLL PARALLAX
       ────────────────────────────────────────────────────────── */}
-      <section ref={heroRef} className="relative min-h-[100svh] py-20 sm:py-28 flex items-center justify-center overflow-hidden">
+      <section ref={heroRef} className="relative min-h-[85svh] sm:min-h-[92svh] py-10 sm:py-20 flex items-center justify-center overflow-hidden">
         {/* Three.js Virtual Runway Catwalk Canvas */}
         <div className="absolute inset-0 z-0">
           <VirtualRunwayScene className="w-full h-full" />
@@ -177,7 +177,7 @@ export default function HomePage({ setActiveTab, onSelectEvent }: HomePageProps)
 
         <motion.div 
           style={{ scale: heroScale, opacity: heroOpacity, y: heroY, filter: heroFilter }}
-          className="relative z-20 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-6 pt-24 sm:pt-28 pb-8 will-change-transform"
+          className="relative z-20 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-5 sm:space-y-6 pt-14 sm:pt-20 pb-4 sm:pb-6 will-change-transform"
         >
           {/* Official SKYRA CREATIONS Brandmark Showcase */}
           <motion.div
@@ -308,7 +308,9 @@ export default function HomePage({ setActiveTab, onSelectEvent }: HomePageProps)
       </section>
 
       {/* Infinite Runway Couture Marquee */}
-      <MarqueeStrip />
+      <div className="-my-4 sm:-my-6">
+        <MarqueeStrip />
+      </div>
 
       {/* ──────────────────────────────────────────────────────────
           SECTION 2: BRAND INTRODUCTION (ASYMMETRIC 2-COLUMN)
@@ -681,25 +683,27 @@ export default function HomePage({ setActiveTab, onSelectEvent }: HomePageProps)
       </section>
 
       {/* Reverse Couture Marquee Strip */}
-      <MarqueeStrip 
-        reverse={true} 
-        text={[
-          'HAUTE COUTURE 2026',
-          'CHENNAI CITY CENTER',
-          'EXCLUSIVE AUDITIONS',
-          'STAGE GROOMING',
-          'LIVE CATWALK',
-          'CERTIFIED ACCREDITATION',
-          'DIRECTOR B SRIRAM',
-        ]} 
-      />
+      <div className="-my-4 sm:-my-6">
+        <MarqueeStrip 
+          reverse={true} 
+          text={[
+            'HAUTE COUTURE 2026',
+            'CHENNAI CITY CENTER',
+            'EXCLUSIVE AUDITIONS',
+            'STAGE GROOMING',
+            'LIVE CATWALK',
+            'CERTIFIED ACCREDITATION',
+            'DIRECTOR B SRIRAM',
+          ]} 
+        />
+      </div>
 
       {/* ──────────────────────────────────────────────────────────
           SECTION 5: CAMPAIGN INTERLUDE (FULL-BLEED EDITORIAL BREAK WITH PARALLAX)
       ────────────────────────────────────────────────────────── */}
       <section 
         ref={interludeRef}
-        className="relative py-28 sm:py-36 overflow-hidden mx-4 sm:mx-8 rounded-sm"
+        className="relative py-14 sm:py-24 overflow-hidden mx-4 sm:mx-8 rounded-sm"
         style={{ border: '1px solid var(--border)' }}
       >
         <motion.div 
@@ -889,7 +893,7 @@ export default function HomePage({ setActiveTab, onSelectEvent }: HomePageProps)
             y: sec7Y,
             opacity: sec7Opacity
           }}
-          className="p-10 sm:p-16 text-center space-y-6 relative overflow-hidden shadow-2xl rounded-sm will-change-transform"
+          className="p-6 sm:p-12 text-center space-y-6 relative overflow-hidden shadow-2xl rounded-sm will-change-transform"
         >
           <div 
             className="absolute top-0 right-1/2 translate-x-1/2 w-96 h-96 rounded-full blur-3xl pointer-events-none opacity-20"
