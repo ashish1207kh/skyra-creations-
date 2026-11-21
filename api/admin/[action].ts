@@ -11,7 +11,9 @@ import {
   listRegistrations, 
   listAllPayments, 
   updatePaymentVerification,
-  getStorageMetrics
+  getStorageMetrics,
+  deleteParticipantRecord,
+  deletePaymentRecord
 } from '../_lib/database.js';
 import { 
   isSupabaseConfigured, 
@@ -291,6 +293,46 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     } catch (err: any) {
       const msg = err.errors ? err.errors.map((e: any) => e.message).join(', ') : err.message;
       return res.status(400).json({ detail: msg });
+    }
+  }
+
+  // 5.1 POST /api/admin/delete-participant
+  if (action === 'delete-participant') {
+    if (req.method !== 'POST') {
+      return res.status(405).json({ detail: 'Method not allowed' });
+    }
+
+    try {
+      const regId = req.body?.reg_id;
+      if (!regId || typeof regId !== 'string') {
+        return res.status(400).json({ detail: 'reg_id string is required in request body.' });
+      }
+
+      const adminEmail = auth.session?.email || 'admin@skyracreations.com';
+      const result = await deleteParticipantRecord(regId, adminEmail);
+      return res.status(200).json(result);
+    } catch (err: any) {
+      return res.status(400).json({ detail: err.message || 'Failed to delete participant record.' });
+    }
+  }
+
+  // 5.2 POST /api/admin/delete-payment
+  if (action === 'delete-payment') {
+    if (req.method !== 'POST') {
+      return res.status(405).json({ detail: 'Method not allowed' });
+    }
+
+    try {
+      const paymentId = req.body?.payment_id;
+      if (!paymentId || typeof paymentId !== 'string') {
+        return res.status(400).json({ detail: 'payment_id string is required in request body.' });
+      }
+
+      const adminEmail = auth.session?.email || 'admin@skyracreations.com';
+      const result = await deletePaymentRecord(paymentId, adminEmail);
+      return res.status(200).json(result);
+    } catch (err: any) {
+      return res.status(400).json({ detail: err.message || 'Failed to delete payment record.' });
     }
   }
 

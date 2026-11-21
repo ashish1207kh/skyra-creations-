@@ -29,7 +29,7 @@ export function generatePassToken(reg_id: string): string {
 }
 
 // In-memory fallback repository for local testing before user plugs in Supabase keys
-interface InMemParticipant {
+export interface InMemParticipant {
   id: string;
   reg_id: string;
   full_name: string;
@@ -57,7 +57,7 @@ interface InMemParticipant {
   updated_at: string;
 }
 
-interface InMemPayment {
+export interface InMemPayment {
   id: string;
   payment_id: string;
   participant_id: string;
@@ -85,7 +85,7 @@ interface InMemAuditLog {
 }
 
 // Seed memory store with sample data
-let memParticipants: InMemParticipant[] = [
+export let memParticipants: InMemParticipant[] = [
   {
     id: 'p-1',
     reg_id: 'SC-2026-1001',
@@ -154,7 +154,7 @@ let memParticipants: InMemParticipant[] = [
   },
 ];
 
-let memPayments: InMemPayment[] = [
+export let memPayments: InMemPayment[] = [
   {
     id: 'pay-1',
     payment_id: 'PAY-REG-1001A',
@@ -391,7 +391,19 @@ export async function createParticipantAndPayment(params: {
     throw new Error(`Transaction reference / UTR "${cleanTxId}" has already been submitted.`);
   }
 
-  const reg_id = `SC-2026-${memParticipants.length + 1004}`;
+  const usedNumbers = new Set<number>();
+  memParticipants.forEach(p => {
+    const match = p.reg_id?.match(/SC-2026-(\d+)/i);
+    if (match) {
+      const num = parseInt(match[1], 10);
+      if (!isNaN(num)) usedNumbers.add(num);
+    }
+  });
+  let candidate = 1001;
+  while (usedNumbers.has(candidate)) {
+    candidate++;
+  }
+  const reg_id = `SC-2026-${candidate}`;
   const pId = `p-${Date.now()}`;
   const pass_token = generatePassToken(reg_id);
 

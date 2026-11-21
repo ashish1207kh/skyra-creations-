@@ -25,7 +25,8 @@ import {
   Info,
   User,
   Eye,
-  EyeOff
+  EyeOff,
+  Trash2
 } from 'lucide-react';
 import { 
   getAdminStats, 
@@ -37,7 +38,9 @@ import {
   adminLogin,
   getAdminToken,
   clearAdminToken,
-  getStorageMetrics
+  getStorageMetrics,
+  deleteAdminParticipant,
+  deleteAdminPayment
 } from '../lib/api';
 import { AdminStats, Participant, Payment, StorageMetrics } from '../types/index';
 import HumanVerificationCaptcha from '../components/HumanVerificationCaptcha';
@@ -69,6 +72,11 @@ export default function AdminDashboard() {
   // Screenshot Lightbox Modal
   const [activeScreenshot, setActiveScreenshot] = useState<string | null>(null);
   const [rejectModalPayment, setRejectModalPayment] = useState<Payment | null>(null);
+  const [deleteParticipantModal, setDeleteParticipantModal] = useState<Participant | null>(null);
+  const [deletePaymentModal, setDeletePaymentModal] = useState<Payment | null>(null);
+  const [deletingId, setDeletingId] = useState<string | null>(null);
+  const [lastSyncedAt, setLastSyncedAt] = useState<string>('');
+  const [isSyncing, setIsSyncing] = useState<boolean>(false);
   const [selectedReasonOption, setSelectedReasonOption] = useState('Invalid transaction reference');
   const [customReason, setCustomReason] = useState('');
   const [verifyingId, setVerifyingId] = useState<string | null>(null);
@@ -83,9 +91,27 @@ export default function AdminDashboard() {
   ];
 
   useEffect(() => {
-    if (isAuthenticated) {
-      loadDashboardData();
-    }
+    if (!isAuthenticated) return;
+    loadDashboardData(false);
+
+    // Auto-refresh: automatically reflects new registrations and payments every 6 seconds
+    const interval = setInterval(() => {
+      loadDashboardData(true);
+    }, 6000);
+
+    const onVisible = () => {
+      if (document.visibilityState === 'visible') {
+        loadDashboardData(true);
+      }
+    };
+    document.addEventListener('visibilitychange', onVisible);
+    window.addEventListener('focus', onVisible);
+
+    return () => {
+      clearInterval(interval);
+      document.removeEventListener('visibilitychange', onVisible);
+      window.removeEventListener('focus', onVisible);
+    };
   }, [isAuthenticated]);
 
   const handleLogin = async (e: React.FormEvent) => {
@@ -116,8 +142,9 @@ export default function AdminDashboard() {
     setStorageMetrics(null);
   };
 
-  const loadDashboardData = async () => {
-    setLoadingData(true);
+  const loadDashboardData = async (silent: boolean = false) => {
+    if (!silent) setLoadingData(true);
+    setIsSyncing(true);
     try {
       const [statsData, paymentsData, participantsData, storageData] = await Promise.all([
         getAdminStats(),
@@ -131,6 +158,7 @@ export default function AdminDashboard() {
       if (storageData) {
         setStorageMetrics(storageData);
       }
+      setLastSyncedAt(new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' }));
     } catch (err: any) {
       if (err.message && err.message.toLowerCase().includes('unauthorized')) {
         handleLogout();
@@ -138,7 +166,36 @@ export default function AdminDashboard() {
         console.error('Failed to load admin data:', err);
       }
     } finally {
-      setLoadingData(false);
+      if (!silent) setLoadingData(false);
+      setIsSyncing(false);
+    }
+  };
+
+  const handleDeleteParticipant = async (regId: string) => {
+    setDeletingId(regId);
+    try {
+      const res = await deleteAdminParticipant(regId);
+      setDeleteParticipantModal(null);
+      await loadDashboardData(true);
+      alert(res.message || `Participant ${regId} deleted successfully.`);
+    } catch (err: any) {
+      alert(`Failed to delete participant: ${err.message}`);
+    } finally {
+      setDeletingId(null);
+    }
+  };
+
+  const handleDeletePayment = async (paymentId: string) => {
+    setDeletingId(paymentId);
+    try {
+      const res = await deleteAdminPayment(paymentId);
+      setDeletePaymentModal(null);
+      await loadDashboardData(true);
+      alert(res.message || `Payment ${paymentId} deleted successfully.`);
+    } catch (err: any) {
+      alert(`Failed to delete payment: ${err.message}`);
+    } finally {
+      setDeletingId(null);
     }
   };
 
@@ -357,13 +414,22 @@ export default function AdminDashboard() {
         </div>
 
         <div className="flex flex-wrap items-center gap-2.5 font-mono-editorial">
+          {/* Live Sync Status Pill */}
+          <div className="flex items-center space-x-2 px-3 py-2 rounded-sm bg-black/60 border border-white/10 text-xs">
+            <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+            <span className="text-zinc-300 text-[10px] tracking-wide">
+              LIVE AUTO-SYNC {lastSyncedAt && <span className="text-zinc-500 font-mono">({lastSyncedAt})</span>}
+            </span>
+          </div>
+
           <button
-            onClick={loadDashboardData}
-            disabled={loadingData}
-            className="p-2.5 bg-white/5 hover:bg-white/10 text-white rounded-sm text-xs transition-colors border border-white/10"
-            title="Refresh Data"
+            onClick={() => loadDashboardData(false)}
+            disabled={loadingData || isSyncing}
+            className="flex items-center space-x-1.5 px-3 py-2 rounded-sm bg-white/5 hover:bg-white/10 text-white rounded-sm text-xs transition-colors border border-white/10 disabled:opacity-50"
+            title="Refresh All Records Now"
           >
-            <RefreshCw className={`w-4 h-4 ${loadingData ? 'animate-spin' : ''}`} />
+            <RefreshCw className={`w-3.5 h-3.5 ${isSyncing ? 'animate-spin text-[#C6FF00]' : ''}`} />
+            <span>SYNC</span>
           </button>
 
           {/* 6.4 Admin Exports */}
@@ -693,6 +759,14 @@ export default function AdminDashboard() {
                               <span>WhatsApp</span>
                             </button>
                           )}
+
+                          <button
+                            onClick={() => setDeletePaymentModal(pay)}
+                            className="p-1.5 rounded-lg bg-red-950/40 hover:bg-red-900/60 text-red-400 border border-red-500/30 text-xs transition-colors inline-flex items-center"
+                            title="Delete Payment Submission"
+                          >
+                            <Trash2 className="w-3.5 h-3.5" />
+                          </button>
                         </td>
                       </tr>
                     );
@@ -716,6 +790,7 @@ export default function AdminDashboard() {
             <table className="w-full text-left text-xs text-zinc-300">
               <thead className="bg-[#0a0c12] text-zinc-400 uppercase tracking-wider text-[11px] border-b border-zinc-800">
                 <tr>
+                  <th className="py-3.5 px-4"># Slot</th>
                   <th className="py-3.5 px-4">Reg ID</th>
                   <th className="py-3.5 px-4">Model Photo</th>
                   <th className="py-3.5 px-4">Full Name</th>
@@ -726,76 +801,100 @@ export default function AdminDashboard() {
                   <th className="py-3.5 px-4">Outstanding</th>
                   <th className="py-3.5 px-4">Terms</th>
                   <th className="py-3.5 px-4">Status</th>
-                  <th className="py-3.5 px-4 text-right">Outreach</th>
+                  <th className="py-3.5 px-4 text-right">Actions</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-zinc-800/80">
-                {participants.map((p) => (
-                  <tr key={p.id} className="hover:bg-zinc-800/30 transition-colors">
-                    <td className="py-3.5 px-4 font-mono font-bold text-[#C6FF00]">{p.reg_id}</td>
-                    <td className="py-3.5 px-4">
-                      {p.model_photo_url ? (
-                        <div
-                          onClick={() => setActiveScreenshot(p.model_photo_url!)}
-                          className="group relative w-11 h-11 rounded-sm overflow-hidden border border-white/20 bg-black cursor-pointer hover:border-[#C6FF00] transition-all shadow-md shrink-0"
-                          title={`Click to preview full-size portrait of ${p.full_name}`}
-                        >
-                          <img
-                            src={p.model_photo_url}
-                            alt={p.full_name}
-                            className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
-                          />
-                          <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity">
-                            <ZoomIn className="w-3.5 h-3.5 text-[#C6FF00]" />
-                          </div>
-                        </div>
-                      ) : p.model_photo_r2_key ? (
-                        <button
-                          type="button"
-                          onClick={() => handleViewPhoto(p.model_photo_r2_key)}
-                          className="w-11 h-11 rounded-sm border border-dashed border-white/20 bg-white/5 flex flex-col items-center justify-center text-zinc-400 hover:text-[#C6FF00] hover:border-[#C6FF00] transition-all group shrink-0"
-                          title="View Model Photograph"
-                        >
-                          <ZoomIn className="w-3.5 h-3.5 text-[#C6FF00] group-hover:scale-110 transition-transform" />
-                          <span className="text-[9px] font-mono-editorial mt-0.5">PHOTO</span>
-                        </button>
-                      ) : (
-                        <div className="w-11 h-11 rounded-sm border border-white/10 bg-white/5 flex items-center justify-center text-zinc-600 shrink-0" title="No photo uploaded">
-                          <User className="w-4 h-4 text-zinc-600" />
-                        </div>
-                      )}
-                    </td>
-                    <td className="py-3.5 px-4 font-medium text-white">{p.full_name}</td>
-                    <td className="py-3.5 px-4 text-zinc-300">{p.category}</td>
-                    <td className="py-3.5 px-4 text-zinc-400 font-mono">{p.whatsapp || p.mobile}</td>
-                    <td className="py-3.5 px-4 font-bold text-white font-mono">₹{p.total_fee}</td>
-                    <td className="py-3.5 px-4 font-bold text-emerald-400 font-mono">₹{p.amount_paid}</td>
-                    <td className="py-3.5 px-4 font-bold text-[#C6FF00] font-mono">₹{p.balance_due}</td>
-                    <td className="py-3.5 px-4 font-mono text-zinc-400 text-[11px]">{p.terms_version || '2026.2'}</td>
-                    <td className="py-3.5 px-4">
-                      <span className={`inline-block px-2.5 py-0.5 rounded-sm font-mono-editorial text-[10px] font-bold uppercase ${
-                        p.status === 'FULLY_PAID'
-                          ? 'bg-emerald-500/15 text-emerald-400 border border-emerald-500/30'
-                          : p.status === 'PARTIALLY_PAID'
-                          ? 'bg-[#C6FF00]/15 text-[#C6FF00] border-[#C6FF00]/30'
-                          : p.status === 'REJECTED'
-                          ? 'bg-red-500/15 text-red-400 border border-red-500/30'
-                          : 'bg-blue-500/15 text-blue-300 border border-blue-500/30'
-                      }`}>
-                        {p.status}
-                      </span>
-                    </td>
-                    <td className="py-3.5 px-4 text-right">
-                      <button
-                        onClick={() => openWhatsApp(p.whatsapp || p.mobile, p.full_name, p.reg_id, p.status)}
-                        className="px-2.5 py-1.5 rounded-lg bg-emerald-950/40 hover:bg-emerald-900/60 text-emerald-400 border border-emerald-500/30 text-xs transition-colors inline-flex items-center space-x-1"
-                      >
-                        <MessageSquare className="w-3 h-3" />
-                        <span>WhatsApp</span>
-                      </button>
-                    </td>
-                  </tr>
-                ))}
+                {participants
+                  .slice()
+                  .sort((a, b) => {
+                    const numA = parseInt(a.reg_id.replace(/\D/g, '') || '0', 10);
+                    const numB = parseInt(b.reg_id.replace(/\D/g, '') || '0', 10);
+                    return numA - numB;
+                  })
+                  .map((p, index) => {
+                    const match = p.reg_id.match(/SC-2026-(\d+)/i);
+                    const slotNum = match ? parseInt(match[1], 10) - 1000 : index + 1;
+                    return (
+                      <tr key={p.id} className="hover:bg-zinc-800/30 transition-colors">
+                        <td className="py-3.5 px-4 font-mono font-bold">
+                          <span className="px-2 py-0.5 rounded bg-[#C6FF00]/10 border border-[#C6FF00]/30 text-[#C6FF00] text-[11px]">
+                            #{slotNum > 0 ? slotNum : index + 1}
+                          </span>
+                        </td>
+                        <td className="py-3.5 px-4 font-mono font-bold text-white">{p.reg_id}</td>
+                        <td className="py-3.5 px-4">
+                          {p.model_photo_url ? (
+                            <div
+                              onClick={() => setActiveScreenshot(p.model_photo_url!)}
+                              className="group relative w-11 h-11 rounded-sm overflow-hidden border border-white/20 bg-black cursor-pointer hover:border-[#C6FF00] transition-all shadow-md shrink-0"
+                              title={`Click to preview full-size portrait of ${p.full_name}`}
+                            >
+                              <img
+                                src={p.model_photo_url}
+                                alt={p.full_name}
+                                className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
+                              />
+                              <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity">
+                                <ZoomIn className="w-3.5 h-3.5 text-[#C6FF00]" />
+                              </div>
+                            </div>
+                          ) : p.model_photo_r2_key ? (
+                            <button
+                              type="button"
+                              onClick={() => handleViewPhoto(p.model_photo_r2_key)}
+                              className="w-11 h-11 rounded-sm border border-dashed border-white/20 bg-white/5 flex flex-col items-center justify-center text-zinc-400 hover:text-[#C6FF00] hover:border-[#C6FF00] transition-all group shrink-0"
+                              title="View Model Photograph"
+                            >
+                              <ZoomIn className="w-3.5 h-3.5 text-[#C6FF00] group-hover:scale-110 transition-transform" />
+                              <span className="text-[9px] font-mono-editorial mt-0.5">PHOTO</span>
+                            </button>
+                          ) : (
+                            <div className="w-11 h-11 rounded-sm border border-white/10 bg-white/5 flex items-center justify-center text-zinc-600 shrink-0" title="No photo uploaded">
+                              <User className="w-4 h-4 text-zinc-600" />
+                            </div>
+                          )}
+                        </td>
+                        <td className="py-3.5 px-4 font-medium text-white">{p.full_name}</td>
+                        <td className="py-3.5 px-4 text-zinc-300">{p.category}</td>
+                        <td className="py-3.5 px-4 text-zinc-400 font-mono">{p.whatsapp || p.mobile}</td>
+                        <td className="py-3.5 px-4 font-bold text-white font-mono">₹{p.total_fee}</td>
+                        <td className="py-3.5 px-4 font-bold text-emerald-400 font-mono">₹{p.amount_paid}</td>
+                        <td className="py-3.5 px-4 font-bold text-[#C6FF00] font-mono">₹{p.balance_due}</td>
+                        <td className="py-3.5 px-4 font-mono text-zinc-400 text-[11px]">{p.terms_version || '2026.2'}</td>
+                        <td className="py-3.5 px-4">
+                          <span className={`inline-block px-2.5 py-0.5 rounded-sm font-mono-editorial text-[10px] font-bold uppercase ${
+                            p.status === 'FULLY_PAID'
+                              ? 'bg-emerald-500/15 text-emerald-400 border border-emerald-500/30'
+                              : p.status === 'PARTIALLY_PAID'
+                              ? 'bg-[#C6FF00]/15 text-[#C6FF00] border-[#C6FF00]/30'
+                              : p.status === 'REJECTED'
+                              ? 'bg-red-500/15 text-red-400 border border-red-500/30'
+                              : 'bg-blue-500/15 text-blue-300 border border-blue-500/30'
+                          }`}>
+                            {p.status}
+                          </span>
+                        </td>
+                        <td className="py-3.5 px-4 text-right space-x-2 whitespace-nowrap">
+                          <button
+                            onClick={() => openWhatsApp(p.whatsapp || p.mobile, p.full_name, p.reg_id, p.status)}
+                            className="px-2.5 py-1.5 rounded-lg bg-emerald-950/40 hover:bg-emerald-900/60 text-emerald-400 border border-emerald-500/30 text-xs transition-colors inline-flex items-center space-x-1"
+                            title="Send WhatsApp Update"
+                          >
+                            <MessageSquare className="w-3 h-3" />
+                            <span>WhatsApp</span>
+                          </button>
+                          <button
+                            onClick={() => setDeleteParticipantModal(p)}
+                            className="p-1.5 rounded-lg bg-red-950/40 hover:bg-red-900/60 text-red-400 border border-red-500/30 text-xs transition-colors inline-flex items-center"
+                            title="Delete Participant Record"
+                          >
+                            <Trash2 className="w-3.5 h-3.5" />
+                          </button>
+                        </td>
+                      </tr>
+                    );
+                  })}
               </tbody>
             </table>
           </div>
@@ -848,7 +947,7 @@ export default function AdminDashboard() {
                   </div>
                 </div>
                 <button
-                  onClick={loadDashboardData}
+                  onClick={() => loadDashboardData(false)}
                   disabled={loadingData}
                   className="px-3 py-1.5 rounded-lg bg-zinc-800/80 hover:bg-zinc-700 text-zinc-300 border border-zinc-700 text-xs inline-flex items-center space-x-1.5 transition-colors shrink-0 ml-4"
                 >
@@ -1125,6 +1224,126 @@ export default function AdminDashboard() {
                 className="px-4 py-2 bg-red-600 hover:bg-red-500 text-white font-bold rounded-xl text-xs transition-colors"
               >
                 Confirm Rejection
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Delete Participant Modal */}
+      {deleteParticipantModal && (
+        <div className="fixed inset-0 z-50 bg-black/85 backdrop-blur-sm flex items-center justify-center p-4">
+          <div className="bg-[#141824] border border-red-500/50 rounded-2xl p-6 max-w-md w-full shadow-2xl">
+            <div className="flex items-center space-x-3 text-red-400 mb-3">
+              <div className="p-2.5 rounded-full bg-red-500/10 border border-red-500/20">
+                <Trash2 className="w-5 h-5 text-red-400" />
+              </div>
+              <div>
+                <h3 className="text-base font-bold text-white">Permanently Delete Participant</h3>
+                <span className="text-xs text-red-400 font-mono">{deleteParticipantModal.reg_id}</span>
+              </div>
+            </div>
+
+            <p className="text-xs text-zinc-300 leading-relaxed mb-4">
+              Are you sure you want to permanently delete contestant <strong className="text-white">{deleteParticipantModal.full_name}</strong>?
+            </p>
+
+            <div className="bg-[#0a0c12] border border-zinc-800 rounded-xl p-3.5 mb-4 text-xs space-y-1.5 font-mono">
+              <div className="flex justify-between text-zinc-400">
+                <span>Contestant Name:</span>
+                <span className="text-white font-medium">{deleteParticipantModal.full_name}</span>
+              </div>
+              <div className="flex justify-between text-zinc-400">
+                <span>Registration ID:</span>
+                <span className="text-[#C6FF00] font-bold">{deleteParticipantModal.reg_id}</span>
+              </div>
+              <div className="flex justify-between text-zinc-400">
+                <span>Fee / Verified Paid:</span>
+                <span className="text-white font-medium">₹{deleteParticipantModal.total_fee} / ₹{deleteParticipantModal.amount_paid}</span>
+              </div>
+            </div>
+
+            <div className="p-3 bg-amber-500/10 border border-amber-500/20 rounded-xl text-xs text-amber-300/90 mb-5 leading-relaxed">
+              <strong>Notice on Sequential Gap Filling:</strong> Deleting this contestant frees Registration ID <strong>{deleteParticipantModal.reg_id}</strong>. The system will automatically recycle and assign this missing number to the next contestant who registers.
+            </div>
+
+            <div className="flex justify-end space-x-3">
+              <button
+                type="button"
+                onClick={() => setDeleteParticipantModal(null)}
+                disabled={Boolean(deletingId)}
+                className="px-4 py-2.5 bg-zinc-800 hover:bg-zinc-700 text-zinc-300 rounded-xl text-xs font-medium transition-colors"
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                onClick={() => handleDeleteParticipant(deleteParticipantModal.reg_id)}
+                disabled={Boolean(deletingId)}
+                className="px-4 py-2.5 bg-red-600 hover:bg-red-500 text-white font-bold rounded-xl text-xs transition-colors flex items-center space-x-1.5 disabled:opacity-50"
+              >
+                <Trash2 className="w-3.5 h-3.5" />
+                <span>{deletingId ? 'Deleting...' : 'Confirm Permanent Delete'}</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Delete Payment Modal */}
+      {deletePaymentModal && (
+        <div className="fixed inset-0 z-50 bg-black/85 backdrop-blur-sm flex items-center justify-center p-4">
+          <div className="bg-[#141824] border border-red-500/50 rounded-2xl p-6 max-w-md w-full shadow-2xl">
+            <div className="flex items-center space-x-3 text-red-400 mb-3">
+              <div className="p-2.5 rounded-full bg-red-500/10 border border-red-500/20">
+                <Trash2 className="w-5 h-5 text-red-400" />
+              </div>
+              <div>
+                <h3 className="text-base font-bold text-white">Delete Payment Record</h3>
+                <span className="text-xs text-red-400 font-mono">{deletePaymentModal.payment_id}</span>
+              </div>
+            </div>
+
+            <p className="text-xs text-zinc-300 leading-relaxed mb-4">
+              Delete payment record of amount <strong className="text-[#C6FF00]">₹{deletePaymentModal.amount}</strong> for participant <strong className="text-white">{deletePaymentModal.reg_id}</strong>?
+            </p>
+
+            <div className="bg-[#0a0c12] border border-zinc-800 rounded-xl p-3.5 mb-5 text-xs space-y-1.5 font-mono">
+              <div className="flex justify-between text-zinc-400">
+                <span>Payment ID:</span>
+                <span className="text-white">{deletePaymentModal.payment_id}</span>
+              </div>
+              <div className="flex justify-between text-zinc-400">
+                <span>UTR Reference:</span>
+                <span className="text-[#C6FF00]">{deletePaymentModal.transaction_id}</span>
+              </div>
+              <div className="flex justify-between text-zinc-400">
+                <span>Amount:</span>
+                <span className="text-emerald-400 font-bold">₹{deletePaymentModal.amount}</span>
+              </div>
+              <div className="flex justify-between text-zinc-400">
+                <span>Status:</span>
+                <span className="text-zinc-300">{deletePaymentModal.status}</span>
+              </div>
+            </div>
+
+            <div className="flex justify-end space-x-3">
+              <button
+                type="button"
+                onClick={() => setDeletePaymentModal(null)}
+                disabled={Boolean(deletingId)}
+                className="px-4 py-2.5 bg-zinc-800 hover:bg-zinc-700 text-zinc-300 rounded-xl text-xs font-medium transition-colors"
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                onClick={() => handleDeletePayment(deletePaymentModal.payment_id)}
+                disabled={Boolean(deletingId)}
+                className="px-4 py-2.5 bg-red-600 hover:bg-red-500 text-white font-bold rounded-xl text-xs transition-colors flex items-center space-x-1.5 disabled:opacity-50"
+              >
+                <Trash2 className="w-3.5 h-3.5" />
+                <span>{deletingId ? 'Deleting...' : 'Confirm Delete Payment'}</span>
               </button>
             </div>
           </div>

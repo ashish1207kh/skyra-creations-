@@ -141,3 +141,19 @@ export function getCsvExportUrl(): string {
 export async function getStorageMetrics(): Promise<StorageMetrics> {
   return fetchJson<StorageMetrics>('/api/admin/storage-stats');
 }
+
+export async function deleteAdminParticipant(regId: string): Promise<{ success: boolean; message: string; deletedRegId: string }> {
+  return fetchJson('/api/admin/delete-participant', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ reg_id: regId }),
+  });
+}
+
+export async function deleteAdminPayment(paymentId: string): Promise<{ success: boolean; message: string; paymentId: string }> {
+  return fetchJson('/api/admin/delete-payment', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ payment_id: paymentId }),
+  });
+}

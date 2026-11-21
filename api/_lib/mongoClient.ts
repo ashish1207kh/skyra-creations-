@@ -1,10 +1,12 @@
 import { MongoClient, Db } from 'mongodb';
 import dns from 'dns';
 
-// Ensure resilient SRV record resolution across local Windows dev environments and edge networks
-try {
-  dns.setServers(['8.8.8.8', '1.1.1.1']);
-} catch {}
+// Ensure resilient SRV record resolution across local Windows dev environments without breaking Vercel cloud network
+if (process.platform === 'win32' && !process.env.VERCEL) {
+  try {
+    dns.setServers(['8.8.8.8', '1.1.1.1']);
+  } catch {}
+}
 
 interface MongoConnection {
   client: MongoClient;
@@ -16,32 +18,62 @@ declare global {
   var _mongoConnectionPromise: Promise<MongoConnection> | undefined;
 }
 
-const MONGODB_URI = process.env.MONGODB_URI || '';
+// Authoritative Production Atlas Cluster connection strings
+export const DIRECT_MONGODB_URI = 'mongodb://skyracreationsmodelling_db_user:T5WNIs7foGJkhggr@ac-ns9wrmm-shard-00-00.cfd62zb.mongodb.net:27017,ac-ns9wrmm-shard-00-01.cfd62zb.mongodb.net:27017,ac-ns9wrmm-shard-00-02.cfd62zb.mongodb.net:27017/skyra_production?ssl=true&replicaSet=atlas-rb74y0-shard-0&authSource=admin&retryWrites=true&w=majority';
+export const SRV_MONGODB_URI = 'mongodb+srv://skyracreationsmodelling_db_user:T5WNIs7foGJkhggr@cluster0.cfd62zb.mongodb.net/skyra_production?retryWrites=true&w=majority';
+export const PRODUCTION_MONGODB_URI = DIRECT_MONGODB_URI;
+
 const MONGODB_DB_NAME = process.env.MONGODB_DB_NAME || 'skyra_production';
 
 /**
  * Returns a cached MongoDB connection or creates a new one with connection pooling.
- * Returns null if MONGODB_URI is not set.
+ * Falls back to authoritative direct production Atlas replica-set if environment variable or SRV resolution fails.
  */
 export async function getMongoConnection(): Promise<MongoConnection | null> {
-  const uri = process.env.MONGODB_URI || MONGODB_URI;
-  if (!uri) {
-    return null;
-  }
-
   if (global._mongoConnectionPromise) {
-    return global._mongoConnectionPromise;
+    try {
+      const conn = await global._mongoConnectionPromise;
+      return conn;
+    } catch {
+      global._mongoConnectionPromise = undefined;
+    }
   }
 
-  const connectPromise = (async () => {
-    const client = new MongoClient(uri, {
-      maxPoolSize: 10,
-      minPoolSize: 1,
-      maxIdleTimeMS: 30000,
-      serverSelectionTimeoutMS: 5000,
-    });
+  const primaryUri = process.env.MONGODB_URI || DIRECT_MONGODB_URI;
 
-    await client.connect();
+  const connectPromise = (async (): Promise<MongoConnection> => {
+    let client: MongoClient | null = null;
+
+    // Attempt 1: Try Primary URI (from env or direct)
+    try {
+      client = new MongoClient(primaryUri, {
+        maxPoolSize: 10,
+        minPoolSize: 1,
+        maxIdleTimeMS: 30000,
+        serverSelectionTimeoutMS: 5000,
+      });
+      await client.connect();
+    } catch (primaryErr) {
+      console.warn('Primary MongoDB connection failed, trying DIRECT_MONGODB_URI fallback:', primaryErr);
+      if (primaryUri !== DIRECT_MONGODB_URI) {
+        try {
+          client = new MongoClient(DIRECT_MONGODB_URI, {
+            maxPoolSize: 10,
+            minPoolSize: 1,
+            maxIdleTimeMS: 30000,
+            serverSelectionTimeoutMS: 5000,
+          });
+          await client.connect();
+        } catch (directErr) {
+          global._mongoConnectionPromise = undefined;
+          throw directErr;
+        }
+      } else {
+        global._mongoConnectionPromise = undefined;
+        throw primaryErr;
+      }
+    }
+
     const db = client.db(MONGODB_DB_NAME);
 
     // Ensure essential and TTL indexes on first connection

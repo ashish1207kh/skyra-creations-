@@ -125,16 +125,60 @@ export async function getEventConfig(eventId: string = DEFAULT_EVENT_ID): Promis
 
 /**
  * Checks which database provider is currently active
+ * Ensures resilient fallback to authoritative production MongoDB Atlas cluster
  */
 export async function getActiveDatabaseDriver(): Promise<'mongodb' | 'supabase' | 'in-memory'> {
-  if (process.env.MONGODB_URI) {
-    const conn = await getMongoConnection();
-    if (conn) return 'mongodb';
-  }
+  const conn = await getMongoConnection();
+  if (conn) return 'mongodb';
+
   if (supabaseAdmin.isSupabaseConfigured) {
     return 'supabase';
   }
   return 'in-memory';
+}
+
+/**
+ * Allocates the next available sequential Registration ID.
+ * If any earlier registration number was deleted (e.g., #1/SC-2026-1001),
+ * it seamlessly finds and re-allocates the lowest missing integer to fill the gap
+ * so contestant numbering remains continuous without missing numbers or duplicates.
+ */
+export async function allocateNextSequentialRegId(conn?: any): Promise<string> {
+  const usedNumbers = new Set<number>();
+
+  if (conn) {
+    const docs = await conn.db.collection('registrations')
+      .find({}, { projection: { reg_id: 1 } })
+      .toArray();
+
+    for (const d of docs) {
+      if (d.reg_id) {
+        const match = d.reg_id.match(/SC-2026-(\d+)/i);
+        if (match) {
+          const n = parseInt(match[1], 10);
+          if (!isNaN(n)) usedNumbers.add(n);
+        }
+      }
+    }
+  } else {
+    for (const p of supabaseAdmin.memParticipants) {
+      if (p.reg_id) {
+        const match = p.reg_id.match(/SC-2026-(\d+)/i);
+        if (match) {
+          const n = parseInt(match[1], 10);
+          if (!isNaN(n)) usedNumbers.add(n);
+        }
+      }
+    }
+  }
+
+  // Sequential numbering starts at 1001 (representing Contestant #1)
+  let candidate = 1001;
+  while (usedNumbers.has(candidate)) {
+    candidate++;
+  }
+
+  return `SC-2026-${candidate}`;
 }
 
 /**
@@ -770,9 +814,8 @@ export async function registerParticipant(data: {
         throw new Error(`Already registered under Registration ID ${existingParticipant.reg_id}. Please use Balance Payment to complete payment.`);
       }
 
-      // 3. Generate reg_id
-      const count = await conn.db.collection('registrations').countDocuments();
-      const reg_id = `SC-2026-${1000 + count + 1}`;
+      // 3. Generate reg_id (Reusing lowest missing number to fill deleted slots seamlessly)
+      const reg_id = await allocateNextSequentialRegId(conn);
       const pass_token = supabaseAdmin.generatePassToken(reg_id);
 
       const now = new Date().toISOString();
@@ -1302,5 +1345,159 @@ export async function getStorageMetrics(): Promise<StorageMetrics> {
       zero_binary_in_db: true,
     },
     lastChecked: new Date().toISOString(),
+  };
+}
+
+/**
+ * Permanently delete a participant and associated records (Admin only).
+ * Automatically frees the registration ID so the lowest missing integer is re-allocated for subsequent contestants.
+ */
+export async function deleteParticipantRecord(regId: string, adminEmail: string = 'admin@skyracreations.com'): Promise<{ success: boolean; message: string; deletedRegId: string }> {
+  const cleanRegId = regId.trim().toUpperCase();
+  const driver = await getActiveDatabaseDriver();
+
+  if (driver === 'mongodb') {
+    const conn = await getMongoConnection();
+    if (conn) {
+      const pDoc = await conn.db.collection('registrations').findOne({ reg_id: cleanRegId });
+      if (!pDoc) {
+        throw new Error(`Participant with Registration ID ${cleanRegId} not found.`);
+      }
+
+      // Delete participant
+      await conn.db.collection('registrations').deleteOne({ reg_id: cleanRegId });
+
+      // Delete all associated payments
+      await conn.db.collection('payments').deleteMany({ reg_id: cleanRegId });
+
+      // Audit log
+      await conn.db.collection('audit_logs').insertOne({
+        action: 'DELETE_PARTICIPANT',
+        reg_id: cleanRegId,
+        participant_name: pDoc.full_name,
+        deleted_by: adminEmail,
+        timestamp: new Date().toISOString(),
+        expires_at: new Date(Date.now() + 90 * 24 * 60 * 60 * 1000),
+      });
+
+      return {
+        success: true,
+        message: `Participant ${pDoc.full_name} (${cleanRegId}) deleted. Slot is now available for new registrations.`,
+        deletedRegId: cleanRegId,
+      };
+    }
+  }
+
+  // Fallback in-memory
+  const idx = supabaseAdmin.memParticipants.findIndex((p: any) => p.reg_id.toUpperCase() === cleanRegId);
+  if (idx === -1) {
+    throw new Error(`Participant with Registration ID ${cleanRegId} not found.`);
+  }
+  const removed = supabaseAdmin.memParticipants.splice(idx, 1)[0];
+  for (let i = supabaseAdmin.memPayments.length - 1; i >= 0; i--) {
+    if (supabaseAdmin.memPayments[i].reg_id.toUpperCase() === cleanRegId) {
+      supabaseAdmin.memPayments.splice(i, 1);
+    }
+  }
+
+  return {
+    success: true,
+    message: `Participant ${removed.full_name} (${cleanRegId}) deleted. Slot is now available for new registrations.`,
+    deletedRegId: cleanRegId,
+  };
+}
+
+/**
+ * Permanently delete a payment submission (Admin only).
+ * Automatically recalculates the participant's paid balance and status.
+ */
+export async function deletePaymentRecord(paymentId: string, adminEmail: string = 'admin@skyracreations.com'): Promise<{ success: boolean; message: string; paymentId: string }> {
+  const cleanPaymentId = paymentId.trim();
+  const driver = await getActiveDatabaseDriver();
+
+  if (driver === 'mongodb') {
+    const conn = await getMongoConnection();
+    if (conn) {
+      const payDoc = await conn.db.collection('payments').findOne({ payment_id: cleanPaymentId });
+      if (!payDoc) {
+        throw new Error(`Payment record ${cleanPaymentId} not found.`);
+      }
+
+      await conn.db.collection('payments').deleteOne({ payment_id: cleanPaymentId });
+
+      // Recalculate participant balance if needed
+      const remainingVerified = await conn.db.collection('payments')
+        .find({ reg_id: payDoc.reg_id, status: 'VERIFIED' })
+        .toArray();
+
+      const newTotalPaid = remainingVerified.reduce((sum, p) => sum + (p.amount || 0), 0);
+      const participant = await conn.db.collection('registrations').findOne({ reg_id: payDoc.reg_id });
+
+      if (participant) {
+        const totalFee = participant.total_fee || 3000;
+        const newBalance = Math.max(0, totalFee - newTotalPaid);
+        let newStatus: ParticipantRecord['status'] = 'PENDING_VERIFICATION';
+        if (newBalance === 0 && newTotalPaid > 0) {
+          newStatus = 'FULLY_PAID';
+        } else if (newTotalPaid > 0) {
+          newStatus = 'PARTIALLY_PAID';
+        }
+
+        await conn.db.collection('registrations').updateOne(
+          { reg_id: payDoc.reg_id },
+          {
+            $set: {
+              amount_paid: newTotalPaid,
+              balance_due: newBalance,
+              status: newStatus,
+              updated_at: new Date().toISOString(),
+            },
+          }
+        );
+      }
+
+      // Audit log
+      await conn.db.collection('audit_logs').insertOne({
+        action: 'DELETE_PAYMENT',
+        payment_id: cleanPaymentId,
+        reg_id: payDoc.reg_id,
+        amount: payDoc.amount,
+        deleted_by: adminEmail,
+        timestamp: new Date().toISOString(),
+        expires_at: new Date(Date.now() + 90 * 24 * 60 * 60 * 1000),
+      });
+
+      return {
+        success: true,
+        message: `Payment ${cleanPaymentId} of ₹${payDoc.amount} deleted.`,
+        paymentId: cleanPaymentId,
+      };
+    }
+  }
+
+  // Fallback in-memory
+  const idx = supabaseAdmin.memPayments.findIndex((p: any) => p.payment_id === cleanPaymentId);
+  if (idx === -1) {
+    throw new Error(`Payment record ${cleanPaymentId} not found.`);
+  }
+  const removedPay = supabaseAdmin.memPayments.splice(idx, 1)[0];
+  const participant = supabaseAdmin.memParticipants.find((p: any) => p.reg_id === removedPay.reg_id);
+  if (participant) {
+    const verifiedPayments = supabaseAdmin.memPayments.filter((p: any) => p.reg_id === removedPay.reg_id && p.status === 'VERIFIED');
+    participant.amount_paid = verifiedPayments.reduce((acc: number, curr: any) => acc + curr.amount, 0);
+    participant.balance_due = Math.max(0, participant.total_fee - participant.amount_paid);
+    if (participant.balance_due === 0 && participant.amount_paid > 0) {
+      participant.status = 'FULLY_PAID';
+    } else if (participant.amount_paid > 0) {
+      participant.status = 'PARTIALLY_PAID';
+    } else {
+      participant.status = 'PENDING_VERIFICATION';
+    }
+  }
+
+  return {
+    success: true,
+    message: `Payment ${cleanPaymentId} deleted.`,
+    paymentId: cleanPaymentId,
   };
 }
