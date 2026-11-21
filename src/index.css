@@ -3,29 +3,85 @@
 @tailwind utilities;
 
 @layer base {
-  body {
-    font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
-    background-color: #0c0e14;
-    color: #f1f3f7;
+  :root {
+    --bg-primary: #0a0c12;
+    --bg-secondary: #11141d;
+    --bg-elevated: #171b26;
+    --border-color: #232a3b;
+    --text-primary: #f8fafc;
+    --text-secondary: #94a3b8;
+    --text-muted: #64748b;
+    --accent-lime: #d4ff14;
+    --accent-amber: #f59e0b;
   }
 
-  h1, h2, h3, .font-runway {
+  html.light {
+    --bg-primary: #f8fafc;
+    --bg-secondary: #ffffff;
+    --bg-elevated: #f1f5f9;
+    --border-color: #e2e8f0;
+    --text-primary: #0f172a;
+    --text-secondary: #475569;
+    --text-muted: #64748b;
+    --accent-lime: #16a34a;
+    --accent-amber: #d97706;
+  }
+
+  body {
+    font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
+    transition: background-color 0.25s ease, color 0.25s ease;
+    overflow-x: hidden;
+  }
+
+  h1, h2, h3, .font-runway, .font-editorial {
     font-family: 'Playfair Display', Georgia, serif;
+    letter-spacing: -0.01em;
   }
 }
 
 /* Custom luxury scrollbar */
 ::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
+  width: 7px;
+  height: 7px;
 }
-::-webkit-scrollbar-track {
-  background: #0f121a;
+html.dark ::-webkit-scrollbar-track {
+  background: #090b10;
 }
-::-webkit-scrollbar-thumb {
-  background: #272d3d;
+html.dark ::-webkit-scrollbar-thumb {
+  background: #232a3b;
   border-radius: 4px;
 }
-::-webkit-scrollbar-thumb:hover {
-  background: #3c445c;
+html.dark ::-webkit-scrollbar-thumb:hover {
+  background: #38425d;
+}
+
+html.light ::-webkit-scrollbar-track {
+  background: #f1f5f9;
+}
+html.light ::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 4px;
+}
+html.light ::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+/* Fashion editorial animations */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fadeIn {
+  animation: fadeIn 0.3s ease-out forwards;
+}
+
+.glow-lime {
+  box-shadow: 0 0 25px rgba(212, 255, 20, 0.15);
+}
+
+.glow-amber {
+  box-shadow: 0 0 25px rgba(245, 158, 11, 0.15);
 }

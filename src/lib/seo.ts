@@ -6,10 +6,52 @@ export interface PageSeoConfig {
 }
 
 export const SEO_CONFIGS: Record<string, PageSeoConfig> = {
-  register: {
-    title: 'SKYRA CREATIONS | Fashion Shows & Model Registration',
-    description: 'Discover fashion shows, runway opportunities, modelling auditions and designer showcases with SKYRA CREATIONS. Explore upcoming events and register online.',
+  home: {
+    title: 'SKYRA CREATIONS | Fashion Shows, Runway & Modelling Opportunities',
+    description: 'Where Fashion Meets Confidence. Discover runway shows, modelling auditions, stage grooming and designer showcases with SKYRA CREATIONS in Chennai.',
     canonicalPath: '/',
+    noindex: false,
+  },
+  about: {
+    title: 'About SKYRA CREATIONS | Fashion & Runway Event Platform',
+    description: 'Learn about SKYRA CREATIONS, founded by B Sriram. Empowering aspiring models through professional catwalk showcases, stage grooming and inclusive fashion.',
+    canonicalPath: '/about',
+    noindex: false,
+  },
+  'what-we-do': {
+    title: 'What We Do | Fashion Shows & Runway Productions | SKYRA CREATIONS',
+    description: 'Explore our services: Fashion Shows, Runway Experiences, Model Opportunities, Designer Showcases, Stage Grooming and Creative Collaborations.',
+    canonicalPath: '/what-we-do',
+    noindex: false,
+  },
+  events: {
+    title: 'Upcoming Events & Auditions | SKYRA CREATIONS',
+    description: 'Browse upcoming runway fashion shows and model audition events by SKYRA CREATIONS. View details and register online.',
+    canonicalPath: '/events',
+    noindex: false,
+  },
+  'event-details': {
+    title: 'Runway Show 2026 Details & Registration | SKYRA CREATIONS',
+    description: 'Event details, location, fee breakdown, eligibility and guidelines for SKYRA CREATIONS Runway Show 2026 in Chennai.',
+    canonicalPath: '/events/runway-2026',
+    noindex: false,
+  },
+  gallery: {
+    title: 'Runway Gallery & Highlights | SKYRA CREATIONS',
+    description: 'View highlights from official SKYRA CREATIONS fashion runways, catwalk presentations, model showcases and stage moments.',
+    canonicalPath: '/gallery',
+    noindex: false,
+  },
+  contact: {
+    title: 'Contact Us | SKYRA CREATIONS Official Helpdesk',
+    description: 'Connect with SKYRA CREATIONS on Instagram @skyra_creations_ or via verified helpline for registration and audition support.',
+    canonicalPath: '/contact',
+    noindex: false,
+  },
+  register: {
+    title: 'Runway Registration 2026 | SKYRA CREATIONS Official Portal',
+    description: 'Register for SKYRA CREATIONS Runway Show 2026 in Chennai. Token advance options ₹500, ₹1,000, or ₹1,500. All categories welcome.',
+    canonicalPath: '/register',
     noindex: false,
   },
   balance: {
