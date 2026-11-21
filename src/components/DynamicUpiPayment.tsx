@@ -16,6 +16,102 @@ import {
 import { motion, AnimatePresence } from 'motion/react';
 import { PaymentInfo } from '../types/index';
 
+// High-fidelity official payment app brand SVG icons
+const GooglePayIcon = ({ className = "w-5 h-5" }: { className?: string }) => (
+  <svg className={className} viewBox="0 0 24 24" fill="none">
+    <path
+      d="M23.49 12.27c0-.85-.07-1.68-.21-2.47H12v4.67h6.44a5.51 5.51 0 0 1-2.39 3.62v3.01h3.87c2.26-2.09 3.57-5.16 3.57-8.83z"
+      fill="#4285F4"
+    />
+    <path
+      d="M12 24c3.24 0 5.96-1.07 7.95-2.91l-3.87-3.01c-1.08.72-2.45 1.15-4.08 1.15-3.14 0-5.8-2.12-6.75-4.97H1.25v3.1A11.99 11.99 0 0 0 12 24z"
+      fill="#34A853"
+    />
+    <path
+      d="M5.25 14.26a7.19 7.19 0 0 1 0-4.52V6.64H1.25a11.99 11.99 0 0 0 0 10.72l4-3.1z"
+      fill="#FBBC05"
+    />
+    <path
+      d="M12 4.77c1.76 0 3.35.61 4.59 1.8l3.44-3.44C17.95 1.18 15.23 0 12 0 7.39 0 3.44 2.64 1.25 6.64l4 3.1c.95-2.85 3.61-4.97 6.75-4.97z"
+      fill="#EA4335"
+    />
+  </svg>
+);
+
+const PhonePeIcon = ({ className = "w-5 h-5" }: { className?: string }) => (
+  <svg className={className} viewBox="0 0 36 36" fill="none">
+    <circle cx="18" cy="18" r="18" fill="#5F259F" />
+    <path
+      d="M24.2 13.5c-.3-.8-.9-1.3-1.8-1.6-.8-.3-1.8-.4-3.1-.4h-4.1v13h2.6v-4.2h1.6c1.3 0 2.3-.2 3.1-.7.8-.5 1.4-1.2 1.6-2.1.2-1 .2-1.7 0-2.4-.1-.7-.4-1.2-.9-1.6zm-2.7 2.7c-.2.4-.5.7-.8.8-.4.2-1 .2-1.7.2h-1.4v-3.1h1.4c.7 0 1.3.1 1.6.3.4.2.7.5.8.8.2.3.2.7.1 1z"
+      fill="#FFFFFF"
+    />
+    <path
+      d="M19.5 6.4l-7.7 10.8h3.6v9.2h2.6v-9.2h3.8l-2.3-10.8z"
+      fill="#FFFFFF"
+      fillOpacity="0.15"
+    />
+    <path
+      d="M13.8 22.7h2.7v-5.5h-2.7v5.5zm5.8-15.7l-6.4 8.9h3.3v2.2h2.7v-2.2h2.6l-2.2-8.9z"
+      fill="#FFFFFF"
+    />
+  </svg>
+);
+
+const PaytmIcon = ({ className = "h-4" }: { className?: string }) => (
+  <svg className={className} viewBox="0 0 68 22" fill="none">
+    <rect width="68" height="22" rx="4" fill="#002E6E" />
+    <text
+      x="6"
+      y="15.5"
+      fontFamily="system-ui, -apple-system, sans-serif"
+      fontSize="13"
+      fontWeight="900"
+      fill="#FFFFFF"
+      letterSpacing="-0.6px"
+    >
+      Pay
+    </text>
+    <text
+      x="33"
+      y="15.5"
+      fontFamily="system-ui, -apple-system, sans-serif"
+      fontSize="13"
+      fontWeight="900"
+      fill="#00BAF2"
+      letterSpacing="-0.6px"
+    >
+      tm
+    </text>
+  </svg>
+);
+
+const BhimIcon = ({ className = "h-4" }: { className?: string }) => (
+  <svg className={className} viewBox="0 0 64 22" fill="none">
+    <rect width="64" height="22" rx="4" fill="#0A3A60" />
+    <path d="M7 4h3.5l4 14h-3.5L7 4z" fill="#00A859" />
+    <path d="M13.5 4H17l4 14h-3.5l-4-14z" fill="#F47920" />
+    <text
+      x="25"
+      y="15.5"
+      fontFamily="system-ui, -apple-system, sans-serif"
+      fontSize="11"
+      fontWeight="900"
+      fill="#FFFFFF"
+      letterSpacing="0.6px"
+    >
+      BHIM
+    </text>
+  </svg>
+);
+
+const UpiBrandIcon = ({ className = "w-5 h-5" }: { className?: string }) => (
+  <svg className={className} viewBox="0 0 32 32" fill="none">
+    <rect width="32" height="32" rx="6" fill="#1A1C24" stroke="rgba(255,255,255,0.15)" />
+    <path d="M19 8l6 8-6 8h-4.5l6-8-6-8H19z" fill="#00A859" />
+    <path d="M12.5 8l6 8-6 8H8l6-8-6-8h4.5z" fill="#F47920" />
+  </svg>
+);
+
 export interface DynamicUpiPaymentProps {
   amount: number;
   paymentInfo?: PaymentInfo | null;
@@ -34,7 +130,6 @@ export default function DynamicUpiPayment({
   showModalTrigger = true,
 }: DynamicUpiPaymentProps) {
   const [copiedUpi, setCopiedUpi] = useState(false);
-  const [copiedRef, setCopiedRef] = useState(false);
   const [appOpenNotice, setAppOpenNotice] = useState<string | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -116,12 +211,6 @@ export default function DynamicUpiPayment({
     setTimeout(() => setCopiedUpi(false), 2500);
   };
 
-  const handleCopyRef = () => {
-    navigator.clipboard.writeText(paymentReference);
-    setCopiedRef(true);
-    setTimeout(() => setCopiedRef(false), 2500);
-  };
-
   const paymentButtons = (
     <div className="space-y-3">
       <div className="flex items-center justify-between font-mono-editorial text-[10px] tracking-widest text-[#BFC3C7]">
@@ -135,8 +224,8 @@ export default function DynamicUpiPayment({
           onClick={() => handleLaunchUpi('gpay')}
           className="flex items-center justify-center space-x-2 py-3 px-3 rounded-sm bg-[#12141a] hover:bg-[#1a1c24] border border-white/10 hover:border-white/30 text-white text-xs font-medium transition-all group active:scale-98 shadow-sm"
         >
-          <span className="w-5 h-5 rounded-full bg-white flex items-center justify-center text-[10px] font-black text-blue-600">G</span>
-          <span className="font-mono-editorial text-[11px]">Google Pay</span>
+          <GooglePayIcon className="w-5 h-5 shrink-0" />
+          <span className="font-mono-editorial text-[11px] font-bold">Google Pay</span>
         </button>
 
         {/* 2. PhonePe */}
@@ -145,8 +234,8 @@ export default function DynamicUpiPayment({
           onClick={() => handleLaunchUpi('phonepe')}
           className="flex items-center justify-center space-x-2 py-3 px-3 rounded-sm bg-[#12141a] hover:bg-[#1a1c24] border border-white/10 hover:border-purple-500/40 text-white text-xs font-medium transition-all group active:scale-98 shadow-sm"
         >
-          <span className="w-5 h-5 rounded-full bg-purple-600 flex items-center justify-center text-[10px] font-black text-white">पे</span>
-          <span className="font-mono-editorial text-[11px]">PhonePe</span>
+          <PhonePeIcon className="w-5 h-5 shrink-0" />
+          <span className="font-mono-editorial text-[11px] font-bold">PhonePe</span>
         </button>
 
         {/* 3. Paytm */}
@@ -155,8 +244,8 @@ export default function DynamicUpiPayment({
           onClick={() => handleLaunchUpi('paytm')}
           className="flex items-center justify-center space-x-2 py-3 px-3 rounded-sm bg-[#12141a] hover:bg-[#1a1c24] border border-white/10 hover:border-cyan-400/40 text-white text-xs font-medium transition-all group active:scale-98 shadow-sm"
         >
-          <span className="w-5 h-5 rounded-full bg-blue-500 flex items-center justify-center text-[10px] font-black text-white">P</span>
-          <span className="font-mono-editorial text-[11px]">Paytm</span>
+          <PaytmIcon className="h-4 shrink-0" />
+          <span className="font-mono-editorial text-[11px] font-bold">Paytm</span>
         </button>
 
         {/* 4. BHIM */}
@@ -165,18 +254,18 @@ export default function DynamicUpiPayment({
           onClick={() => handleLaunchUpi('bhim')}
           className="flex items-center justify-center space-x-2 py-3 px-3 rounded-sm bg-[#12141a] hover:bg-[#1a1c24] border border-white/10 hover:border-emerald-400/40 text-white text-xs font-medium transition-all group active:scale-98 shadow-sm"
         >
-          <span className="w-5 h-5 rounded-full bg-emerald-600 flex items-center justify-center text-[10px] font-black text-white">B</span>
-          <span className="font-mono-editorial text-[11px]">BHIM UPI</span>
+          <BhimIcon className="h-4 shrink-0" />
+          <span className="font-mono-editorial text-[11px] font-bold">BHIM UPI</span>
         </button>
 
         {/* 5. Other UPI Apps */}
         <button
           type="button"
           onClick={() => handleLaunchUpi('other')}
-          className="col-span-2 sm:col-span-2 flex items-center justify-center space-x-2 py-3 px-3 rounded-sm bg-[#C6FF00]/10 hover:bg-[#C6FF00]/15 border border-[#C6FF00]/40 text-[#C6FF00] text-xs font-semibold transition-all active:scale-98"
+          className="col-span-2 sm:col-span-2 flex items-center justify-center space-x-2.5 py-3 px-3 rounded-sm bg-[#C6FF00]/10 hover:bg-[#C6FF00]/15 border border-[#C6FF00]/40 text-[#C6FF00] text-xs font-semibold transition-all active:scale-98"
         >
-          <Smartphone className="w-4 h-4 text-[#C6FF00]" />
-          <span className="font-mono-editorial text-[11px] tracking-wide">Cred / Any Bank UPI App</span>
+          <UpiBrandIcon className="w-5 h-5 shrink-0" />
+          <span className="font-mono-editorial text-[11px] tracking-wide font-bold">Cred / Any Bank UPI</span>
         </button>
       </div>
 
@@ -276,27 +365,6 @@ export default function DynamicUpiPayment({
                 >
                   {copiedUpi ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5 text-zinc-400" />}
                   <span>{copiedUpi ? 'COPIED' : 'COPY'}</span>
-                </button>
-              </div>
-            </div>
-
-            {/* Payment Transaction Reference */}
-            <div>
-              <span className="font-mono-editorial text-[10px] text-[#BFC3C7] uppercase tracking-widest block font-medium mb-1.5">
-                SESSION TRANSACTION REF
-              </span>
-              <div className="flex items-center space-x-2">
-                <code className="bg-[#080808] border border-white/15 rounded-sm px-3.5 py-2 text-zinc-300 font-mono text-xs flex-1 select-all tracking-wider">
-                  {paymentReference}
-                </code>
-                <button
-                  type="button"
-                  onClick={handleCopyRef}
-                  className="px-3.5 py-2 rounded-sm bg-white/10 hover:bg-white/20 text-white font-mono-editorial text-xs font-semibold inline-flex items-center space-x-1.5 transition-colors border border-white/15"
-                  title="Copy Reference ID"
-                >
-                  {copiedRef ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5 text-zinc-400" />}
-                  <span>{copiedRef ? 'COPIED' : 'COPY'}</span>
                 </button>
               </div>
             </div>
@@ -413,7 +481,7 @@ export default function DynamicUpiPayment({
                 {paymentButtons}
               </div>
 
-              {/* Reference & Copy in Modal */}
+              {/* UPI & Amount in Modal */}
               <div className="bg-[#080808] border border-white/10 rounded-sm p-4 text-xs space-y-2.5 mb-5 font-mono">
                 <div className="flex justify-between items-center">
                   <span className="text-[#BFC3C7]">Recipient UPI:</span>
@@ -423,23 +491,15 @@ export default function DynamicUpiPayment({
                       type="button"
                       onClick={handleCopyUpi}
                       className="p-1 rounded-sm bg-white/10 text-white hover:bg-white/20"
+                      title="Copy UPI ID"
                     >
                       {copiedUpi ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
                     </button>
                   </div>
                 </div>
-                <div className="flex justify-between items-center">
-                  <span className="text-[#BFC3C7]">Reference ID:</span>
-                  <div className="flex items-center space-x-2">
-                    <span className="text-zinc-300">{paymentReference}</span>
-                    <button
-                      type="button"
-                      onClick={handleCopyRef}
-                      className="p-1 rounded-sm bg-white/10 text-white hover:bg-white/20"
-                    >
-                      {copiedRef ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
-                    </button>
-                  </div>
+                <div className="flex justify-between items-center pt-2 border-t border-white/10">
+                  <span className="text-[#BFC3C7]">Beneficiary:</span>
+                  <span className="text-white font-bold">{upiName}</span>
                 </div>
               </div>
 
