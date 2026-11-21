@@ -113,7 +113,7 @@ export default function HomePage({ setActiveTab, onSelectEvent }: HomePageProps)
       {/* ──────────────────────────────────────────────────────────
           SECTION 1: 100svh VIRTUAL RUNWAY HERO WITH SCROLL PARALLAX
       ────────────────────────────────────────────────────────── */}
-      <section ref={heroRef} className="relative h-[100svh] min-h-[640px] flex items-center justify-center overflow-hidden">
+      <section ref={heroRef} className="relative min-h-[100svh] py-20 sm:py-28 flex items-center justify-center overflow-hidden">
         {/* Three.js Virtual Runway Catwalk Canvas */}
         <div className="absolute inset-0 z-0">
           <VirtualRunwayScene className="w-full h-full" />
@@ -372,7 +372,7 @@ export default function HomePage({ setActiveTab, onSelectEvent }: HomePageProps)
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: false, margin: '-60px' }}
             transition={{ duration: 0.7 }}
-            className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center p-8 sm:p-10 rounded-sm will-change-transform"
+            className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center p-5 sm:p-10 rounded-sm will-change-transform"
             style={{ 
               backgroundColor: 'var(--surface)', 
               border: '1px solid var(--border)',
@@ -417,7 +417,7 @@ export default function HomePage({ setActiveTab, onSelectEvent }: HomePageProps)
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: false, margin: '-60px' }}
             transition={{ duration: 0.7 }}
-            className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center p-8 sm:p-10 rounded-sm will-change-transform"
+            className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center p-5 sm:p-10 rounded-sm will-change-transform"
             style={{ 
               backgroundColor: 'var(--surface)', 
               border: '1px solid var(--border)',
@@ -462,7 +462,7 @@ export default function HomePage({ setActiveTab, onSelectEvent }: HomePageProps)
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: false, margin: '-60px' }}
             transition={{ duration: 0.7 }}
-            className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center p-8 sm:p-10 rounded-sm will-change-transform"
+            className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center p-5 sm:p-10 rounded-sm will-change-transform"
             style={{ 
               backgroundColor: 'var(--surface)', 
               border: '1px solid var(--border)',

@@ -115,7 +115,7 @@ export default function App() {
         <Navbar activeTab={activeTab} setActiveTab={setActiveTab} />
 
         {/* Main Content Area with Smooth Page Transitions */}
-        <main className={`flex-1 ${activeTab === 'home' ? '' : 'pt-24'}`}>
+        <main className={`flex-1 ${activeTab === 'home' ? '' : 'pt-20 sm:pt-24'}`}>
           <AnimatePresence mode="wait">
             <motion.div
               key={activeTab}

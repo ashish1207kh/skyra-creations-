@@ -545,31 +545,31 @@ export default function PaymentPage({
         </p>
 
         {/* Dual Mode Switcher Tabs */}
-        <div className="pt-4 flex items-center justify-center">
-          <div className="inline-flex p-1 rounded-sm bg-[#12141a] border border-white/15">
+        <div className="pt-4 flex items-center justify-center w-full">
+          <div className="grid grid-cols-1 sm:grid-cols-2 p-1 rounded-sm bg-[#12141a] border border-white/15 w-full max-w-xl gap-1">
             <button
               type="button"
               onClick={() => setMode('register')}
-              className={`px-5 py-2.5 rounded-sm font-mono-editorial text-xs font-bold uppercase tracking-wider transition-all flex items-center space-x-2 ${
+              className={`px-3 sm:px-5 py-3 sm:py-2.5 rounded-sm font-mono-editorial text-[11px] sm:text-xs font-bold uppercase tracking-wider transition-all flex items-center justify-center space-x-2 ${
                 mode === 'register'
                   ? 'bg-[#C6FF00] text-black shadow-lg shadow-[#C6FF00]/20'
                   : 'text-zinc-400 hover:text-white'
               }`}
             >
-              <CreditCard className="w-3.5 h-3.5" />
+              <CreditCard className="w-3.5 h-3.5 shrink-0" />
               <span>REGISTRATION TOKEN ADVANCE</span>
             </button>
 
             <button
               type="button"
               onClick={() => setMode('balance')}
-              className={`px-5 py-2.5 rounded-sm font-mono-editorial text-xs font-bold uppercase tracking-wider transition-all flex items-center space-x-2 ${
+              className={`px-3 sm:px-5 py-3 sm:py-2.5 rounded-sm font-mono-editorial text-[11px] sm:text-xs font-bold uppercase tracking-wider transition-all flex items-center justify-center space-x-2 ${
                 mode === 'balance'
                   ? 'bg-[#C6FF00] text-black shadow-lg shadow-[#C6FF00]/20'
                   : 'text-zinc-400 hover:text-white'
               }`}
             >
-              <Wallet className="w-3.5 h-3.5" />
+              <Wallet className="w-3.5 h-3.5 shrink-0" />
               <span>CLEAR REMAINING BALANCE</span>
             </button>
           </div>
@@ -845,11 +845,11 @@ export default function PaymentPage({
 
                       {/* Transaction ID / UTR */}
                       <div>
-                        <div className="flex items-center justify-between mb-1.5">
+                        <div className="flex flex-wrap items-center justify-between gap-1 mb-1.5">
                           <label className="font-mono-editorial text-[10px] uppercase tracking-wider text-[#BFC3C7]">
-                            12-DIGIT UPI REFERENCE / UTR NUMBER <span className="text-[#C6FF00]">*</span>
+                            UPI REFERENCE / UTR NUMBER <span className="text-[#C6FF00]">*</span>
                           </label>
-                          <span className="font-mono-editorial text-[9px] text-zinc-400">
+                          <span className="font-mono-editorial text-[9px] text-[#C6FF00] font-bold bg-white/5 px-2 py-0.5 rounded-sm">
                             {balanceTxId.trim().length} / 12 DIGITS
                           </span>
                         </div>
@@ -1104,11 +1104,11 @@ export default function PaymentPage({
                   <form onSubmit={handleRegSubmit} className="space-y-6">
                     {/* Transaction ID / UTR */}
                     <div>
-                      <div className="flex items-center justify-between mb-1.5">
+                      <div className="flex flex-wrap items-center justify-between gap-1 mb-1.5">
                         <label className="font-mono-editorial text-[10px] uppercase tracking-wider text-[#BFC3C7]">
-                          12-DIGIT UPI REFERENCE / UTR NUMBER <span className="text-[#C6FF00]">*</span>
+                          UPI REFERENCE / UTR NUMBER <span className="text-[#C6FF00]">*</span>
                         </label>
-                        <span className="font-mono-editorial text-[9px] text-zinc-400">
+                        <span className="font-mono-editorial text-[9px] text-[#C6FF00] font-bold bg-white/5 px-2 py-0.5 rounded-sm">
                           {regTxId.trim().length} / 12 DIGITS
                         </span>
                       </div>

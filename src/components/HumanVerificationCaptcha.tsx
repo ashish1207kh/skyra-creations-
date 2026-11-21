@@ -218,7 +218,7 @@ export default function HumanVerificationCaptcha({
             <div className="space-y-2">
               <div
                 ref={trackRef}
-                className="relative h-12 rounded-sm bg-[#12141a] border border-white/15 overflow-hidden flex items-center px-1"
+                className="relative h-12 rounded-sm bg-[#12141a] border border-white/15 overflow-hidden flex items-center px-1 touch-none"
               >
                 {/* Progress highlight behind thumb */}
                 <div
@@ -227,8 +227,8 @@ export default function HumanVerificationCaptcha({
                 />
 
                 {/* Background centered helper text */}
-                <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                  <span className="font-mono-editorial text-[10px] uppercase tracking-widest text-zinc-400 font-bold">
+                <div className="absolute inset-0 flex items-center justify-center pointer-events-none px-4">
+                  <span className="font-mono-editorial text-[9px] sm:text-[10px] uppercase tracking-wider sm:tracking-widest text-zinc-400 font-bold truncate">
                     SLIDE TO CONFIRM YOU ARE HUMAN →
                   </span>
                 </div>
@@ -238,7 +238,7 @@ export default function HumanVerificationCaptcha({
                   onMouseDown={handleTouchStart}
                   onTouchStart={handleTouchStart}
                   style={{ transform: `translateX(${sliderPos}px)` }}
-                  className="relative z-10 w-11 h-10 rounded-sm bg-[#C6FF00] text-black flex items-center justify-center cursor-grab active:cursor-grabbing shadow-lg transition-transform"
+                  className="relative z-10 w-11 h-10 rounded-sm bg-[#C6FF00] text-black flex items-center justify-center cursor-grab active:cursor-grabbing shadow-lg transition-transform touch-none"
                 >
                   <Lock className="w-4 h-4 text-black" />
                 </div>

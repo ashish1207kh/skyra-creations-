@@ -48,13 +48,13 @@ export default function Navbar({ activeTab, setActiveTab }: NavbarProps) {
       <header
         className="fixed top-0 left-0 right-0 z-50 transition-all duration-300"
         style={{
-          backgroundColor: scrolled ? 'rgba(5, 5, 7, 0.92)' : 'transparent',
-          borderBottom: scrolled ? '1px solid rgba(255, 255, 255, 0.08)' : '1px solid transparent',
-          backdropFilter: scrolled ? 'blur(16px)' : 'none',
+          backgroundColor: scrolled ? 'rgba(5, 5, 7, 0.96)' : 'rgba(5, 5, 7, 0.90)',
+          borderBottom: '1px solid rgba(255, 255, 255, 0.08)',
+          backdropFilter: 'blur(16px)',
         }}
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-20">
+          <div className="flex items-center justify-between h-16 sm:h-20">
             {/* Brand Logo */}
             <div
               onClick={() => handleNavClick('home')}
@@ -139,13 +139,15 @@ export default function Navbar({ activeTab, setActiveTab }: NavbarProps) {
 
             {/* Mobile Menu Button */}
             <div className="flex lg:hidden items-center space-x-2">
-              <button
-                onClick={() => handleNavClick('register')}
-                className="px-3.5 py-1.5 rounded-sm font-mono-editorial text-[10px] font-bold tracking-wider"
-                style={{ backgroundColor: '#C6FF00', color: '#000000' }}
-              >
-                REGISTER
-              </button>
+              {activeTab !== 'register' && (
+                <button
+                  onClick={() => handleNavClick('register')}
+                  className="px-3 py-1.5 rounded-sm font-mono-editorial text-[10px] font-bold tracking-wider"
+                  style={{ backgroundColor: '#C6FF00', color: '#000000' }}
+                >
+                  REGISTER
+                </button>
+              )}
 
               <button
                 type="button"
@@ -153,7 +155,7 @@ export default function Navbar({ activeTab, setActiveTab }: NavbarProps) {
                 className="p-2 text-white hover:text-[#C6FF00] transition-colors"
                 aria-label="Toggle navigation menu"
               >
-                {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+                {mobileMenuOpen ? <X className="w-5 h-5 sm:w-6 sm:h-6" /> : <Menu className="w-5 h-5 sm:w-6 sm:h-6" />}
               </button>
             </div>
           </div>

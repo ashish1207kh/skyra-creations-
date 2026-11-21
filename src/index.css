@@ -11,8 +11,8 @@
     --border: rgba(255, 255, 255, 0.08);
     --border-accent: rgba(198, 255, 0, 0.3);
     --text-primary: #F5F5F5;
-    --text-secondary: #A0A2AA;
-    --text-muted: #5A5D68;
+    --text-secondary: #BFC3C7;
+    --text-muted: #9DA1AF;
     --accent: #C6FF00;
     --accent-hover: #D8FF33;
     --silver: #BFC3C7;
@@ -53,7 +53,7 @@
 
   /* Responsive editorial headline clamp */
   .text-hero {
-    font-size: clamp(3rem, 8vw, 7.5rem);
+    font-size: clamp(2.35rem, 8vw, 7.5rem);
     line-height: 0.98;
     letter-spacing: -0.03em;
   }

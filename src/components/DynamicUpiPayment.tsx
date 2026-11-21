@@ -432,45 +432,45 @@ export default function DynamicUpiPayment({
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-50 bg-black/90 backdrop-blur-md flex items-center justify-center p-4"
+            className="fixed inset-0 z-50 bg-black/90 backdrop-blur-md flex items-center justify-center p-3 sm:p-4 overflow-y-auto"
           >
             <motion.div 
               initial={{ scale: 0.95, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.95, opacity: 0 }}
-              className="bg-[#12141a] border border-white/15 rounded-sm max-w-lg w-full p-6 sm:p-8 shadow-2xl relative max-h-[92vh] overflow-y-auto"
+              className="bg-[#12141a] border border-white/15 rounded-sm max-w-lg w-full p-4 sm:p-8 shadow-2xl relative max-h-[88vh] overflow-y-auto my-auto"
             >
               <button
                 type="button"
                 onClick={() => setIsModalOpen(false)}
-                className="absolute top-5 right-5 p-2 bg-white/10 hover:bg-white/20 text-white rounded-sm transition-colors"
+                className="absolute top-4 right-4 sm:top-5 sm:right-5 p-2 bg-white/10 hover:bg-white/20 text-white rounded-sm transition-colors"
                 title="Close Popup"
               >
-                <X className="w-5 h-5" />
+                <X className="w-4 h-4 sm:w-5 sm:h-5" />
               </button>
 
               {/* Modal Header */}
-              <div className="text-center mb-6">
+              <div className="text-center mb-4 sm:mb-6 pr-8 sm:pr-0">
                 <span className="px-3 py-1 rounded-sm bg-[#C6FF00]/10 text-[#C6FF00] border border-[#C6FF00]/30 font-mono-editorial text-[10px] font-bold uppercase tracking-wider inline-flex items-center space-x-1.5">
                   <Sparkles className="w-3.5 h-3.5" />
                   <span>SKYRA CREATIONS SECURE PORTAL</span>
                 </span>
-                <h3 className="text-2xl font-bold font-editorial text-white mt-2.5">
+                <h3 className="text-xl sm:text-2xl font-bold font-editorial text-white mt-2">
                   Complete Your Payment
                 </h3>
-                <p className="text-xs text-zinc-400 font-light mt-1">
+                <p className="text-[11px] sm:text-xs text-zinc-400 font-light mt-1">
                   Payable to <strong className="text-white">{upiName}</strong> ({bankName} • 5056)
                 </p>
-                <div className="mt-3 text-3xl font-black text-[#C6FF00] font-mono">
+                <div className="mt-2 text-2xl sm:text-3xl font-black text-[#C6FF00] font-mono">
                   ₹{amount.toLocaleString('en-IN')}
                 </div>
               </div>
 
               {/* Dynamic QR in Modal */}
-              <div className="bg-white p-4 rounded-sm shadow-xl w-fit mx-auto mb-6 border-2 border-white/20">
+              <div className="bg-white p-3 sm:p-4 rounded-sm shadow-xl w-fit mx-auto mb-4 sm:mb-6 border-2 border-white/20">
                 <QRCodeSVG
                   value={upiUri}
-                  size={200}
+                  size={165}
                   level="H"
                   includeMargin={false}
                 />

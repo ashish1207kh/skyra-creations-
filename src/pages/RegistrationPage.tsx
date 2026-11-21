@@ -1260,11 +1260,11 @@ export default function RegistrationPage({ setActiveTab, setLookupRegId, onProce
 
                   {/* UTR Input */}
                   <div>
-                    <div className="flex items-center justify-between mb-1.5">
+                    <div className="flex flex-wrap items-center justify-between gap-1 mb-1.5">
                       <label className="font-mono-editorial text-[10px] uppercase tracking-wider text-[#BFC3C7]">
-                        12-DIGIT UPI REFERENCE / UTR NUMBER <span className="text-[#C6FF00]">*</span>
+                        UPI REFERENCE / UTR NUMBER <span className="text-[#C6FF00]">*</span>
                       </label>
-                      <span className="font-mono-editorial text-[9px] text-zinc-400">
+                      <span className="font-mono-editorial text-[9px] text-[#C6FF00] font-bold bg-white/5 px-2 py-0.5 rounded-sm">
                         {transactionId.trim().length} / 12 DIGITS
                       </span>
                     </div>
