@@ -44,7 +44,9 @@ export default function Navbar({ activeTab, setActiveTab }: NavbarProps) {
             <div className="relative rounded-xl overflow-hidden bg-black border border-amber-500/30 p-1 shadow-lg shadow-amber-500/10 group-hover:border-amber-400/60 transition-all">
               <img 
                 src="/logo.png" 
-                alt="Skyra Creations Logo" 
+                alt="SKYRA CREATIONS — Runway Show 2026 Official Logo" 
+                width={48}
+                height={48}
                 className="w-12 h-12 object-contain group-hover:scale-105 transition-transform" 
               />
             </div>

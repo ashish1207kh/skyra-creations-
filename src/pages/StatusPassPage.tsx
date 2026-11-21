@@ -311,7 +311,13 @@ export default function StatusPassPage({ initialRegId, setActiveTab, setBalanceR
               <div className="flex items-center justify-between border-b border-amber-500/20 pb-5 mb-6">
                 <div className="flex items-center space-x-4">
                   <div className="w-14 h-14 rounded-xl bg-black border border-amber-500/40 p-1.5 flex items-center justify-center shadow-lg">
-                    <img src="/logo.png" alt="Skyra Creations Logo" className="w-full h-full object-contain" />
+                    <img 
+                      src="/logo.png" 
+                      alt="SKYRA CREATIONS — Digital Entry Pass Official Seal" 
+                      width={56}
+                      height={56}
+                      className="w-full h-full object-contain" 
+                    />
                   </div>
                   <div>
                     <h3 className="font-serif font-bold text-white text-xl tracking-wider">

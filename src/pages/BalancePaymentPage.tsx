@@ -304,8 +304,10 @@ export default function BalancePaymentPage({ initialRegId, setActiveTab, setLook
           <div className="shrink-0 bg-black/80 rounded-2xl p-2.5 border border-amber-500/30 shadow-xl self-start sm:self-center">
             <img 
               src="/logo.png" 
-              alt="Skyra Creations Logo" 
-              className="w-24 sm:w-28 h-auto object-contain"
+              alt="SKYRA CREATIONS — Balance Payment Portal Emblem" 
+              width={112}
+              height={112}
+              className="w-24 sm:w-28 h-auto object-contain" 
             />
           </div>
         </div>
@@ -585,7 +587,9 @@ export default function BalancePaymentPage({ initialRegId, setActiveTab, setLook
                 <div className="text-center p-4 bg-zinc-900/60 rounded-xl border border-zinc-800 flex flex-col items-center justify-center">
                   <img
                     src="/qr_code.png"
-                    alt="Skyra Creations UPI QR Code"
+                    alt="Official SKYRA CREATIONS UPI QR Code for Balance Payment"
+                    width={160}
+                    height={160}
                     className="w-40 h-40 object-contain rounded-xl bg-white p-2 shadow-lg mb-2"
                   />
                   <p className="text-xs text-zinc-400 font-medium">Scan with Google Pay, PhonePe, Paytm, or BHIM</p>

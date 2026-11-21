@@ -313,6 +313,50 @@ async function runTests() {
   assert.strictEqual(healthRes.getData().status, 'healthy');
   console.log('   ✓ Health check endpoint verified (status: healthy, uptime tracking active)');
 
+  // 12. Test Technical SEO & Metadata Assets
+  console.log('12. Testing Technical SEO & Metadata Assets...');
+  const fs = await import('fs');
+  const path = await import('path');
+
+  // A. robots.txt
+  const robotsPath = path.resolve(process.cwd(), 'public', 'robots.txt');
+  assert(fs.existsSync(robotsPath), 'public/robots.txt must exist');
+  const robotsTxt = fs.readFileSync(robotsPath, 'utf8');
+  assert(robotsTxt.includes('Sitemap: https://www.skyracreations.site/sitemap.xml'));
+  assert(robotsTxt.includes('Disallow: /admin'));
+  console.log('   ✓ robots.txt verified with correct sitemap declaration and admin disallow');
+
+  // B. sitemap.xml
+  const sitemapPath = path.resolve(process.cwd(), 'public', 'sitemap.xml');
+  assert(fs.existsSync(sitemapPath), 'public/sitemap.xml must exist');
+  const sitemapXml = fs.readFileSync(sitemapPath, 'utf8');
+  assert(sitemapXml.includes('<loc>https://www.skyracreations.site/</loc>'));
+  assert(sitemapXml.includes('<loc>https://www.skyracreations.site/register</loc>'));
+  assert(sitemapXml.includes('<loc>https://www.skyracreations.site/balance</loc>'));
+  assert(sitemapXml.includes('<loc>https://www.skyracreations.site/status</loc>'));
+  console.log('   ✓ sitemap.xml verified with all 4 canonical indexable endpoints');
+
+  // C. Open Graph 1200x630 Image
+  const ogImgPath = path.resolve(process.cwd(), 'public', 'og-image.png');
+  assert(fs.existsSync(ogImgPath), 'public/og-image.png must exist');
+  const ogBuf = fs.readFileSync(ogImgPath);
+  const ogWidth = ogBuf.readUInt32BE(16);
+  const ogHeight = ogBuf.readUInt32BE(20);
+  assert.strictEqual(ogWidth, 1200, 'OG image width must be 1200');
+  assert.strictEqual(ogHeight, 630, 'OG image height must be 630');
+  console.log('   ✓ Open Graph preview image verified (exact 1200x630 dimensions)');
+
+  // D. index.html Initial Metadata & JSON-LD
+  const indexPath = path.resolve(process.cwd(), 'index.html');
+  const indexHtml = fs.readFileSync(indexPath, 'utf8');
+  assert(indexHtml.includes('<link rel="canonical" href="https://www.skyracreations.site/" />'));
+  assert(indexHtml.includes('property="og:title"'));
+  assert(indexHtml.includes('name="twitter:card" content="summary_large_image"'));
+  assert(indexHtml.includes('"@type": "Organization"'));
+  assert(indexHtml.includes('"@type": "Event"'));
+  assert(indexHtml.includes('https://www.instagram.com/skyra_creations_/'));
+  console.log('   ✓ index.html initial metadata, canonical link & JSON-LD schema verified');
+
   console.log('\n=========================================');
   console.log('ALL SERVERLESS & STORAGE SUITES PASSED! ✓');
   console.log('=========================================');

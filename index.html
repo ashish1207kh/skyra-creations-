@@ -2,13 +2,124 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/png" href="/logo.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Skyra Creations — Runway Show & Balance Portal</title>
-    <!-- Google Fonts -->
+    <link rel="icon" type="image/png" href="/logo.png" />
+    <link rel="apple-touch-icon" href="/logo.png" />
+    
+    <!-- Primary Page Metadata -->
+    <title>SKYRA CREATIONS | Fashion Shows & Model Registration</title>
+    <meta name="description" content="Discover fashion shows, runway opportunities, modelling auditions and designer showcases with SKYRA CREATIONS. Explore upcoming events and register online." />
+    <meta name="keywords" content="SKYRA CREATIONS, Fashion shows in India, Model registration in India, Runway model registration, Fashion modelling auditions, Fashion events in India, Runway auditions, Designer showcase" />
+    <meta name="author" content="SKYRA CREATIONS" />
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
+    <meta name="theme-color" content="#0b0d13" />
+
+    <!-- Canonical URL (Preferred Domain: https://www.skyracreations.site) -->
+    <link rel="canonical" href="https://www.skyracreations.site/" />
+
+    <!-- Open Graph / Facebook / WhatsApp / Instagram / LinkedIn -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="SKYRA CREATIONS" />
+    <meta property="og:title" content="SKYRA CREATIONS | Fashion Shows & Model Registration" />
+    <meta property="og:description" content="Discover fashion shows, runway opportunities, modelling auditions and designer showcases with SKYRA CREATIONS. Explore upcoming events and register online." />
+    <meta property="og:url" content="https://www.skyracreations.site/" />
+    <meta property="og:image" content="https://www.skyracreations.site/og-image.png" />
+    <meta property="og:image:secure_url" content="https://www.skyracreations.site/og-image.png" />
+    <meta property="og:image:type" content="image/png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="SKYRA CREATIONS — Runway Show 2026 Model Registration" />
+    <meta property="og:locale" content="en_IN" />
+
+    <!-- Twitter / X Card Metadata -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:site" content="@skyra_creations" />
+    <meta name="twitter:title" content="SKYRA CREATIONS | Fashion Shows & Model Registration" />
+    <meta name="twitter:description" content="Discover fashion shows, runway opportunities, modelling auditions and designer showcases with SKYRA CREATIONS. Register online for Runway Show 2026." />
+    <meta name="twitter:image" content="https://www.skyracreations.site/og-image.png" />
+    <meta name="twitter:image:alt" content="SKYRA CREATIONS Runway Show 2026" />
+
+    <!-- Google Fonts Preconnect -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,500;0,600;0,700;0,800;1,600&display=swap" rel="stylesheet">
+
+    <!-- Structured Data: Organization, WebSite & Event Schema (JSON-LD) -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "Organization",
+          "@id": "https://www.skyracreations.site/#organization",
+          "name": "SKYRA CREATIONS",
+          "url": "https://www.skyracreations.site",
+          "logo": {
+            "@type": "ImageObject",
+            "url": "https://www.skyracreations.site/logo.png",
+            "width": 612,
+            "height": 612
+          },
+          "sameAs": [
+            "https://www.instagram.com/skyra_creations_/"
+          ],
+          "founder": {
+            "@type": "Person",
+            "name": "B. Sriram",
+            "jobTitle": "Founder & CEO"
+          },
+          "contactPoint": {
+            "@type": "ContactPoint",
+            "telephone": "+91-9342049287",
+            "contactType": "Customer Support",
+            "areaServed": "IN",
+            "availableLanguage": ["en", "ta", "hi"]
+          }
+        },
+        {
+          "@type": "WebSite",
+          "@id": "https://www.skyracreations.site/#website",
+          "url": "https://www.skyracreations.site",
+          "name": "SKYRA CREATIONS",
+          "description": "Official Fashion, Modelling & Runway Event Portal",
+          "publisher": {
+            "@id": "https://www.skyracreations.site/#organization"
+          },
+          "inLanguage": "en-IN"
+        },
+        {
+          "@type": "Event",
+          "@id": "https://www.skyracreations.site/#runway-show-2026",
+          "name": "SKYRA CREATIONS Runway Show 2026",
+          "description": "Discover runway opportunities, modelling auditions, and designer showcases with SKYRA CREATIONS. Official model registration for Runway Show 2026.",
+          "eventAttendanceMode": "https://schema.org/OfflineEventAttendanceMode",
+          "eventStatus": "https://schema.org/EventScheduled",
+          "organizer": {
+            "@id": "https://www.skyracreations.site/#organization"
+          },
+          "location": {
+            "@type": "Place",
+            "name": "Chennai City Center (Prime Venue)",
+            "address": {
+              "@type": "PostalAddress",
+              "addressLocality": "Chennai",
+              "addressRegion": "Tamil Nadu",
+              "addressCountry": "IN"
+            }
+          },
+          "offers": {
+            "@type": "Offer",
+            "url": "https://www.skyracreations.site/register",
+            "price": "1500",
+            "priceCurrency": "INR",
+            "availability": "https://schema.org/InStock",
+            "validFrom": "2026-01-01"
+          },
+          "image": "https://www.skyracreations.site/og-image.png"
+        }
+      ]
+    }
+    </script>
   </head>
   <body class="bg-[#0b0d13] text-zinc-100 min-h-screen selection:bg-amber-500 selection:text-black">
     <div id="root"></div>

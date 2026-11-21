@@ -302,7 +302,9 @@ export default function RegistrationPage({ setActiveTab, setLookupRegId }: Regis
             <div className="relative mb-5 overflow-hidden rounded-2xl border border-amber-500/30 bg-black shadow-lg">
               <img
                 src="/founder.jpg"
-                alt="B. SRIRAM — Founder & CEO, Skyra Creations"
+                alt="B. SRIRAM — Founder &amp; CEO, Skyra Creations Runway Show 2026"
+                width={380}
+                height={420}
                 className="w-full h-auto max-h-[420px] object-cover object-top group-hover:scale-105 transition-transform duration-500"
               />
               <div className="absolute bottom-3 left-3 right-3 flex items-center justify-between">
@@ -361,6 +363,22 @@ export default function RegistrationPage({ setActiveTab, setLookupRegId }: Regis
                     <MessageSquare className="w-3.5 h-3.5 text-emerald-400" />
                     <span>WhatsApp</span>
                   </a>
+
+                  {/* Official Instagram Profile */}
+                  <a
+                    href="https://www.instagram.com/skyra_creations_/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="col-span-2 flex items-center justify-center space-x-2 px-3 py-2.5 rounded-xl bg-pink-950/40 hover:bg-pink-900/60 text-pink-300 border border-pink-500/30 text-xs font-semibold transition-colors shadow-sm"
+                    aria-label="Follow SKYRA CREATIONS on Instagram"
+                  >
+                    <svg className="w-3.5 h-3.5 text-pink-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
+                      <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
+                      <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
+                    </svg>
+                    <span>Follow @skyra_creations_</span>
+                  </a>
                 </div>
 
                 {/* Event Location & Schedule Notice in Founder Card */}
@@ -407,7 +425,9 @@ export default function RegistrationPage({ setActiveTab, setLookupRegId }: Regis
           <div className="shrink-0 bg-black/80 rounded-2xl p-2.5 border border-amber-500/30 shadow-xl self-start sm:self-center">
             <img 
               src="/logo.png" 
-              alt="Skyra Creations Logo" 
+              alt="SKYRA CREATIONS — Runway Show 2026 Model Registration Emblem" 
+              width={112}
+              height={112}
               className="w-24 sm:w-28 h-auto object-contain"
             />
           </div>
