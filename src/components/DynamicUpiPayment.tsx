@@ -15,92 +15,41 @@ import {
 import { motion, AnimatePresence } from 'motion/react';
 import { PaymentInfo } from '../types/index';
 
-// High-fidelity official payment app brand SVG icons
-const GooglePayIcon = ({ className = "w-5 h-5" }: { className?: string }) => (
-  <svg className={className} viewBox="0 0 24 24" fill="none">
-    <path
-      d="M23.49 12.27c0-.85-.07-1.68-.21-2.47H12v4.67h6.44a5.51 5.51 0 0 1-2.39 3.62v3.01h3.87c2.26-2.09 3.57-5.16 3.57-8.83z"
-      fill="#4285F4"
-    />
-    <path
-      d="M12 24c3.24 0 5.96-1.07 7.95-2.91l-3.87-3.01c-1.08.72-2.45 1.15-4.08 1.15-3.14 0-5.8-2.12-6.75-4.97H1.25v3.1A11.99 11.99 0 0 0 12 24z"
-      fill="#34A853"
-    />
-    <path
-      d="M5.25 14.26a7.19 7.19 0 0 1 0-4.52V6.64H1.25a11.99 11.99 0 0 0 0 10.72l4-3.1z"
-      fill="#FBBC05"
-    />
-    <path
-      d="M12 4.77c1.76 0 3.35.61 4.59 1.8l3.44-3.44C17.95 1.18 15.23 0 12 0 7.39 0 3.44 2.64 1.25 6.64l4 3.1c.95-2.85 3.61-4.97 6.75-4.97z"
-      fill="#EA4335"
-    />
-  </svg>
+// High-fidelity official payment app brand icons matching official brand assets
+const GooglePayIcon = ({ className = "h-5 w-auto" }: { className?: string }) => (
+  <img
+    src="/images/payment-apps/gpay.png"
+    alt="Google Pay"
+    className={`${className} object-contain`}
+    loading="eager"
+  />
 );
 
-const PhonePeIcon = ({ className = "w-5 h-5" }: { className?: string }) => (
-  <svg className={className} viewBox="0 0 36 36" fill="none">
-    <circle cx="18" cy="18" r="18" fill="#5F259F" />
-    <path
-      d="M24.2 13.5c-.3-.8-.9-1.3-1.8-1.6-.8-.3-1.8-.4-3.1-.4h-4.1v13h2.6v-4.2h1.6c1.3 0 2.3-.2 3.1-.7.8-.5 1.4-1.2 1.6-2.1.2-1 .2-1.7 0-2.4-.1-.7-.4-1.2-.9-1.6zm-2.7 2.7c-.2.4-.5.7-.8.8-.4.2-1 .2-1.7.2h-1.4v-3.1h1.4c.7 0 1.3.1 1.6.3.4.2.7.5.8.8.2.3.2.7.1 1z"
-      fill="#FFFFFF"
-    />
-    <path
-      d="M19.5 6.4l-7.7 10.8h3.6v9.2h2.6v-9.2h3.8l-2.3-10.8z"
-      fill="#FFFFFF"
-      fillOpacity="0.15"
-    />
-    <path
-      d="M13.8 22.7h2.7v-5.5h-2.7v5.5zm5.8-15.7l-6.4 8.9h3.3v2.2h2.7v-2.2h2.6l-2.2-8.9z"
-      fill="#FFFFFF"
-    />
-  </svg>
+const PhonePeIcon = ({ className = "h-5 w-auto" }: { className?: string }) => (
+  <img
+    src="/images/payment-apps/phonepe-icon.png"
+    alt="PhonePe"
+    className={`${className} object-contain`}
+    loading="eager"
+  />
 );
 
-const PaytmIcon = ({ className = "h-4" }: { className?: string }) => (
-  <svg className={className} viewBox="0 0 68 22" fill="none">
-    <rect width="68" height="22" rx="4" fill="#002E6E" />
-    <text
-      x="6"
-      y="15.5"
-      fontFamily="system-ui, -apple-system, sans-serif"
-      fontSize="13"
-      fontWeight="900"
-      fill="#FFFFFF"
-      letterSpacing="-0.6px"
-    >
-      Pay
-    </text>
-    <text
-      x="33"
-      y="15.5"
-      fontFamily="system-ui, -apple-system, sans-serif"
-      fontSize="13"
-      fontWeight="900"
-      fill="#00BAF2"
-      letterSpacing="-0.6px"
-    >
-      tm
-    </text>
-  </svg>
+const PaytmIcon = ({ className = "h-4 w-auto" }: { className?: string }) => (
+  <img
+    src="/images/payment-apps/paytm-white.png"
+    alt="Paytm"
+    className={`${className} object-contain`}
+    loading="eager"
+  />
 );
 
-const BhimIcon = ({ className = "h-4" }: { className?: string }) => (
-  <svg className={className} viewBox="0 0 64 22" fill="none">
-    <rect width="64" height="22" rx="4" fill="#0A3A60" />
-    <path d="M7 4h3.5l4 14h-3.5L7 4z" fill="#00A859" />
-    <path d="M13.5 4H17l4 14h-3.5l-4-14z" fill="#F47920" />
-    <text
-      x="25"
-      y="15.5"
-      fontFamily="system-ui, -apple-system, sans-serif"
-      fontSize="11"
-      fontWeight="900"
-      fill="#FFFFFF"
-      letterSpacing="0.6px"
-    >
-      BHIM
-    </text>
-  </svg>
+const BhimIcon = ({ className = "h-4 w-auto" }: { className?: string }) => (
+  <img
+    src="/images/payment-apps/bhim-mark-white.png"
+    alt="BHIM UPI"
+    className={`${className} object-contain`}
+    loading="eager"
+  />
 );
 
 const UpiBrandIcon = ({ className = "w-5 h-5" }: { className?: string }) => (
@@ -223,7 +172,7 @@ export default function DynamicUpiPayment({
           onClick={() => handleLaunchUpi('gpay')}
           className="flex items-center justify-center space-x-2 py-3 px-3 rounded-sm bg-[#12141a] hover:bg-[#1a1c24] border border-white/10 hover:border-white/30 text-white text-xs font-medium transition-all group active:scale-98 shadow-sm"
         >
-          <GooglePayIcon className="w-5 h-5 shrink-0" />
+          <GooglePayIcon className="h-5 w-auto shrink-0" />
           <span className="font-mono-editorial text-[11px] font-bold">Google Pay</span>
         </button>
 
@@ -233,7 +182,7 @@ export default function DynamicUpiPayment({
           onClick={() => handleLaunchUpi('phonepe')}
           className="flex items-center justify-center space-x-2 py-3 px-3 rounded-sm bg-[#12141a] hover:bg-[#1a1c24] border border-white/10 hover:border-purple-500/40 text-white text-xs font-medium transition-all group active:scale-98 shadow-sm"
         >
-          <PhonePeIcon className="w-5 h-5 shrink-0" />
+          <PhonePeIcon className="h-5 w-auto shrink-0 rounded-full" />
           <span className="font-mono-editorial text-[11px] font-bold">PhonePe</span>
         </button>
 
@@ -243,7 +192,7 @@ export default function DynamicUpiPayment({
           onClick={() => handleLaunchUpi('paytm')}
           className="flex items-center justify-center space-x-2 py-3 px-3 rounded-sm bg-[#12141a] hover:bg-[#1a1c24] border border-white/10 hover:border-cyan-400/40 text-white text-xs font-medium transition-all group active:scale-98 shadow-sm"
         >
-          <PaytmIcon className="h-4 shrink-0" />
+          <PaytmIcon className="h-4 w-auto shrink-0" />
           <span className="font-mono-editorial text-[11px] font-bold">Paytm</span>
         </button>
 
@@ -253,7 +202,7 @@ export default function DynamicUpiPayment({
           onClick={() => handleLaunchUpi('bhim')}
           className="flex items-center justify-center space-x-2 py-3 px-3 rounded-sm bg-[#12141a] hover:bg-[#1a1c24] border border-white/10 hover:border-emerald-400/40 text-white text-xs font-medium transition-all group active:scale-98 shadow-sm"
         >
-          <BhimIcon className="h-4 shrink-0" />
+          <BhimIcon className="h-4 w-auto shrink-0" />
           <span className="font-mono-editorial text-[11px] font-bold">BHIM UPI</span>
         </button>
 
@@ -395,8 +344,14 @@ export default function DynamicUpiPayment({
             />
           </div>
 
-          <div className="mt-4 text-[11px] text-zinc-400 space-y-1">
+          <div className="mt-4 text-[11px] text-zinc-400 space-y-1.5">
             <span className="block text-white font-mono-editorial text-xs font-semibold">SCAN WITH ANY UPI APP</span>
+            <div className="flex items-center justify-center space-x-3.5 pt-1">
+              <img src="/images/payment-apps/gpay.png" alt="Google Pay" className="h-4.5 w-auto object-contain opacity-90 hover:opacity-100 transition-opacity" />
+              <img src="/images/payment-apps/phonepe-icon.png" alt="PhonePe" className="h-4.5 w-auto object-contain opacity-90 hover:opacity-100 transition-opacity rounded-full" />
+              <img src="/images/payment-apps/paytm-white.png" alt="Paytm" className="h-3.5 w-auto object-contain opacity-90 hover:opacity-100 transition-opacity" />
+              <img src="/images/payment-apps/bhim-mark-white.png" alt="BHIM" className="h-3.5 w-auto object-contain opacity-90 hover:opacity-100 transition-opacity" />
+            </div>
             <span className="text-zinc-500 font-mono-editorial text-[10px] block">Google Pay • PhonePe • Paytm • BHIM • Cred • Banking Apps</span>
           </div>
         </div>
@@ -462,13 +417,21 @@ export default function DynamicUpiPayment({
               </div>
 
               {/* Dynamic QR in Modal */}
-              <div className="bg-white p-3 sm:p-4 rounded-sm shadow-xl w-fit mx-auto mb-4 sm:mb-6 border-2 border-white/20">
+              <div className="bg-white p-3 sm:p-4 rounded-sm shadow-xl w-fit mx-auto mb-2 border-2 border-white/20">
                 <QRCodeSVG
                   value={upiUri}
                   size={165}
                   level="H"
                   includeMargin={false}
                 />
+              </div>
+
+              {/* Supported App Strip in Modal */}
+              <div className="flex items-center justify-center space-x-3 mb-4 py-1">
+                <img src="/images/payment-apps/gpay.png" alt="Google Pay" className="h-4 w-auto object-contain opacity-85" />
+                <img src="/images/payment-apps/phonepe-icon.png" alt="PhonePe" className="h-4 w-auto object-contain opacity-85 rounded-full" />
+                <img src="/images/payment-apps/paytm-white.png" alt="Paytm" className="h-3.5 w-auto object-contain opacity-85" />
+                <img src="/images/payment-apps/bhim-mark-white.png" alt="BHIM" className="h-3 w-auto object-contain opacity-85" />
               </div>
 
               {/* UPI Buttons in Modal */}
