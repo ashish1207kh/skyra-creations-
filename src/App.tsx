@@ -105,8 +105,8 @@ export default function App() {
       className="min-h-screen flex flex-col transition-colors relative"
       style={{ backgroundColor: 'var(--bg-primary)', color: 'var(--text-primary)' }}
     >
-        {/* Luxury Haute Couture First-Load Preloader */}
-        <LuxuryPageLoader durationMs={850} />
+        {/* Luxury Haute Couture First-Load Video Preloader */}
+        <LuxuryPageLoader durationMs={5500} />
 
         {/* High-Speed Route Switcher Laser Loading Beam */}
         <AnimatePresence>
