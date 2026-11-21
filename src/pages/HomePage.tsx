@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import { 
   Sparkles, 
   ArrowRight, 
@@ -6,7 +6,7 @@ import {
   Eye,
   Check
 } from 'lucide-react';
-import { motion } from 'motion/react';
+import { motion, useScroll, useTransform } from 'motion/react';
 import VirtualRunwayScene from '../components/VirtualRunwayScene';
 import TiltCard from '../components/TiltCard';
 import MarqueeStrip from '../components/MarqueeStrip';
@@ -18,12 +18,53 @@ interface HomePageProps {
 }
 
 export default function HomePage({ setActiveTab, onSelectEvent }: HomePageProps) {
+  const heroRef = useRef<HTMLDivElement>(null);
+  const { scrollYProgress: heroProgress } = useScroll({
+    target: heroRef,
+    offset: ['start start', 'end start'],
+  });
+  const heroScale = useTransform(heroProgress, [0, 1], [1, 0.88]);
+  const heroOpacity = useTransform(heroProgress, [0, 0.8], [1, 0]);
+  const heroY = useTransform(heroProgress, [0, 1], [0, -80]);
+
+  const sec2Ref = useRef<HTMLDivElement>(null);
+  const { scrollYProgress: sec2Progress } = useScroll({
+    target: sec2Ref,
+    offset: ['start end', 'end start'],
+  });
+  const sec2ImgY = useTransform(sec2Progress, [0, 1], [-30, 30]);
+
+  const interludeRef = useRef<HTMLDivElement>(null);
+  const { scrollYProgress: interludeProgress } = useScroll({
+    target: interludeRef,
+    offset: ['start end', 'end start'],
+  });
+  const interludeImgY = useTransform(interludeProgress, [0, 1], [-45, 45]);
+
   return (
-    <div className="space-y-28 sm:space-y-36 pb-24 overflow-x-hidden">
+    <div className="space-y-28 sm:space-y-36 pb-24 overflow-x-hidden relative">
+      {/* Continuous Drifting Ambient Runway Glow Orb */}
+      <motion.div
+        animate={{
+          x: [-30, 40, -30],
+          y: [-20, 30, -20],
+          scale: [1, 1.15, 1],
+        }}
+        transition={{
+          duration: 18,
+          repeat: Infinity,
+          ease: 'easeInOut',
+        }}
+        className="fixed top-1/3 left-1/3 w-[650px] h-[400px] rounded-full blur-[150px] pointer-events-none opacity-20 z-0"
+        style={{
+          background: 'radial-gradient(circle, rgba(198, 255, 0, 0.35) 0%, rgba(220, 38, 38, 0.2) 55%, transparent 75%)',
+        }}
+      />
+
       {/* ──────────────────────────────────────────────────────────
-          SECTION 1: 100svh VIRTUAL RUNWAY HERO
+          SECTION 1: 100svh VIRTUAL RUNWAY HERO WITH SCROLL PARALLAX
       ────────────────────────────────────────────────────────── */}
-      <section className="relative h-[100svh] min-h-[640px] flex items-center justify-center overflow-hidden">
+      <section ref={heroRef} className="relative h-[100svh] min-h-[640px] flex items-center justify-center overflow-hidden">
         {/* Three.js Virtual Runway Catwalk Canvas */}
         <div className="absolute inset-0 z-0">
           <VirtualRunwayScene className="w-full h-full" />
@@ -43,7 +84,10 @@ export default function HomePage({ setActiveTab, onSelectEvent }: HomePageProps)
           style={{ background: 'radial-gradient(ellipse at center, var(--accent) 0%, transparent 70%)' }}
         />
 
-        <div className="relative z-20 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-6 pt-8 sm:pt-12">
+        <motion.div 
+          style={{ scale: heroScale, opacity: heroOpacity, y: heroY }}
+          className="relative z-20 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-6 pt-8 sm:pt-12 will-change-transform"
+        >
           {/* Official SKYRA CREATIONS Brandmark Showcase */}
           <motion.div
             initial={{ opacity: 0, scale: 0.88, y: -12 }}
@@ -187,7 +231,7 @@ export default function HomePage({ setActiveTab, onSelectEvent }: HomePageProps)
               <div className="font-mono-editorial mt-0.5" style={{ color: 'var(--text-muted)', fontSize: '10px' }}>TRANSPARENT SYSTEM</div>
             </div>
           </motion.div>
-        </div>
+        </motion.div>
       </section>
 
       {/* Infinite Runway Couture Marquee */}
@@ -196,15 +240,16 @@ export default function HomePage({ setActiveTab, onSelectEvent }: HomePageProps)
       {/* ──────────────────────────────────────────────────────────
           SECTION 2: BRAND INTRODUCTION (ASYMMETRIC 2-COLUMN)
       ────────────────────────────────────────────────────────── */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <section ref={sec2Ref} className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
-          {/* Left: Editorial Image 3:4 */}
+          {/* Left: Editorial Image 3:4 with Scroll Parallax */}
           <motion.div 
             initial={{ opacity: 0, x: -30 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true, margin: '-80px' }}
             transition={{ duration: 0.8 }}
-            className="lg:col-span-5 relative"
+            style={{ y: sec2ImgY }}
+            className="lg:col-span-5 relative will-change-transform"
           >
             <div 
               className="relative overflow-hidden shadow-2xl group rounded-sm"
@@ -558,15 +603,20 @@ export default function HomePage({ setActiveTab, onSelectEvent }: HomePageProps)
       />
 
       {/* ──────────────────────────────────────────────────────────
-          SECTION 5: CAMPAIGN INTERLUDE (FULL-BLEED EDITORIAL BREAK)
+          SECTION 5: CAMPAIGN INTERLUDE (FULL-BLEED EDITORIAL BREAK WITH PARALLAX)
       ────────────────────────────────────────────────────────── */}
       <section 
-        className="relative py-28 sm:py-36 overflow-hidden bg-cover bg-center mx-4 sm:mx-8 rounded-sm"
-        style={{ 
-          backgroundImage: `url('/images/runway-1.jpg')`,
-          border: '1px solid var(--border)'
-        }}
+        ref={interludeRef}
+        className="relative py-28 sm:py-36 overflow-hidden mx-4 sm:mx-8 rounded-sm"
+        style={{ border: '1px solid var(--border)' }}
       >
+        <motion.div 
+          className="absolute -inset-16 bg-cover bg-center pointer-events-none will-change-transform"
+          style={{ 
+            backgroundImage: `url('/images/runway-1.jpg')`,
+            y: interludeImgY 
+          }}
+        />
         <div className="absolute inset-0 bg-black/85 backdrop-blur-xs" />
         
         <motion.div 

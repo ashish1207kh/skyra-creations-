@@ -13,6 +13,7 @@ import StatusPassPage from './pages/StatusPassPage';
 import AdminDashboard from './pages/AdminDashboard';
 import NotFoundPage from './pages/NotFoundPage';
 import { updatePageSeo } from './lib/seo';
+import { motion, useScroll, useSpring, AnimatePresence } from 'motion/react';
 import { Globe, Phone, ShieldCheck, X } from 'lucide-react';
 import InstagramIcon from './components/InstagramIcon';
 
@@ -57,6 +58,14 @@ export default function App() {
   const [showTermsModal, setShowTermsModal] = useState<boolean>(false);
   const [showPrivacyModal, setShowPrivacyModal] = useState<boolean>(false);
 
+  // Haute Couture Global Scroll Progress
+  const { scrollYProgress } = useScroll();
+  const scaleX = useSpring(scrollYProgress, {
+    stiffness: 140,
+    damping: 30,
+    restDelta: 0.001
+  });
+
   const setActiveTab = (tab: string) => {
     setActiveTabState(tab);
     updatePageSeo(tab);
@@ -84,90 +93,110 @@ export default function App() {
 
   return (
     <div 
-      className="min-h-screen flex flex-col transition-colors"
+      className="min-h-screen flex flex-col transition-colors relative"
       style={{ backgroundColor: 'var(--bg-primary)', color: 'var(--text-primary)' }}
     >
+        {/* Precision Haute Couture Global Scroll Progress Beam */}
+        <motion.div
+          className="fixed top-0 left-0 right-0 h-[2.5px] z-50 origin-left pointer-events-none"
+          style={{
+            scaleX,
+            background: 'linear-gradient(90deg, #BFC3C7 0%, #C6FF00 50%, #FF2233 100%)',
+            boxShadow: '0 0 10px rgba(198, 255, 0, 0.75), 0 0 3px rgba(255, 255, 255, 0.5)',
+          }}
+        />
+
         {/* Navigation Header */}
         <Navbar activeTab={activeTab} setActiveTab={setActiveTab} />
 
-        {/* Main Content Area */}
+        {/* Main Content Area with Smooth Page Transitions */}
         <main className={`flex-1 ${activeTab === 'home' ? '' : 'pt-24'}`}>
-          {activeTab === 'home' && (
-            <HomePage 
-              setActiveTab={setActiveTab} 
-              onSelectEvent={(id) => setSelectedEventId(id)}
-            />
-          )}
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={activeTab}
+              initial={{ opacity: 0, y: 14, filter: 'blur(3px)' }}
+              animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
+              exit={{ opacity: 0, y: -14, filter: 'blur(3px)' }}
+              transition={{ duration: 0.36, ease: [0.16, 1, 0.3, 1] }}
+            >
+              {activeTab === 'home' && (
+                <HomePage 
+                  setActiveTab={setActiveTab} 
+                  onSelectEvent={(id) => setSelectedEventId(id)}
+                />
+              )}
 
-          {activeTab === 'about' && (
-            <AboutPage setActiveTab={setActiveTab} />
-          )}
+              {activeTab === 'about' && (
+                <AboutPage setActiveTab={setActiveTab} />
+              )}
 
-          {activeTab === 'what-we-do' && (
-            <WhatWeDoPage setActiveTab={setActiveTab} />
-          )}
+              {activeTab === 'what-we-do' && (
+                <WhatWeDoPage setActiveTab={setActiveTab} />
+              )}
 
-          {activeTab === 'events' && (
-            <UpcomingEventsPage 
-              setActiveTab={setActiveTab} 
-              onSelectEvent={(id) => setSelectedEventId(id)}
-            />
-          )}
+              {activeTab === 'events' && (
+                <UpcomingEventsPage 
+                  setActiveTab={setActiveTab} 
+                  onSelectEvent={(id) => setSelectedEventId(id)}
+                />
+              )}
 
-          {activeTab === 'event-details' && (
-            <EventDetailPage 
-              eventId={selectedEventId} 
-              setActiveTab={setActiveTab} 
-            />
-          )}
+              {activeTab === 'event-details' && (
+                <EventDetailPage 
+                  eventId={selectedEventId} 
+                  setActiveTab={setActiveTab} 
+                />
+              )}
 
-          {activeTab === 'gallery' && (
-            <GalleryPage setActiveTab={setActiveTab} />
-          )}
+              {activeTab === 'gallery' && (
+                <GalleryPage setActiveTab={setActiveTab} />
+              )}
 
-          {activeTab === 'contact' && (
-            <ContactPage setActiveTab={setActiveTab} />
-          )}
+              {activeTab === 'contact' && (
+                <ContactPage setActiveTab={setActiveTab} />
+              )}
 
-          {activeTab === 'register' && (
-            <RegistrationPage 
-              setActiveTab={setActiveTab} 
-              setLookupRegId={(id) => {
-                setLookupRegId(id);
-                setActiveTab('status');
-              }} 
-            />
-          )}
+              {activeTab === 'register' && (
+                <RegistrationPage 
+                  setActiveTab={setActiveTab} 
+                  setLookupRegId={(id) => {
+                    setLookupRegId(id);
+                    setActiveTab('status');
+                  }} 
+                />
+              )}
 
-          {activeTab === 'balance' && (
-            <BalancePaymentPage 
-              initialRegId={balanceRegId} 
-              setActiveTab={setActiveTab}
-              setLookupRegId={(id) => {
-                setLookupRegId(id);
-                setActiveTab('status');
-              }} 
-            />
-          )}
+              {activeTab === 'balance' && (
+                <BalancePaymentPage 
+                  initialRegId={balanceRegId} 
+                  setActiveTab={setActiveTab}
+                  setLookupRegId={(id) => {
+                    setLookupRegId(id);
+                    setActiveTab('status');
+                  }} 
+                />
+              )}
 
-          {activeTab === 'status' && (
-            <StatusPassPage 
-              initialRegId={lookupRegId} 
-              setActiveTab={setActiveTab}
-              setBalanceRegId={(id) => {
-                setBalanceRegId(id);
-                setActiveTab('balance');
-              }} 
-            />
-          )}
+              {activeTab === 'status' && (
+                <StatusPassPage 
+                  initialRegId={lookupRegId} 
+                  setActiveTab={setActiveTab}
+                  setBalanceRegId={(id) => {
+                    setBalanceRegId(id);
+                    setActiveTab('balance');
+                  }} 
+                />
+              )}
 
-          {activeTab === 'admin' && (
-            <AdminDashboard />
-          )}
+              {activeTab === 'admin' && (
+                <AdminDashboard />
+              )}
 
-          {activeTab === 'not-found' && (
-            <NotFoundPage setActiveTab={setActiveTab} />
-          )}
+              {activeTab === 'not-found' && (
+                <NotFoundPage setActiveTab={setActiveTab} />
+              )}
+            </motion.div>
+          </AnimatePresence>
         </main>
 
         {/* Unified Editorial Footer */}

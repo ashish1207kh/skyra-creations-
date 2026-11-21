@@ -210,7 +210,13 @@ export default function VirtualRunwayScene({ className = '', onSceneReady }: Vir
     };
     window.addEventListener('resize', handleResize);
 
-    // 8. Viewport Visibility Tracking
+    // 8. Viewport Visibility & Scroll Tracking
+    let currentScrollY = typeof window !== 'undefined' ? window.scrollY : 0;
+    const handleScroll = () => {
+      currentScrollY = window.scrollY || 0;
+    };
+    window.addEventListener('scroll', handleScroll, { passive: true });
+
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
@@ -229,7 +235,12 @@ export default function VirtualRunwayScene({ className = '', onSceneReady }: Vir
 
       const elapsed = clock.getElapsedTime();
 
-      // Smooth camera interpolation
+      // Smooth camera glide along runway on scroll
+      const scrollFactor = Math.min(currentScrollY / 700, 1.4);
+      const targetCamZ = 9.5 - scrollFactor * 3.8;
+      camera.position.z += (targetCamZ - camera.position.z) * 0.06;
+
+      // Smooth camera interpolation based on cursor
       camera.position.x += (targetX - camera.position.x) * 0.04;
       camera.position.y += (targetY - camera.position.y) * 0.04;
 
@@ -257,6 +268,7 @@ export default function VirtualRunwayScene({ className = '', onSceneReady }: Vir
     // Cleanup resources on unmount
     return () => {
       cancelAnimationFrame(animationFrameId);
+      window.removeEventListener('scroll', handleScroll);
       window.removeEventListener('mousemove', handlePointerMove);
       window.removeEventListener('resize', handleResize);
       observer.disconnect();

@@ -1,10 +1,19 @@
 import React from 'react';
-import { motion } from 'motion/react';
+import { 
+  motion, 
+  useScroll, 
+  useSpring, 
+  useTransform, 
+  useVelocity, 
+  useAnimationFrame, 
+  useMotionValue 
+} from 'motion/react';
 
 interface MarqueeStripProps {
   text?: string[];
   reverse?: boolean;
   className?: string;
+  baseVelocity?: number;
 }
 
 export default function MarqueeStrip({ 
@@ -19,13 +28,46 @@ export default function MarqueeStrip({
     'STAGE GROOMING',
   ], 
   reverse = false, 
-  className = '' 
+  className = '',
+  baseVelocity = 0.7,
 }: MarqueeStripProps) {
   const repeated = [...text, ...text, ...text, ...text];
+  const baseX = useMotionValue(reverse ? -25 : 0);
+  
+  const { scrollY } = useScroll();
+  const scrollVelocity = useVelocity(scrollY);
+  const smoothVelocity = useSpring(scrollVelocity, {
+    damping: 50,
+    stiffness: 300,
+  });
+
+  const velocityFactor = useTransform(smoothVelocity, [0, 1000], [0, 4], {
+    clamp: false,
+  });
+
+  useAnimationFrame((_, delta) => {
+    const dir = reverse ? 1 : -1;
+    let moveBy = dir * baseVelocity * (delta / 16);
+
+    const vFactor = velocityFactor.get();
+    if (Math.abs(vFactor) > 0.05) {
+      moveBy += dir * Math.abs(vFactor) * 1.5;
+    }
+
+    let next = baseX.get() + moveBy;
+    if (next <= -50) {
+      next = 0;
+    } else if (next >= 0) {
+      next = -50;
+    }
+    baseX.set(next);
+  });
+
+  const x = useTransform(baseX, (v) => `${v}%`);
 
   return (
     <div 
-      className={`overflow-hidden py-3 select-none flex ${className}`}
+      className={`overflow-hidden py-3.5 select-none flex ${className}`}
       style={{
         backgroundColor: '#0c0d11',
         borderTop: '1px solid rgba(255, 255, 255, 0.08)',
@@ -33,21 +75,15 @@ export default function MarqueeStrip({
       }}
     >
       <motion.div
-        initial={{ x: reverse ? '-50%' : '0%' }}
-        animate={{ x: reverse ? '0%' : '-50%' }}
-        transition={{
-          repeat: Infinity,
-          ease: 'linear',
-          duration: 32,
-        }}
-        className="flex shrink-0 items-center space-x-8"
+        style={{ x }}
+        className="flex shrink-0 items-center space-x-8 will-change-transform"
       >
         {repeated.map((item, idx) => (
           <div key={idx} className="flex items-center space-x-8 shrink-0">
             <span className="font-mono-editorial text-xs tracking-[0.2em] text-white">
               {item}
             </span>
-            <span className="w-1.5 h-1.5 rounded-full bg-[#C6FF00]" />
+            <span className="w-1.5 h-1.5 rounded-full bg-[#C6FF00] shadow-[0_0_8px_#C6FF00]" />
           </div>
         ))}
       </motion.div>
