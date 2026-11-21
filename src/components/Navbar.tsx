@@ -110,7 +110,7 @@ export default function Navbar({ activeTab, setActiveTab }: NavbarProps) {
             </nav>
 
             {/* Desktop Right CTAs */}
-            <div className="hidden lg:flex items-center space-x-3 xl:space-x-4 shrink-0">
+            <div className="hidden lg:flex items-center space-x-3.5 xl:space-x-5 shrink-0">
               <button
                 onClick={() => handleNavClick('payment')}
                 className={`font-mono-editorial text-[11px] tracking-wider py-2 px-2.5 transition-colors flex items-center space-x-1.5 ${
@@ -122,19 +122,6 @@ export default function Navbar({ activeTab, setActiveTab }: NavbarProps) {
               >
                 <CreditCard className="w-3.5 h-3.5 text-[#C6FF00]" />
                 <span>PAYMENT</span>
-              </button>
-
-              <button
-                onClick={() => handleNavClick('status')}
-                className={`font-mono-editorial text-[11px] tracking-wider py-2 px-2.5 transition-colors flex items-center space-x-1.5 ${
-                  activeTab === 'status'
-                    ? 'text-[#C6FF00]'
-                    : 'text-zinc-400 hover:text-white'
-                }`}
-                title="Check Verification Status or Pass"
-              >
-                <UserCheck className="w-3.5 h-3.5 text-[#C6FF00]" />
-                <span>CHECK PASS</span>
               </button>
 
               <button
