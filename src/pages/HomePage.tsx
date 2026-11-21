@@ -86,7 +86,7 @@ export default function HomePage({ setActiveTab, onSelectEvent }: HomePageProps)
 
         <motion.div 
           style={{ scale: heroScale, opacity: heroOpacity, y: heroY }}
-          className="relative z-20 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-6 pt-8 sm:pt-12 will-change-transform"
+          className="relative z-20 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-6 pt-24 sm:pt-28 pb-8 will-change-transform"
         >
           {/* Official SKYRA CREATIONS Brandmark Showcase */}
           <motion.div
@@ -127,24 +127,6 @@ export default function HomePage({ setActiveTab, onSelectEvent }: HomePageProps)
                 />
               </div>
             </div>
-          </motion.div>
-
-          {/* Editorial Category Tag */}
-          <motion.div 
-            initial={{ opacity: 0, y: 12 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            className="inline-flex items-center space-x-2 px-3.5 py-1 rounded-full backdrop-blur-md"
-            style={{ 
-              backgroundColor: 'rgba(0,0,0,0.5)', 
-              border: '1px solid var(--border)',
-              color: 'var(--accent)'
-            }}
-          >
-            <span className="w-1.5 h-1.5 rounded-full animate-ping" style={{ backgroundColor: 'var(--accent)' }} />
-            <span className="font-mono-editorial text-[10px] sm:text-[11px] tracking-widest">
-              OFFICIAL FASHION &amp; RUNWAY PLATFORM
-            </span>
           </motion.div>
 
           {/* Hero Headline */}

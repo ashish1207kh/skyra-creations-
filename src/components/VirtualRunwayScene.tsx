@@ -167,27 +167,7 @@ export default function VirtualRunwayScene({ className = '', onSceneReady }: Vir
     amberFill.position.set(-4, 4, -4);
     scene.add(amberFill);
 
-    // 5. Ambient Atmospheric Glitter / Floating Dust Particles
-    const particlesCount = 260;
-    const particlePositions = new Float32Array(particlesCount * 3);
-    for (let i = 0; i < particlesCount; i++) {
-      particlePositions[i * 3] = (Math.random() - 0.5) * 12;
-      particlePositions[i * 3 + 1] = Math.random() * 6 + 0.2;
-      particlePositions[i * 3 + 2] = -Math.random() * 28 + 4;
-    }
-    const particleGeo = new THREE.BufferGeometry();
-    particleGeo.setAttribute('position', new THREE.BufferAttribute(particlePositions, 3));
-    const particleMat = new THREE.PointsMaterial({
-      color: 0xc6ff00,
-      size: 0.045,
-      transparent: true,
-      opacity: 0.65,
-      blending: THREE.AdditiveBlending,
-    });
-    const particles = new THREE.Points(particleGeo, particleMat);
-    scene.add(particles);
-
-    // 6. Interactive Mouse Parallax
+    // 5. Interactive Mouse Parallax
     let targetX = 0;
     let targetY = 2.2;
     const handlePointerMove = (e: MouseEvent) => {
@@ -248,13 +228,6 @@ export default function VirtualRunwayScene({ className = '', onSceneReady }: Vir
       camera.position.y += Math.sin(elapsed * 0.8) * 0.001;
       camera.lookAt(0, 1.2, -14);
 
-      // Subtle particle float
-      const positions = particleGeo.attributes.position.array as Float32Array;
-      for (let i = 0; i < particlesCount; i++) {
-        positions[i * 3 + 1] += Math.sin(elapsed + i) * 0.0015;
-      }
-      particleGeo.attributes.position.needsUpdate = true;
-
       // Pulse the electric lime back light
       limeLight.intensity = 2.0 + Math.sin(elapsed * 2) * 0.4;
 
@@ -281,8 +254,6 @@ export default function VirtualRunwayScene({ className = '', onSceneReady }: Vir
       ledMat.dispose();
       archMat.dispose();
       silverTrimMat.dispose();
-      particleGeo.dispose();
-      particleMat.dispose();
       renderer.dispose();
     };
   }, [onSceneReady]);

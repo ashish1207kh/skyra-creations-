@@ -58,7 +58,7 @@ export default function Navbar({ activeTab, setActiveTab }: NavbarProps) {
             {/* Brand Logo */}
             <div
               onClick={() => handleNavClick('home')}
-              className="flex items-center cursor-pointer group select-none py-1"
+              className="flex items-center cursor-pointer group select-none py-1 shrink-0"
             >
               <div className="relative flex items-center">
                 {/* Dynamic Ambient Aura on Hover */}
@@ -79,17 +79,10 @@ export default function Navbar({ activeTab, setActiveTab }: NavbarProps) {
                   }}
                 />
               </div>
-
-              {/* Editorial Divider & Runway Discipline Badge */}
-              <div className="hidden sm:flex items-center pl-4 ml-4 border-l border-white/15 h-8">
-                <span className="font-mono-editorial text-[9px] tracking-[0.24em] text-zinc-400 group-hover:text-[#C6FF00] transition-colors font-medium">
-                  HAUTE COUTURE • RUNWAY
-                </span>
-              </div>
             </div>
 
             {/* Desktop Navigation Links */}
-            <nav className="hidden lg:flex items-center space-x-7">
+            <nav className="hidden lg:flex items-center space-x-6 xl:space-x-8 shrink-0">
               {navLinks.map((link) => {
                 const isActive = activeTab === link.id || (link.id === 'events' && activeTab === 'event-details');
                 return (

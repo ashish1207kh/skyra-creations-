@@ -4,7 +4,6 @@ import {
   MapPin, 
   Globe, 
   MessageSquare, 
-  HelpCircle, 
   Send
 } from 'lucide-react';
 import { motion } from 'motion/react';
@@ -31,29 +30,6 @@ export default function ContactPage({ setActiveTab }: ContactPageProps) {
     window.open(url, '_blank');
     setSubmitted(true);
   };
-
-  const faqs = [
-    {
-      q: 'What is the total registration fee for Runway Show 2026?',
-      a: 'The total participation fee is ₹3,000. You can register by paying a token advance of ₹500, ₹1,000, or ₹1,500. The remaining balance can be cleared through our balance payment portal prior to the event.',
-    },
-    {
-      q: 'Where will the event be held?',
-      a: 'The event will be held in Chennai City Center (strictly within the central urban zone, not in remote outskirts). The exact venue address and reporting times are communicated to verified contestants 10 days before the event.',
-    },
-    {
-      q: 'Who is eligible to participate?',
-      a: 'Participation is open to male, female, kids (ages 4-12), teens (ages 13-17), commercial models (ages 18-35), plus-size models, and fitness/classic models (up to age 50). Prior experience is not mandatory.',
-    },
-    {
-      q: 'Is the registration fee refundable?',
-      a: 'No. All registration fees are strictly non-refundable and non-transferable under all circumstances, as production, venue booking, and stage allocation are committed upon slot reservation.',
-    },
-    {
-      q: 'How do I receive my contestant pass?',
-      a: 'Once your UPI transaction reference (UTR) and screenshot are manually verified by our team, a digital verification pass with an official QR code is issued on our Check Status & Pass portal.',
-    },
-  ];
 
   return (
     <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-16 space-y-20">
@@ -163,17 +139,16 @@ export default function ContactPage({ setActiveTab }: ContactPageProps) {
         </motion.a>
       </div>
 
-      {/* Contact Form & FAQs */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-start">
-        {/* Form */}
+      {/* Contact Form */}
+      <div className="max-w-3xl mx-auto w-full">
         <motion.div 
-          initial={{ opacity: 0, x: -20 }}
-          whileInView={{ opacity: 1, x: 0 }}
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.7 }}
-          className="lg:col-span-7 p-8 sm:p-10 rounded-sm shadow-2xl space-y-6 bg-[#12141a] border border-white/10"
+          className="p-8 sm:p-12 rounded-sm shadow-2xl space-y-6 bg-[#12141a] border border-white/10"
         >
-          <div>
+          <div className="text-center sm:text-left">
             <h2 className="font-display text-2xl sm:text-3xl font-bold text-white">
               SEND INQUIRY TO OPERATIONS DESK
             </h2>
@@ -232,36 +207,6 @@ export default function ContactPage({ setActiveTab }: ContactPageProps) {
               <span>CONNECT VIA WHATSAPP (+91 93420 49287)</span>
             </MagneticButton>
           </form>
-        </motion.div>
-
-        {/* FAQs */}
-        <motion.div 
-          initial={{ opacity: 0, x: 20 }}
-          whileInView={{ opacity: 1, x: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.7 }}
-          className="lg:col-span-5 space-y-4"
-        >
-          <div className="flex items-center space-x-2 font-mono-editorial text-[11px] font-bold text-[#C6FF00]">
-            <HelpCircle className="w-4 h-4" />
-            <span>FREQUENTLY ASKED QUESTIONS</span>
-          </div>
-
-          <div className="space-y-3">
-            {faqs.map((faq, i) => (
-              <div 
-                key={i} 
-                className="p-5 rounded-sm space-y-1.5 bg-[#12141a] border border-white/10"
-              >
-                <h4 className="text-xs font-bold text-white font-mono-editorial">
-                  {faq.q}
-                </h4>
-                <p className="text-[11px] leading-relaxed font-light text-[#BFC3C7]">
-                  {faq.a}
-                </p>
-              </div>
-            ))}
-          </div>
         </motion.div>
       </div>
     </div>
