@@ -8,6 +8,10 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     return res.status(405).json({ detail: 'Method not allowed' });
   }
 
+  res.setHeader('X-Robots-Tag', 'noindex, nofollow, noarchive');
+  res.setHeader('X-Content-Type-Options', 'nosniff');
+  res.setHeader('Cache-Control', 'no-store, max-age=0');
+
   const driver = await getActiveDatabaseDriver();
   const mongoOk = process.env.MONGODB_URI ? await isMongoHealthy() : null;
 

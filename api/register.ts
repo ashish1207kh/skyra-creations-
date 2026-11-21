@@ -29,6 +29,9 @@ const registerSchema = z.object({
 });
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
+  res.setHeader('X-Robots-Tag', 'noindex, nofollow, noarchive');
+  res.setHeader('X-Content-Type-Options', 'nosniff');
+
   if (req.method !== 'POST') {
     return res.status(405).json({ detail: 'Method not allowed' });
   }

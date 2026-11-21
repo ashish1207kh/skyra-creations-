@@ -1,12 +1,21 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { getEventConfig } from './_lib/database.js';
+import { checkRateLimit } from './_lib/rateLimit.js';
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   if (req.method !== 'GET') {
     return res.status(405).json({ detail: 'Method not allowed' });
   }
 
+  res.setHeader('X-Robots-Tag', 'noindex, nofollow, noarchive');
+  res.setHeader('X-Content-Type-Options', 'nosniff');
   res.setHeader('Cache-Control', 's-maxage=60, stale-while-revalidate');
+
+  const clientIp = (req.headers['x-forwarded-for'] as string) || req.socket?.remoteAddress || '127.0.0.1';
+  const { allowed } = checkRateLimit(clientIp + ':payment_info', 60, 60);
+  if (!allowed) {
+    return res.status(429).json({ detail: 'Too many requests. Please wait.' });
+  }
 
   try {
     const eventConfig = await getEventConfig('EVT-CHX-2026');

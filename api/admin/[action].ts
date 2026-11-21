@@ -36,6 +36,10 @@ const CONFIGURED_ADMIN_EMAIL = process.env.ADMIN_EMAIL || 'admin@skyracreations.
 const CONFIGURED_ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'SkyraDirector@Runway2026';
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
+  res.setHeader('X-Robots-Tag', 'noindex, nofollow, noarchive');
+  res.setHeader('X-Content-Type-Options', 'nosniff');
+  res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
+
   const rawAction = (req.query.action as string) || (req.url?.split('?')[0].split('/').pop() || '');
   const action = rawAction.toLowerCase();
 

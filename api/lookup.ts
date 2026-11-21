@@ -7,16 +7,24 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     return res.status(405).json({ detail: 'Method not allowed' });
   }
 
+  res.setHeader('X-Robots-Tag', 'noindex, nofollow, noarchive');
+  res.setHeader('X-Content-Type-Options', 'nosniff');
+
   // Rate-limit public lookup requests to prevent enumeration (20 lookups per minute per IP)
-  const clientIp = (req.headers['x-forwarded-for'] as string) || req.socket.remoteAddress || '127.0.0.1';
+  const clientIp = (req.headers['x-forwarded-for'] as string) || req.socket?.remoteAddress || '127.0.0.1';
   const { allowed } = checkRateLimit(clientIp + ':lookup', 20, 60);
   if (!allowed) {
     return res.status(429).json({ detail: 'Too many lookup requests. Please wait a moment.' });
   }
 
-  const query = (req.query.query as string || req.query.q as string || '').trim();
-  if (!query) {
+  const rawQuery = req.query.query || req.query.q;
+  if (!rawQuery || typeof rawQuery !== 'string') {
     return res.status(400).json({ detail: 'Please enter a valid Registration ID or registered email/mobile.' });
+  }
+
+  const query = rawQuery.trim();
+  if (!query || query.length > 80 || /[$<>{}\0]/.test(query)) {
+    return res.status(400).json({ detail: 'Invalid characters or excessive length in search parameter.' });
   }
 
   try {

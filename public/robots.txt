@@ -5,15 +5,7 @@
 
 User-agent: *
 Allow: /
-Allow: /register
-Allow: /balance
-Allow: /status
-
-# Disallow administrative and internal endpoints
 Disallow: /admin
-Disallow: /api/
-Disallow: /*?*query=
-Disallow: /*?*keys=
 
 # Sitemap Declaration
 Sitemap: https://www.skyracreations.site/sitemap.xml

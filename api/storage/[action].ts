@@ -11,6 +11,9 @@ const uploadSchema = z.object({
 });
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
+  res.setHeader('X-Robots-Tag', 'noindex, nofollow, noarchive');
+  res.setHeader('X-Content-Type-Options', 'nosniff');
+
   const rawAction = (req.query.action as string) || (req.url?.split('?')[0].split('/').pop() || '');
   const action = rawAction.toLowerCase();
 
