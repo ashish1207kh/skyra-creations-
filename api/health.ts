@@ -1,7 +1,7 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
-import { getActiveDatabaseDriver } from './_lib/database';
-import { isMongoHealthy } from './_lib/mongoClient';
-import { isSupabaseConfigured } from './_lib/supabaseAdmin';
+import { getActiveDatabaseDriver } from './_lib/database.js';
+import { isMongoHealthy } from './_lib/mongoClient.js';
+import { isSupabaseConfigured } from './_lib/supabaseAdmin.js';
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   if (req.method !== 'GET') {

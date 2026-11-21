@@ -9,6 +9,10 @@
  *   npx tsx scripts/migrate-supabase-to-mongodb.ts
  */
 
+import dns from 'dns';
+try {
+  dns.setServers(['8.8.8.8', '1.1.1.1']);
+} catch {}
 import { MongoClient } from 'mongodb';
 import { getSupabaseAdmin, isSupabaseConfigured } from '../api/_lib/supabaseAdmin.js';
 import { encryptField, computeBlindIndex } from '../api/_lib/encryption.js';
