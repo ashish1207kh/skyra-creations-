@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <defs>
+    <radialGradient id="charcoalGrad" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#181a20" />
+      <stop offset="100%" stop-color="#0b0d13" />
+    </radialGradient>
+    <linearGradient id="silverGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff" />
+      <stop offset="50%" stop-color="#c0c0c0" />
+      <stop offset="100%" stop-color="#808080" />
+    </linearGradient>
+    <linearGradient id="lightningGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ff3b30" />
+      <stop offset="100%" stop-color="#d32f2f" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Outer Charcoal Circle -->
+  <circle cx="50" cy="50" r="48" fill="url(#charcoalGrad)" stroke="url(#silverGrad)" stroke-width="2.5" />
+  
+  <!-- Inner Ring -->
+  <circle cx="50" cy="50" r="41" fill="none" stroke="#27272a" stroke-width="1" stroke-dasharray="2 3" />
+  
+  <!-- Stylized Metallic S -->
+  <path d="M 62 33 C 58 26 42 26 38 33 C 35 38 38 43 45 46 L 55 50 C 63 53 66 59 62 66 C 58 74 40 74 36 67" 
+        fill="none" stroke="url(#silverGrad)" stroke-width="6" stroke-linecap="round" />
+  
+  <!-- Signature Red Lightning Bolt Accent -->
+  <polygon points="56,22 44,48 53,48 42,78 60,44 51,44" fill="url(#lightningGrad)" />
+</svg>

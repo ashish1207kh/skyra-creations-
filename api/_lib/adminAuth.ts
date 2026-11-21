@@ -1,31 +1,68 @@
 import type { VercelRequest } from '@vercel/node';
 import crypto from 'crypto';
 
+export type AdminRole = 'OWNER' | 'ADMINISTRATOR' | 'PAYMENT_VERIFICATION_STAFF' | 'VIEWER';
+
 // Rotated secure admin secret key from environment or strong fallback
 const ADMIN_SECRET = process.env.ADMIN_SECRET_KEY || 'skyra_production_admin_secret_key_v2_2026';
 const SESSION_EXPIRY_MS = 24 * 60 * 60 * 1000; // 24 hours
 
 export interface AdminSession {
   email: string;
-  role: 'superadmin' | 'verifier';
+  role: AdminRole;
   issuedAt: number;
   expiresAt: number;
 }
 
-// Active session cache in memory for local / serverless duration
+// Active session cache in memory for serverless duration
 const activeSessions = new Map<string, AdminSession>();
 
-export function createAdminSession(email: string, role: 'superadmin' | 'verifier' = 'superadmin'): string {
+export function normalizeRole(role: string): AdminRole {
+  const r = role.toUpperCase();
+  if (r === 'OWNER') return 'OWNER';
+  if (r === 'ADMINISTRATOR' || r === 'SUPERADMIN' || r === 'ADMIN') return 'ADMINISTRATOR';
+  if (r === 'PAYMENT_VERIFICATION_STAFF' || r === 'VERIFIER' || r === 'STAFF') return 'PAYMENT_VERIFICATION_STAFF';
+  return 'VIEWER';
+}
+
+export function createAdminSession(email: string, rawRole: string = 'OWNER'): string {
   const token = `skyra_${crypto.randomUUID()}_${Date.now()}`;
   const now = Date.now();
   const session: AdminSession = {
     email,
-    role,
+    role: normalizeRole(rawRole),
     issuedAt: now,
     expiresAt: now + SESSION_EXPIRY_MS,
   };
   activeSessions.set(token, session);
   return token;
+}
+
+export function hasPermission(role: AdminRole, action: string): boolean {
+  switch (action) {
+    case 'delete-event':
+    case 'purge-data':
+    case 'manage-admins':
+      return role === 'OWNER';
+
+    case 'export':
+    case 'upload-qr':
+    case 'edit-event':
+      return role === 'OWNER' || role === 'ADMINISTRATOR';
+
+    case 'verify-payment':
+    case 'reject-payment':
+      return role === 'OWNER' || role === 'ADMINISTRATOR' || role === 'PAYMENT_VERIFICATION_STAFF';
+
+    case 'stats':
+    case 'participants':
+    case 'auth':
+    case 'login':
+      return true;
+
+    default:
+      return role === 'OWNER' || role === 'ADMINISTRATOR';
+  }
 }
 
 export function verifyAdminAuth(req: VercelRequest): { valid: boolean; session?: AdminSession; error?: string } {
@@ -62,7 +99,7 @@ export function verifyAdminAuth(req: VercelRequest): { valid: boolean; session?:
       valid: true,
       session: {
         email: 'admin@skyracreations.com',
-        role: 'superadmin',
+        role: 'OWNER',
         issuedAt: Date.now(),
         expiresAt: Date.now() + SESSION_EXPIRY_MS,
       },

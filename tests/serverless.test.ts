@@ -357,6 +357,79 @@ async function runTests() {
   assert(indexHtml.includes('https://www.instagram.com/skyra_creations_/'));
   console.log('   ✓ index.html initial metadata, canonical link & JSON-LD schema verified');
 
+  // 13. Test Field-Level Encryption & Blind Indexing
+  console.log('13. Testing AES-256-GCM field encryption & HMAC-SHA256 blind indexing...');
+  const { encryptField, decryptField, computeBlindIndex } = await import('../api/_lib/encryption.js');
+  const sensitivePhone = '+919876543210';
+  const encryptedPhone = encryptField(sensitivePhone);
+  assert(encryptedPhone && encryptedPhone !== sensitivePhone, 'Phone must be encrypted');
+  const decryptedPhone = decryptField(encryptedPhone);
+  assert.strictEqual(decryptedPhone, sensitivePhone, 'Decrypted phone must match original');
+
+  const blindIdx1 = computeBlindIndex(sensitivePhone);
+  const blindIdx2 = computeBlindIndex('+91 98765-43210'); // Same phone with formatting
+  assert.strictEqual(blindIdx1, blindIdx2, 'Blind indexes must match regardless of formatting');
+  console.log('   ✓ AES-256-GCM encryption/decryption & HMAC-SHA256 blind indexing verified');
+
+  // 14. Test RBAC Permissions Matrix
+  console.log('14. Testing Role-Based Access Control (RBAC) permission matrix...');
+  const { hasPermission } = await import('../api/_lib/adminAuth.js');
+  assert(hasPermission('OWNER', 'delete-event'), 'OWNER must be permitted to delete events');
+  assert(!hasPermission('ADMINISTRATOR', 'delete-event'), 'ADMINISTRATOR must not delete events');
+  assert(hasPermission('ADMINISTRATOR', 'export'), 'ADMINISTRATOR must be permitted to export');
+  assert(hasPermission('PAYMENT_VERIFICATION_STAFF', 'verify-payment'), 'VERIFIER must be permitted to verify payment');
+  assert(!hasPermission('PAYMENT_VERIFICATION_STAFF', 'export'), 'VERIFIER must not export full database');
+  assert(hasPermission('VIEWER', 'stats'), 'VIEWER must be permitted to view stats');
+  assert(!hasPermission('VIEWER', 'verify-payment'), 'VIEWER must not verify payments');
+  console.log('   ✓ RBAC permission hierarchy verified for OWNER, ADMIN, VERIFIER, and VIEWER');
+
+  // 15. Test Favicon & PWA Manifest Assets
+  console.log('15. Testing Favicon & PWA Web Manifest assets...');
+  const faviconIcoPath = path.resolve(process.cwd(), 'public', 'favicon.ico');
+  const faviconSvgPath = path.resolve(process.cwd(), 'public', 'favicon.svg');
+  const manifestPath = path.resolve(process.cwd(), 'public', 'site.webmanifest');
+  assert(fs.existsSync(faviconIcoPath), 'public/favicon.ico must exist');
+  assert(fs.existsSync(faviconSvgPath), 'public/favicon.svg must exist');
+  assert(fs.existsSync(manifestPath), 'public/site.webmanifest must exist');
+
+  const manifestJson = JSON.parse(fs.readFileSync(manifestPath, 'utf8'));
+  assert.strictEqual(manifestJson.name, 'SKYRA CREATIONS');
+  assert.strictEqual(manifestJson.theme_color, '#0b0d13');
+  assert(manifestJson.icons.length >= 6, 'Manifest must declare at least 6 icon sizes');
+  console.log('   ✓ Favicon suite and site.webmanifest validated');
+
+  // 16. Test Database Abstraction Layer & PII Masking
+  console.log('16. Testing Database Abstraction Layer & PII Masking...');
+  const { getActiveDatabaseDriver, maskPII } = await import('../api/_lib/database.js');
+  const activeDriver = await getActiveDatabaseDriver();
+  assert(['mongodb', 'supabase', 'in-memory'].includes(activeDriver), 'Must resolve to a valid driver');
+  
+  const sampleParticipant = {
+    id: 'test-1',
+    reg_id: 'SC-2026-9999',
+    event_id: 'EVT-CHX-2026',
+    full_name: 'Test Candidate',
+    email: 'candidate@example.com',
+    dob: '15-05-2000',
+    gender: 'Female',
+    mobile: '+919876543210',
+    whatsapp: '+919876543210',
+    city: 'Chennai',
+    category: 'Runway Model',
+    total_fee: 5000,
+    amount_paid: 5000,
+    balance_due: 0,
+    status: 'FULLY_PAID' as const,
+    created_at: new Date().toISOString(),
+    updated_at: new Date().toISOString(),
+  };
+
+  const masked = maskPII(sampleParticipant);
+  assert(masked.mobile.includes('****'), 'Mobile must be masked for unprivileged viewers');
+  assert(masked.email.includes('****'), 'Email must be masked for unprivileged viewers');
+  assert.strictEqual(masked.dob, '**-**-****', 'DOB must be masked for unprivileged viewers');
+  console.log('   ✓ Database driver resolved to [' + activeDriver + '] and PII masking verified');
+
   console.log('\n=========================================');
   console.log('ALL SERVERLESS & STORAGE SUITES PASSED! ✓');
   console.log('=========================================');
