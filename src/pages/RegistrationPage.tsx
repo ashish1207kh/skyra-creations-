@@ -484,14 +484,29 @@ export default function RegistrationPage({ setActiveTab, setLookupRegId }: Regis
             </p>
           </div>
 
-          <div className="shrink-0 bg-black/80 rounded-2xl p-2.5 border border-amber-500/30 shadow-xl self-start sm:self-center">
-            <img 
-              src="/logo.png" 
-              alt="SKYRA CREATIONS — Runway Show 2026 Model Registration Emblem" 
-              width={112}
-              height={112}
-              className="w-24 sm:w-28 h-auto object-contain"
+          <div className="shrink-0 relative group self-start sm:self-center select-none">
+            <div 
+              className="absolute -inset-2 rounded-full blur-xl opacity-50 pointer-events-none"
+              style={{
+                background: 'radial-gradient(circle, rgba(220, 38, 38, 0.5) 0%, rgba(198, 255, 0, 0.35) 45%, transparent 75%)',
+              }}
             />
+            <div 
+              className="relative w-24 h-24 sm:w-28 sm:h-28 rounded-full p-[2px] shadow-2xl"
+              style={{
+                background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.6) 0%, rgba(198, 255, 0, 0.4) 40%, rgba(220, 38, 38, 0.6) 100%)',
+              }}
+            >
+              <div className="w-full h-full rounded-full bg-black overflow-hidden flex items-center justify-center p-1">
+                <img 
+                  src="/logo.png" 
+                  alt="SKYRA CREATIONS — Runway Show 2026 Model Registration Emblem" 
+                  width={112}
+                  height={112}
+                  className="w-full h-full object-cover rounded-full scale-[1.08]"
+                />
+              </div>
+            </div>
           </div>
         </div>
 

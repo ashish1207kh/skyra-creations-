@@ -58,32 +58,48 @@ export default function Navbar({ activeTab, setActiveTab }: NavbarProps) {
             {/* Brand Logo & Title */}
             <div
               onClick={() => handleNavClick('home')}
-              className="flex items-center space-x-3 cursor-pointer group"
+              className="flex items-center space-x-3.5 cursor-pointer group select-none"
             >
-              <div
-                className="w-10 h-10 rounded-sm p-1 flex items-center justify-center transition-all group-hover:scale-105"
-                style={{
-                  backgroundColor: '#000000',
-                  border: '1px solid rgba(255, 255, 255, 0.15)',
-                }}
-              >
-                <img
-                  src="/logo.png"
-                  alt="SKYRA CREATIONS Logo"
-                  width={36}
-                  height={36}
-                  className="w-full h-full object-contain"
+              {/* Premium Circular Haute Couture Emblem */}
+              <div className="relative shrink-0 flex items-center justify-center">
+                {/* Dynamic Ambient Aura */}
+                <div 
+                  className="absolute -inset-1 rounded-full blur-md opacity-45 group-hover:opacity-90 transition-opacity duration-500 pointer-events-none"
+                  style={{
+                    background: 'radial-gradient(circle, rgba(220, 38, 38, 0.45) 0%, rgba(198, 255, 0, 0.25) 50%, transparent 75%)',
+                  }}
                 />
+                
+                {/* Precision Haute Couture Bezel */}
+                <div
+                  className="relative w-12 h-12 sm:w-13 sm:h-13 rounded-full p-[1.5px] shadow-2xl transition-all duration-500 group-hover:scale-105"
+                  style={{
+                    background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.45) 0%, rgba(198, 255, 0, 0.3) 45%, rgba(220, 38, 38, 0.5) 100%)',
+                    boxShadow: '0 0 20px rgba(0, 0, 0, 0.9), 0 0 10px rgba(255, 255, 255, 0.1)',
+                  }}
+                >
+                  <div className="w-full h-full rounded-full bg-black overflow-hidden flex items-center justify-center p-0.5">
+                    <img
+                      src="/logo.png"
+                      alt="SKYRA CREATIONS Official Logo"
+                      width={52}
+                      height={52}
+                      className="w-full h-full object-cover rounded-full scale-[1.08] group-hover:scale-[1.15] transition-transform duration-700"
+                    />
+                  </div>
+                </div>
               </div>
-              <div>
+
+              {/* Refined Brand Wordmark */}
+              <div className="flex flex-col">
                 <span
-                  className="font-display text-base sm:text-lg font-bold tracking-widest block transition-colors group-hover:text-[#C6FF00]"
+                  className="font-display text-base sm:text-lg font-extrabold tracking-[0.18em] block transition-colors group-hover:text-[#C6FF00]"
                   style={{ color: '#F5F5F5' }}
                 >
                   SKYRA CREATIONS
                 </span>
                 <span
-                  className="font-mono-editorial block text-[9px] tracking-[0.2em]"
+                  className="font-mono-editorial block text-[9px] tracking-[0.24em] font-medium"
                   style={{ color: 'var(--text-muted)' }}
                 >
                   HAUTE COUTURE • RUNWAY
@@ -180,9 +196,28 @@ export default function Navbar({ activeTab, setActiveTab }: NavbarProps) {
           >
             {/* Header in Drawer */}
             <div className="flex items-center justify-between px-6 h-20 border-b border-white/10">
-              <span className="font-display text-lg font-bold text-white tracking-widest">
-                SKYRA CREATIONS
-              </span>
+              <div 
+                className="flex items-center space-x-3 cursor-pointer"
+                onClick={() => handleNavClick('home')}
+              >
+                <div className="relative w-11 h-11 rounded-full p-[1.5px] bg-gradient-to-tr from-white/40 via-[#C6FF00]/30 to-red-600/40 shadow-lg">
+                  <div className="w-full h-full rounded-full bg-black overflow-hidden flex items-center justify-center p-0.5">
+                    <img 
+                      src="/logo.png" 
+                      alt="SKYRA CREATIONS Logo" 
+                      className="w-full h-full object-cover rounded-full scale-[1.08]" 
+                    />
+                  </div>
+                </div>
+                <div className="flex flex-col">
+                  <span className="font-display text-base font-extrabold text-white tracking-widest">
+                    SKYRA CREATIONS
+                  </span>
+                  <span className="font-mono-editorial text-[8px] tracking-[0.2em] text-zinc-400">
+                    HAUTE COUTURE • RUNWAY
+                  </span>
+                </div>
+              </div>
               <button
                 onClick={() => setMobileMenuOpen(false)}
                 className="p-2 text-white hover:text-[#C6FF00]"

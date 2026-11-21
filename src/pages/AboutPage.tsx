@@ -26,6 +26,34 @@ export default function AboutPage({ setActiveTab }: AboutPageProps) {
         transition={{ duration: 0.7 }}
         className="text-center max-w-4xl mx-auto space-y-4"
       >
+        {/* Official Brand Emblem */}
+        <div className="flex justify-center pb-1">
+          <div className="relative group select-none">
+            <div 
+              className="absolute -inset-2 rounded-full blur-xl opacity-45 pointer-events-none"
+              style={{
+                background: 'radial-gradient(circle, rgba(220, 38, 38, 0.5) 0%, rgba(198, 255, 0, 0.3) 45%, transparent 75%)',
+              }}
+            />
+            <div 
+              className="relative w-20 h-20 sm:w-24 sm:h-24 rounded-full p-[2px] shadow-2xl transition-transform duration-500 group-hover:scale-105"
+              style={{
+                background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.6) 0%, rgba(198, 255, 0, 0.4) 40%, rgba(220, 38, 38, 0.6) 100%)',
+              }}
+            >
+              <div className="w-full h-full rounded-full bg-black overflow-hidden flex items-center justify-center p-0.5">
+                <img
+                  src="/logo.png"
+                  alt="SKYRA CREATIONS Official Logo"
+                  width={96}
+                  height={96}
+                  className="w-full h-full object-cover rounded-full scale-[1.08]"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+
         <span className="font-mono-editorial block text-[11px] tracking-widest" style={{ color: 'var(--accent)' }}>
           ABOUT SKYRA CREATIONS
         </span>

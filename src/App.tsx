@@ -187,23 +187,40 @@ export default function App() {
               <div className="space-y-4 max-w-md">
                 <div 
                   onClick={() => setActiveTab('home')}
-                  className="flex items-center space-x-3 cursor-pointer group"
+                  className="flex items-center space-x-3.5 cursor-pointer group select-none"
                 >
-                  <div 
-                    className="w-10 h-10 rounded-sm p-1 flex items-center justify-center shadow-lg transition-all"
-                    style={{ backgroundColor: '#000000', border: '1px solid var(--border)' }}
-                  >
-                    <img 
-                      src="/logo.png" 
-                      alt="SKYRA CREATIONS Logo" 
-                      width={40}
-                      height={40}
-                      className="w-full h-full object-contain" 
+                  <div className="relative shrink-0 flex items-center justify-center">
+                    <div 
+                      className="absolute -inset-1 rounded-full blur-md opacity-40 group-hover:opacity-80 transition-opacity pointer-events-none"
+                      style={{
+                        background: 'radial-gradient(circle, rgba(220, 38, 38, 0.45) 0%, rgba(198, 255, 0, 0.25) 50%, transparent 70%)',
+                      }}
                     />
+                    <div
+                      className="relative w-13 h-13 rounded-full p-[1.5px] shadow-xl group-hover:scale-105 transition-all duration-300"
+                      style={{
+                        background: 'linear-gradient(135deg, rgba(255,255,255,0.4) 0%, rgba(198,255,0,0.3) 50%, rgba(220,38,38,0.4) 100%)',
+                      }}
+                    >
+                      <div className="w-full h-full rounded-full bg-black overflow-hidden flex items-center justify-center p-0.5">
+                        <img 
+                          src="/logo.png" 
+                          alt="SKYRA CREATIONS Official Logo" 
+                          width={52}
+                          height={52}
+                          className="w-full h-full object-cover rounded-full scale-[1.08]" 
+                        />
+                      </div>
+                    </div>
                   </div>
-                  <span className="font-display text-lg font-bold tracking-wider" style={{ color: 'var(--text-primary)' }}>
-                    SKYRA CREATIONS
-                  </span>
+                  <div>
+                    <span className="font-display text-lg font-bold tracking-wider block transition-colors group-hover:text-[#C6FF00]" style={{ color: 'var(--text-primary)' }}>
+                      SKYRA CREATIONS
+                    </span>
+                    <span className="font-mono-editorial block text-[9px] tracking-[0.2em]" style={{ color: 'var(--text-muted)' }}>
+                      HAUTE COUTURE • OFFICIAL PLATFORM
+                    </span>
+                  </div>
                 </div>
                 <p className="text-xs leading-relaxed font-light" style={{ color: 'var(--text-muted)' }}>
                   A premier fashion, runway and modelling event platform empowering emerging talent through professional catwalk showcases, stage grooming and designer collaborations.
