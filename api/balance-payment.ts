@@ -1,7 +1,7 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { z } from 'zod';
 import { submitBalancePayment } from './_lib/database.js';
-import { checkRateLimit } from './_lib/rateLimit.js';
+import { checkRateLimit, validateSecurityContext } from './_lib/rateLimit.js';
 
 const balanceSchema = z.object({
   reg_id: z.string().min(4, 'Registration ID is required'),
@@ -12,6 +12,7 @@ const balanceSchema = z.object({
   terms_confirmed: z.boolean().refine((val) => val === true, {
     message: 'You must confirm event terms and conditions.',
   }),
+  hp_security_check: z.string().optional(),
 });
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
@@ -19,10 +20,10 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     return res.status(405).json({ detail: 'Method not allowed' });
   }
 
-  const clientIp = (req.headers['x-forwarded-for'] as string) || req.socket.remoteAddress || '127.0.0.1';
-  const { allowed } = checkRateLimit(clientIp, 15, 60);
-  if (!allowed) {
-    return res.status(429).json({ detail: 'Too many requests. Please wait a moment.' });
+  // Anti-DoS & Security Context Validation
+  const sec = validateSecurityContext(req, { maxRequests: 15, windowSeconds: 60, endpoint: 'balance' });
+  if (!sec.allowed) {
+    return res.status(sec.status || 429).json({ detail: sec.error || 'Request blocked by security filter' });
   }
 
   try {

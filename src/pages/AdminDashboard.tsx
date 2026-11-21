@@ -37,6 +37,7 @@ import {
   getStorageMetrics
 } from '../lib/api';
 import { AdminStats, Participant, Payment, StorageMetrics } from '../types/index';
+import HumanVerificationCaptcha from '../components/HumanVerificationCaptcha';
 
 export default function AdminDashboard() {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(Boolean(getAdminToken()));
@@ -46,6 +47,7 @@ export default function AdminDashboard() {
   const [password, setPassword] = useState('');
   const [loginLoading, setLoginLoading] = useState(false);
   const [loginError, setLoginError] = useState('');
+  const [isCaptchaVerified, setIsCaptchaVerified] = useState(false);
 
   // Dashboard state
   const [activeTab, setActiveTab] = useState<'queue' | 'participants' | 'storage'>('queue');
@@ -83,6 +85,10 @@ export default function AdminDashboard() {
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!isCaptchaVerified) {
+      setLoginError('Please complete the security challenge below to sign in.');
+      return;
+    }
     setLoginLoading(true);
     setLoginError('');
 
@@ -231,10 +237,19 @@ export default function AdminDashboard() {
               />
             </div>
 
+            {/* Anti-Brute-Force Security Challenge */}
+            <HumanVerificationCaptcha 
+              label="ADMIN SECURITY CHALLENGE"
+              onVerified={(v) => {
+                setIsCaptchaVerified(v);
+                setLoginError('');
+              }}
+            />
+
             <button
               type="submit"
-              disabled={loginLoading}
-              className="w-full py-3.5 rounded-sm bg-[#C6FF00] hover:bg-[#D8FF33] text-black font-mono-editorial text-xs font-bold uppercase tracking-wider transition-all shadow-lg flex items-center justify-center space-x-2"
+              disabled={loginLoading || !isCaptchaVerified}
+              className="w-full py-3.5 rounded-sm bg-[#C6FF00] hover:bg-[#D8FF33] text-black font-mono-editorial text-xs font-bold uppercase tracking-wider transition-all shadow-lg flex items-center justify-center space-x-2 disabled:opacity-40 disabled:cursor-not-allowed"
             >
               <Lock className="w-4 h-4" />
               <span>{loginLoading ? 'AUTHENTICATING...' : 'SIGN IN TO OPERATIONS DESK'}</span>

@@ -18,7 +18,7 @@ import {
   getSupabaseAdmin 
 } from '../_lib/supabaseAdmin.js';
 import { generatePresignedViewUrl, isR2Configured, getObjectStream } from '../_lib/r2Client.js';
-import { checkRateLimit } from '../_lib/rateLimit.js';
+import { checkRateLimit, sanitizeNoSqlInjection } from '../_lib/rateLimit.js';
 
 const loginSchema = z.object({
   email: z.string().min(3),
@@ -49,6 +49,10 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     const { allowed } = checkRateLimit(clientIp + ':admin_login', 5, 60);
     if (!allowed) {
       return res.status(429).json({ detail: 'Too many login attempts. Please wait 1 minute.' });
+    }
+
+    if (!sanitizeNoSqlInjection(req.body)) {
+      return res.status(400).json({ detail: 'Invalid characters in login credentials.' });
     }
 
     try {

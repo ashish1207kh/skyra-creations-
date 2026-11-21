@@ -34,6 +34,7 @@ import { PaymentInfo } from '../types/index';
 import DynamicUpiPayment from '../components/DynamicUpiPayment';
 import MagneticButton from '../components/MagneticButton';
 import InstagramIcon from '../components/InstagramIcon';
+import HumanVerificationCaptcha from '../components/HumanVerificationCaptcha';
 import { RegistrationDraft } from './PaymentPage';
 
 interface RegistrationPageProps {
@@ -91,6 +92,7 @@ export default function RegistrationPage({ setActiveTab, setLookupRegId, onProce
   const [transactionId, setTransactionId] = useState('');
   const [screenshotFile, setScreenshotFile] = useState<File | null>(null);
   const [screenshotPreview, setScreenshotPreview] = useState<string | null>(null);
+  const [isCaptchaVerified, setIsCaptchaVerified] = useState(false);
 
   useEffect(() => {
     getPaymentInfo()
@@ -286,6 +288,10 @@ export default function RegistrationPage({ setActiveTab, setLookupRegId, onProce
     }
     if (!modelPhotoFile) {
       setErrorMsg('Model photograph missing. Please return to Step 2 to attach your photo.');
+      return;
+    }
+    if (!isCaptchaVerified) {
+      setErrorMsg('Please complete the Human Verification security check below to proceed.');
       return;
     }
 
@@ -1328,6 +1334,14 @@ export default function RegistrationPage({ setActiveTab, setLookupRegId, onProce
                     </div>
                   </div>
 
+                  {/* Human Verification & Anti-DoS CAPTCHA */}
+                  <HumanVerificationCaptcha 
+                    onVerified={(v) => {
+                      setIsCaptchaVerified(v);
+                      setErrorMsg('');
+                    }} 
+                  />
+
                   {/* Upload Progress Indicator */}
                   {loading && (
                     <div className="p-4 rounded-sm bg-black/60 border border-white/15 space-y-2">
@@ -1362,8 +1376,8 @@ export default function RegistrationPage({ setActiveTab, setLookupRegId, onProce
 
                     <MagneticButton
                       type="submit"
-                      disabled={loading}
-                      className="w-full sm:w-auto px-9 py-4 bg-[#C6FF00] hover:bg-[#D8FF33] text-black font-mono-editorial text-xs font-bold uppercase tracking-wider rounded-sm transition-all shadow-xl flex items-center justify-center space-x-2 disabled:opacity-50"
+                      disabled={loading || !isCaptchaVerified}
+                      className="w-full sm:w-auto px-9 py-4 bg-[#C6FF00] hover:bg-[#D8FF33] text-black font-mono-editorial text-xs font-bold uppercase tracking-wider rounded-sm transition-all shadow-xl flex items-center justify-center space-x-2 disabled:opacity-40 disabled:cursor-not-allowed"
                     >
                       {loading ? (
                         <span>PROCESSING REGISTRATION...</span>

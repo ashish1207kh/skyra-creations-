@@ -9,6 +9,7 @@ import {
 import { motion } from 'motion/react';
 import InstagramIcon from '../components/InstagramIcon';
 import MagneticButton from '../components/MagneticButton';
+import HumanVerificationCaptcha from '../components/HumanVerificationCaptcha';
 
 interface ContactPageProps {
   setActiveTab: (tab: string) => void;
@@ -19,10 +20,12 @@ export default function ContactPage({ setActiveTab }: ContactPageProps) {
   const [phone, setPhone] = useState('');
   const [message, setMessage] = useState('');
   const [submitted, setSubmitted] = useState(false);
+  const [isCaptchaVerified, setIsCaptchaVerified] = useState(false);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!name.trim() || !message.trim()) return;
+    if (!isCaptchaVerified) return;
 
     // Direct to official WhatsApp support
     const text = `Hello SKYRA CREATIONS, My name is ${name} (${phone}). Inquiry: ${message}`;
@@ -199,9 +202,16 @@ export default function ContactPage({ setActiveTab }: ContactPageProps) {
               />
             </div>
 
+            {/* Anti-Bot Security Verification */}
+            <HumanVerificationCaptcha 
+              label="SECURITY CHECK // INQUIRY DESK"
+              onVerified={setIsCaptchaVerified}
+            />
+
             <MagneticButton
               type="submit"
-              className="w-full py-4 font-mono-editorial text-xs font-bold uppercase tracking-wider rounded-sm shadow-lg flex items-center justify-center space-x-2 bg-[#C6FF00] hover:bg-[#D8FF33] text-black"
+              disabled={!isCaptchaVerified}
+              className="w-full py-4 font-mono-editorial text-xs font-bold uppercase tracking-wider rounded-sm shadow-lg flex items-center justify-center space-x-2 bg-[#C6FF00] hover:bg-[#D8FF33] text-black disabled:opacity-40 disabled:cursor-not-allowed"
             >
               <MessageSquare className="w-4 h-4" />
               <span>CONNECT VIA WHATSAPP (+91 93420 49287)</span>

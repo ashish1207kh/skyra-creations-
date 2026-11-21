@@ -1,7 +1,7 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { z } from 'zod';
 import { registerParticipant } from './_lib/database.js';
-import { checkRateLimit } from './_lib/rateLimit.js';
+import { checkRateLimit, validateSecurityContext } from './_lib/rateLimit.js';
 
 const registerSchema = z.object({
   full_name: z.string().min(2, 'Full name must be at least 2 characters').max(150),
@@ -25,6 +25,7 @@ const registerSchema = z.object({
     message: 'You must accept the Official Terms & Event Policies and Participant Declaration.',
   }),
   terms_version: z.string().optional().default('2026.2'),
+  hp_security_check: z.string().optional(),
 });
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
@@ -32,10 +33,10 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     return res.status(405).json({ detail: 'Method not allowed' });
   }
 
-  const clientIp = (req.headers['x-forwarded-for'] as string) || req.socket.remoteAddress || '127.0.0.1';
-  const { allowed } = checkRateLimit(clientIp, 10, 60);
-  if (!allowed) {
-    return res.status(429).json({ detail: 'Too many registration requests. Please wait a moment.' });
+  // Multi-layered Anti-DoS, Honeypot & Injection Validation
+  const sec = validateSecurityContext(req, { maxRequests: 10, windowSeconds: 60, endpoint: 'register' });
+  if (!sec.allowed) {
+    return res.status(sec.status || 429).json({ detail: sec.error || 'Request blocked by security filter' });
   }
 
   try {

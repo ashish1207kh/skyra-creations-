@@ -31,6 +31,7 @@ import { uploadFileToR2 } from '../lib/storage';
 import { PaymentInfo, Participant } from '../types/index';
 import DynamicUpiPayment from '../components/DynamicUpiPayment';
 import MagneticButton from '../components/MagneticButton';
+import HumanVerificationCaptcha from '../components/HumanVerificationCaptcha';
 
 export interface RegistrationDraft {
   full_name: string;
@@ -82,6 +83,7 @@ export default function PaymentPage({
   const [balanceScreenshotFile, setBalanceScreenshotFile] = useState<File | null>(null);
   const [balanceScreenshotPreview, setBalanceScreenshotPreview] = useState<string | null>(null);
   const [balanceTermsConfirmed, setBalanceTermsConfirmed] = useState(false);
+  const [balanceCaptchaVerified, setBalanceCaptchaVerified] = useState(false);
   const [balanceSubmitting, setBalanceSubmitting] = useState(false);
   const [balanceUploadPercent, setBalanceUploadPercent] = useState(0);
   const [balanceUploadStatus, setBalanceUploadStatus] = useState('');
@@ -98,6 +100,7 @@ export default function PaymentPage({
   const [regScreenshotFile, setRegScreenshotFile] = useState<File | null>(null);
   const [regScreenshotPreview, setRegScreenshotPreview] = useState<string | null>(null);
   const [regTermsConfirmed, setRegTermsConfirmed] = useState(false);
+  const [regCaptchaVerified, setRegCaptchaVerified] = useState(false);
   const [regSubmitting, setRegSubmitting] = useState(false);
   const [regUploadPercent, setRegUploadPercent] = useState(0);
   const [regUploadStatus, setRegUploadStatus] = useState('');
@@ -210,6 +213,11 @@ export default function PaymentPage({
       return;
     }
 
+    if (!balanceCaptchaVerified) {
+      setBalanceError('Please complete the Human Verification security check below to proceed.');
+      return;
+    }
+
     setBalanceSubmitting(true);
     setBalanceUploadPercent(15);
     setBalanceUploadStatus('Uploading payment proof to secure storage...');
@@ -294,6 +302,11 @@ export default function PaymentPage({
 
     if (!regTermsConfirmed) {
       setRegError('Please accept the Official Terms & Participant Declaration to proceed.');
+      return;
+    }
+
+    if (!regCaptchaVerified) {
+      setRegError('Please complete the Human Verification security check below to proceed.');
       return;
     }
 
@@ -943,11 +956,20 @@ export default function PaymentPage({
                         </div>
                       )}
 
+                      {/* Human Verification & Anti-DoS Security */}
+                      <HumanVerificationCaptcha 
+                        label="HUMAN VERIFICATION // BALANCE CLEARANCE"
+                        onVerified={(v) => {
+                          setBalanceCaptchaVerified(v);
+                          setBalanceError('');
+                        }} 
+                      />
+
                       {/* Submit Button */}
                       <MagneticButton
                         type="submit"
-                        disabled={balanceSubmitting}
-                        className="w-full py-4 bg-[#C6FF00] hover:bg-[#D8FF33] text-black font-mono-editorial text-xs font-bold uppercase tracking-wider rounded-sm transition-all shadow-lg flex items-center justify-center space-x-2 disabled:opacity-50"
+                        disabled={balanceSubmitting || !balanceCaptchaVerified}
+                        className="w-full py-4 bg-[#C6FF00] hover:bg-[#D8FF33] text-black font-mono-editorial text-xs font-bold uppercase tracking-wider rounded-sm transition-all shadow-lg flex items-center justify-center space-x-2 disabled:opacity-40 disabled:cursor-not-allowed"
                       >
                         {balanceSubmitting ? (
                           <>
@@ -1193,11 +1215,20 @@ export default function PaymentPage({
                       </div>
                     )}
 
+                    {/* Human Verification & Anti-DoS Security */}
+                    <HumanVerificationCaptcha 
+                      label="HUMAN VERIFICATION // ADVANCE PAYMENT"
+                      onVerified={(v) => {
+                        setRegCaptchaVerified(v);
+                        setRegError('');
+                      }} 
+                    />
+
                     {/* Submit Button */}
                     <MagneticButton
                       type="submit"
-                      disabled={regSubmitting}
-                      className="w-full py-4 bg-[#C6FF00] hover:bg-[#D8FF33] text-black font-mono-editorial text-xs font-bold uppercase tracking-wider rounded-sm transition-all shadow-lg flex items-center justify-center space-x-2 disabled:opacity-50"
+                      disabled={regSubmitting || !regCaptchaVerified}
+                      className="w-full py-4 bg-[#C6FF00] hover:bg-[#D8FF33] text-black font-mono-editorial text-xs font-bold uppercase tracking-wider rounded-sm transition-all shadow-lg flex items-center justify-center space-x-2 disabled:opacity-40 disabled:cursor-not-allowed"
                     >
                       {regSubmitting ? (
                         <>
