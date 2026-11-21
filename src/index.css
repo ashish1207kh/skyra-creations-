@@ -3,41 +3,27 @@
 @tailwind utilities;
 
 @layer base {
-  :root, :root[data-theme="dark"], html.dark {
-    --bg-primary: #080808;
-    --bg-secondary: #111111;
-    --surface: #181818;
-    --surface-elevated: #222222;
-    --border: #2A2A2A;
+  :root, html, body {
+    --bg-primary: #050507;
+    --bg-secondary: #0c0d11;
+    --surface: #12141a;
+    --surface-elevated: #1a1c24;
+    --border: rgba(255, 255, 255, 0.08);
+    --border-accent: rgba(198, 255, 0, 0.3);
     --text-primary: #F5F5F5;
-    --text-secondary: #A8A8A8;
-    --text-muted: #666666;
+    --text-secondary: #A0A2AA;
+    --text-muted: #5A5D68;
     --accent: #C6FF00;
-    --accent-hover: #D4FF33;
+    --accent-hover: #D8FF33;
     --silver: #BFC3C7;
     --accent-amber: #f59e0b;
-  }
-
-  :root[data-theme="light"], html.light {
-    --bg-primary: #F6F6F2;
-    --bg-secondary: #FFFFFF;
-    --surface: #ECEDE8;
-    --surface-elevated: #FFFFFF;
-    --border: #DCDDD6;
-    --text-primary: #151515;
-    --text-secondary: #666666;
-    --text-muted: #999999;
-    --accent: #789900;
-    --accent-hover: #6B8A00;
-    --silver: #8C9298;
-    --accent-amber: #d97706;
+    color-scheme: dark;
   }
 
   body {
     font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
     background-color: var(--bg-primary);
     color: var(--text-primary);
-    transition: background-color 0.3s ease, color 0.3s ease;
     overflow-x: hidden;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
@@ -64,28 +50,19 @@
   /* Responsive editorial headline clamp */
   .text-hero {
     font-size: clamp(3rem, 8vw, 7.5rem);
-    line-height: 1.02;
+    line-height: 0.98;
     letter-spacing: -0.03em;
   }
 }
 
-/* Luxury minimal scrollbar */
+/* Luxury minimal dark scrollbar */
 ::-webkit-scrollbar { width: 6px; height: 6px; }
-html.dark ::-webkit-scrollbar-track, :root[data-theme="dark"] ::-webkit-scrollbar-track { background: #080808; }
-html.dark ::-webkit-scrollbar-thumb, :root[data-theme="dark"] ::-webkit-scrollbar-thumb { background: #2A2A2A; border-radius: 3px; }
-html.dark ::-webkit-scrollbar-thumb:hover { background: #3A3A3A; }
-html.light ::-webkit-scrollbar-track, :root[data-theme="light"] ::-webkit-scrollbar-track { background: #F6F6F2; }
-html.light ::-webkit-scrollbar-thumb, :root[data-theme="light"] ::-webkit-scrollbar-thumb { background: #DCDDD6; border-radius: 3px; }
-html.light ::-webkit-scrollbar-thumb:hover { background: #8C9298; }
+::-webkit-scrollbar-track { background: #050507; }
+::-webkit-scrollbar-thumb { background: #22242c; border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: #353844; }
 
 /* Hairline architectural divider utility */
 .hairline { border-width: 1px; border-color: var(--border); }
 
-/* Smooth editorial fade */
-@keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
-@keyframes fadeInSlow { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
-.animate-fadeIn { animation: fadeIn 0.4s ease-out forwards; }
-.animate-fadeInSlow { animation: fadeInSlow 0.7s ease-out forwards; }
-
 /* Accent glow */
-.glow-accent { box-shadow: 0 0 30px color-mix(in srgb, var(--accent) 20%, transparent); }
+.glow-accent { box-shadow: 0 0 35px rgba(198, 255, 0, 0.22); }

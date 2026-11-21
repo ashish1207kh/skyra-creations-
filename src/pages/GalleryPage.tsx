@@ -5,6 +5,7 @@ import {
   ArrowRight
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
+import TiltCard from '../components/TiltCard';
 
 interface GalleryPageProps {
   setActiveTab: (tab: string) => void;
@@ -111,52 +112,56 @@ export default function GalleryPage({ setActiveTab }: GalleryPageProps) {
         </div>
       </motion.div>
 
-      {/* Asymmetric Gallery Grid */}
+      {/* Asymmetric Gallery Grid with React Spring 3D Tilt */}
       <div className="grid grid-cols-1 md:grid-cols-12 gap-6 auto-rows-[280px]">
         {filteredItems.map((item, idx) => (
-          <motion.div
+          <TiltCard
             key={item.id}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: idx * 0.08 }}
             onClick={() => setSelectedImage(item)}
-            className={`group relative overflow-hidden rounded-sm cursor-pointer shadow-lg transition-all ${item.span}`}
+            className={`group relative overflow-hidden rounded-sm cursor-pointer shadow-lg ${item.span}`}
             style={{ 
               backgroundColor: 'var(--surface)', 
               border: '1px solid var(--border)' 
             }}
           >
-            <img 
-              src={item.src} 
-              alt={item.title}
-              loading="lazy"
-              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" 
-            />
-
-            {/* Editorial Caption Bar */}
-            <div 
-              className="absolute inset-0 flex flex-col justify-end p-5 transition-opacity duration-300"
-              style={{ background: 'linear-gradient(to top, rgba(0,0,0,0.85) 0%, transparent 60%)' }}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: idx * 0.08 }}
+              className="w-full h-full relative"
             >
-              <span className="font-mono-editorial block text-[10px]" style={{ color: 'var(--accent)' }}>
-                {item.category}
-              </span>
-              <h3 className="font-editorial text-lg font-bold text-white">
-                {item.title}
-              </h3>
-              <p className="text-xs text-zinc-300 line-clamp-1 font-light">
-                {item.description}
-              </p>
-            </div>
+              <img 
+                src={item.src} 
+                alt={item.title}
+                loading="lazy"
+                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" 
+              />
 
-            {/* Hover Zoom Icon */}
-            <div 
-              className="absolute top-4 right-4 w-8 h-8 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
-              style={{ backgroundColor: 'rgba(0,0,0,0.6)', border: '1px solid var(--border)' }}
-            >
-              <ZoomIn className="w-4 h-4 text-white" />
-            </div>
-          </motion.div>
+              {/* Editorial Caption Bar */}
+              <div 
+                className="absolute inset-0 flex flex-col justify-end p-5 transition-opacity duration-300"
+                style={{ background: 'linear-gradient(to top, rgba(0,0,0,0.85) 0%, transparent 60%)' }}
+              >
+                <span className="font-mono-editorial block text-[10px]" style={{ color: 'var(--accent)' }}>
+                  {item.category}
+                </span>
+                <h3 className="font-editorial text-lg font-bold text-white">
+                  {item.title}
+                </h3>
+                <p className="text-xs text-zinc-300 line-clamp-1 font-light">
+                  {item.description}
+                </p>
+              </div>
+
+              {/* Hover Zoom Icon */}
+              <div 
+                className="absolute top-4 right-4 w-8 h-8 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
+                style={{ backgroundColor: 'rgba(0,0,0,0.6)', border: '1px solid var(--border)' }}
+              >
+                <ZoomIn className="w-4 h-4 text-white" />
+              </div>
+            </motion.div>
+          </TiltCard>
         ))}
       </div>
 

@@ -1,6 +1,5 @@
 import React, { useRef, useEffect, useState } from 'react';
 import * as THREE from 'three';
-import { useTheme } from '../lib/theme';
 
 interface VirtualRunwaySceneProps {
   className?: string;
@@ -12,18 +11,6 @@ export default function VirtualRunwayScene({ className = '', onSceneReady }: Vir
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [webGlSupported, setWebGlSupported] = useState(true);
   const [isLoaded, setIsLoaded] = useState(false);
-  const { resolvedTheme } = useTheme();
-
-  // References to dynamic Three.js objects for theme switching
-  const sceneRef = useRef<THREE.Scene | null>(null);
-  const runwayMatRef = useRef<THREE.MeshStandardMaterial | null>(null);
-  const groundMatRef = useRef<THREE.MeshStandardMaterial | null>(null);
-  const ledMatRef = useRef<THREE.MeshBasicMaterial | null>(null);
-  const archMatRef = useRef<THREE.MeshStandardMaterial | null>(null);
-  const silverTrimMatRef = useRef<THREE.MeshStandardMaterial | null>(null);
-  const ambientLightRef = useRef<THREE.AmbientLight | null>(null);
-  const mainSpotRef = useRef<THREE.SpotLight | null>(null);
-  const limeLightRef = useRef<THREE.PointLight | null>(null);
 
   useEffect(() => {
     // 1. Detect WebGL support
@@ -46,11 +33,9 @@ export default function VirtualRunwayScene({ className = '', onSceneReady }: Vir
     let animationFrameId: number;
     let isVisible = true;
 
-    // 2. Three.js Scene, Camera, Renderer
-    const isLightInitial = resolvedTheme === 'light';
+    // 2. Three.js Scene, Camera, Renderer — Haute Couture Pure Black
     const scene = new THREE.Scene();
-    scene.fog = new THREE.FogExp2(isLightInitial ? 0xf6f6f2 : 0x080808, 0.045);
-    sceneRef.current = scene;
+    scene.fog = new THREE.FogExp2(0x050507, 0.045);
 
     const camera = new THREE.PerspectiveCamera(
       48,
@@ -68,48 +53,43 @@ export default function VirtualRunwayScene({ className = '', onSceneReady }: Vir
       powerPreference: 'high-performance',
     });
     renderer.setSize(container.clientWidth, container.clientHeight);
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.75));
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.5));
     renderer.shadowMap.enabled = true;
     renderer.shadowMap.type = THREE.PCFSoftShadowMap;
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
-    renderer.toneMappingExposure = 1.1;
+    renderer.toneMappingExposure = 1.15;
 
     // 3. Runway Architectural Elements
     const runwayWidth = 3.8;
     const runwayLength = 36;
 
-    // Main Runway Catwalk Floor
+    // Main Runway Catwalk Floor (High-Gloss Obsidian Slab)
     const runwayGeo = new THREE.PlaneGeometry(runwayWidth, runwayLength, 32, 32);
     const runwayMat = new THREE.MeshStandardMaterial({
-      color: isLightInitial ? 0xdcdde2 : 0x0c0f16,
-      roughness: isLightInitial ? 0.22 : 0.18,
-      metalness: isLightInitial ? 0.6 : 0.85,
+      color: 0x090b10,
+      roughness: 0.14,
+      metalness: 0.90,
     });
-    runwayMatRef.current = runwayMat;
-
     const runway = new THREE.Mesh(runwayGeo, runwayMat);
     runway.rotation.x = -Math.PI / 2;
     runway.position.set(0, 0, -runwayLength / 2 + 5);
     runway.receiveShadow = true;
     scene.add(runway);
 
-    // Dark / Light Hallway Ground
+    // Deep Black Hallway Ground
     const groundGeo = new THREE.PlaneGeometry(100, 100);
     const groundMat = new THREE.MeshStandardMaterial({
-      color: isLightInitial ? 0xedeef2 : 0x040508,
+      color: 0x030304,
       roughness: 0.85,
       metalness: 0.3,
     });
-    groundMatRef.current = groundMat;
-
     const ground = new THREE.Mesh(groundGeo, groundMat);
     ground.rotation.x = -Math.PI / 2;
     ground.position.set(0, -0.05, -15);
     scene.add(ground);
 
     // Glowing Electric Lime LED Lines along runway edges
-    const ledMat = new THREE.MeshBasicMaterial({ color: isLightInitial ? 0x789900 : 0xc6ff00 });
-    ledMatRef.current = ledMat;
+    const ledMat = new THREE.MeshBasicMaterial({ color: 0xc6ff00 });
     const ledGeo = new THREE.BoxGeometry(0.06, 0.04, runwayLength);
 
     const leftLed = new THREE.Mesh(ledGeo, ledMat);
@@ -125,18 +105,15 @@ export default function VirtualRunwayScene({ className = '', onSceneReady }: Vir
     const archCount = 7;
     const archSpacing = 4.5;
     const archMat = new THREE.MeshStandardMaterial({
-      color: isLightInitial ? 0xb0b5be : 0x141824,
+      color: 0x12141c,
       roughness: 0.5,
       metalness: 0.7,
     });
-    archMatRef.current = archMat;
-
     const silverTrimMat = new THREE.MeshStandardMaterial({
-      color: 0xe2e8f0,
+      color: 0xbfc3c7,
       roughness: 0.25,
       metalness: 0.95,
     });
-    silverTrimMatRef.current = silverTrimMat;
 
     for (let i = 0; i < archCount; i++) {
       const zPos = -i * archSpacing + 2;
@@ -165,12 +142,11 @@ export default function VirtualRunwayScene({ className = '', onSceneReady }: Vir
 
     // 4. Lights
     // Ambient soft lighting
-    const ambientLight = new THREE.AmbientLight(isLightInitial ? 0xe8ebf0 : 0x1a1e28, isLightInitial ? 1.8 : 0.8);
-    ambientLightRef.current = ambientLight;
+    const ambientLight = new THREE.AmbientLight(0x181a24, 0.85);
     scene.add(ambientLight);
 
     // Main Overhead Fashion Spotlight
-    const mainSpot = new THREE.SpotLight(0xffffff, isLightInitial ? 3.2 : 4.5);
+    const mainSpot = new THREE.SpotLight(0xffffff, 4.6);
     mainSpot.position.set(0, 10, 2);
     mainSpot.angle = Math.PI / 5;
     mainSpot.penumbra = 0.5;
@@ -178,14 +154,12 @@ export default function VirtualRunwayScene({ className = '', onSceneReady }: Vir
     mainSpot.distance = 45;
     mainSpot.castShadow = true;
     mainSpot.target.position.set(0, 0, -8);
-    mainSpotRef.current = mainSpot;
     scene.add(mainSpot);
     scene.add(mainSpot.target);
 
     // Electric Lime Accent Backlight
-    const limeLight = new THREE.PointLight(isLightInitial ? 0x789900 : 0xc6ff00, isLightInitial ? 1.2 : 2.2, 20);
+    const limeLight = new THREE.PointLight(0xc6ff00, 2.4, 22);
     limeLight.position.set(0, 3.5, -18);
-    limeLightRef.current = limeLight;
     scene.add(limeLight);
 
     // Subtle Amber Warm Fill
@@ -194,7 +168,7 @@ export default function VirtualRunwayScene({ className = '', onSceneReady }: Vir
     scene.add(amberFill);
 
     // 5. Ambient Atmospheric Glitter / Floating Dust Particles
-    const particlesCount = 220;
+    const particlesCount = 260;
     const particlePositions = new Float32Array(particlesCount * 3);
     for (let i = 0; i < particlesCount; i++) {
       particlePositions[i * 3] = (Math.random() - 0.5) * 12;
@@ -204,10 +178,10 @@ export default function VirtualRunwayScene({ className = '', onSceneReady }: Vir
     const particleGeo = new THREE.BufferGeometry();
     particleGeo.setAttribute('position', new THREE.BufferAttribute(particlePositions, 3));
     const particleMat = new THREE.PointsMaterial({
-      color: isLightInitial ? 0x789900 : 0xc6ff00,
+      color: 0xc6ff00,
       size: 0.045,
       transparent: true,
-      opacity: 0.6,
+      opacity: 0.65,
       blending: THREE.AdditiveBlending,
     });
     const particles = new THREE.Points(particleGeo, particleMat);
@@ -236,7 +210,7 @@ export default function VirtualRunwayScene({ className = '', onSceneReady }: Vir
     };
     window.addEventListener('resize', handleResize);
 
-    // 8. Viewport Visibility Tracking (Pause render loop when scrolled offscreen)
+    // 8. Viewport Visibility Tracking
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
@@ -271,7 +245,7 @@ export default function VirtualRunwayScene({ className = '', onSceneReady }: Vir
       particleGeo.attributes.position.needsUpdate = true;
 
       // Pulse the electric lime back light
-      limeLight.intensity = (isLightInitial ? 1.0 : 2.0) + Math.sin(elapsed * 2) * 0.3;
+      limeLight.intensity = 2.0 + Math.sin(elapsed * 2) * 0.4;
 
       renderer.render(scene, camera);
     };
@@ -287,7 +261,6 @@ export default function VirtualRunwayScene({ className = '', onSceneReady }: Vir
       window.removeEventListener('resize', handleResize);
       observer.disconnect();
 
-      // Dispose Three.js objects
       runwayGeo.dispose();
       runwayMat.dispose();
       groundGeo.dispose();
@@ -302,56 +275,13 @@ export default function VirtualRunwayScene({ className = '', onSceneReady }: Vir
     };
   }, [onSceneReady]);
 
-  // 10. Smooth Dynamic Theme Updates (Lightweight material & light updates without recreating scene)
-  useEffect(() => {
-    if (!sceneRef.current || !runwayMatRef.current) return;
-    const isLight = resolvedTheme === 'light';
-
-    // Update Fog
-    sceneRef.current.fog = new THREE.FogExp2(isLight ? 0xf6f6f2 : 0x080808, 0.045);
-
-    // Update Runway Material
-    runwayMatRef.current.color.setHex(isLight ? 0xdcdde2 : 0x0c0f16);
-    runwayMatRef.current.roughness = isLight ? 0.22 : 0.18;
-    runwayMatRef.current.metalness = isLight ? 0.6 : 0.85;
-
-    // Update Ground Material
-    if (groundMatRef.current) {
-      groundMatRef.current.color.setHex(isLight ? 0xedeef2 : 0x040508);
-    }
-
-    // Update LED Trim Material
-    if (ledMatRef.current) {
-      ledMatRef.current.color.setHex(isLight ? 0x789900 : 0xc6ff00);
-    }
-
-    // Update Arch Materials
-    if (archMatRef.current) {
-      archMatRef.current.color.setHex(isLight ? 0xb0b5be : 0x141824);
-    }
-
-    // Update Lighting
-    if (ambientLightRef.current) {
-      ambientLightRef.current.color.setHex(isLight ? 0xe8ebf0 : 0x1a1e28);
-      ambientLightRef.current.intensity = isLight ? 1.8 : 0.8;
-    }
-    if (mainSpotRef.current) {
-      mainSpotRef.current.intensity = isLight ? 3.2 : 4.5;
-    }
-    if (limeLightRef.current) {
-      limeLightRef.current.color.setHex(isLight ? 0x789900 : 0xc6ff00);
-      limeLightRef.current.intensity = isLight ? 1.2 : 2.2;
-    }
-  }, [resolvedTheme]);
-
   if (!webGlSupported) {
-    const isLight = resolvedTheme === 'light';
     return (
       <div 
         className={`relative w-full h-full bg-cover bg-center ${className}`}
-        style={{ backgroundImage: `url(${isLight ? '/images/runway-2.jpg' : '/images/runway-1.jpg'})` }}
+        style={{ backgroundImage: `url('/images/runway-1.jpg')` }}
       >
-        <div className={`absolute inset-0 ${isLight ? 'bg-[#F6F6F2]/75 backdrop-blur-sm' : 'bg-[#080808]/75 backdrop-blur-sm'}`} />
+        <div className="absolute inset-0 bg-black/85 backdrop-blur-sm" />
       </div>
     );
   }
@@ -363,7 +293,7 @@ export default function VirtualRunwayScene({ className = '', onSceneReady }: Vir
     >
       <canvas ref={canvasRef} className="w-full h-full block" />
       {!isLoaded && (
-        <div className={`absolute inset-0 transition-opacity duration-700 ${resolvedTheme === 'light' ? 'bg-[#F6F6F2]' : 'bg-[#080808]'}`} />
+        <div className="absolute inset-0 bg-[#050507] transition-opacity duration-700" />
       )}
     </div>
   );

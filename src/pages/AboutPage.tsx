@@ -7,6 +7,8 @@ import {
 } from 'lucide-react';
 import { motion } from 'motion/react';
 import InstagramIcon from '../components/InstagramIcon';
+import TiltCard from '../components/TiltCard';
+import MagneticButton from '../components/MagneticButton';
 
 interface AboutPageProps {
   setActiveTab: (tab: string) => void;
@@ -51,26 +53,28 @@ export default function AboutPage({ setActiveTab }: AboutPageProps) {
       >
         <div className="grid grid-cols-1 md:grid-cols-12 gap-10 items-center">
           <div className="md:col-span-5 flex justify-center">
-            <div 
-              className="relative overflow-hidden shadow-2xl max-w-xs group rounded-sm"
-              style={{ border: '1px solid var(--border)' }}
-            >
-              <img 
-                src="/founder.png" 
-                alt="B Sriram — Founder & CEO, SKYRA CREATIONS" 
-                loading="lazy"
-                className="w-full h-auto object-cover group-hover:scale-105 transition-transform duration-500"
-              />
+            <TiltCard className="max-w-xs rounded-sm overflow-hidden shadow-2xl">
               <div 
-                className="absolute inset-0 flex items-end p-4"
-                style={{ background: 'linear-gradient(to top, rgba(0,0,0,0.85) 0%, transparent 60%)' }}
+                className="relative overflow-hidden group rounded-sm"
+                style={{ border: '1px solid var(--border)' }}
               >
-                <div className="text-white">
-                  <span className="font-mono-editorial block text-[10px]" style={{ color: 'var(--accent)' }}>FOUNDER &amp; CEO</span>
-                  <span className="font-editorial text-xl font-bold text-white">B Sriram</span>
+                <img 
+                  src="/founder.png" 
+                  alt="B Sriram — Founder & CEO, SKYRA CREATIONS" 
+                  loading="lazy"
+                  className="w-full h-auto object-cover group-hover:scale-105 transition-transform duration-500"
+                />
+                <div 
+                  className="absolute inset-0 flex items-end p-4"
+                  style={{ background: 'linear-gradient(to top, rgba(0,0,0,0.85) 0%, transparent 60%)' }}
+                >
+                  <div className="text-white">
+                    <span className="font-mono-editorial block text-[10px]" style={{ color: 'var(--accent)' }}>FOUNDER &amp; CEO</span>
+                    <span className="font-editorial text-xl font-bold text-white">B Sriram</span>
+                  </div>
                 </div>
               </div>
-            </div>
+            </TiltCard>
           </div>
 
           <div className="md:col-span-7 space-y-5">
@@ -286,7 +290,7 @@ export default function AboutPage({ setActiveTab }: AboutPageProps) {
           Explore upcoming fashion shows, inspect event dates and submit your model audition entry today.
         </p>
         <div className="pt-2 flex justify-center">
-          <button
+          <MagneticButton
             onClick={() => setActiveTab('events')}
             className="px-8 py-4 font-mono-editorial text-xs font-bold uppercase tracking-wider rounded-sm shadow-lg transition-all hover:scale-105 active:scale-95 inline-flex items-center space-x-2"
             style={{
@@ -296,7 +300,7 @@ export default function AboutPage({ setActiveTab }: AboutPageProps) {
           >
             <span>EXPLORE UPCOMING EVENTS</span>
             <ArrowRight className="w-3.5 h-3.5" />
-          </button>
+          </MagneticButton>
         </div>
       </motion.div>
     </div>

@@ -1,10 +1,10 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useEffect } from 'react';
 
-export type ThemeMode = 'dark' | 'light' | 'system';
+export type ThemeMode = 'dark';
 
 interface ThemeContextType {
-  themeMode: ThemeMode;
-  resolvedTheme: 'dark' | 'light';
+  themeMode: 'dark';
+  resolvedTheme: 'dark';
   setThemeMode: (mode: ThemeMode) => void;
 }
 
@@ -14,65 +14,21 @@ const ThemeContext = createContext<ThemeContextType>({
   setThemeMode: () => {},
 });
 
-const STORAGE_KEY = 'skyra_theme_mode';
-
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
-  const [themeMode, setThemeModeState] = useState<ThemeMode>(() => {
-    if (typeof window !== 'undefined') {
-      const saved = localStorage.getItem(STORAGE_KEY) as ThemeMode | null;
-      if (saved && ['dark', 'light', 'system'].includes(saved)) {
-        return saved;
-      }
-    }
-    return 'dark'; // Default to dark luxury fashion theme
-  });
-
-  const [resolvedTheme, setResolvedTheme] = useState<'dark' | 'light'>('dark');
-
   useEffect(() => {
-    const updateTheme = () => {
-      let resolved: 'dark' | 'light' = 'dark';
-      if (themeMode === 'system') {
-        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-        resolved = prefersDark ? 'dark' : 'light';
-      } else {
-        resolved = themeMode;
-      }
-
-      setResolvedTheme(resolved);
-
-      const root = document.documentElement;
-      root.setAttribute('data-theme', resolved);
-      if (resolved === 'dark') {
-        root.classList.add('dark');
-        root.classList.remove('light');
-        root.style.colorScheme = 'dark';
-      } else {
-        root.classList.add('light');
-        root.classList.remove('dark');
-        root.style.colorScheme = 'light';
-      }
-    };
-
-    updateTheme();
-
-    if (themeMode === 'system') {
-      const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
-      const handler = () => updateTheme();
-      mediaQuery.addEventListener('change', handler);
-      return () => mediaQuery.removeEventListener('change', handler);
-    }
-  }, [themeMode]);
-
-  const setThemeMode = (mode: ThemeMode) => {
-    setThemeModeState(mode);
+    // Pure Black Luxury Haute Couture — Permanent Dark Mode
+    const root = document.documentElement;
+    root.setAttribute('data-theme', 'dark');
+    root.classList.add('dark');
+    root.classList.remove('light');
+    root.style.colorScheme = 'dark';
     if (typeof window !== 'undefined') {
-      localStorage.setItem(STORAGE_KEY, mode);
+      localStorage.setItem('skyra_theme_mode', 'dark');
     }
-  };
+  }, []);
 
   return (
-    <ThemeContext.Provider value={{ themeMode, resolvedTheme, setThemeMode }}>
+    <ThemeContext.Provider value={{ themeMode: 'dark', resolvedTheme: 'dark', setThemeMode: () => {} }}>
       {children}
     </ThemeContext.Provider>
   );

@@ -11,6 +11,8 @@ import {
 import { motion } from 'motion/react';
 import { getPaymentInfo } from '../lib/api';
 import { PaymentInfo } from '../types/index';
+import TiltCard from '../components/TiltCard';
+import MagneticButton from '../components/MagneticButton';
 
 interface UpcomingEventsPageProps {
   setActiveTab: (tab: string) => void;
@@ -56,123 +58,125 @@ export default function UpcomingEventsPage({ setActiveTab, onSelectEvent }: Upco
       {/* Events Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-start">
         {/* Main Event Card */}
-        <motion.div 
-          initial={{ opacity: 0, y: 24 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.7 }}
-          className="lg:col-span-8 p-8 sm:p-10 rounded-sm shadow-xl space-y-6"
-          style={{ 
-            backgroundColor: 'var(--surface)', 
-            border: '1px solid var(--border)' 
-          }}
-        >
-          <div 
-            className="relative overflow-hidden rounded-sm shadow-md"
-            style={{ border: '1px solid var(--border)' }}
+        <TiltCard className="lg:col-span-8 rounded-sm overflow-hidden">
+          <motion.div 
+            initial={{ opacity: 0, y: 24 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.7 }}
+            className="p-8 sm:p-10 rounded-sm shadow-xl space-y-6"
+            style={{ 
+              backgroundColor: 'var(--surface)', 
+              border: '1px solid var(--border)' 
+            }}
           >
-            <img 
-              src="/images/runway-1.jpg" 
-              alt={eventTitle} 
-              loading="lazy"
-              className="w-full h-72 sm:h-84 object-cover"
-            />
-            <div className="absolute top-4 left-4">
-              <span 
-                className="px-3 py-1 font-mono-editorial text-[10px] font-bold tracking-wider rounded-sm shadow"
-                style={{ backgroundColor: 'var(--accent)', color: '#000000' }}
-              >
-                ● REGISTRATIONS ACTIVE
-              </span>
-            </div>
             <div 
-              className="absolute bottom-4 right-4 px-3 py-1 font-mono-editorial text-[10px] rounded-sm backdrop-blur-md"
-              style={{ backgroundColor: 'rgba(0,0,0,0.7)', border: '1px solid var(--border)', color: '#FFFFFF' }}
+              className="relative overflow-hidden rounded-sm shadow-md"
+              style={{ border: '1px solid var(--border)' }}
             >
-              ID: {paymentInfo?.event_id || 'EVT-CHX-2026'}
+              <img 
+                src="/images/runway-1.jpg" 
+                alt={eventTitle} 
+                loading="lazy"
+                className="w-full h-72 sm:h-84 object-cover"
+              />
+              <div className="absolute top-4 left-4">
+                <span 
+                  className="px-3 py-1 font-mono-editorial text-[10px] font-bold tracking-wider rounded-sm shadow"
+                  style={{ backgroundColor: 'var(--accent)', color: '#000000' }}
+                >
+                  ● REGISTRATIONS ACTIVE
+                </span>
+              </div>
+              <div 
+                className="absolute bottom-4 right-4 px-3 py-1 font-mono-editorial text-[10px] rounded-sm backdrop-blur-md"
+                style={{ backgroundColor: 'rgba(0,0,0,0.7)', border: '1px solid var(--border)', color: '#FFFFFF' }}
+              >
+                ID: {paymentInfo?.event_id || 'EVT-CHX-2026'}
+              </div>
             </div>
-          </div>
 
-          <div className="space-y-4">
-            <div className="flex flex-wrap items-center gap-4 font-mono-editorial text-[10px]" style={{ color: 'var(--text-muted)' }}>
-              <span className="flex items-center space-x-1.5">
-                <MapPin className="w-3.5 h-3.5" style={{ color: 'var(--accent)' }} />
-                <strong style={{ color: 'var(--text-primary)' }}>{location}</strong>
-              </span>
-              <span>•</span>
-              <span className="flex items-center space-x-1.5">
-                <Calendar className="w-3.5 h-3.5" style={{ color: 'var(--accent)' }} />
-                <span>SEASON 2026</span>
-              </span>
-              <span>•</span>
-              <span className="flex items-center space-x-1.5">
-                <Users className="w-3.5 h-3.5" style={{ color: 'var(--accent)' }} />
-                <span>AGES 4 TO 50</span>
-              </span>
+            <div className="space-y-4">
+              <div className="flex flex-wrap items-center gap-4 font-mono-editorial text-[10px]" style={{ color: 'var(--text-muted)' }}>
+                <span className="flex items-center space-x-1.5">
+                  <MapPin className="w-3.5 h-3.5" style={{ color: 'var(--accent)' }} />
+                  <strong style={{ color: 'var(--text-primary)' }}>{location}</strong>
+                </span>
+                <span>•</span>
+                <span className="flex items-center space-x-1.5">
+                  <Calendar className="w-3.5 h-3.5" style={{ color: 'var(--accent)' }} />
+                  <span>SEASON 2026</span>
+                </span>
+                <span>•</span>
+                <span className="flex items-center space-x-1.5">
+                  <Users className="w-3.5 h-3.5" style={{ color: 'var(--accent)' }} />
+                  <span>AGES 4 TO 50</span>
+                </span>
+              </div>
+
+              <h2 className="font-editorial text-2xl sm:text-4xl font-bold" style={{ color: 'var(--text-primary)' }}>
+                {eventTitle}
+              </h2>
+
+              <p className="text-sm leading-relaxed font-light" style={{ color: 'var(--text-secondary)' }}>
+                Join Tamil Nadu's celebrated runway showcase in Chennai. Featuring professional ramp walking, costume changes, certificate of participation, and live stage exposure for fresh and experienced contestants.
+              </p>
             </div>
 
-            <h2 className="font-editorial text-2xl sm:text-4xl font-bold" style={{ color: 'var(--text-primary)' }}>
-              {eventTitle}
-            </h2>
-
-            <p className="text-sm leading-relaxed font-light" style={{ color: 'var(--text-secondary)' }}>
-              Join Tamil Nadu's celebrated runway showcase in Chennai. Featuring professional ramp walking, costume changes, certificate of participation, and live stage exposure for fresh and experienced contestants.
-            </p>
-          </div>
-
-          {/* Pricing & Advance Tokens */}
-          <div 
-            className="p-5 rounded-sm grid grid-cols-1 sm:grid-cols-3 gap-4"
-            style={{ backgroundColor: 'var(--bg-primary)', border: '1px solid var(--border)' }}
-          >
-            <div>
-              <span className="font-mono-editorial block text-[10px]" style={{ color: 'var(--text-muted)' }}>TOTAL EVENT FEE</span>
-              <strong className="text-base font-editorial" style={{ color: 'var(--text-primary)' }}>₹{totalFee.toLocaleString('en-IN')}</strong>
-            </div>
-            <div>
-              <span className="font-mono-editorial block text-[10px]" style={{ color: 'var(--text-muted)' }}>TOKEN ADVANCE</span>
-              <strong className="text-sm" style={{ color: 'var(--accent)' }}>
-                {advances.map(a => `₹${a}`).join(' / ')}
-              </strong>
-            </div>
-            <div>
-              <span className="font-mono-editorial block text-[10px]" style={{ color: 'var(--text-muted)' }}>VENUE NOTICE</span>
-              <span className="text-[11px] block mt-0.5 font-light" style={{ color: 'var(--text-secondary)' }}>
-                Coordinates sent 10 days prior
-              </span>
-            </div>
-          </div>
-
-          {/* Actions */}
-          <div className="flex flex-col sm:flex-row items-center gap-4 pt-2">
-            <button
-              onClick={() => {
-                if (onSelectEvent) onSelectEvent('EVT-CHX-2026');
-                setActiveTab('event-details');
-              }}
-              className="w-full sm:w-auto px-6 py-3.5 font-mono-editorial text-xs font-semibold rounded-sm transition-all flex items-center justify-center space-x-2"
-              style={{
-                backgroundColor: 'var(--bg-primary)',
-                border: '1px solid var(--border)',
-                color: 'var(--text-primary)'
-              }}
+            {/* Pricing & Advance Tokens */}
+            <div 
+              className="p-5 rounded-sm grid grid-cols-1 sm:grid-cols-3 gap-4"
+              style={{ backgroundColor: 'var(--bg-primary)', border: '1px solid var(--border)' }}
             >
-              <Eye className="w-3.5 h-3.5" />
-              <span>VIEW DETAILS</span>
-            </button>
+              <div>
+                <span className="font-mono-editorial block text-[10px]" style={{ color: 'var(--text-muted)' }}>TOTAL EVENT FEE</span>
+                <strong className="text-base font-editorial" style={{ color: 'var(--text-primary)' }}>₹{totalFee.toLocaleString('en-IN')}</strong>
+              </div>
+              <div>
+                <span className="font-mono-editorial block text-[10px]" style={{ color: 'var(--text-muted)' }}>TOKEN ADVANCE</span>
+                <strong className="text-sm" style={{ color: 'var(--accent)' }}>
+                  {advances.map(a => `₹${a}`).join(' / ')}
+                </strong>
+              </div>
+              <div>
+                <span className="font-mono-editorial block text-[10px]" style={{ color: 'var(--text-muted)' }}>VENUE NOTICE</span>
+                <span className="text-[11px] block mt-0.5 font-light" style={{ color: 'var(--text-secondary)' }}>
+                  Coordinates sent 10 days prior
+                </span>
+              </div>
+            </div>
 
-            <button
-              onClick={() => setActiveTab('register')}
-              className="w-full sm:w-auto px-8 py-3.5 font-mono-editorial text-xs font-bold uppercase tracking-wider rounded-sm shadow-lg transition-all hover:scale-[1.02] active:scale-95 flex items-center justify-center space-x-2"
-              style={{
-                backgroundColor: 'var(--accent)',
-                color: '#000000'
-              }}
-            >
-              <Sparkles className="w-3.5 h-3.5" />
-              <span>REGISTER NOW (ADVANCE ₹500+)</span>
-            </button>
-          </div>
-        </motion.div>
+            {/* Actions */}
+            <div className="flex flex-col sm:flex-row items-center gap-4 pt-2">
+              <button
+                onClick={() => {
+                  if (onSelectEvent) onSelectEvent('EVT-CHX-2026');
+                  setActiveTab('event-details');
+                }}
+                className="w-full sm:w-auto px-6 py-3.5 font-mono-editorial text-xs font-semibold rounded-sm transition-all flex items-center justify-center space-x-2"
+                style={{
+                  backgroundColor: 'var(--bg-primary)',
+                  border: '1px solid var(--border)',
+                  color: 'var(--text-primary)'
+                }}
+              >
+                <Eye className="w-3.5 h-3.5" />
+                <span>VIEW DETAILS</span>
+              </button>
+
+              <MagneticButton
+                onClick={() => setActiveTab('register')}
+                className="w-full sm:w-auto px-8 py-3.5 font-mono-editorial text-xs font-bold uppercase tracking-wider rounded-sm shadow-lg transition-all hover:scale-[1.02] active:scale-95 flex items-center justify-center space-x-2"
+                style={{
+                  backgroundColor: 'var(--accent)',
+                  color: '#000000'
+                }}
+              >
+                <Sparkles className="w-3.5 h-3.5" />
+                <span>REGISTER NOW (ADVANCE ₹500+)</span>
+              </MagneticButton>
+            </div>
+          </motion.div>
+        </TiltCard>
 
         {/* Sidebar Info & Event Policy */}
         <div className="lg:col-span-4 space-y-6">

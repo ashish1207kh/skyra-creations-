@@ -8,6 +8,9 @@ import {
 } from 'lucide-react';
 import { motion } from 'motion/react';
 import VirtualRunwayScene from '../components/VirtualRunwayScene';
+import TiltCard from '../components/TiltCard';
+import MarqueeStrip from '../components/MarqueeStrip';
+import MagneticButton from '../components/MagneticButton';
 
 interface HomePageProps {
   setActiveTab: (tab: string) => void;
@@ -91,7 +94,7 @@ export default function HomePage({ setActiveTab, onSelectEvent }: HomePageProps)
             transition={{ duration: 0.8, delay: 0.3 }}
             className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4"
           >
-            <button
+            <MagneticButton
               onClick={() => setActiveTab('events')}
               className="w-full sm:w-auto px-9 py-4 font-mono-editorial text-xs tracking-widest uppercase transition-all hover:scale-[1.03] active:scale-95 flex items-center justify-center space-x-2 rounded-sm shadow-xl"
               style={{
@@ -102,9 +105,9 @@ export default function HomePage({ setActiveTab, onSelectEvent }: HomePageProps)
             >
               <span>EXPLORE EVENTS</span>
               <ArrowRight className="w-3.5 h-3.5" />
-            </button>
+            </MagneticButton>
 
-            <button
+            <MagneticButton
               onClick={() => setActiveTab('register')}
               className="w-full sm:w-auto px-8 py-4 font-mono-editorial text-xs tracking-widest uppercase transition-all backdrop-blur-md flex items-center justify-center space-x-2 rounded-sm hover:opacity-80"
               style={{
@@ -115,7 +118,7 @@ export default function HomePage({ setActiveTab, onSelectEvent }: HomePageProps)
             >
               <Sparkles className="w-3.5 h-3.5" style={{ color: 'var(--accent)' }} />
               <span>JOIN THE RUNWAY</span>
-            </button>
+            </MagneticButton>
           </motion.div>
 
           {/* Architectural Metadata Bar */}
@@ -145,6 +148,9 @@ export default function HomePage({ setActiveTab, onSelectEvent }: HomePageProps)
           </motion.div>
         </div>
       </section>
+
+      {/* Infinite Runway Couture Marquee */}
+      <MarqueeStrip />
 
       {/* ──────────────────────────────────────────────────────────
           SECTION 2: BRAND INTRODUCTION (ASYMMETRIC 2-COLUMN)
@@ -401,98 +407,114 @@ export default function HomePage({ setActiveTab, onSelectEvent }: HomePageProps)
         </div>
 
         {/* Featured Event Card */}
-        <motion.div 
-          initial={{ opacity: 0, scale: 0.98 }}
-          whileInView={{ opacity: 1, scale: 1 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.7 }}
-          className="p-8 sm:p-12 rounded-sm relative overflow-hidden shadow-2xl"
-          style={{ 
-            backgroundColor: 'var(--surface)', 
-            border: '1px solid var(--border)' 
-          }}
-        >
-          <div className="relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
-            <div className="lg:col-span-7 space-y-5">
-              <div 
-                className="inline-flex items-center space-x-2 px-3 py-1 rounded-full font-mono-editorial text-[10px] font-bold tracking-wider"
-                style={{ 
-                  backgroundColor: 'rgba(0,0,0,0.4)', 
-                  border: '1px solid var(--border)',
-                  color: 'var(--accent)' 
-                }}
-              >
-                <span className="w-1.5 h-1.5 rounded-full animate-pulse" style={{ backgroundColor: 'var(--accent)' }} />
-                <span>REGISTRATIONS ACTIVE</span>
-              </div>
-
-              <h3 className="font-editorial text-3xl sm:text-4xl lg:text-5xl font-bold leading-tight" style={{ color: 'var(--text-primary)' }}>
-                SKYRA CREATIONS — RUNWAY SHOW 2026
-              </h3>
-
-              <p className="text-sm sm:text-base leading-relaxed font-light" style={{ color: 'var(--text-secondary)' }}>
-                Step into the spotlight at our premier runway event in Chennai. Featuring full-stage catwalk choreography, industry judges and official certificate recognition.
-              </p>
-
-              <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 pt-2 text-xs">
-                <div className="p-3 rounded-sm" style={{ backgroundColor: 'var(--bg-primary)', border: '1px solid var(--border)' }}>
-                  <span className="font-mono-editorial block text-[10px]" style={{ color: 'var(--text-muted)' }}>VENUE</span>
-                  <strong style={{ color: 'var(--text-primary)' }}>Chennai City Center</strong>
-                </div>
-                <div className="p-3 rounded-sm" style={{ backgroundColor: 'var(--bg-primary)', border: '1px solid var(--border)' }}>
-                  <span className="font-mono-editorial block text-[10px]" style={{ color: 'var(--text-muted)' }}>TOTAL FEE</span>
-                  <strong className="text-sm" style={{ color: 'var(--accent)' }}>₹3,000</strong>
-                </div>
-                <div className="p-3 rounded-sm col-span-2 sm:col-span-1" style={{ backgroundColor: 'var(--bg-primary)', border: '1px solid var(--border)' }}>
-                  <span className="font-mono-editorial block text-[10px]" style={{ color: 'var(--text-muted)' }}>ADVANCE TOKEN</span>
-                  <strong style={{ color: 'var(--text-primary)' }}>₹500 / ₹1,000 / ₹1,500</strong>
-                </div>
-              </div>
-
-              <div className="flex flex-wrap items-center gap-4 pt-4">
-                <button
-                  onClick={() => setActiveTab('register')}
-                  className="px-7 py-3.5 font-mono-editorial text-xs font-bold uppercase tracking-wider rounded-sm transition-all hover:scale-105 active:scale-95 shadow-lg flex items-center space-x-2"
-                  style={{
-                    backgroundColor: 'var(--accent)',
-                    color: '#000000'
-                  }}
-                >
-                  <Sparkles className="w-3.5 h-3.5" />
-                  <span>REGISTER NOW FOR ₹3,000</span>
-                </button>
-
-                <button
-                  onClick={() => {
-                    if (onSelectEvent) onSelectEvent('EVT-CHX-2026');
-                    setActiveTab('event-details');
-                  }}
-                  className="px-6 py-3.5 font-mono-editorial text-xs font-semibold rounded-sm transition-all flex items-center space-x-2"
-                  style={{
-                    backgroundColor: 'var(--bg-primary)',
+        <TiltCard className="rounded-sm overflow-hidden">
+          <motion.div 
+            initial={{ opacity: 0, scale: 0.98 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.7 }}
+            className="p-8 sm:p-12 rounded-sm relative overflow-hidden shadow-2xl"
+            style={{ 
+              backgroundColor: 'var(--surface)', 
+              border: '1px solid var(--border)' 
+            }}
+          >
+            <div className="relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+              <div className="lg:col-span-7 space-y-5">
+                <div 
+                  className="inline-flex items-center space-x-2 px-3 py-1 rounded-full font-mono-editorial text-[10px] font-bold tracking-wider"
+                  style={{ 
+                    backgroundColor: 'rgba(0,0,0,0.4)', 
                     border: '1px solid var(--border)',
-                    color: 'var(--text-primary)'
+                    color: 'var(--accent)' 
                   }}
                 >
-                  <Eye className="w-3.5 h-3.5" />
-                  <span>VIEW EVENT DETAILS</span>
-                </button>
-              </div>
-            </div>
+                  <span className="w-1.5 h-1.5 rounded-full animate-pulse" style={{ backgroundColor: 'var(--accent)' }} />
+                  <span>REGISTRATIONS ACTIVE</span>
+                </div>
 
-            <div className="lg:col-span-5 relative">
-              <div className="overflow-hidden shadow-2xl rounded-sm" style={{ border: '1px solid var(--border)' }}>
-                <img 
-                  src="/images/runway-3.jpg" 
-                  alt="Runway Show 2026 Live Catwalk" 
-                  loading="lazy"
-                  className="w-full h-80 object-cover"
-                />
+                <h3 className="font-editorial text-3xl sm:text-4xl lg:text-5xl font-bold leading-tight" style={{ color: 'var(--text-primary)' }}>
+                  SKYRA CREATIONS — RUNWAY SHOW 2026
+                </h3>
+
+                <p className="text-sm sm:text-base leading-relaxed font-light" style={{ color: 'var(--text-secondary)' }}>
+                  Step into the spotlight at our premier runway event in Chennai. Featuring full-stage catwalk choreography, industry judges and official certificate recognition.
+                </p>
+
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 pt-2 text-xs">
+                  <div className="p-3 rounded-sm" style={{ backgroundColor: 'var(--bg-primary)', border: '1px solid var(--border)' }}>
+                    <span className="font-mono-editorial block text-[10px]" style={{ color: 'var(--text-muted)' }}>VENUE</span>
+                    <strong style={{ color: 'var(--text-primary)' }}>Chennai City Center</strong>
+                  </div>
+                  <div className="p-3 rounded-sm" style={{ backgroundColor: 'var(--bg-primary)', border: '1px solid var(--border)' }}>
+                    <span className="font-mono-editorial block text-[10px]" style={{ color: 'var(--text-muted)' }}>TOTAL FEE</span>
+                    <strong className="text-sm" style={{ color: 'var(--accent)' }}>₹3,000</strong>
+                  </div>
+                  <div className="p-3 rounded-sm col-span-2 sm:col-span-1" style={{ backgroundColor: 'var(--bg-primary)', border: '1px solid var(--border)' }}>
+                    <span className="font-mono-editorial block text-[10px]" style={{ color: 'var(--text-muted)' }}>ADVANCE TOKEN</span>
+                    <strong style={{ color: 'var(--text-primary)' }}>₹500 / ₹1,000 / ₹1,500</strong>
+                  </div>
+                </div>
+
+                <div className="flex flex-wrap items-center gap-4 pt-4">
+                  <MagneticButton
+                    onClick={() => setActiveTab('register')}
+                    className="px-7 py-3.5 font-mono-editorial text-xs font-bold uppercase tracking-wider rounded-sm transition-all hover:scale-105 active:scale-95 shadow-lg flex items-center space-x-2"
+                    style={{
+                      backgroundColor: 'var(--accent)',
+                      color: '#000000'
+                    }}
+                  >
+                    <Sparkles className="w-3.5 h-3.5" />
+                    <span>REGISTER NOW FOR ₹3,000</span>
+                  </MagneticButton>
+
+                  <button
+                    onClick={() => {
+                      if (onSelectEvent) onSelectEvent('EVT-CHX-2026');
+                      setActiveTab('event-details');
+                    }}
+                    className="px-6 py-3.5 font-mono-editorial text-xs font-semibold rounded-sm transition-all flex items-center space-x-2"
+                    style={{
+                      backgroundColor: 'var(--bg-primary)',
+                      border: '1px solid var(--border)',
+                      color: 'var(--text-primary)'
+                    }}
+                  >
+                    <Eye className="w-3.5 h-3.5" />
+                    <span>VIEW EVENT DETAILS</span>
+                  </button>
+                </div>
+              </div>
+
+              <div className="lg:col-span-5 relative">
+                <div className="overflow-hidden shadow-2xl rounded-sm" style={{ border: '1px solid var(--border)' }}>
+                  <img 
+                    src="/images/runway-3.jpg" 
+                    alt="Runway Show 2026 Live Catwalk" 
+                    loading="lazy"
+                    className="w-full h-80 object-cover"
+                  />
+                </div>
               </div>
             </div>
-          </div>
-        </motion.div>
+          </motion.div>
+        </TiltCard>
       </section>
+
+      {/* Reverse Couture Marquee Strip */}
+      <MarqueeStrip 
+        reverse={true} 
+        text={[
+          'HAUTE COUTURE 2026',
+          'CHENNAI CITY CENTER',
+          'EXCLUSIVE AUDITIONS',
+          'STAGE GROOMING',
+          'LIVE CATWALK',
+          'CERTIFIED ACCREDITATION',
+          'DIRECTOR B SRIRAM',
+        ]} 
+      />
 
       {/* ──────────────────────────────────────────────────────────
           SECTION 5: CAMPAIGN INTERLUDE (FULL-BLEED EDITORIAL BREAK)
@@ -523,7 +545,7 @@ export default function HomePage({ setActiveTab, onSelectEvent }: HomePageProps)
             Every runway begins with the confidence to take the first step.
           </p>
           <div className="pt-4 flex justify-center">
-            <button
+            <MagneticButton
               onClick={() => setActiveTab('register')}
               className="px-8 py-4 font-mono-editorial text-xs font-bold uppercase tracking-wider rounded-sm transition-all hover:scale-105 active:scale-95 flex items-center space-x-2"
               style={{
@@ -533,7 +555,7 @@ export default function HomePage({ setActiveTab, onSelectEvent }: HomePageProps)
             >
               <span>DISCOVER YOUR OPPORTUNITY</span>
               <ArrowRight className="w-3.5 h-3.5" />
-            </button>
+            </MagneticButton>
           </div>
         </motion.div>
       </section>
@@ -563,28 +585,32 @@ export default function HomePage({ setActiveTab, onSelectEvent }: HomePageProps)
 
         {/* Varied Proportions Grid */}
         <div className="grid grid-cols-1 md:grid-cols-12 gap-6 items-stretch">
-          <div 
-            className="md:col-span-7 overflow-hidden shadow-lg group rounded-sm"
-            style={{ border: '1px solid var(--border)' }}
-          >
-            <img 
-              src="/images/runway-2.jpg" 
-              alt="Runway Stage Catwalk" 
-              loading="lazy"
-              className="w-full h-80 sm:h-96 object-cover group-hover:scale-105 transition-transform duration-700"
-            />
-          </div>
-          <div 
-            className="md:col-span-5 overflow-hidden shadow-lg group rounded-sm"
-            style={{ border: '1px solid var(--border)' }}
-          >
-            <img 
-              src="/founder.png" 
-              alt="Founder & CEO B Sriram" 
-              loading="lazy"
-              className="w-full h-80 sm:h-96 object-cover group-hover:scale-105 transition-transform duration-700"
-            />
-          </div>
+          <TiltCard className="md:col-span-7 rounded-sm overflow-hidden shadow-lg group">
+            <div 
+              className="overflow-hidden rounded-sm"
+              style={{ border: '1px solid var(--border)' }}
+            >
+              <img 
+                src="/images/runway-2.jpg" 
+                alt="Runway Stage Catwalk" 
+                loading="lazy"
+                className="w-full h-80 sm:h-96 object-cover group-hover:scale-105 transition-transform duration-700"
+              />
+            </div>
+          </TiltCard>
+          <TiltCard className="md:col-span-5 rounded-sm overflow-hidden shadow-lg group">
+            <div 
+              className="overflow-hidden rounded-sm"
+              style={{ border: '1px solid var(--border)' }}
+            >
+              <img 
+                src="/founder.png" 
+                alt="Founder & CEO B Sriram" 
+                loading="lazy"
+                className="w-full h-80 sm:h-96 object-cover group-hover:scale-105 transition-transform duration-700"
+              />
+            </div>
+          </TiltCard>
         </div>
       </section>
 
@@ -617,7 +643,7 @@ export default function HomePage({ setActiveTab, onSelectEvent }: HomePageProps)
           </p>
 
           <div className="pt-4 flex justify-center relative z-10">
-            <button
+            <MagneticButton
               onClick={() => setActiveTab('register')}
               className="px-10 py-4 font-mono-editorial text-xs sm:text-sm font-bold uppercase tracking-widest rounded-sm shadow-xl transition-all hover:scale-105 active:scale-95 flex items-center space-x-2"
               style={{
@@ -627,7 +653,7 @@ export default function HomePage({ setActiveTab, onSelectEvent }: HomePageProps)
             >
               <Sparkles className="w-4 h-4" />
               <span>REGISTER NOW</span>
-            </button>
+            </MagneticButton>
           </div>
         </motion.div>
       </section>
