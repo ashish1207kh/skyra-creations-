@@ -54,6 +54,12 @@ export const SEO_CONFIGS: Record<string, PageSeoConfig> = {
     canonicalPath: '/register',
     noindex: false,
   },
+  payment: {
+    title: 'Official Payment Portal | SKYRA CREATIONS Runway Show 2026',
+    description: 'Secure UPI payment portal for SKYRA CREATIONS Runway Show 2026. Settle token advances, clear balance installments, and upload bank UTR proofs.',
+    canonicalPath: '/payment',
+    noindex: false,
+  },
   balance: {
     title: 'Complete Your Event Payment | SKYRA CREATIONS Balance Payment Portal',
     description: 'Already registered for the Runway Show 2026? Submit your installment payment securely towards your outstanding registration balance.',

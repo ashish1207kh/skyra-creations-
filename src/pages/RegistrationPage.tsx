@@ -34,13 +34,15 @@ import { PaymentInfo } from '../types/index';
 import DynamicUpiPayment from '../components/DynamicUpiPayment';
 import MagneticButton from '../components/MagneticButton';
 import InstagramIcon from '../components/InstagramIcon';
+import { RegistrationDraft } from './PaymentPage';
 
 interface RegistrationPageProps {
   setActiveTab: (tab: string) => void;
   setLookupRegId?: (id: string) => void;
+  onProceedToPayment?: (draft: RegistrationDraft) => void;
 }
 
-export default function RegistrationPage({ setActiveTab, setLookupRegId }: RegistrationPageProps) {
+export default function RegistrationPage({ setActiveTab, setLookupRegId, onProceedToPayment }: RegistrationPageProps) {
   const [paymentInfo, setPaymentInfo] = useState<PaymentInfo | null>(null);
   const [loading, setLoading] = useState(false);
   const [uploadPercent, setUploadPercent] = useState(0);
@@ -155,6 +157,62 @@ export default function RegistrationPage({ setActiveTab, setLookupRegId }: Regis
         setScreenshotPreview(reader.result as string);
       };
       reader.readAsDataURL(file);
+    }
+  };
+
+  const handleProceedToPaymentPage = (e?: React.MouseEvent) => {
+    if (e) e.preventDefault();
+    setErrorMsg('');
+
+    // Personal Details Validations
+    if (!fullName.trim() || fullName.trim().length < 2) {
+      setErrorMsg('Please enter your full name as mentioned on your official identification.');
+      return;
+    }
+    if (!email.trim() || !email.includes('@')) {
+      setErrorMsg('Please enter a valid active email address.');
+      return;
+    }
+    if (!dob) {
+      setErrorMsg('Please select your date of birth.');
+      return;
+    }
+    if (!mobile.trim() || mobile.trim().length < 10) {
+      setErrorMsg('Please enter a valid calling mobile number (10 to 15 digits).');
+      return;
+    }
+    if (!whatsapp.trim() || whatsapp.trim().length < 10) {
+      setErrorMsg('Please enter a valid WhatsApp number for official event communication.');
+      return;
+    }
+    if (!city.trim()) {
+      setErrorMsg('Please enter your current city and state.');
+      return;
+    }
+
+    // Model Photo Validation (Mandatory)
+    if (!modelPhotoFile) {
+      setErrorMsg('Please upload your recent model photograph with your face clearly visible.');
+      return;
+    }
+
+    if (onProceedToPayment) {
+      onProceedToPayment({
+        full_name: fullName,
+        email,
+        dob,
+        gender,
+        mobile,
+        whatsapp,
+        city,
+        category,
+        instagram,
+        experience,
+        modelPhotoFile,
+        modelPhotoPreview,
+      });
+    } else {
+      setActiveTab('payment');
     }
   };
 
@@ -893,6 +951,31 @@ export default function RegistrationPage({ setActiveTab, setLookupRegId }: Regis
                     className="w-full bg-[#080808] border border-white/15 rounded-sm p-4 text-white placeholder-zinc-500 text-xs sm:text-sm focus:outline-none focus:border-[#C6FF00] focus:ring-1 focus:ring-[#C6FF00] transition-colors"
                   />
                 </div>
+              </div>
+            </div>
+
+            {/* Direct Link to Dedicated Payment Page */}
+            <div className="bg-[#12141a] border border-[#C6FF00]/40 rounded-sm p-6 sm:p-8 shadow-2xl space-y-4">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-5">
+                <div>
+                  <span className="font-mono-editorial text-[10px] text-[#C6FF00] uppercase tracking-widest block mb-1">
+                    STEP 02 OF 02 // DEDICATED PAYMENT PAGE
+                  </span>
+                  <h3 className="font-display text-2xl sm:text-3xl font-bold text-white">
+                    PROCEED TO OFFICIAL PAYMENT PORTAL
+                  </h3>
+                  <p className="text-xs text-[#BFC3C7] font-light mt-1 max-w-xl leading-relaxed">
+                    Once your details and model photograph are entered above, proceed directly to our dedicated Payment Page to choose your token advance (₹500, ₹1,000, or ₹1,500), scan the dynamic UPI QR code, and upload your transaction reference.
+                  </p>
+                </div>
+
+                <MagneticButton
+                  type="button"
+                  onClick={handleProceedToPaymentPage}
+                  className="px-8 py-4 bg-[#C6FF00] hover:bg-[#D8FF33] text-black font-mono-editorial text-xs font-bold uppercase tracking-wider rounded-sm transition-all shadow-lg flex items-center justify-center space-x-2 shrink-0"
+                >
+                  <span>PROCEED TO PAYMENT →</span>
+                </MagneticButton>
               </div>
             </div>
 

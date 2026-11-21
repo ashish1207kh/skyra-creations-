@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { Menu, X, UserCheck, Sparkles } from 'lucide-react';
+import { Menu, X, UserCheck, Sparkles, CreditCard } from 'lucide-react';
 import { AnimatePresence, motion } from 'motion/react';
 
 interface NavbarProps {
@@ -110,11 +110,27 @@ export default function Navbar({ activeTab, setActiveTab }: NavbarProps) {
             </nav>
 
             {/* Desktop Right CTAs */}
-            <div className="hidden sm:flex items-center space-x-4">
+            <div className="hidden sm:flex items-center space-x-3.5">
+              <button
+                onClick={() => handleNavClick('payment')}
+                className={`font-mono-editorial text-[11px] tracking-wider py-2 px-2.5 transition-colors flex items-center space-x-1.5 ${
+                  activeTab === 'payment' || activeTab === 'balance'
+                    ? 'text-[#C6FF00]'
+                    : 'text-zinc-400 hover:text-white'
+                }`}
+                title="Official Payment & Balance Portal"
+              >
+                <CreditCard className="w-3.5 h-3.5 text-[#C6FF00]" />
+                <span>PAYMENT</span>
+              </button>
+
               <button
                 onClick={() => handleNavClick('status')}
-                className="font-mono-editorial text-[11px] tracking-wider py-2 px-3 transition-colors hover:text-white flex items-center space-x-1.5"
-                style={{ color: 'var(--text-muted)' }}
+                className={`font-mono-editorial text-[11px] tracking-wider py-2 px-2.5 transition-colors flex items-center space-x-1.5 ${
+                  activeTab === 'status'
+                    ? 'text-[#C6FF00]'
+                    : 'text-zinc-400 hover:text-white'
+                }`}
                 title="Check Verification Status or Pass"
               >
                 <UserCheck className="w-3.5 h-3.5 text-[#C6FF00]" />
@@ -123,7 +139,7 @@ export default function Navbar({ activeTab, setActiveTab }: NavbarProps) {
 
               <button
                 onClick={() => handleNavClick('register')}
-                className="px-6 py-2.5 rounded-sm font-mono-editorial text-xs font-bold tracking-widest uppercase transition-all hover:scale-105 active:scale-95 flex items-center space-x-1.5 shadow-lg"
+                className="px-5 py-2.5 rounded-sm font-mono-editorial text-xs font-bold tracking-widest uppercase transition-all hover:scale-105 active:scale-95 flex items-center space-x-1.5 shadow-lg"
                 style={{
                   backgroundColor: '#C6FF00',
                   color: '#000000',
@@ -215,12 +231,16 @@ export default function Navbar({ activeTab, setActiveTab }: NavbarProps) {
 
             {/* Footer in Drawer */}
             <div className="p-8 space-y-4 border-t border-white/10">
-              <div className="flex justify-between font-mono-editorial text-xs text-zinc-400">
-                <button onClick={() => handleNavClick('status')} className="hover:text-white">STATUS / PASS</button>
-                <span>·</span>
-                <button onClick={() => handleNavClick('balance')} className="hover:text-white">BALANCE</button>
-                <span>·</span>
-                <button onClick={() => handleNavClick('admin')} className="hover:text-white">ADMIN</button>
+              <div className="grid grid-cols-3 gap-2 font-mono-editorial text-xs text-center text-zinc-400">
+                <button onClick={() => handleNavClick('payment')} className="p-2 bg-white/5 rounded-sm hover:text-white">
+                  PAYMENT
+                </button>
+                <button onClick={() => handleNavClick('status')} className="p-2 bg-white/5 rounded-sm hover:text-white">
+                  PASS
+                </button>
+                <button onClick={() => handleNavClick('admin')} className="p-2 bg-white/5 rounded-sm hover:text-white">
+                  ADMIN
+                </button>
               </div>
 
               <button

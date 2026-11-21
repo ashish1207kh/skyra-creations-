@@ -9,6 +9,7 @@ import GalleryPage from './pages/GalleryPage';
 import ContactPage from './pages/ContactPage';
 import RegistrationPage from './pages/RegistrationPage';
 import BalancePaymentPage from './pages/BalancePaymentPage';
+import PaymentPage, { RegistrationDraft } from './pages/PaymentPage';
 import StatusPassPage from './pages/StatusPassPage';
 import AdminDashboard from './pages/AdminDashboard';
 import NotFoundPage from './pages/NotFoundPage';
@@ -27,6 +28,7 @@ function getTabFromPath(pathname: string): string {
   if (p === '/gallery') return 'gallery';
   if (p === '/contact' || p === '/contact-us') return 'contact';
   if (p === '/register') return 'register';
+  if (p === '/payment' || p === '/pay') return 'payment';
   if (p === '/balance' || p === '/balance-payment') return 'balance';
   if (p === '/status' || p === '/check-status') return 'status';
   if (p === '/admin') return 'admin';
@@ -42,6 +44,7 @@ function getPathFromTab(tab: string): string {
   if (tab === 'gallery') return '/gallery';
   if (tab === 'contact') return '/contact';
   if (tab === 'register') return '/register';
+  if (tab === 'payment') return '/payment';
   if (tab === 'balance') return '/balance';
   if (tab === 'status') return '/status';
   if (tab === 'admin') return '/admin';
@@ -55,6 +58,8 @@ export default function App() {
   const [selectedEventId, setSelectedEventId] = useState<string>('EVT-CHX-2026');
   const [balanceRegId, setBalanceRegId] = useState<string>('');
   const [lookupRegId, setLookupRegId] = useState<string>('');
+  const [registrationDraft, setRegistrationDraft] = useState<RegistrationDraft | null>(null);
+  const [paymentMode, setPaymentMode] = useState<'balance' | 'register'>('balance');
   const [showTermsModal, setShowTermsModal] = useState<boolean>(false);
   const [showPrivacyModal, setShowPrivacyModal] = useState<boolean>(false);
 
@@ -163,12 +168,19 @@ export default function App() {
                     setLookupRegId(id);
                     setActiveTab('status');
                   }} 
+                  onProceedToPayment={(draft) => {
+                    setRegistrationDraft(draft);
+                    setPaymentMode('register');
+                    setActiveTab('payment');
+                  }}
                 />
               )}
 
-              {activeTab === 'balance' && (
-                <BalancePaymentPage 
+              {(activeTab === 'payment' || activeTab === 'balance') && (
+                <PaymentPage 
                   initialRegId={balanceRegId} 
+                  initialMode={activeTab === 'balance' ? 'balance' : paymentMode}
+                  registrationDraft={registrationDraft}
                   setActiveTab={setActiveTab}
                   setLookupRegId={(id) => {
                     setLookupRegId(id);
@@ -183,7 +195,7 @@ export default function App() {
                   setActiveTab={setActiveTab}
                   setBalanceRegId={(id) => {
                     setBalanceRegId(id);
-                    setActiveTab('balance');
+                    setActiveTab('payment');
                   }} 
                 />
               )}
@@ -272,7 +284,8 @@ export default function App() {
 
                 <div className="space-y-3 col-span-2 sm:col-span-1">
                   <span className="font-mono-editorial block" style={{ color: 'var(--text-muted)', fontSize: '10px' }}>SUPPORT</span>
-                  <button onClick={() => setActiveTab('balance')} className="block hover:opacity-75 transition-opacity" style={{ color: 'var(--text-secondary)' }}>Balance Payment</button>
+                  <button onClick={() => setActiveTab('payment')} className="block hover:opacity-75 transition-opacity" style={{ color: 'var(--text-secondary)' }}>Payment Portal</button>
+                  <button onClick={() => setActiveTab('balance')} className="block hover:opacity-75 transition-opacity" style={{ color: 'var(--text-secondary)' }}>Balance Settlement</button>
                   <button onClick={() => setActiveTab('status')} className="block hover:opacity-75 transition-opacity" style={{ color: 'var(--text-secondary)' }}>Check Status / Pass</button>
                   <button onClick={() => setActiveTab('contact')} className="block hover:opacity-75 transition-opacity" style={{ color: 'var(--text-secondary)' }}>Contact Support</button>
                 </div>
