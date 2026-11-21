@@ -539,68 +539,87 @@ export default function RegistrationPage({ setActiveTab, setLookupRegId, onProce
 
       {/* ─── MAIN TWO-COLUMN CONTAINER ─────────────────────────────────────── */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-        {/* Left Column (Desktop Only): Founder Trust & Venue Specification */}
-        <aside className="hidden lg:block lg:col-span-4 space-y-6">
-          <div className="bg-[#12141a] border border-white/10 rounded-sm p-6 shadow-xl space-y-5">
-            <div className="flex items-center space-x-4 border-b border-white/10 pb-4">
+        {/* Left Column: Founder & CEO Profile (Prominent Big Portrait) */}
+        <aside className="hidden lg:block lg:col-span-4 lg:sticky lg:top-24 space-y-6">
+          <div className="bg-[#12141a] border border-white/10 rounded-sm p-6 shadow-2xl relative overflow-hidden group">
+            {/* Top architectural neon accent line */}
+            <div className="absolute top-0 left-0 right-0 h-0.5 bg-gradient-to-r from-transparent via-[#C6FF00] to-transparent" />
+
+            {/* Prominent Large Founder Portrait */}
+            <div className="relative mb-5 overflow-hidden rounded-sm border border-white/10 bg-black shadow-lg">
               <img
-                src="/founder.png"
-                alt="Founder & CEO B Sriram"
-                className="w-14 h-14 rounded-sm object-cover border border-[#C6FF00]/40 shadow-md"
+                src="/founder.jpg"
+                alt="B. SRIRAM — Founder & CEO, SKYRA CREATIONS"
+                width={380}
+                height={420}
+                className="w-full h-auto max-h-[420px] object-cover object-top group-hover:scale-105 transition-transform duration-700"
               />
+              <div className="absolute bottom-3 left-3 right-3 flex items-center justify-between">
+                <span className="inline-flex items-center space-x-1.5 px-3 py-1 rounded-sm bg-black/85 backdrop-blur-md text-[#C6FF00] border border-white/15 font-mono-editorial text-[10px] font-bold uppercase tracking-wider shadow">
+                  <span className="w-1.5 h-1.5 rounded-full bg-[#C6FF00] animate-pulse" />
+                  <span>FOUNDER &amp; CEO</span>
+                </span>
+              </div>
+            </div>
+
+            <div className="space-y-4">
               <div>
-                <h3 className="font-display text-base font-bold text-white">B Sriram</h3>
-                <p className="font-mono-editorial text-[9px] text-[#C6FF00] uppercase tracking-wider">
-                  Founder &amp; Creative Producer
+                <span className="font-mono-editorial text-[10px] uppercase tracking-widest text-[#BFC3C7] font-semibold block">
+                  EVENT LEADERSHIP
+                </span>
+                <h3 className="font-editorial text-2xl font-bold text-white tracking-wide mt-0.5">
+                  B. SRIRAM
+                </h3>
+                <p className="font-mono-editorial text-[11px] text-[#C6FF00]">
+                  Founder &amp; Creative Producer, SKYRA CREATIONS
                 </p>
-                <p className="font-mono-editorial text-[9px] text-zinc-400">SKYRA CREATIONS</p>
               </div>
-            </div>
 
-            <p className="text-xs text-[#BFC3C7] leading-relaxed border-l-2 border-[#C6FF00] pl-3 py-0.5 font-light">
-              "We provide an accessible, transparent stage where contestants gain genuine catwalk grooming, high-resolution media captures, and certified industry accreditation."
-            </p>
-
-            {/* Event Specifications */}
-            <div className="p-4 rounded-sm bg-[#080808] border border-white/10 space-y-3">
-              <div className="flex items-center space-x-2 text-[#C6FF00] font-mono-editorial text-[10px] font-bold">
-                <MapPin className="w-3.5 h-3.5 shrink-0" />
-                <span>VENUE: CHENNAI CITY CENTER</span>
-              </div>
-              <p className="text-[11px] text-zinc-400 font-light leading-normal">
-                Hosted within <strong className="text-white">prime central Chennai</strong> (central auditorium, not remote outskirts).
+              <p className="text-xs text-[#BFC3C7] leading-relaxed border-l-2 border-[#C6FF00] pl-3 py-0.5 font-light">
+                "We provide an accessible, transparent stage where contestants gain genuine catwalk grooming, high-resolution media captures, and certified industry accreditation."
               </p>
 
-              <div className="flex items-center space-x-2 text-[#C6FF00] font-mono-editorial text-[10px] font-bold pt-2 border-t border-white/10">
-                <Calendar className="w-3.5 h-3.5 shrink-0" />
-                <span>SCHEDULE RELEASE</span>
+              {/* Event Location & Schedule Notice in Founder Card */}
+              <div className="p-4 rounded-sm bg-[#080808] border border-white/10 space-y-3">
+                <div className="flex items-center space-x-2 text-[#C6FF00] font-mono-editorial text-[10px] font-bold">
+                  <MapPin className="w-3.5 h-3.5 shrink-0" />
+                  <span>VENUE: CHENNAI CITY CENTER</span>
+                </div>
+                <p className="text-[11px] text-zinc-400 font-light leading-normal">
+                  Hosted within <strong className="text-white">prime central Chennai</strong> (central auditorium, not remote outskirts).
+                </p>
+
+                <div className="flex items-center space-x-2 text-[#C6FF00] font-mono-editorial text-[10px] font-bold pt-2 border-t border-white/10">
+                  <Calendar className="w-3.5 h-3.5 shrink-0" />
+                  <span>SCHEDULE RELEASE</span>
+                </div>
+                <p className="text-[11px] text-zinc-400 font-light leading-normal">
+                  Exact venue address and call sheets are released <strong className="text-white">10 days before the show</strong> to your registered WhatsApp.
+                </p>
               </div>
-              <p className="text-[11px] text-zinc-400 font-light leading-normal">
-                Exact venue address and call sheets are released <strong className="text-white">10 days before the show</strong> to your registered WhatsApp.
-              </p>
-            </div>
 
-            {/* Direct Helpline Buttons */}
-            <div className="space-y-2 pt-2 border-t border-white/10">
-              <a
-                href="https://wa.me/919342049287?text=Hello%20Sriram%20sir%2C%20I%20am%20inquiring%20about%20the%20Skyra%20Creations%20Runway%20Show%202026%20registration."
-                target="_blank"
-                rel="noopener noreferrer"
-                className="w-full flex items-center justify-center space-x-2 px-3 py-2.5 rounded-sm bg-emerald-950/40 hover:bg-emerald-900/60 text-emerald-300 border border-emerald-500/30 text-xs font-mono-editorial font-semibold transition-colors"
-              >
-                <MessageSquare className="w-3.5 h-3.5 text-emerald-400" />
-                <span>WHATSAPP DESK (+91 93420 49287)</span>
-              </a>
+              {/* Direct Helpline Buttons */}
+              <div className="space-y-2 pt-2 border-t border-white/10">
+                <a
+                  href="https://wa.me/919342049287?text=Hello%20Sriram%20sir%2C%20I%20am%20inquiring%20about%20the%20Skyra%20Creations%20Runway%20Show%202026%20registration."
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-full flex items-center justify-center space-x-2 px-3 py-2.5 rounded-sm bg-emerald-950/40 hover:bg-emerald-900/60 text-emerald-300 border border-emerald-500/30 text-xs font-mono-editorial font-semibold transition-colors"
+                >
+                  <MessageSquare className="w-3.5 h-3.5 text-emerald-400" />
+                  <span>WHATSAPP DESK (+91 93420 49287)</span>
+                </a>
 
-              <a
-                href="https://www.instagram.com/skyra_creations_/"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="w-full flex items-center justify-center space-x-2 px-3 py-2.5 rounded-sm bg-white/5 hover:bg-white/10 text-white border border-white/10 text-xs font-mono-editorial font-semibold transition-colors"
-              >
-                <InstagramIcon className="w-3.5 h-3.5 text-[#E1306C]" />
-                <span>@SKYRA_CREATIONS_</span>
-              </a>
+                <a
+                  href="https://www.instagram.com/skyra_creations_/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-full flex items-center justify-center space-x-2 px-3 py-2.5 rounded-sm bg-white/5 hover:bg-white/10 text-white border border-white/10 text-xs font-mono-editorial font-semibold transition-colors"
+                >
+                  <InstagramIcon className="w-3.5 h-3.5 text-[#E1306C]" />
+                  <span>@SKYRA_CREATIONS_</span>
+                </a>
+              </div>
             </div>
           </div>
         </aside>
