@@ -10,6 +10,8 @@ import {
   Check
 } from 'lucide-react';
 import { motion } from 'motion/react';
+import MagneticButton from '../components/MagneticButton';
+import TiltCard from '../components/TiltCard';
 
 interface WhatWeDoPageProps {
   setActiveTab: (tab: string) => void;
@@ -104,7 +106,7 @@ export default function WhatWeDoPage({ setActiveTab }: WhatWeDoPageProps) {
   ];
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 space-y-20">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 space-y-24">
       {/* Page Header */}
       <motion.div 
         initial={{ opacity: 0, y: 20 }}
@@ -112,19 +114,19 @@ export default function WhatWeDoPage({ setActiveTab }: WhatWeDoPageProps) {
         transition={{ duration: 0.7 }}
         className="text-center max-w-3xl mx-auto space-y-4"
       >
-        <span className="font-mono-editorial block text-[11px] tracking-widest" style={{ color: 'var(--accent)' }}>
-          CORE DISCIPLINES
+        <span className="font-mono-editorial block text-[11px] tracking-widest text-[#C6FF00]">
+          HAUTE COUTURE SPECIFICATIONS
         </span>
-        <h1 className="font-display text-4xl sm:text-6xl md:text-7xl font-bold leading-[1.05]" style={{ color: 'var(--text-primary)' }}>
+        <h1 className="font-display text-4xl sm:text-6xl md:text-7xl font-bold leading-[1.05] text-white">
           WHAT WE CREATE.
         </h1>
-        <p className="text-sm sm:text-base font-light leading-relaxed" style={{ color: 'var(--text-secondary)' }}>
-          From stage choreography and model grooming to full-scale runway productions and designer showcases, discover how SKYRA CREATIONS brings fashion to life.
+        <p className="text-sm sm:text-base font-light leading-relaxed text-[#BFC3C7]">
+          From stage choreography and model grooming to full-scale runway productions and designer showcases, discover how SKYRA CREATIONS engineers high-fashion excellence.
         </p>
       </motion.div>
 
       {/* Activities Grid */}
-      <div className="space-y-12">
+      <div className="space-y-16">
         {activities.map((item, index) => {
           const isEven = index % 2 === 0;
 
@@ -135,31 +137,27 @@ export default function WhatWeDoPage({ setActiveTab }: WhatWeDoPageProps) {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: '-60px' }}
               transition={{ duration: 0.7 }}
-              className="p-8 sm:p-12 rounded-sm shadow-xl grid grid-cols-1 lg:grid-cols-12 gap-10 items-center"
-              style={{ 
-                backgroundColor: 'var(--surface)', 
-                border: '1px solid var(--border)' 
-              }}
+              className="p-8 sm:p-12 rounded-sm shadow-2xl grid grid-cols-1 lg:grid-cols-12 gap-10 items-center bg-[#12141a] border border-white/10"
             >
-              <div className={`lg:col-span-7 space-y-4 ${!isEven ? 'lg:order-2' : ''}`}>
+              <div className={`lg:col-span-7 space-y-5 ${!isEven ? 'lg:order-2' : ''}`}>
                 <div className="flex items-center space-x-3">
-                  <span className="font-mono-editorial text-xs font-bold" style={{ color: 'var(--accent)' }}>
+                  <span className="font-mono-editorial text-xs font-bold text-[#C6FF00]">
                     {item.number} // {item.category}
                   </span>
                 </div>
                 
-                <h2 className="font-editorial text-2xl sm:text-4xl font-bold" style={{ color: 'var(--text-primary)' }}>
+                <h2 className="font-display text-3xl sm:text-4xl font-bold text-white tracking-wide">
                   {item.title}
                 </h2>
                 
-                <p className="text-sm leading-relaxed font-light" style={{ color: 'var(--text-secondary)' }}>
+                <p className="text-sm leading-relaxed font-light text-[#BFC3C7]">
                   {item.description}
                 </p>
 
-                <div className="space-y-2.5 pt-3">
+                <div className="space-y-3 pt-2">
                   {item.features.map((feat, idx) => (
-                    <div key={idx} className="flex items-start space-x-3 text-xs" style={{ color: 'var(--text-muted)' }}>
-                      <Check className="w-4 h-4 shrink-0 mt-0.5" style={{ color: 'var(--accent)' }} />
+                    <div key={idx} className="flex items-start space-x-3 text-xs text-zinc-300 font-light">
+                      <Check className="w-4 h-4 shrink-0 mt-0.5 text-[#C6FF00]" />
                       <span>{feat}</span>
                     </div>
                   ))}
@@ -167,21 +165,17 @@ export default function WhatWeDoPage({ setActiveTab }: WhatWeDoPageProps) {
               </div>
 
               <div className={`lg:col-span-5 ${!isEven ? 'lg:order-1' : ''}`}>
-                <div 
-                  className="rounded-sm overflow-hidden shadow-2xl group relative"
-                  style={{ border: '1px solid var(--border)' }}
-                >
+                <TiltCard className="rounded-sm overflow-hidden shadow-2xl group relative border border-white/10">
                   <img 
                     src={item.image} 
                     alt={item.title}
                     loading="lazy"
-                    className="w-full h-72 sm:h-80 object-cover group-hover:scale-105 transition-transform duration-700" 
+                    className="w-full h-80 sm:h-96 object-cover group-hover:scale-105 transition-transform duration-700" 
                   />
                   <div 
-                    className="absolute inset-0 opacity-20 pointer-events-none group-hover:opacity-0 transition-opacity"
-                    style={{ backgroundColor: 'var(--accent)' }}
+                    className="absolute inset-0 bg-[#C6FF00]/10 opacity-30 pointer-events-none group-hover:opacity-0 transition-opacity"
                   />
-                </div>
+                </TiltCard>
               </div>
             </motion.div>
           );
@@ -194,30 +188,23 @@ export default function WhatWeDoPage({ setActiveTab }: WhatWeDoPageProps) {
         whileInView={{ opacity: 1, scale: 1 }}
         viewport={{ once: true }}
         transition={{ duration: 0.7 }}
-        className="p-10 sm:p-14 rounded-sm text-center space-y-5 shadow-xl"
-        style={{ 
-          backgroundColor: 'var(--surface)', 
-          border: '1px solid var(--border)' 
-        }}
+        className="p-12 sm:p-16 rounded-sm text-center space-y-6 shadow-2xl bg-[#12141a] border border-white/10 relative overflow-hidden"
       >
-        <h3 className="font-editorial text-2xl sm:text-4xl font-bold" style={{ color: 'var(--text-primary)' }}>
-          Experience a SKYRA CREATIONS Runway Show
+        <div className="absolute top-0 left-0 right-0 h-0.5 bg-gradient-to-r from-transparent via-[#C6FF00] to-transparent" />
+        <h3 className="font-display text-3xl sm:text-5xl font-bold text-white tracking-wide">
+          EXPERIENCE A SKYRA RUNWAY SHOW
         </h3>
-        <p className="text-xs sm:text-sm max-w-xl mx-auto font-light leading-relaxed" style={{ color: 'var(--text-secondary)' }}>
+        <p className="text-xs sm:text-sm max-w-xl mx-auto font-light leading-relaxed text-[#BFC3C7]">
           Explore upcoming events and register to participate as a contestant in Chennai.
         </p>
         <div className="pt-2 flex justify-center">
-          <button
+          <MagneticButton
             onClick={() => setActiveTab('events')}
-            className="px-8 py-4 font-mono-editorial text-xs font-bold uppercase tracking-wider rounded-sm shadow-lg transition-all hover:scale-105 active:scale-95 inline-flex items-center space-x-2"
-            style={{
-              backgroundColor: 'var(--accent)',
-              color: '#000000'
-            }}
+            className="px-8 py-4 font-mono-editorial text-xs font-bold uppercase tracking-wider rounded-sm shadow-lg inline-flex items-center space-x-2 bg-[#C6FF00] hover:bg-[#D8FF33] text-black"
           >
             <span>EXPLORE UPCOMING EVENTS</span>
             <ArrowRight className="w-3.5 h-3.5" />
-          </button>
+          </MagneticButton>
         </div>
       </motion.div>
     </div>

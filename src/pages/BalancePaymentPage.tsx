@@ -11,12 +11,15 @@ import {
   Check,
   Calendar,
   QrCode,
-  MapPin
+  MapPin,
+  ArrowRight
 } from 'lucide-react';
+import { motion } from 'motion/react';
 import { getPaymentInfo, lookupParticipant, submitBalancePayment } from '../lib/api';
 import { uploadFileToR2 } from '../lib/storage';
 import { PaymentInfo, Participant } from '../types/index';
 import DynamicUpiPayment from '../components/DynamicUpiPayment';
+import MagneticButton from '../components/MagneticButton';
 
 interface BalancePaymentPageProps {
   initialRegId?: string;
@@ -207,59 +210,66 @@ export default function BalancePaymentPage({ initialRegId, setActiveTab, setLook
   // Success Screen
   if (successResult) {
     return (
-      <div className="max-w-3xl mx-auto py-12 px-4 sm:px-6">
-        <div className="bg-[#12151e] border-2 border-amber-500/40 rounded-3xl p-8 sm:p-12 text-center shadow-2xl relative overflow-hidden">
-          <div className="w-20 h-20 bg-amber-500/10 border border-amber-500/30 rounded-full flex items-center justify-center mx-auto mb-6 text-amber-400">
-            <CheckCircle2 className="w-10 h-10" />
+      <div className="max-w-3xl mx-auto py-16 px-4 sm:px-6">
+        <motion.div 
+          initial={{ opacity: 0, scale: 0.96 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+          className="bg-[#12141a] border border-[#C6FF00]/40 rounded-sm p-8 sm:p-12 text-center shadow-2xl relative overflow-hidden"
+        >
+          <div className="absolute top-0 left-0 right-0 h-0.5 bg-gradient-to-r from-transparent via-[#C6FF00] to-transparent" />
+
+          <div className="w-16 h-16 bg-[#C6FF00]/10 border border-[#C6FF00]/30 rounded-sm flex items-center justify-center mx-auto mb-6 text-[#C6FF00]">
+            <CheckCircle2 className="w-8 h-8" />
           </div>
 
-          <div className="inline-block px-3 py-1 rounded-full bg-amber-500/10 text-amber-400 text-xs font-semibold uppercase tracking-wider mb-3">
-            Payment Submitted
+          <div className="inline-block px-3.5 py-1 rounded-sm bg-[#C6FF00]/10 text-[#C6FF00] font-mono-editorial text-[10px] font-bold uppercase tracking-widest mb-4">
+            PAYMENT SUBMISSION RECEIVED // PENDING AUDIT
           </div>
 
-          <h2 className="font-serif text-3xl sm:text-4xl font-extrabold text-white mb-2">
-            Payment Submission Received
+          <h2 className="font-display text-3xl sm:text-5xl font-bold text-white mb-2 tracking-tight">
+            BALANCE PAYMENT LOGGED.
           </h2>
 
-          <p className="text-zinc-300 text-sm sm:text-base max-w-lg mx-auto mb-6 leading-relaxed">
-            Your payment proof has been submitted successfully. Your payment will be reflected in your verified balance after review by our team.
+          <p className="text-[#BFC3C7] text-sm sm:text-base max-w-lg mx-auto mb-8 font-light leading-relaxed">
+            Your installment payment proof has been securely recorded. Verified amounts update automatically upon statement reconciliation.
           </p>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 max-w-md mx-auto mb-8 text-left">
-            <div className="bg-black/60 border border-zinc-800 rounded-xl p-4">
-              <span className="text-[11px] uppercase tracking-wider text-zinc-400 block mb-0.5">Registration ID</span>
-              <strong className="text-white font-mono text-lg">{successResult.reg_id}</strong>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 max-w-md mx-auto mb-8 text-left font-mono">
+            <div className="bg-[#080808] border border-white/15 rounded-sm p-4">
+              <span className="font-mono-editorial text-[10px] uppercase tracking-wider text-zinc-400 block mb-0.5">Registration ID</span>
+              <strong className="text-white text-lg tracking-wider">{successResult.reg_id}</strong>
             </div>
-            <div className="bg-black/60 border border-zinc-800 rounded-xl p-4">
-              <span className="text-[11px] uppercase tracking-wider text-zinc-400 block mb-0.5">Payment Reference ID</span>
-              <strong className="text-amber-400 font-mono text-sm">{successResult.payment_id}</strong>
+            <div className="bg-[#080808] border border-white/15 rounded-sm p-4">
+              <span className="font-mono-editorial text-[10px] uppercase tracking-wider text-zinc-400 block mb-0.5">Payment Reference ID</span>
+              <strong className="text-[#C6FF00] text-sm tracking-wider">{successResult.payment_id}</strong>
             </div>
           </div>
 
-          <div className="p-4 rounded-xl bg-[#171a24] border border-zinc-800 text-xs text-zinc-300 text-left mb-8 space-y-2">
-            <p className="font-bold text-white flex items-center space-x-1.5">
-              <ShieldCheck className="w-4 h-4 text-amber-400" />
-              <span>Verification Policy &amp; Event Notice:</span>
+          <div className="p-5 rounded-sm bg-[#0d0f14] border border-white/10 text-xs text-[#BFC3C7] text-left mb-8 space-y-2 font-light">
+            <p className="font-mono-editorial font-bold text-white uppercase text-[11px] flex items-center space-x-1.5">
+              <ShieldCheck className="w-4 h-4 text-[#C6FF00]" />
+              <span>Settlement Notice &amp; Venue Details</span>
             </p>
-            <p>
-              Payments are verified against bank settlement statements. Your updated balance and confirmed digital pass will be available once administrator approval is granted.
+            <p className="leading-relaxed">
+              Payments are verified directly against bank settlement statements. Your updated balance and confirmed digital pass will reflect once verified.
             </p>
-            <p className="text-amber-300/90 border-t border-zinc-800 pt-2 flex items-center space-x-1.5 text-[11px]">
-              <MapPin className="w-3.5 h-3.5 text-amber-400 shrink-0" />
-              <span>Event location is in <strong>Chennai (City Center — Not outer)</strong>. Venue address &amp; show schedule announced 10 days before the show.</span>
+            <p className="text-zinc-300 border-t border-white/10 pt-2 flex items-center space-x-1.5 text-[11px]">
+              <MapPin className="w-3.5 h-3.5 text-[#C6FF00] shrink-0" />
+              <span>Venue is in <strong className="text-white">Chennai City Center</strong>. Exact address and timing released 10 days before the show.</span>
             </p>
           </div>
 
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-            <button
+            <MagneticButton
               onClick={() => {
                 if (setLookupRegId) setLookupRegId(successResult.reg_id);
                 setActiveTab('status');
               }}
-              className="w-full sm:w-auto px-6 py-3 rounded-xl bg-amber-500 hover:bg-amber-400 text-black font-bold text-sm transition-all shadow-lg shadow-amber-500/20"
+              className="w-full sm:w-auto px-8 py-4 rounded-sm bg-[#C6FF00] hover:bg-[#D8FF33] text-black font-mono-editorial font-bold text-xs uppercase tracking-wider transition-all shadow-lg shadow-[#C6FF00]/15"
             >
-              Check Registration &amp; Pass Status
-            </button>
+              CHECK REGISTRATION &amp; PASS
+            </MagneticButton>
             <button
               onClick={() => {
                 setSuccessResult(null);
@@ -269,12 +279,12 @@ export default function BalancePaymentPage({ initialRegId, setActiveTab, setLook
                 setTermsConfirmed(false);
                 handleLookup(successResult.reg_id);
               }}
-              className="w-full sm:w-auto px-6 py-3 rounded-xl bg-zinc-800 hover:bg-zinc-700 text-white font-medium text-sm transition-all border border-zinc-700"
+              className="w-full sm:w-auto px-8 py-4 rounded-sm bg-white/5 hover:bg-white/10 text-white font-mono-editorial text-xs font-semibold uppercase tracking-wider transition-all border border-white/15"
             >
-              Submit Another Installment
+              SUBMIT ANOTHER INSTALLMENT
             </button>
           </div>
-        </div>
+        </motion.div>
       </div>
     );
   }
@@ -284,102 +294,104 @@ export default function BalancePaymentPage({ initialRegId, setActiveTab, setLook
   const validAmounts = allAmounts.filter(amount => amount <= currentBalance);
 
   return (
-    <div className="max-w-4xl mx-auto py-10 px-4 sm:px-6">
-      {/* Official Master Spec Banner */}
-      <div className="relative overflow-hidden bg-gradient-to-r from-[#171a24] via-[#1b1f2c] to-[#171a24] border border-amber-500/30 rounded-3xl p-6 sm:p-10 mb-8 shadow-2xl">
+    <div className="max-w-4xl mx-auto py-12 px-4 sm:px-6 space-y-8">
+      {/* Master Spec Banner */}
+      <div className="relative overflow-hidden bg-[#12141a] border border-white/10 rounded-sm p-6 sm:p-10 shadow-2xl">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6 mb-6">
           <div>
-            <div className="flex items-center space-x-2 text-amber-400 text-xs font-semibold tracking-widest uppercase mb-2">
-              <CreditCard className="w-4 h-4" />
-              <span>SKYRA CREATIONS — BALANCE PAYMENT PORTAL</span>
+            <div className="flex items-center space-x-2 text-[#C6FF00] font-mono-editorial text-[10px] font-semibold tracking-widest uppercase mb-2">
+              <CreditCard className="w-3.5 h-3.5" />
+              <span>SKYRA CREATIONS — BALANCE SETTLEMENT PORTAL</span>
             </div>
 
-            <h1 className="font-serif text-3xl sm:text-5xl font-extrabold text-white tracking-tight">
-              Complete Your Event Payment
+            <h1 className="font-display text-3xl sm:text-5xl font-bold text-white tracking-tight leading-[1.08]">
+              SETTLE OUTSTANDING BALANCE.
             </h1>
-            <p className="text-sm sm:text-base text-zinc-300 mt-2 font-medium">
-              Already registered for the Runway Show 2026? Use this portal to submit an additional payment towards your outstanding registration balance.
+            <p className="text-sm sm:text-base text-[#BFC3C7] mt-2 font-light">
+              Already registered for the Runway Show 2026? Look up your registration ID and submit an installment or full balance clearance.
             </p>
           </div>
 
           <div className="shrink-0 relative group self-start sm:self-center select-none">
             <div 
-              className="absolute -inset-2 rounded-2xl blur-xl opacity-45 pointer-events-none"
+              className="absolute -inset-2 rounded-sm blur-xl opacity-40 pointer-events-none"
               style={{
-                background: 'radial-gradient(ellipse at center, rgba(220, 38, 38, 0.45) 0%, rgba(198, 255, 0, 0.25) 50%, transparent 70%)',
+                background: 'radial-gradient(ellipse at center, rgba(198, 255, 0, 0.35) 0%, rgba(220, 38, 38, 0.2) 50%, transparent 70%)',
               }}
             />
-            <div 
-              className="relative px-5 py-3 rounded-2xl shadow-2xl"
-              style={{
-                backgroundColor: 'rgba(0, 0, 0, 0.7)',
-                border: '1px solid rgba(255, 255, 255, 0.12)',
-              }}
-            >
+            <div className="relative px-5 py-3 rounded-sm bg-black/80 border border-white/15 shadow-2xl">
               <img 
                 src="/logo-clean.png" 
-                alt="SKYRA CREATIONS — Balance Payment Portal Emblem" 
+                alt="SKYRA CREATIONS — Emblem" 
                 className="h-14 sm:h-16 w-auto object-contain"
-                style={{ filter: 'drop-shadow(0 2px 10px rgba(0,0,0,0.85))' }}
               />
             </div>
           </div>
         </div>
 
-        <div className="space-y-2 text-xs sm:text-sm text-zinc-300 border-l-2 border-amber-500/60 pl-4 py-1 leading-relaxed">
-          <p className="font-medium text-amber-200">
-            Please enter your registration ID carefully so that your payment is associated with the correct participant record.
+        <div className="space-y-2 text-xs sm:text-sm text-[#BFC3C7] border-l-2 border-[#C6FF00] pl-4 py-1 leading-relaxed font-light">
+          <p className="font-medium text-white">
+            Please enter your registration ID to load your live fee records.
           </p>
-          <p className="text-zinc-400">
-            Important Notice: This portal is exclusively for existing participants. Your payment submission will be reviewed by our team before your balance is updated.
+          <p className="text-zinc-400 font-mono-editorial text-[11px]">
+            Exclusively for registered participants. Submissions are verified against bank settlement statements.
           </p>
         </div>
       </div>
 
       {/* Prominent Venue & Schedule Announcement */}
-      <div className="bg-gradient-to-r from-amber-950/40 via-[#1d1610] to-[#12151e] border-2 border-amber-500/50 rounded-2xl p-5 mb-8 shadow-xl relative overflow-hidden">
+      <div className="bg-[#0b0c10] border border-[#C6FF00]/40 rounded-sm p-5 shadow-xl relative overflow-hidden">
         <div className="flex items-start space-x-3.5">
-          <div className="w-10 h-10 rounded-xl bg-amber-500/20 border border-amber-500/40 flex items-center justify-center shrink-0 text-amber-400 mt-0.5 shadow">
-            <MapPin className="w-5 h-5" />
+          <div className="w-9 h-9 rounded-sm bg-[#C6FF00]/10 border border-[#C6FF00]/30 flex items-center justify-center shrink-0 text-[#C6FF00] mt-0.5 shadow">
+            <MapPin className="w-4 h-4" />
           </div>
-          <div className="space-y-1 flex-1">
+          <div className="space-y-1.5 flex-1">
             <div className="flex flex-wrap items-center gap-2">
-              <span className="text-xs font-bold uppercase tracking-widest text-amber-300">
-                Event Location &amp; Announcement Schedule
+              <span className="font-mono-editorial text-[11px] font-bold uppercase tracking-widest text-[#C6FF00]">
+                VENUE ANNOUNCEMENT &amp; SCHEDULE
               </span>
-              <span className="px-2.5 py-0.5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/30 text-[10px] font-bold uppercase tracking-wider">
-                Chennai (City Center — Not Outer)
+              <span className="px-2 py-0.5 rounded-sm bg-white/10 text-white font-mono-editorial text-[10px] uppercase tracking-wider">
+                Chennai (City Center)
               </span>
             </div>
-            <p className="text-xs sm:text-sm text-zinc-200 leading-relaxed">
-              <strong className="text-white">Event Location:</strong> Hosted within <strong className="text-amber-300">Chennai city center (prime location, not outer areas)</strong>.
+            <p className="text-xs sm:text-sm text-white leading-relaxed font-light">
+              <strong className="font-medium">Event Location:</strong> Central Chennai city center auditorium (prime location, not outer areas).
             </p>
-            <p className="text-xs sm:text-sm text-zinc-300 leading-relaxed">
-              <strong className="text-white">Venue Address &amp; Event Timings:</strong> The exact venue location and timing schedule will be <strong className="text-amber-300">officially announced 10 days before the show</strong> and shared with all participants via registered WhatsApp.
+            <p className="text-xs sm:text-sm text-[#BFC3C7] leading-relaxed font-light">
+              <strong className="font-medium text-white">Venue Address &amp; Timings:</strong> Exact address &amp; call sheets are <strong className="text-[#C6FF00]">announced 10 days before the show</strong> and shared with all participants via registered WhatsApp.
             </p>
           </div>
         </div>
       </div>
 
       {submitError && (
-        <div className="mb-6 p-4 rounded-xl bg-red-950/50 border border-red-500/40 text-red-200 text-sm flex items-start space-x-3">
+        <motion.div 
+          initial={{ opacity: 0, y: -8 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="p-4 rounded-sm bg-red-950/50 border border-red-500/40 text-red-200 text-xs sm:text-sm flex items-start space-x-3"
+        >
           <AlertCircle className="w-5 h-5 text-red-400 shrink-0 mt-0.5" />
           <div>
-            <p className="font-semibold">Notice</p>
-            <p className="text-xs sm:text-sm mt-0.5 text-red-300">{submitError}</p>
+            <p className="font-semibold font-mono-editorial uppercase text-xs">Submission Notice</p>
+            <p className="text-xs mt-0.5 text-red-300 font-light">{submitError}</p>
           </div>
-        </div>
+        </motion.div>
       )}
 
       {/* 4.1 REGISTRATION LOOKUP */}
-      <div className="bg-[#12151e]/90 border border-zinc-800 rounded-2xl p-6 sm:p-8 shadow-md mb-8">
-        <h2 className="font-serif text-xl sm:text-2xl font-bold text-white mb-2 flex items-center space-x-2">
-          <Search className="w-5 h-5 text-amber-400" />
-          <span>Find Your Registration</span>
-        </h2>
-        <p className="text-xs sm:text-sm text-zinc-400 mb-6">
-          Enter the registration ID received after submitting your registration.
-        </p>
+      <div className="bg-[#12141a] border border-white/10 rounded-sm p-6 sm:p-8 shadow-xl">
+        <div className="border-b border-white/10 pb-4 mb-6">
+          <div className="flex items-center space-x-2 text-[#C6FF00] font-mono-editorial text-[10px] uppercase tracking-widest mb-1">
+            <span>STEP 01 // LOCATE RECORD</span>
+          </div>
+          <h2 className="font-display text-2xl sm:text-3xl font-bold text-white flex items-center space-x-2">
+            <Search className="w-5 h-5 text-[#C6FF00]" />
+            <span>FIND YOUR REGISTRATION</span>
+          </h2>
+          <p className="text-xs text-[#BFC3C7] font-light mt-1">
+            Enter the registration ID received after submitting your registration.
+          </p>
+        </div>
 
         <form 
           onSubmit={(e) => {
@@ -394,28 +406,28 @@ export default function BalancePaymentPage({ initialRegId, setActiveTab, setLook
               required
               value={regIdInput}
               onChange={(e) => setRegIdInput(e.target.value)}
-              placeholder="SC-2026-XXXX"
-              className="w-full bg-[#0a0c12] border border-zinc-700 rounded-xl px-4 py-3 text-white placeholder-zinc-500 text-sm focus:outline-none focus:border-amber-400 font-mono uppercase tracking-wider"
+              placeholder="e.g. SC-2026-1001"
+              className="w-full bg-[#080808] border border-white/15 rounded-sm px-4 py-3.5 text-white placeholder-zinc-500 text-xs sm:text-sm focus:outline-none focus:border-[#C6FF00] font-mono uppercase tracking-wider"
             />
           </div>
-          <button
+          <MagneticButton
             type="submit"
             disabled={lookupLoading}
-            className="px-6 py-3 rounded-xl bg-amber-500 hover:bg-amber-400 text-black font-bold text-sm transition-all shadow-md flex items-center justify-center space-x-2 shrink-0"
+            className="px-8 py-3.5 rounded-sm bg-[#C6FF00] hover:bg-[#D8FF33] text-black font-mono-editorial font-bold text-xs uppercase tracking-wider transition-all shadow-md flex items-center justify-center space-x-2 shrink-0 active:scale-98"
           >
             {lookupLoading ? (
-              <span>Searching...</span>
+              <span>LOCATING RECORD...</span>
             ) : (
               <>
                 <Search className="w-4 h-4" />
-                <span>Find Registration</span>
+                <span>FIND REGISTRATION</span>
               </>
             )}
-          </button>
+          </MagneticButton>
         </form>
 
         {lookupError && (
-          <div className="mt-4 p-3 bg-red-950/40 border border-red-500/30 rounded-xl text-xs text-red-300 flex items-center space-x-2">
+          <div className="mt-4 p-3 bg-red-950/40 border border-red-500/30 rounded-sm text-xs text-red-300 flex items-center space-x-2">
             <AlertCircle className="w-4 h-4 shrink-0 text-red-400" />
             <span>{lookupError}</span>
           </div>
@@ -423,56 +435,55 @@ export default function BalancePaymentPage({ initialRegId, setActiveTab, setLook
 
         {/* Participant Found & 4.2 PAYMENT SUMMARY */}
         {participantData && (
-          <div className="mt-8 pt-6 border-t border-zinc-800 space-y-6">
+          <div className="mt-8 pt-6 border-t border-white/10 space-y-6">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
               <div>
-                <span className="text-[11px] uppercase tracking-wider px-2.5 py-0.5 rounded bg-amber-500/10 text-amber-400 border border-amber-500/30 font-semibold">
-                  Verified Registration
+                <span className="font-mono-editorial text-[10px] uppercase tracking-widest px-2.5 py-0.5 rounded-sm bg-[#C6FF00]/10 text-[#C6FF00] border border-[#C6FF00]/30 font-bold">
+                  VERIFIED CANDIDATE FILE
                 </span>
-                <h3 className="font-serif text-2xl font-bold text-white mt-1">
+                <h3 className="font-editorial text-2xl sm:text-3xl font-bold text-white mt-1.5">
                   {participantData.full_name}
                 </h3>
-                <p className="text-xs text-zinc-400">
-                  ID: <span className="font-mono text-zinc-200">{participantData.reg_id}</span> • Category: <span className="text-zinc-200">{participantData.category}</span>
+                <p className="text-xs text-[#BFC3C7] font-mono mt-0.5">
+                  ID: <span className="text-white font-bold">{participantData.reg_id}</span> • Category: <span className="text-white">{participantData.category}</span>
                 </p>
               </div>
 
-              <div className="flex items-center space-x-2">
-                <span className="text-xs text-zinc-400">Status:</span>
-                <span className={`text-xs font-bold uppercase tracking-wider px-3 py-1 rounded-full border ${
+              <div className="flex items-center space-x-2 self-start sm:self-center">
+                <span className={`font-mono-editorial text-xs font-bold uppercase tracking-wider px-3.5 py-1.5 rounded-sm border ${
                   participantData.status === 'FULLY_PAID'
                     ? 'bg-emerald-500/15 text-emerald-400 border-emerald-500/30'
                     : participantData.status === 'PARTIALLY_PAID'
-                    ? 'bg-amber-500/15 text-amber-400 border-amber-500/30'
+                    ? 'bg-[#C6FF00]/15 text-[#C6FF00] border-[#C6FF00]/30'
                     : 'bg-blue-500/15 text-blue-300 border-blue-500/30'
                 }`}>
                   {participantData.status === 'FULLY_PAID'
                     ? 'Fully Paid'
                     : participantData.status === 'PARTIALLY_PAID'
                     ? 'Partially Paid'
-                    : 'Pending Verification'}
+                    : 'Under Review'}
                 </span>
               </div>
             </div>
 
             {/* 4.2 Payment Summary Cards */}
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-              <div className="bg-[#0a0c12] border border-zinc-800 rounded-xl p-4">
-                <span className="text-xs text-zinc-400 block mb-1">Total Event Fee</span>
-                <span className="text-xl font-bold text-white">₹{participantData.total_fee.toLocaleString('en-IN')}</span>
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 font-mono">
+              <div className="bg-[#080808] border border-white/10 rounded-sm p-5">
+                <span className="font-mono-editorial text-[10px] uppercase tracking-wider text-zinc-400 block mb-1">Total Fee</span>
+                <span className="text-2xl font-bold text-white">₹{participantData.total_fee.toLocaleString('en-IN')}</span>
               </div>
-              <div className="bg-[#0a0c12] border border-emerald-500/20 rounded-xl p-4">
-                <span className="text-xs text-emerald-400 block mb-1">Verified Payments</span>
-                <span className="text-xl font-bold text-emerald-400">₹{participantData.amount_paid.toLocaleString('en-IN')}</span>
+              <div className="bg-[#080808] border border-emerald-500/20 rounded-sm p-5">
+                <span className="font-mono-editorial text-[10px] uppercase tracking-wider text-emerald-400 block mb-1">Verified Paid</span>
+                <span className="text-2xl font-bold text-emerald-400">₹{participantData.amount_paid.toLocaleString('en-IN')}</span>
               </div>
-              <div className="bg-[#0a0c12] border border-amber-500/20 rounded-xl p-4">
-                <span className="text-xs text-amber-400 block mb-1">Outstanding Balance</span>
-                <span className="text-xl font-bold text-amber-400">₹{participantData.balance_due.toLocaleString('en-IN')}</span>
+              <div className="bg-[#080808] border border-[#C6FF00]/30 rounded-sm p-5">
+                <span className="font-mono-editorial text-[10px] uppercase tracking-wider text-[#C6FF00] block mb-1">Balance Due</span>
+                <span className="text-2xl font-bold text-[#C6FF00]">₹{participantData.balance_due.toLocaleString('en-IN')}</span>
               </div>
             </div>
 
             {participantData.balance_due === 0 && (
-              <div className="p-4 bg-emerald-950/40 border border-emerald-500/40 rounded-xl text-xs sm:text-sm text-emerald-200 flex items-center justify-between">
+              <div className="p-4 bg-emerald-950/40 border border-emerald-500/40 rounded-sm text-xs sm:text-sm text-emerald-200 flex items-center justify-between">
                 <div className="flex items-center space-x-2">
                   <CheckCircle2 className="w-5 h-5 text-emerald-400 shrink-0" />
                   <span>Your registration fee is fully settled. No additional payment is required!</span>
@@ -482,9 +493,9 @@ export default function BalancePaymentPage({ initialRegId, setActiveTab, setLook
                     if (setLookupRegId) setLookupRegId(participantData.reg_id);
                     setActiveTab('status');
                   }}
-                  className="px-3 py-1.5 bg-emerald-500 text-black font-bold rounded-lg text-xs hover:bg-emerald-400 shrink-0"
+                  className="px-4 py-2 bg-emerald-500 text-black font-mono-editorial text-xs font-bold uppercase rounded-sm hover:bg-emerald-400 shrink-0"
                 >
-                  View Digital Pass
+                  VIEW DIGITAL PASS
                 </button>
               </div>
             )}
@@ -496,18 +507,21 @@ export default function BalancePaymentPage({ initialRegId, setActiveTab, setLook
       {participantData && participantData.balance_due > 0 && (
         <form onSubmit={handleSubmit} className="space-y-8">
           {/* Amount Selection */}
-          <div className="bg-[#12151e]/90 border border-amber-500/30 rounded-2xl p-6 sm:p-8 shadow-xl">
-            <div className="border-b border-zinc-800 pb-4 mb-6">
-              <h3 className="font-serif text-xl sm:text-2xl font-bold text-white flex items-center space-x-2">
-                <CreditCard className="w-5 h-5 text-amber-400" />
-                <span>Choose Your Payment Amount</span>
+          <div className="bg-[#12141a] border border-white/10 rounded-sm p-6 sm:p-8 shadow-xl">
+            <div className="border-b border-white/10 pb-4 mb-6">
+              <div className="flex items-center space-x-2 text-[#C6FF00] font-mono-editorial text-[10px] uppercase tracking-widest mb-1">
+                <span>STEP 02 // INSTALLMENT SELECTION</span>
+              </div>
+              <h3 className="font-display text-2xl sm:text-3xl font-bold text-white flex items-center space-x-2">
+                <CreditCard className="w-5 h-5 text-[#C6FF00]" />
+                <span>CHOOSE PAYMENT AMOUNT</span>
               </h3>
-              <p className="text-xs sm:text-sm text-zinc-400 mt-1">
-                Select an amount towards your remaining balance of <strong className="text-amber-400">₹{participantData.balance_due}</strong>.
+              <p className="text-xs text-[#BFC3C7] font-light mt-1">
+                Select an amount towards your remaining balance of <strong className="text-[#C6FF00] font-mono">₹{participantData.balance_due}</strong>.
               </p>
             </div>
 
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-4">
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-4 font-mono">
               {validAmounts.map((amt) => {
                 const isSelected = !isFullRemainingSelected && selectedAmount === amt;
                 return (
@@ -518,14 +532,14 @@ export default function BalancePaymentPage({ initialRegId, setActiveTab, setLook
                       setSelectedAmount(amt);
                       setIsFullRemainingSelected(false);
                     }}
-                    className={`p-3.5 rounded-xl border text-center transition-all ${
+                    className={`p-4 rounded-sm border text-center transition-all ${
                       isSelected
-                        ? 'bg-amber-500/20 border-amber-400 text-white font-bold shadow-md shadow-amber-500/15'
-                        : 'bg-[#0a0c12] border-zinc-800 text-zinc-300 hover:border-zinc-700'
+                        ? 'bg-[#C6FF00]/10 border-[#C6FF00] text-white font-bold shadow-md shadow-[#C6FF00]/15'
+                        : 'bg-[#080808] border-white/15 text-zinc-300 hover:border-white/30'
                     }`}
                   >
-                    <div className="text-lg font-extrabold">₹{amt.toLocaleString('en-IN')}</div>
-                    <div className="text-[10px] text-zinc-400 mt-0.5">Installment</div>
+                    <div className="text-xl font-extrabold">₹{amt.toLocaleString('en-IN')}</div>
+                    <div className="font-mono-editorial text-[10px] text-zinc-400 mt-1 uppercase">Installment</div>
                   </button>
                 );
               })}
@@ -537,35 +551,38 @@ export default function BalancePaymentPage({ initialRegId, setActiveTab, setLook
                   setSelectedAmount(participantData.balance_due);
                   setIsFullRemainingSelected(true);
                 }}
-                className={`p-3.5 rounded-xl border text-center transition-all col-span-2 sm:col-span-1 ${
+                className={`p-4 rounded-sm border text-center transition-all col-span-2 sm:col-span-1 ${
                   isFullRemainingSelected
                     ? 'bg-emerald-500/20 border-emerald-400 text-white font-bold shadow-md shadow-emerald-500/15'
-                    : 'bg-[#0a0c12] border-zinc-800 text-emerald-400 hover:border-zinc-700'
+                    : 'bg-[#080808] border-white/15 text-emerald-400 hover:border-white/30'
                 }`}
               >
-                <div className="text-lg font-extrabold">₹{participantData.balance_due.toLocaleString('en-IN')}</div>
-                <div className="text-[10px] text-emerald-300 mt-0.5">Pay Full Balance</div>
+                <div className="text-xl font-extrabold">₹{participantData.balance_due.toLocaleString('en-IN')}</div>
+                <div className="font-mono-editorial text-[10px] text-emerald-300 mt-1 uppercase">Full Balance</div>
               </button>
             </div>
 
-            <p className="text-[11px] text-zinc-500">
-              Only amounts valid for your current outstanding balance are displayed.
+            <p className="font-mono-editorial text-[10px] text-zinc-500">
+              Only amounts valid for your current balance are displayed.
             </p>
           </div>
 
           {/* 4.4 Payment Information & Screenshot Upload */}
-          <div className="bg-[#12151e]/90 border border-zinc-800 rounded-2xl p-6 sm:p-8 shadow-md">
-            <div className="border-b border-zinc-800 pb-4 mb-6">
-              <h3 className="font-serif text-xl sm:text-2xl font-bold text-white flex items-center space-x-2">
-                <QrCode className="w-5 h-5 text-amber-400" />
-                <span>Submit Payment Details</span>
+          <div className="bg-[#12141a] border border-white/10 rounded-sm p-6 sm:p-8 shadow-xl">
+            <div className="border-b border-white/10 pb-4 mb-6">
+              <div className="flex items-center space-x-2 text-[#C6FF00] font-mono-editorial text-[10px] uppercase tracking-widest mb-1">
+                <span>STEP 03 // UPI SUBMISSION</span>
+              </div>
+              <h3 className="font-display text-2xl sm:text-3xl font-bold text-white flex items-center space-x-2">
+                <QrCode className="w-5 h-5 text-[#C6FF00]" />
+                <span>SUBMIT PAYMENT DETAILS</span>
               </h3>
-              <p className="text-xs sm:text-sm text-zinc-400 mt-1">
-                Scan the official QR code or copy the UPI ID below to pay <strong className="text-amber-400">₹{getEffectiveAmount().toLocaleString('en-IN')}</strong>.
+              <p className="text-xs text-[#BFC3C7] font-light mt-1">
+                Scan the official QR code or copy the UPI ID below to pay <strong className="text-[#C6FF00] font-mono">₹{getEffectiveAmount().toLocaleString('en-IN')}</strong>.
               </p>
             </div>
 
-            {/* Dynamic Server-Controlled UPI Payment Component with 5 UPI App Buttons & Dynamic QR */}
+            {/* Dynamic Server-Controlled UPI Payment Component */}
             <div className="mb-6">
               <DynamicUpiPayment
                 amount={getEffectiveAmount()}
@@ -579,26 +596,23 @@ export default function BalancePaymentPage({ initialRegId, setActiveTab, setLook
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
               {/* UTR */}
               <div>
-                <label className="block text-xs font-semibold text-zinc-300 mb-1">
-                  UPI Transaction ID / UTR <span className="text-amber-400">*</span>
+                <label className="block font-mono-editorial text-[10px] uppercase tracking-wider text-[#BFC3C7] mb-1.5">
+                  12-DIGIT UPI TRANSACTION REF / UTR <span className="text-[#C6FF00]">*</span>
                 </label>
                 <input
                   type="text"
                   required
                   value={transactionId}
                   onChange={(e) => setTransactionId(e.target.value)}
-                  placeholder="Enter the 12-digit transaction reference"
-                  className="w-full bg-[#0a0c12] border border-zinc-700 rounded-xl px-4 py-3 text-white placeholder-zinc-500 text-sm focus:outline-none focus:border-amber-400 font-mono"
+                  placeholder="Enter 12-digit reference (e.g. 412345678901)"
+                  className="w-full bg-[#080808] border border-white/15 rounded-sm px-4 py-3 text-white placeholder-zinc-500 text-xs sm:text-sm focus:outline-none focus:border-[#C6FF00] font-mono tracking-wider"
                 />
-                <p className="text-[11px] text-zinc-500 mt-1">
-                  Enter the transaction reference for this payment.
-                </p>
               </div>
 
               {/* Transaction Date */}
               <div>
-                <label className="block text-xs font-semibold text-zinc-300 mb-1">
-                  Transaction Date <span className="text-amber-400">*</span>
+                <label className="block font-mono-editorial text-[10px] uppercase tracking-wider text-[#BFC3C7] mb-1.5">
+                  TRANSACTION DATE <span className="text-[#C6FF00]">*</span>
                 </label>
                 <div className="relative">
                   <input
@@ -606,31 +620,30 @@ export default function BalancePaymentPage({ initialRegId, setActiveTab, setLook
                     required
                     value={transactionDate}
                     onChange={(e) => setTransactionDate(e.target.value)}
-                    className="w-full bg-[#0a0c12] border border-zinc-700 rounded-xl pl-10 pr-4 py-3 text-white text-sm focus:outline-none focus:border-amber-400 [color-scheme:dark]"
+                    className="w-full bg-[#080808] border border-white/15 rounded-sm pl-10 pr-4 py-3 text-white text-xs sm:text-sm focus:outline-none focus:border-[#C6FF00] [color-scheme:dark]"
                   />
                   <Calendar className="w-4 h-4 text-zinc-500 absolute left-3.5 top-3.5" />
                 </div>
-                <p className="text-[11px] text-zinc-500 mt-1">Select the date on which the payment was made.</p>
               </div>
 
               {/* Screenshot Upload */}
               <div className="sm:col-span-2">
-                <label className="block text-xs font-semibold text-zinc-300 mb-1">
-                  Payment Screenshot <span className="text-amber-400">*</span>
+                <label className="block font-mono-editorial text-[10px] uppercase tracking-wider text-[#BFC3C7] mb-1.5">
+                  PAYMENT SCREENSHOT <span className="text-[#C6FF00]">*</span>
                 </label>
-                <div className="border-2 border-dashed border-zinc-700 hover:border-amber-500/50 rounded-2xl p-6 text-center bg-[#0a0c12] transition-colors">
+                <div className="border-2 border-dashed border-white/15 hover:border-[#C6FF00]/50 rounded-sm p-6 text-center bg-[#080808] transition-colors">
                   {screenshotPreview ? (
                     <div className="space-y-3">
                       <img
                         src={screenshotPreview}
                         alt="Uploaded Payment Screenshot"
-                        className="max-h-48 mx-auto rounded-lg border border-zinc-700 object-contain"
+                        className="max-h-48 mx-auto rounded-sm border border-white/15 object-contain"
                       />
-                      <div className="text-xs text-zinc-300">
+                      <div className="font-mono text-xs text-[#BFC3C7]">
                         <span>{screenshotFile?.name}</span> ({(screenshotFile?.size ? screenshotFile.size / 1024 : 0).toFixed(0)} KB)
                       </div>
-                      <label className="inline-block px-3 py-1.5 bg-zinc-800 hover:bg-zinc-700 text-zinc-300 rounded-lg text-xs cursor-pointer">
-                        <span>Change File</span>
+                      <label className="inline-block px-4 py-2 bg-white/10 hover:bg-white/20 text-white rounded-sm font-mono-editorial text-xs cursor-pointer border border-white/15">
+                        <span>CHANGE FILE</span>
                         <input
                           type="file"
                           accept="image/jpeg,image/png,image/webp"
@@ -641,15 +654,15 @@ export default function BalancePaymentPage({ initialRegId, setActiveTab, setLook
                     </div>
                   ) : (
                     <div>
-                      <Upload className="w-8 h-8 text-amber-400 mx-auto mb-2" />
-                      <p className="text-sm font-medium text-white mb-1">
-                        Upload your payment screenshot
+                      <Upload className="w-8 h-8 text-[#C6FF00] mx-auto mb-2" />
+                      <p className="font-editorial text-base font-bold text-white mb-1">
+                        Upload Your Transaction Screenshot
                       </p>
-                      <p className="text-xs text-zinc-400 mb-3">
-                        Upload a clear screenshot showing the transaction details. Accepted formats: JPG, PNG, WebP (up to 10 MB).
+                      <p className="font-mono-editorial text-[10px] text-zinc-400 mb-3">
+                        UTR and amount must be clearly legible. JPG, PNG, WebP up to 10 MB.
                       </p>
-                      <label className="inline-block px-4 py-2 bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 border border-amber-500/40 rounded-xl text-xs font-semibold cursor-pointer transition-colors">
-                        <span>Browse Image</span>
+                      <label className="inline-block px-5 py-2.5 bg-white/10 hover:bg-white/20 text-[#C6FF00] border border-[#C6FF00]/40 rounded-sm font-mono-editorial text-xs font-semibold cursor-pointer transition-colors">
+                        <span>BROWSE SCREENSHOT</span>
                         <input
                           type="file"
                           accept="image/jpeg,image/png,image/webp"
@@ -664,17 +677,17 @@ export default function BalancePaymentPage({ initialRegId, setActiveTab, setLook
             </div>
 
             {/* Required Agreement */}
-            <div className="mt-6 pt-4 border-t border-zinc-800">
-              <label className="flex items-start space-x-3 cursor-pointer">
+            <div className="mt-6 pt-4 border-t border-white/10">
+              <label className="flex items-start space-x-3 cursor-pointer p-3.5 rounded-sm bg-white/5 hover:bg-white/10 border border-white/15 transition-colors">
                 <input
                   type="checkbox"
                   required
                   checked={termsConfirmed}
                   onChange={(e) => setTermsConfirmed(e.target.checked)}
-                  className="mt-1 w-4 h-4 rounded border-zinc-700 bg-zinc-900 text-amber-500 focus:ring-amber-400 shrink-0"
+                  className="mt-1 w-4 h-4 rounded-sm border-zinc-700 bg-zinc-900 text-[#C6FF00] focus:ring-[#C6FF00] shrink-0"
                 />
-                <span className="text-xs sm:text-sm text-zinc-300 leading-relaxed">
-                  I confirm that I have completed this payment and that the transaction details provided above are accurate.
+                <span className="font-mono-editorial text-xs text-white leading-relaxed font-medium">
+                  I CONFIRM THAT I HAVE COMPLETED THIS PAYMENT AND THAT THE TRANSACTION DETAILS PROVIDED ABOVE ARE ACCURATE.
                 </span>
               </label>
             </div>
@@ -684,29 +697,30 @@ export default function BalancePaymentPage({ initialRegId, setActiveTab, setLook
           <div>
             {uploadStatusText && (
               <div className="mb-4 text-center">
-                <p className="text-xs text-amber-300 mb-1">{uploadStatusText}</p>
+                <p className="font-mono-editorial text-xs text-[#C6FF00] mb-2">{uploadStatusText}</p>
                 {uploadPercent > 0 && (
-                  <div className="w-full bg-zinc-800 rounded-full h-1.5 overflow-hidden max-w-md mx-auto">
+                  <div className="w-full bg-zinc-800 rounded-sm h-1.5 overflow-hidden max-w-md mx-auto">
                     <div
-                      className="bg-amber-400 h-1.5 transition-all duration-300"
+                      className="bg-[#C6FF00] h-1.5 transition-all duration-300"
                       style={{ width: `${uploadPercent}%` }}
-                    ></div>
+                    />
                   </div>
                 )}
               </div>
             )}
 
-            <button
+            <MagneticButton
               type="submit"
               disabled={loading}
-              className={`w-full py-4 rounded-2xl font-bold text-base tracking-wide transition-all shadow-xl ${
+              className={`w-full py-5 rounded-sm font-mono-editorial text-xs font-bold uppercase tracking-widest transition-all shadow-xl flex items-center justify-center space-x-2 ${
                 loading
                   ? 'bg-zinc-800 text-zinc-500 cursor-not-allowed'
-                  : 'bg-gradient-to-r from-amber-500 via-amber-400 to-amber-500 hover:from-amber-400 hover:to-amber-300 text-black shadow-amber-500/20 hover:shadow-amber-500/30'
+                  : 'bg-[#C6FF00] hover:bg-[#D8FF33] text-black shadow-[#C6FF00]/20'
               }`}
             >
-              {loading ? 'Submitting payment for verification...' : 'Submit Payment for Verification'}
-            </button>
+              <span>{loading ? 'SUBMITTING PAYMENT PROOF...' : 'SUBMIT PAYMENT FOR VERIFICATION'}</span>
+              {!loading && <ArrowRight className="w-4 h-4" />}
+            </MagneticButton>
           </div>
         </form>
       )}

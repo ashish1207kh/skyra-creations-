@@ -185,22 +185,22 @@ export default function AdminDashboard() {
   if (!isAuthenticated) {
     return (
       <div className="max-w-md mx-auto py-16 px-4">
-        <div className="bg-[#12151e] border border-amber-500/30 rounded-3xl p-8 shadow-2xl">
+        <div className="bg-[#12141a] border border-white/10 rounded-sm p-8 shadow-2xl relative">
+          <div className="absolute top-0 left-0 right-0 h-0.5 bg-gradient-to-r from-transparent via-[#C6FF00] to-transparent" />
           <div className="relative mx-auto mb-5 group select-none flex justify-center">
-            <div className="absolute -inset-2 rounded-2xl blur-lg opacity-40 bg-gradient-to-r from-red-600/40 via-amber-500/30 to-white/20 pointer-events-none" />
-            <div className="relative px-5 py-3 rounded-2xl bg-black/80 border border-white/15 shadow-2xl">
+            <div className="relative px-5 py-3 rounded-sm bg-black/80 border border-white/15 shadow-2xl">
               <img src="/logo-clean.png" alt="Skyra Creations Logo" className="h-14 sm:h-16 w-auto object-contain" />
             </div>
           </div>
-          <h2 className="font-serif text-2xl font-bold text-white text-center mb-1">
-            SKYRA CREATIONS — Administration
+          <h2 className="font-display text-2xl font-bold text-white text-center mb-1">
+            SKYRA CREATIONS — ADMINISTRATION
           </h2>
-          <p className="text-xs text-zinc-400 text-center mb-6">
+          <p className="text-xs text-zinc-400 text-center mb-6 font-light">
             Registration, payment verification and event management.
           </p>
 
           {loginError && (
-            <div className="mb-4 p-3 bg-red-950/50 border border-red-500/40 rounded-xl text-xs text-red-300 flex items-center space-x-2">
+            <div className="mb-4 p-3 bg-red-950/50 border border-red-500/40 rounded-sm text-xs text-red-300 flex items-center space-x-2">
               <AlertCircle className="w-4 h-4 shrink-0 text-red-400" />
               <span>{loginError}</span>
             </div>
@@ -208,41 +208,41 @@ export default function AdminDashboard() {
 
           <form onSubmit={handleLogin} className="space-y-4">
             <div>
-              <label className="block text-xs font-semibold text-zinc-300 mb-1">Administrator Email / Username</label>
+              <label className="block font-mono-editorial text-[10px] uppercase text-[#BFC3C7] mb-1.5">Administrator Email / Username</label>
               <input
                 type="text"
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="admin@skyracreations.com"
-                className="w-full bg-[#0a0c12] border border-zinc-700 rounded-xl px-4 py-3 text-white text-sm focus:outline-none focus:border-amber-400"
+                className="w-full bg-[#080808] border border-white/15 rounded-sm px-4 py-3 text-white text-xs sm:text-sm focus:outline-none focus:border-[#C6FF00]"
               />
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-zinc-300 mb-1">Password</label>
+              <label className="block font-mono-editorial text-[10px] uppercase text-[#BFC3C7] mb-1.5">Password</label>
               <input
                 type="password"
                 required
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="Enter administrator password"
-                className="w-full bg-[#0a0c12] border border-zinc-700 rounded-xl px-4 py-3 text-white text-sm focus:outline-none focus:border-amber-400"
+                className="w-full bg-[#080808] border border-white/15 rounded-sm px-4 py-3 text-white text-xs sm:text-sm focus:outline-none focus:border-[#C6FF00]"
               />
             </div>
 
             <button
               type="submit"
               disabled={loginLoading}
-              className="w-full py-3 rounded-xl bg-amber-500 hover:bg-amber-400 text-black font-bold text-sm transition-all shadow-lg flex items-center justify-center space-x-2"
+              className="w-full py-3.5 rounded-sm bg-[#C6FF00] hover:bg-[#D8FF33] text-black font-mono-editorial text-xs font-bold uppercase tracking-wider transition-all shadow-lg flex items-center justify-center space-x-2"
             >
               <Lock className="w-4 h-4" />
-              <span>{loginLoading ? 'Authenticating...' : 'Sign In to Operations Desk'}</span>
+              <span>{loginLoading ? 'AUTHENTICATING...' : 'SIGN IN TO OPERATIONS DESK'}</span>
             </button>
           </form>
 
-          <div className="mt-6 pt-4 border-t border-zinc-800 text-center">
-            <p className="text-[11px] text-zinc-500">
+          <div className="mt-6 pt-4 border-t border-white/10 text-center">
+            <p className="font-mono-editorial text-[10px] text-zinc-500">
               Authorized personnel only. All access is cryptographically audited.
             </p>
           </div>
@@ -267,26 +267,26 @@ export default function AdminDashboard() {
       {/* 6. Dashboard Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-6 mb-6 border-b border-zinc-800 gap-4">
         <div className="flex items-center space-x-4">
-          <div className="relative px-3 py-1.5 rounded-xl bg-black/80 border border-white/15 shadow-lg shrink-0 select-none">
+          <div className="relative px-3 py-1.5 rounded-sm bg-black/80 border border-white/15 shadow-lg shrink-0 select-none">
             <img src="/logo-clean.png" alt="Skyra Creations Logo" className="h-10 sm:h-12 w-auto object-contain" />
           </div>
           <div>
             <div className="flex items-center space-x-2">
-              <span className="w-2.5 h-2.5 rounded-full bg-emerald-400"></span>
-              <span className="text-xs uppercase tracking-wider text-amber-400 font-bold">Operations Desk</span>
+              <span className="w-2 h-2 rounded-full bg-[#C6FF00] animate-pulse" />
+              <span className="font-mono-editorial text-[10px] uppercase tracking-widest text-[#C6FF00] font-bold">OPERATIONS DESK</span>
             </div>
-            <h1 className="font-serif text-2xl sm:text-3xl font-bold text-white mt-0.5">
-              SKYRA CREATIONS — Administration
+            <h1 className="font-display text-2xl sm:text-3xl font-bold text-white mt-0.5">
+              SKYRA CREATIONS — ADMINISTRATION
             </h1>
-            <p className="text-xs text-zinc-400">Registration, payment verification and event management.</p>
+            <p className="text-xs text-zinc-400 font-light">Registration, payment verification and event management.</p>
           </div>
         </div>
 
-        <div className="flex flex-wrap items-center gap-2.5">
+        <div className="flex flex-wrap items-center gap-2.5 font-mono-editorial">
           <button
             onClick={loadDashboardData}
             disabled={loadingData}
-            className="p-2.5 bg-zinc-800 hover:bg-zinc-700 text-zinc-300 rounded-xl text-xs transition-colors"
+            className="p-2.5 bg-white/5 hover:bg-white/10 text-white rounded-sm text-xs transition-colors border border-white/10"
             title="Refresh Data"
           >
             <RefreshCw className={`w-4 h-4 ${loadingData ? 'animate-spin' : ''}`} />
@@ -297,28 +297,28 @@ export default function AdminDashboard() {
             href={getCsvExportUrl()}
             target="_blank"
             rel="noopener noreferrer"
-            className="flex items-center space-x-1.5 px-3.5 py-2.5 rounded-xl bg-zinc-800 hover:bg-zinc-700 text-zinc-200 text-xs font-semibold border border-zinc-700 transition-colors"
+            className="flex items-center space-x-1.5 px-3.5 py-2.5 rounded-sm bg-white/5 hover:bg-white/10 text-white text-xs font-semibold border border-white/15 transition-colors"
           >
-            <Download className="w-3.5 h-3.5 text-amber-400" />
-            <span>Export Registry (CSV)</span>
+            <Download className="w-3.5 h-3.5 text-[#C6FF00]" />
+            <span>EXPORT CSV</span>
           </a>
 
           <a
             href={getZipDownloadUrl()}
             target="_blank"
             rel="noopener noreferrer"
-            className="flex items-center space-x-1.5 px-3.5 py-2.5 rounded-xl bg-amber-500/10 hover:bg-amber-500/20 text-amber-300 border border-amber-500/30 text-xs font-semibold transition-colors"
+            className="flex items-center space-x-1.5 px-3.5 py-2.5 rounded-sm bg-[#C6FF00]/10 hover:bg-[#C6FF00]/20 text-[#C6FF00] border border-[#C6FF00]/30 text-xs font-semibold transition-colors"
           >
             <FolderArchive className="w-3.5 h-3.5" />
-            <span>Download Event Photos (ZIP)</span>
+            <span>DOWNLOAD PHOTOS (ZIP)</span>
           </a>
 
           <button
             onClick={handleLogout}
-            className="flex items-center space-x-1.5 px-3.5 py-2.5 rounded-xl bg-red-950/40 hover:bg-red-900/60 text-red-300 border border-red-500/30 text-xs font-semibold transition-colors"
+            className="flex items-center space-x-1.5 px-3.5 py-2.5 rounded-sm bg-red-950/40 hover:bg-red-900/60 text-red-300 border border-red-500/30 text-xs font-semibold transition-colors"
           >
             <LogOut className="w-3.5 h-3.5" />
-            <span>Logout</span>
+            <span>LOGOUT</span>
           </button>
         </div>
       </div>
@@ -327,82 +327,82 @@ export default function AdminDashboard() {
       {stats && (
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
           {/* Card 1: Total Participants Registered */}
-          <div className="bg-[#12151e] border border-zinc-800 rounded-2xl p-5 shadow-sm">
+          <div className="bg-[#12141a] border border-white/10 rounded-sm p-5 shadow-sm">
             <div className="flex items-center justify-between mb-2">
-              <span className="text-xs font-semibold text-zinc-400">Total Participants Registered</span>
-              <div className="w-8 h-8 rounded-lg bg-blue-500/10 text-blue-400 flex items-center justify-center">
+              <span className="font-mono-editorial text-[10px] uppercase tracking-wider text-zinc-400">Total Participants</span>
+              <div className="w-8 h-8 rounded-sm bg-white/5 text-white flex items-center justify-center border border-white/10">
                 <Users className="w-4 h-4" />
               </div>
             </div>
-            <div className="text-2xl font-bold text-white">{stats.total_participants}</div>
-            <div className="text-[11px] text-zinc-500 mt-1">
-              {stats.fully_paid_count} Fully Paid • {stats.partially_paid_count} Partial
+            <div className="text-2xl font-bold font-mono text-white">{stats.total_participants}</div>
+            <div className="text-[11px] text-zinc-500 mt-1 font-mono">
+              {stats.fully_paid_count} Paid • {stats.partially_paid_count} Partial
             </div>
           </div>
 
           {/* Card 2: Total Verified Revenue */}
-          <div className="bg-[#12151e] border border-emerald-500/30 rounded-2xl p-5 shadow-sm">
+          <div className="bg-[#12141a] border border-emerald-500/30 rounded-sm p-5 shadow-sm">
             <div className="flex items-center justify-between mb-2">
-              <span className="text-xs font-semibold text-emerald-400">Total Verified Revenue</span>
-              <div className="w-8 h-8 rounded-lg bg-emerald-500/10 text-emerald-400 flex items-center justify-center">
+              <span className="font-mono-editorial text-[10px] uppercase tracking-wider text-emerald-400">Verified Revenue</span>
+              <div className="w-8 h-8 rounded-sm bg-emerald-500/10 text-emerald-400 flex items-center justify-center border border-emerald-500/30">
                 <IndianRupee className="w-4 h-4" />
               </div>
             </div>
-            <div className="text-2xl font-bold text-emerald-400">₹{stats.total_verified_revenue.toLocaleString('en-IN')}</div>
+            <div className="text-2xl font-bold font-mono text-emerald-400">₹{stats.total_verified_revenue.toLocaleString('en-IN')}</div>
             <div className="text-[11px] text-zinc-500 mt-1">Settled &amp; Verified Payments</div>
           </div>
 
           {/* Card 3: Total Pending Verification Amount */}
-          <div className="bg-[#12151e] border border-amber-500/30 rounded-2xl p-5 shadow-sm">
+          <div className="bg-[#12141a] border border-[#C6FF00]/30 rounded-sm p-5 shadow-sm">
             <div className="flex items-center justify-between mb-2">
-              <span className="text-xs font-semibold text-amber-400">Pending Verification</span>
-              <div className="w-8 h-8 rounded-lg bg-amber-500/10 text-amber-400 flex items-center justify-center">
+              <span className="font-mono-editorial text-[10px] uppercase tracking-wider text-[#C6FF00]">Pending Verification</span>
+              <div className="w-8 h-8 rounded-sm bg-[#C6FF00]/10 text-[#C6FF00] flex items-center justify-center border border-[#C6FF00]/30">
                 <Clock className="w-4 h-4" />
               </div>
             </div>
-            <div className="text-2xl font-bold text-amber-400">₹{stats.total_pending_amount.toLocaleString('en-IN')}</div>
-            <div className="text-[11px] text-zinc-400 mt-1">{stats.pending_verifications_count} submission(s) awaiting review</div>
+            <div className="text-2xl font-bold font-mono text-[#C6FF00]">₹{stats.total_pending_amount.toLocaleString('en-IN')}</div>
+            <div className="text-[11px] text-zinc-400 mt-1 font-mono">{stats.pending_verifications_count} submission(s) awaiting</div>
           </div>
 
           {/* Card 4: Total Outstanding Balance */}
-          <div className="bg-[#12151e] border border-zinc-800 rounded-2xl p-5 shadow-sm">
+          <div className="bg-[#12141a] border border-white/10 rounded-sm p-5 shadow-sm">
             <div className="flex items-center justify-between mb-2">
-              <span className="text-xs font-semibold text-zinc-400">Total Outstanding Balance</span>
-              <div className="w-8 h-8 rounded-lg bg-zinc-800 text-zinc-300 flex items-center justify-center">
+              <span className="font-mono-editorial text-[10px] uppercase tracking-wider text-zinc-400">Outstanding Balance</span>
+              <div className="w-8 h-8 rounded-sm bg-white/5 text-zinc-300 flex items-center justify-center border border-white/10">
                 <IndianRupee className="w-4 h-4" />
               </div>
             </div>
-            <div className="text-2xl font-bold text-white">₹{stats.total_balance_due.toLocaleString('en-IN')}</div>
-            <div className="text-[11px] text-zinc-500 mt-1">To be collected before event</div>
+            <div className="text-2xl font-bold font-mono text-white">₹{stats.total_balance_due.toLocaleString('en-IN')}</div>
+            <div className="text-[11px] text-zinc-500 mt-1 font-mono">To be collected before event</div>
           </div>
         </div>
       )}
 
       {/* Official UPI Payment Recipient & Owner Verification Status Card */}
-      <div className="bg-[#12151e] border border-amber-500/30 rounded-2xl p-4 sm:p-5 mb-6 shadow-sm">
+      <div className="bg-[#12141a] border border-white/10 rounded-sm p-4 sm:p-5 mb-6 shadow-sm">
         <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
           <div className="space-y-1">
             <div className="flex items-center space-x-2">
-              <span className="px-2.5 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 text-[10px] font-bold uppercase tracking-wider flex items-center space-x-1">
+              <span className="px-2.5 py-0.5 rounded-sm bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 text-[10px] font-bold uppercase tracking-wider flex items-center space-x-1 font-mono-editorial">
                 <CheckCircle2 className="w-3 h-3 text-emerald-400" />
                 <span>Verified Production UPI Configuration</span>
               </span>
               <span className="text-xs text-zinc-500">•</span>
-              <span className="text-xs text-zinc-400 font-mono">Indian Bank 5056</span>
+              <span className="text-xs text-[#BFC3C7] font-mono">Indian Bank 5056</span>
             </div>
             <h3 className="text-base font-bold text-white flex items-center space-x-2">
               <span>Official Recipient: B Sriram</span>
-              <span className="text-xs font-mono text-amber-300 font-normal">(`sri.469512-1@oksbi`)</span>
+              <span className="text-xs font-mono text-[#C6FF00] font-normal">(`sri.469512-1@oksbi`)</span>
             </h3>
-            <p className="text-xs text-zinc-400">
-              Associated Mobile: <strong className="text-zinc-200">+91 93420 49287</strong> | Currency: <strong className="text-zinc-200">INR</strong> | Intent Deep Links: <strong className="text-emerald-400">Google Pay, PhonePe, Paytm, BHIM, Generic UPI</strong>
+            <p className="text-xs text-zinc-400 font-light">
+              Associated Mobile: <strong className="text-white">+91 93420 49287</strong> | Currency: <strong className="text-white">INR</strong> | Intent Deep Links: <strong className="text-[#C6FF00]">Google Pay, PhonePe, Paytm, BHIM, Generic UPI</strong>
             </p>
           </div>
 
-          <div className="flex items-center space-x-3 text-xs shrink-0 bg-[#0a0c12] border border-zinc-800 p-3 rounded-xl">
+          <div className="flex items-center space-x-3 text-xs shrink-0 bg-[#080808] border border-white/10 p-3 rounded-sm font-mono-editorial">
             <ShieldCheck className="w-5 h-5 text-emerald-400 shrink-0" />
             <div className="text-[11px] text-zinc-300">
-              <strong className="text-white block font-semibold">Owner Verified & Confirmed</strong>
+              <strong className="text-white block font-semibold">Owner Verified &amp; Confirmed</strong>
               <span>Dynamic QR generation active on all checkouts</span>
             </div>
           </div>
@@ -410,12 +410,12 @@ export default function AdminDashboard() {
       </div>
 
       {/* Tabs Switcher: Verification Queue vs Participant Registry */}
-      <div className="flex items-center space-x-2 border-b border-zinc-800 mb-6">
+      <div className="flex items-center space-x-2 border-b border-white/10 mb-6 font-mono-editorial">
         <button
           onClick={() => setActiveTab('queue')}
-          className={`pb-3 px-4 text-sm font-semibold border-b-2 transition-all ${
+          className={`pb-3 px-4 text-xs font-bold uppercase tracking-wider border-b-2 transition-all ${
             activeTab === 'queue'
-              ? 'border-amber-400 text-amber-400'
+              ? 'border-[#C6FF00] text-[#C6FF00]'
               : 'border-transparent text-zinc-400 hover:text-white'
           }`}
         >
@@ -423,9 +423,9 @@ export default function AdminDashboard() {
         </button>
         <button
           onClick={() => setActiveTab('participants')}
-          className={`pb-3 px-4 text-sm font-semibold border-b-2 transition-all ${
+          className={`pb-3 px-4 text-xs font-bold uppercase tracking-wider border-b-2 transition-all ${
             activeTab === 'participants'
-              ? 'border-amber-400 text-amber-400'
+              ? 'border-[#C6FF00] text-[#C6FF00]'
               : 'border-transparent text-zinc-400 hover:text-white'
           }`}
         >
@@ -433,16 +433,16 @@ export default function AdminDashboard() {
         </button>
         <button
           onClick={() => setActiveTab('storage')}
-          className={`pb-3 px-4 text-sm font-semibold border-b-2 transition-all flex items-center space-x-1.5 ${
+          className={`pb-3 px-4 text-xs font-bold uppercase tracking-wider border-b-2 transition-all flex items-center space-x-1.5 ${
             activeTab === 'storage'
-              ? 'border-amber-400 text-amber-400'
+              ? 'border-[#C6FF00] text-[#C6FF00]'
               : 'border-transparent text-zinc-400 hover:text-white'
           }`}
         >
-          <Database className="w-4 h-4 text-amber-400" />
-          <span>Storage & DB Health (512 MB Limit)</span>
+          <Database className="w-4 h-4 text-[#C6FF00]" />
+          <span>Storage &amp; DB Health (512 MB Limit)</span>
           {storageMetrics && (
-            <span className={`text-[10px] px-2 py-0.5 rounded-full font-bold ml-1 ${
+            <span className={`text-[10px] px-2 py-0.5 rounded-sm font-bold ml-1 ${
               storageMetrics.alert.level === 'NORMAL'
                 ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20'
                 : storageMetrics.alert.level === 'INFORMATIONAL_WARNING'
@@ -473,7 +473,7 @@ export default function AdminDashboard() {
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   placeholder="Search Reg ID, UTR, Name..."
-                  className="w-full bg-[#0a0c12] border border-zinc-700 rounded-xl pl-9 pr-3 py-2 text-white text-xs focus:outline-none focus:border-amber-400"
+                  className="w-full bg-[#080808] border border-white/15 rounded-sm pl-9 pr-3 py-2 text-white text-xs focus:outline-none focus:border-[#C6FF00]"
                 />
                 <Search className="w-3.5 h-3.5 text-zinc-500 absolute left-3 top-2.5" />
               </div>
@@ -481,7 +481,7 @@ export default function AdminDashboard() {
               <select
                 value={statusFilter}
                 onChange={(e) => setStatusFilter(e.target.value)}
-                className="bg-[#0a0c12] border border-zinc-700 rounded-xl px-3 py-2 text-white text-xs focus:outline-none focus:border-amber-400"
+                className="bg-[#080808] border border-white/15 rounded-sm px-3 py-2 text-white text-xs focus:outline-none focus:border-[#C6FF00]"
               >
                 <option value="ALL">All Statuses</option>
                 <option value="PENDING">Pending Only</option>
@@ -519,10 +519,10 @@ export default function AdminDashboard() {
 
                     return (
                       <tr key={pay.id} className="hover:bg-zinc-800/30 transition-colors">
-                        <td className="py-3.5 px-4 font-mono font-bold text-amber-300">{pay.reg_id}</td>
+                        <td className="py-3.5 px-4 font-mono font-bold text-[#C6FF00]">{pay.reg_id}</td>
                         <td className="py-3.5 px-4 font-medium text-white">{participantName}</td>
                         <td className="py-3.5 px-4">
-                          <span className={`px-2 py-0.5 rounded text-[10px] font-semibold uppercase ${
+                          <span className={`px-2 py-0.5 rounded-sm font-mono-editorial text-[10px] font-semibold uppercase ${
                             pay.payment_type === 'INITIAL_REGISTRATION'
                               ? 'bg-purple-500/10 text-purple-300 border border-purple-500/20'
                               : 'bg-blue-500/10 text-blue-300 border border-blue-500/20'
@@ -530,24 +530,24 @@ export default function AdminDashboard() {
                             {pay.payment_type === 'INITIAL_REGISTRATION' ? 'Initial Registration' : 'Balance Payment'}
                           </span>
                         </td>
-                        <td className="py-3.5 px-4 font-bold text-white">₹{pay.amount.toLocaleString('en-IN')}</td>
+                        <td className="py-3.5 px-4 font-bold text-white font-mono">₹{pay.amount.toLocaleString('en-IN')}</td>
                         <td className="py-3.5 px-4 font-mono text-zinc-300 select-all">{pay.transaction_id}</td>
                         <td className="py-3.5 px-4">
                           <button
                             onClick={() => setActiveScreenshot(pay.view_url || '/logo.png')}
-                            className="inline-flex items-center space-x-1 px-2.5 py-1 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-zinc-200 text-xs transition-colors"
+                            className="inline-flex items-center space-x-1 px-2.5 py-1 rounded-sm bg-white/5 hover:bg-white/10 text-zinc-200 text-xs transition-colors border border-white/15"
                           >
-                            <ZoomIn className="w-3 h-3 text-amber-400" />
+                            <ZoomIn className="w-3 h-3 text-[#C6FF00]" />
                             <span>View</span>
                           </button>
                         </td>
                         <td className="py-3.5 px-4">
-                          <span className={`inline-block px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase ${
+                          <span className={`inline-block px-2.5 py-0.5 rounded-sm font-mono-editorial text-[10px] font-bold uppercase ${
                             pay.status === 'VERIFIED'
                               ? 'bg-emerald-500/15 text-emerald-400 border border-emerald-500/30'
                               : pay.status === 'REJECTED'
                               ? 'bg-red-500/15 text-red-400 border border-red-500/30'
-                              : 'bg-amber-500/15 text-amber-400 border border-amber-500/30'
+                              : 'bg-[#C6FF00]/15 text-[#C6FF00] border border-[#C6FF00]/30'
                           }`}>
                             {pay.status === 'VERIFIED' ? 'Verified' : pay.status === 'REJECTED' ? 'Rejected' : 'Pending Verification'}
                           </span>
@@ -625,15 +625,15 @@ export default function AdminDashboard() {
               <tbody className="divide-y divide-zinc-800/80">
                 {participants.map((p) => (
                   <tr key={p.id} className="hover:bg-zinc-800/30 transition-colors">
-                    <td className="py-3.5 px-4 font-mono font-bold text-amber-300">{p.reg_id}</td>
+                    <td className="py-3.5 px-4 font-mono font-bold text-[#C6FF00]">{p.reg_id}</td>
                     <td className="py-3.5 px-4">
                       {p.model_photo_r2_key ? (
                         <button
                           onClick={() => handleViewPhoto(p.model_photo_r2_key)}
-                          className="inline-flex items-center space-x-1 px-2.5 py-1 rounded-lg bg-amber-500/10 hover:bg-amber-500/20 text-amber-300 border border-amber-500/30 text-xs transition-colors"
+                          className="inline-flex items-center space-x-1 px-2.5 py-1 rounded-sm bg-white/5 hover:bg-white/10 text-white border border-white/15 text-xs transition-colors"
                           title="View Model Photograph"
                         >
-                          <ZoomIn className="w-3 h-3 text-amber-400" />
+                          <ZoomIn className="w-3 h-3 text-[#C6FF00]" />
                           <span>Photo</span>
                         </button>
                       ) : (
@@ -642,17 +642,17 @@ export default function AdminDashboard() {
                     </td>
                     <td className="py-3.5 px-4 font-medium text-white">{p.full_name}</td>
                     <td className="py-3.5 px-4 text-zinc-300">{p.category}</td>
-                    <td className="py-3.5 px-4 text-zinc-400">{p.whatsapp || p.mobile}</td>
-                    <td className="py-3.5 px-4 font-bold text-white">₹{p.total_fee}</td>
-                    <td className="py-3.5 px-4 font-bold text-emerald-400">₹{p.amount_paid}</td>
-                    <td className="py-3.5 px-4 font-bold text-amber-400">₹{p.balance_due}</td>
+                    <td className="py-3.5 px-4 text-zinc-400 font-mono">{p.whatsapp || p.mobile}</td>
+                    <td className="py-3.5 px-4 font-bold text-white font-mono">₹{p.total_fee}</td>
+                    <td className="py-3.5 px-4 font-bold text-emerald-400 font-mono">₹{p.amount_paid}</td>
+                    <td className="py-3.5 px-4 font-bold text-[#C6FF00] font-mono">₹{p.balance_due}</td>
                     <td className="py-3.5 px-4 font-mono text-zinc-400 text-[11px]">{p.terms_version || '2026.2'}</td>
                     <td className="py-3.5 px-4">
-                      <span className={`inline-block px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase ${
+                      <span className={`inline-block px-2.5 py-0.5 rounded-sm font-mono-editorial text-[10px] font-bold uppercase ${
                         p.status === 'FULLY_PAID'
                           ? 'bg-emerald-500/15 text-emerald-400 border border-emerald-500/30'
                           : p.status === 'PARTIALLY_PAID'
-                          ? 'bg-amber-500/15 text-amber-400 border border-amber-500/30'
+                          ? 'bg-[#C6FF00]/15 text-[#C6FF00] border-[#C6FF00]/30'
                           : p.status === 'REJECTED'
                           ? 'bg-red-500/15 text-red-400 border border-red-500/30'
                           : 'bg-blue-500/15 text-blue-300 border border-blue-500/30'
@@ -738,7 +738,7 @@ export default function AdminDashboard() {
                   <span className="font-semibold text-zinc-300">
                     Allocated Database Storage: <strong className="text-white">{storageMetrics.totalAllocatedMB} MB</strong> of {storageMetrics.storageLimitMB} MB Limit
                   </span>
-                  <span className="font-mono font-bold text-amber-400">
+                  <span className="font-mono font-bold text-[#C6FF00]">
                     {storageMetrics.usagePercentage}% Used ({storageMetrics.remainingCapacityMB} MB Free)
                   </span>
                 </div>
@@ -771,7 +771,7 @@ export default function AdminDashboard() {
               <div className="bg-[#12151e] border border-zinc-800 rounded-2xl p-5 shadow-sm">
                 <div className="flex items-center justify-between mb-2">
                   <span className="text-xs font-semibold text-zinc-400">Total Allocated Footprint</span>
-                  <div className="w-8 h-8 rounded-lg bg-amber-500/10 text-amber-400 flex items-center justify-center">
+                  <div className="w-8 h-8 rounded-sm bg-white/5 text-[#C6FF00] flex items-center justify-center border border-white/10">
                     <Database className="w-4 h-4" />
                   </div>
                 </div>
@@ -857,7 +857,7 @@ export default function AdminDashboard() {
                   <tbody className="divide-y divide-zinc-800/80">
                     {storageMetrics.collections.map((col) => (
                       <tr key={col.name} className="hover:bg-zinc-800/30 transition-colors">
-                        <td className="py-3.5 px-4 font-mono font-bold text-amber-300">{col.name}</td>
+                        <td className="py-3.5 px-4 font-mono font-bold text-[#C6FF00]">{col.name}</td>
                         <td className="py-3.5 px-4 text-right font-medium text-white">{col.count}</td>
                         <td className="py-3.5 px-4 text-right text-zinc-300">{col.dataSizeKB} KB</td>
                         <td className="py-3.5 px-4 text-right font-semibold text-zinc-200">{col.storageSizeKB} KB</td>
