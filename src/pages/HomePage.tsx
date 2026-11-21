@@ -18,28 +18,77 @@ interface HomePageProps {
 }
 
 export default function HomePage({ setActiveTab, onSelectEvent }: HomePageProps) {
+  // Section 1: Hero Cinematic Parallax
   const heroRef = useRef<HTMLDivElement>(null);
   const { scrollYProgress: heroProgress } = useScroll({
     target: heroRef,
     offset: ['start start', 'end start'],
   });
-  const heroScale = useTransform(heroProgress, [0, 1], [1, 0.88]);
-  const heroOpacity = useTransform(heroProgress, [0, 0.8], [1, 0]);
-  const heroY = useTransform(heroProgress, [0, 1], [0, -80]);
+  const heroScale = useTransform(heroProgress, [0, 1], [1, 0.84]);
+  const heroOpacity = useTransform(heroProgress, [0, 0.75], [1, 0]);
+  const heroY = useTransform(heroProgress, [0, 1], [0, -90]);
+  const heroFilter = useTransform(heroProgress, [0, 0.85], ['blur(0px)', 'blur(6px)']);
 
+  // Section 2: Brand Introduction (Continuous Kinematics)
   const sec2Ref = useRef<HTMLDivElement>(null);
   const { scrollYProgress: sec2Progress } = useScroll({
     target: sec2Ref,
     offset: ['start end', 'end start'],
   });
-  const sec2ImgY = useTransform(sec2Progress, [0, 1], [-30, 30]);
+  const sec2ImgY = useTransform(sec2Progress, [0, 1], [-50, 50]);
+  const sec2ImgScale = useTransform(sec2Progress, [0, 0.5, 1], [0.95, 1.04, 0.96]);
+  const sec2TextY = useTransform(sec2Progress, [0, 0.4, 0.8, 1], [40, 0, 0, -30]);
+  const sec2Opacity = useTransform(sec2Progress, [0, 0.2, 0.8, 1], [0.4, 1, 1, 0.4]);
 
+  // Section 3: Core Disciplines
+  const sec3Ref = useRef<HTMLDivElement>(null);
+  const { scrollYProgress: sec3Progress } = useScroll({
+    target: sec3Ref,
+    offset: ['start end', 'end start'],
+  });
+  const sec3Row1Y = useTransform(sec3Progress, [0.05, 0.45], [35, -20]);
+  const sec3Row2Y = useTransform(sec3Progress, [0.25, 0.65], [35, -20]);
+  const sec3Row3Y = useTransform(sec3Progress, [0.45, 0.85], [35, -20]);
+
+  // Section 4: Upcoming Events
+  const sec4Ref = useRef<HTMLDivElement>(null);
+  const { scrollYProgress: sec4Progress } = useScroll({
+    target: sec4Ref,
+    offset: ['start end', 'end start'],
+  });
+  const sec4CardScale = useTransform(sec4Progress, [0, 0.45, 1], [0.93, 1, 0.96]);
+  const sec4CardY = useTransform(sec4Progress, [0, 0.5, 1], [50, 0, -30]);
+  const sec4Opacity = useTransform(sec4Progress, [0, 0.2, 0.85, 1], [0.4, 1, 1, 0.4]);
+
+  // Section 5: Campaign Interlude
   const interludeRef = useRef<HTMLDivElement>(null);
   const { scrollYProgress: interludeProgress } = useScroll({
     target: interludeRef,
     offset: ['start end', 'end start'],
   });
-  const interludeImgY = useTransform(interludeProgress, [0, 1], [-45, 45]);
+  const interludeImgY = useTransform(interludeProgress, [0, 1], [-80, 80]);
+  const interludeScale = useTransform(interludeProgress, [0, 0.5, 1], [0.94, 1.04, 0.96]);
+  const interludeLetterSpacing = useTransform(interludeProgress, [0, 0.5, 1], ['-0.03em', '0.04em', '-0.02em']);
+  const interludeOpacity = useTransform(interludeProgress, [0, 0.25, 0.75, 1], [0.35, 1, 1, 0.35]);
+
+  // Section 6: Visual Archive
+  const sec6Ref = useRef<HTMLDivElement>(null);
+  const { scrollYProgress: sec6Progress } = useScroll({
+    target: sec6Ref,
+    offset: ['start end', 'end start'],
+  });
+  const sec6Img1Y = useTransform(sec6Progress, [0, 1], [-30, 30]);
+  const sec6Img2Y = useTransform(sec6Progress, [0, 1], [35, -35]);
+
+  // Section 7: Final Call to Action
+  const sec7Ref = useRef<HTMLDivElement>(null);
+  const { scrollYProgress: sec7Progress } = useScroll({
+    target: sec7Ref,
+    offset: ['start end', 'end end'],
+  });
+  const sec7Scale = useTransform(sec7Progress, [0, 0.75], [0.92, 1]);
+  const sec7Y = useTransform(sec7Progress, [0, 0.75], [50, 0]);
+  const sec7Opacity = useTransform(sec7Progress, [0, 0.45], [0.4, 1]);
 
   return (
     <div className="space-y-28 sm:space-y-36 pb-24 overflow-x-hidden relative">
@@ -85,7 +134,7 @@ export default function HomePage({ setActiveTab, onSelectEvent }: HomePageProps)
         />
 
         <motion.div 
-          style={{ scale: heroScale, opacity: heroOpacity, y: heroY }}
+          style={{ scale: heroScale, opacity: heroOpacity, y: heroY, filter: heroFilter }}
           className="relative z-20 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-6 pt-24 sm:pt-28 pb-8 will-change-transform"
         >
           {/* Official SKYRA CREATIONS Brandmark Showcase */}
@@ -224,13 +273,9 @@ export default function HomePage({ setActiveTab, onSelectEvent }: HomePageProps)
       ────────────────────────────────────────────────────────── */}
       <section ref={sec2Ref} className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
-          {/* Left: Editorial Image 3:4 with Scroll Parallax */}
+          {/* Left: Editorial Image 3:4 with Continuous Cinematic Scroll Parallax */}
           <motion.div 
-            initial={{ opacity: 0, x: -30 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true, margin: '-80px' }}
-            transition={{ duration: 0.8 }}
-            style={{ y: sec2ImgY }}
+            style={{ y: sec2ImgY, scale: sec2ImgScale, opacity: sec2Opacity }}
             className="lg:col-span-5 relative will-change-transform"
           >
             <div 
@@ -259,13 +304,10 @@ export default function HomePage({ setActiveTab, onSelectEvent }: HomePageProps)
             </div>
           </motion.div>
 
-          {/* Right: Large Editorial Typography & Story */}
+          {/* Right: Large Editorial Typography & Story with Continuous Motion */}
           <motion.div 
-            initial={{ opacity: 0, x: 30 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true, margin: '-80px' }}
-            transition={{ duration: 0.8 }}
-            className="lg:col-span-7 space-y-6"
+            style={{ y: sec2TextY, opacity: sec2Opacity }}
+            className="lg:col-span-7 space-y-6 will-change-transform"
           >
             <span className="font-mono-editorial block" style={{ color: 'var(--accent)', fontSize: '11px' }}>
               01 // BRAND INTRODUCTION
@@ -309,7 +351,7 @@ export default function HomePage({ setActiveTab, onSelectEvent }: HomePageProps)
       {/* ──────────────────────────────────────────────────────────
           SECTION 3: WHAT WE DO (ALTERNATING EDITORIAL BANDS)
       ────────────────────────────────────────────────────────── */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
+      <section ref={sec3Ref} className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
         <div className="text-center max-w-2xl mx-auto space-y-2">
           <span className="font-mono-editorial block" style={{ color: 'var(--accent)', fontSize: '11px' }}>
             02 // CORE DISCIPLINES
@@ -322,18 +364,19 @@ export default function HomePage({ setActiveTab, onSelectEvent }: HomePageProps)
           </p>
         </div>
 
-        {/* Alternating Feature Rows */}
+        {/* Alternating Feature Rows with Multiplane Motion */}
         <div className="space-y-12">
           {/* Row 1: Fashion Shows */}
           <motion.div 
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: '-60px' }}
+            viewport={{ once: false, margin: '-60px' }}
             transition={{ duration: 0.7 }}
-            className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center p-8 sm:p-10 rounded-sm"
+            className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center p-8 sm:p-10 rounded-sm will-change-transform"
             style={{ 
               backgroundColor: 'var(--surface)', 
-              border: '1px solid var(--border)' 
+              border: '1px solid var(--border)',
+              y: sec3Row1Y
             }}
           >
             <div className="lg:col-span-6 relative overflow-hidden h-72 sm:h-80 rounded-sm" style={{ border: '1px solid var(--border)' }}>
@@ -372,12 +415,13 @@ export default function HomePage({ setActiveTab, onSelectEvent }: HomePageProps)
           <motion.div 
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: '-60px' }}
+            viewport={{ once: false, margin: '-60px' }}
             transition={{ duration: 0.7 }}
-            className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center p-8 sm:p-10 rounded-sm"
+            className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center p-8 sm:p-10 rounded-sm will-change-transform"
             style={{ 
               backgroundColor: 'var(--surface)', 
-              border: '1px solid var(--border)' 
+              border: '1px solid var(--border)',
+              y: sec3Row2Y
             }}
           >
             <div className="lg:col-span-6 lg:order-2 relative overflow-hidden h-72 sm:h-80 rounded-sm" style={{ border: '1px solid var(--border)' }}>
@@ -416,12 +460,13 @@ export default function HomePage({ setActiveTab, onSelectEvent }: HomePageProps)
           <motion.div 
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: '-60px' }}
+            viewport={{ once: false, margin: '-60px' }}
             transition={{ duration: 0.7 }}
-            className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center p-8 sm:p-10 rounded-sm"
+            className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center p-8 sm:p-10 rounded-sm will-change-transform"
             style={{ 
               backgroundColor: 'var(--surface)', 
-              border: '1px solid var(--border)' 
+              border: '1px solid var(--border)',
+              y: sec3Row3Y
             }}
           >
             <div className="lg:col-span-6 relative overflow-hidden h-72 sm:h-80 rounded-sm" style={{ border: '1px solid var(--border)' }}>
@@ -461,7 +506,7 @@ export default function HomePage({ setActiveTab, onSelectEvent }: HomePageProps)
       {/* ──────────────────────────────────────────────────────────
           SECTION 4: UPCOMING EVENTS (MAGAZINE-STYLE DISCOVERY)
       ────────────────────────────────────────────────────────── */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
+      <section ref={sec4Ref} className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
         <div className="text-center max-w-2xl mx-auto space-y-2">
           <span className="font-mono-editorial block" style={{ color: 'var(--accent)', fontSize: '11px' }}>
             03 // EVENT DISCOVERY
@@ -474,18 +519,17 @@ export default function HomePage({ setActiveTab, onSelectEvent }: HomePageProps)
           </p>
         </div>
 
-        {/* Featured Event Card */}
+        {/* Featured Event Card with Continuous Movie Zoom */}
         <TiltCard className="rounded-sm overflow-hidden">
           <motion.div 
-            initial={{ opacity: 0, scale: 0.98 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.7 }}
-            className="p-8 sm:p-12 rounded-sm relative overflow-hidden shadow-2xl"
             style={{ 
               backgroundColor: 'var(--surface)', 
-              border: '1px solid var(--border)' 
+              border: '1px solid var(--border)',
+              scale: sec4CardScale,
+              y: sec4CardY,
+              opacity: sec4Opacity
             }}
+            className="p-8 sm:p-12 rounded-sm relative overflow-hidden shadow-2xl will-change-transform"
           >
             <div className="relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
               <div className="lg:col-span-7 space-y-5">
@@ -602,18 +646,18 @@ export default function HomePage({ setActiveTab, onSelectEvent }: HomePageProps)
         <div className="absolute inset-0 bg-black/85 backdrop-blur-xs" />
         
         <motion.div 
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.8 }}
-          className="relative z-10 max-w-4xl mx-auto px-4 sm:px-6 text-center space-y-6"
+          style={{ scale: interludeScale, opacity: interludeOpacity }}
+          className="relative z-10 max-w-4xl mx-auto px-4 sm:px-6 text-center space-y-6 will-change-transform"
         >
           <span className="font-mono-editorial block text-[11px] tracking-widest" style={{ color: 'var(--accent)' }}>
             CAMPAIGN INTERLUDE
           </span>
-          <h2 className="font-display text-4xl sm:text-6xl md:text-7xl font-bold tracking-tight text-white leading-tight">
+          <motion.h2 
+            style={{ letterSpacing: interludeLetterSpacing }}
+            className="font-display text-4xl sm:text-6xl md:text-7xl font-bold tracking-tight text-white leading-tight"
+          >
             OWN YOUR PRESENCE.
-          </h2>
+          </motion.h2>
           <p className="text-base sm:text-xl font-light max-w-2xl mx-auto leading-relaxed text-zinc-300">
             Every runway begins with the confidence to take the first step.
           </p>
@@ -634,9 +678,9 @@ export default function HomePage({ setActiveTab, onSelectEvent }: HomePageProps)
       </section>
 
       {/* ──────────────────────────────────────────────────────────
-          SECTION 6: GALLERY PREVIEW (ASYMMETRIC GRID)
+          SECTION 6: GALLERY PREVIEW (ASYMMETRIC GRID WITH PARALLAX)
       ────────────────────────────────────────────────────────── */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
+      <section ref={sec6Ref} className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
         <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
           <div>
             <span className="font-mono-editorial block" style={{ color: 'var(--accent)', fontSize: '11px' }}>
@@ -656,51 +700,55 @@ export default function HomePage({ setActiveTab, onSelectEvent }: HomePageProps)
           </button>
         </div>
 
-        {/* Varied Proportions Grid */}
+        {/* Varied Proportions Grid with Differential Motion */}
         <div className="grid grid-cols-1 md:grid-cols-12 gap-6 items-stretch">
-          <TiltCard className="md:col-span-7 rounded-sm overflow-hidden shadow-lg group">
-            <div 
-              className="overflow-hidden rounded-sm"
-              style={{ border: '1px solid var(--border)' }}
-            >
-              <img 
-                src="/images/runway-2.jpg" 
-                alt="Runway Stage Catwalk" 
-                loading="lazy"
-                className="w-full h-80 sm:h-96 object-cover group-hover:scale-105 transition-transform duration-700"
-              />
-            </div>
-          </TiltCard>
-          <TiltCard className="md:col-span-5 rounded-sm overflow-hidden shadow-lg group">
-            <div 
-              className="overflow-hidden rounded-sm"
-              style={{ border: '1px solid var(--border)' }}
-            >
-              <img 
-                src="/founder.png" 
-                alt="Founder & CEO B Sriram" 
-                loading="lazy"
-                className="w-full h-80 sm:h-96 object-cover group-hover:scale-105 transition-transform duration-700"
-              />
-            </div>
-          </TiltCard>
+          <motion.div style={{ y: sec6Img1Y }} className="md:col-span-7 will-change-transform">
+            <TiltCard className="rounded-sm overflow-hidden shadow-lg group">
+              <div 
+                className="overflow-hidden rounded-sm"
+                style={{ border: '1px solid var(--border)' }}
+              >
+                <img 
+                  src="/images/runway-2.jpg" 
+                  alt="Runway Stage Catwalk" 
+                  loading="lazy"
+                  className="w-full h-80 sm:h-96 object-cover group-hover:scale-105 transition-transform duration-700"
+                />
+              </div>
+            </TiltCard>
+          </motion.div>
+
+          <motion.div style={{ y: sec6Img2Y }} className="md:col-span-5 will-change-transform">
+            <TiltCard className="rounded-sm overflow-hidden shadow-lg group">
+              <div 
+                className="overflow-hidden rounded-sm"
+                style={{ border: '1px solid var(--border)' }}
+              >
+                <img 
+                  src="/founder.png" 
+                  alt="Founder & CEO B Sriram" 
+                  loading="lazy"
+                  className="w-full h-80 sm:h-96 object-cover group-hover:scale-105 transition-transform duration-700"
+                />
+              </div>
+            </TiltCard>
+          </motion.div>
         </div>
       </section>
 
       {/* ──────────────────────────────────────────────────────────
           SECTION 7: FINAL CALL TO ACTION (POWERFUL CLOSING)
       ────────────────────────────────────────────────────────── */}
-      <section className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+      <section ref={sec7Ref} className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
         <motion.div 
-          initial={{ opacity: 0, scale: 0.98 }}
-          whileInView={{ opacity: 1, scale: 1 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.7 }}
-          className="p-10 sm:p-16 text-center space-y-6 relative overflow-hidden shadow-2xl rounded-sm"
           style={{ 
             backgroundColor: 'var(--surface)', 
-            border: '1px solid var(--border)' 
+            border: '1px solid var(--border)',
+            scale: sec7Scale,
+            y: sec7Y,
+            opacity: sec7Opacity
           }}
+          className="p-10 sm:p-16 text-center space-y-6 relative overflow-hidden shadow-2xl rounded-sm will-change-transform"
         >
           <div 
             className="absolute top-0 right-1/2 translate-x-1/2 w-96 h-96 rounded-full blur-3xl pointer-events-none opacity-20"

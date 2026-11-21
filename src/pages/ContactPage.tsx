@@ -144,7 +144,7 @@ export default function ContactPage({ setActiveTab }: ContactPageProps) {
         <motion.div 
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
+          viewport={{ once: false, margin: '-50px' }}
           transition={{ duration: 0.7 }}
           className="p-8 sm:p-12 rounded-sm shadow-2xl space-y-6 bg-[#12141a] border border-white/10"
         >

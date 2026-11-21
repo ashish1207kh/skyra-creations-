@@ -37,8 +37,9 @@ export default function VirtualRunwayScene({ className = '', onSceneReady }: Vir
     const scene = new THREE.Scene();
     scene.fog = new THREE.FogExp2(0x050507, 0.045);
 
+    const isMobileInitial = typeof window !== 'undefined' && window.innerWidth < 768;
     const camera = new THREE.PerspectiveCamera(
-      48,
+      isMobileInitial ? 58 : 46,
       container.clientWidth / container.clientHeight,
       0.1,
       80
@@ -167,7 +168,7 @@ export default function VirtualRunwayScene({ className = '', onSceneReady }: Vir
     amberFill.position.set(-4, 4, -4);
     scene.add(amberFill);
 
-    // 5. Interactive Mouse Parallax
+    // 5. Interactive Mouse & Touch Parallax
     let targetX = 0;
     let targetY = 2.2;
     const handlePointerMove = (e: MouseEvent) => {
@@ -179,12 +180,24 @@ export default function VirtualRunwayScene({ className = '', onSceneReady }: Vir
     };
     window.addEventListener('mousemove', handlePointerMove, { passive: true });
 
+    const handleTouchMove = (e: TouchEvent) => {
+      if (!e.touches || !e.touches[0]) return;
+      const rect = container.getBoundingClientRect();
+      const touch = e.touches[0];
+      const x = (touch.clientX - rect.left) / rect.width - 0.5;
+      const y = (touch.clientY - rect.top) / rect.height - 0.5;
+      targetX = x * 0.9;
+      targetY = 2.2 - y * 0.3;
+    };
+    window.addEventListener('touchmove', handleTouchMove, { passive: true });
+
     // 7. Responsive Resize Observer
     const handleResize = () => {
       if (!container || !renderer) return;
       const width = container.clientWidth;
       const height = container.clientHeight;
       camera.aspect = width / height;
+      camera.fov = width < 768 ? 58 : 46;
       camera.updateProjectionMatrix();
       renderer.setSize(width, height);
     };
@@ -207,7 +220,7 @@ export default function VirtualRunwayScene({ className = '', onSceneReady }: Vir
     );
     observer.observe(container);
 
-    // 9. Animation Render Loop
+    // 9. Animation Render Loop (Continuous Movie-Screen Runway Tracking)
     let clock = new THREE.Clock();
     const animate = () => {
       animationFrameId = requestAnimationFrame(animate);
@@ -215,18 +228,22 @@ export default function VirtualRunwayScene({ className = '', onSceneReady }: Vir
 
       const elapsed = clock.getElapsedTime();
 
-      // Smooth camera glide along runway on scroll
-      const scrollFactor = Math.min(currentScrollY / 700, 1.4);
-      const targetCamZ = 9.5 - scrollFactor * 3.8;
-      camera.position.z += (targetCamZ - camera.position.z) * 0.06;
+      // Smooth camera crane glide along catwalk on scroll (Both Down & Back Up)
+      const scrollFactor = Math.min(currentScrollY / 750, 1.6);
+      const targetCamZ = 9.5 - scrollFactor * 4.2;
+      camera.position.z += (targetCamZ - camera.position.z) * 0.07;
 
-      // Smooth camera interpolation based on cursor
+      // Vertical crane dip & perspective shift on scroll
+      const targetCamY = 2.2 - scrollFactor * 0.35;
+      camera.position.y += (targetCamY - camera.position.y) * 0.05;
+
+      // Smooth camera interpolation based on cursor / touch
       camera.position.x += (targetX - camera.position.x) * 0.04;
-      camera.position.y += (targetY - camera.position.y) * 0.04;
+      camera.position.y += (targetY - 2.2) * 0.04;
 
-      // Subtle breathing motion
+      // Subtle atmospheric breathing motion
       camera.position.y += Math.sin(elapsed * 0.8) * 0.001;
-      camera.lookAt(0, 1.2, -14);
+      camera.lookAt(0, 1.2 - scrollFactor * 0.2, -14);
 
       // Pulse the electric lime back light
       limeLight.intensity = 2.0 + Math.sin(elapsed * 2) * 0.4;
@@ -243,6 +260,7 @@ export default function VirtualRunwayScene({ className = '', onSceneReady }: Vir
       cancelAnimationFrame(animationFrameId);
       window.removeEventListener('scroll', handleScroll);
       window.removeEventListener('mousemove', handlePointerMove);
+      window.removeEventListener('touchmove', handleTouchMove);
       window.removeEventListener('resize', handleResize);
       observer.disconnect();
 

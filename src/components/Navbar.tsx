@@ -82,14 +82,14 @@ export default function Navbar({ activeTab, setActiveTab }: NavbarProps) {
             </div>
 
             {/* Desktop Navigation Links */}
-            <nav className="hidden lg:flex items-center space-x-6 xl:space-x-8 shrink-0">
+            <nav className="hidden lg:flex items-center space-x-5 xl:space-x-8 shrink-0">
               {navLinks.map((link) => {
                 const isActive = activeTab === link.id || (link.id === 'events' && activeTab === 'event-details');
                 return (
                   <button
                     key={link.id}
                     onClick={() => handleNavClick(link.id)}
-                    className="relative py-2 font-mono-editorial text-[11px] tracking-[0.18em] transition-colors hover:text-[#C6FF00]"
+                    className="relative py-2 font-mono-editorial text-[10px] xl:text-[11px] tracking-[0.16em] xl:tracking-[0.18em] transition-colors hover:text-[#C6FF00]"
                     style={{
                       color: isActive ? '#C6FF00' : 'var(--text-secondary)',
                       fontWeight: isActive ? 700 : 500,
@@ -110,7 +110,7 @@ export default function Navbar({ activeTab, setActiveTab }: NavbarProps) {
             </nav>
 
             {/* Desktop Right CTAs */}
-            <div className="hidden sm:flex items-center space-x-3.5">
+            <div className="hidden lg:flex items-center space-x-3 xl:space-x-4 shrink-0">
               <button
                 onClick={() => handleNavClick('payment')}
                 className={`font-mono-editorial text-[11px] tracking-wider py-2 px-2.5 transition-colors flex items-center space-x-1.5 ${
