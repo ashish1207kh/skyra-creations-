@@ -111,7 +111,7 @@ export default function BalancePaymentPage({ initialRegId, setActiveTab, setLook
   };
 
   const handleCopyUpi = () => {
-    const upi = paymentInfo?.upi_id || 'mr.death4646@oksbi';
+    const upi = paymentInfo?.upi_id || 'sri.469512-1@oksbi';
     navigator.clipboard.writeText(upi);
     setCopiedUpi(true);
     setTimeout(() => setCopiedUpi(false), 3000);
@@ -556,14 +556,15 @@ export default function BalancePaymentPage({ initialRegId, setActiveTab, setLook
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-center">
                 <div className="space-y-3 text-sm text-zinc-300">
                   <div>
-                    <span className="text-xs text-zinc-500 block">Payee Name</span>
-                    <strong className="text-white text-base">Sanjay Mass</strong>
+                    <span className="text-xs text-zinc-500 block">Official Payee</span>
+                    <strong className="text-white text-base">{paymentInfo?.upi_name || 'B Sriram'}</strong>
+                    <span className="text-[11px] text-zinc-400 block">Founder & CEO, Skyra Creations (Indian Bank)</span>
                   </div>
                   <div>
                     <span className="text-xs text-zinc-500 block">Official UPI ID</span>
                     <div className="flex items-center space-x-2 mt-0.5">
                       <code className="bg-zinc-900 border border-zinc-700 rounded-lg px-2.5 py-1 text-amber-300 font-mono text-sm">
-                        {paymentInfo?.upi_id || 'mr.death4646@oksbi'}
+                        {paymentInfo?.upi_id || 'sri.469512-1@oksbi'}
                       </code>
                       <button
                         type="button"
