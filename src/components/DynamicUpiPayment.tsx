@@ -352,8 +352,8 @@ export default function DynamicUpiPayment({
           <div className="mt-4 text-[11px] text-zinc-400 space-y-1.5">
             <span className="block text-white font-mono-editorial text-xs font-semibold">SCAN WITH ANY UPI APP</span>
             <div className="flex items-center justify-center space-x-3.5 pt-1">
-              <img src={gpayLogo} alt="Google Pay" className="h-4.5 w-auto object-contain opacity-90 hover:opacity-100 transition-opacity" />
-              <img src={phonepeLogo} alt="PhonePe" className="h-4.5 w-auto object-contain opacity-90 hover:opacity-100 transition-opacity rounded-full" />
+              <img src={gpayLogo} alt="Google Pay" className="h-4 w-auto object-contain opacity-90 hover:opacity-100 transition-opacity" />
+              <img src={phonepeLogo} alt="PhonePe" className="h-4 w-auto object-contain opacity-90 hover:opacity-100 transition-opacity rounded-full" />
               <img src={paytmLogo} alt="Paytm" className="h-3.5 w-auto object-contain opacity-90 hover:opacity-100 transition-opacity" />
               <img src={bhimLogo} alt="BHIM" className="h-3.5 w-auto object-contain opacity-90 hover:opacity-100 transition-opacity" />
             </div>
