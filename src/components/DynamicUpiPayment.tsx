@@ -15,10 +15,15 @@ import {
 import { motion, AnimatePresence } from 'motion/react';
 import { PaymentInfo } from '../types/index';
 
+import gpayLogo from '../assets/payment-apps/gpay.png';
+import phonepeLogo from '../assets/payment-apps/phonepe-icon.png';
+import paytmLogo from '../assets/payment-apps/paytm-white.png';
+import bhimLogo from '../assets/payment-apps/bhim-mark-white.png';
+
 // High-fidelity official payment app brand icons matching official brand assets
 const GooglePayIcon = ({ className = "h-5 w-auto" }: { className?: string }) => (
   <img
-    src="/images/payment-apps/gpay.png"
+    src={gpayLogo}
     alt="Google Pay"
     className={`${className} object-contain`}
     loading="eager"
@@ -27,7 +32,7 @@ const GooglePayIcon = ({ className = "h-5 w-auto" }: { className?: string }) => 
 
 const PhonePeIcon = ({ className = "h-5 w-auto" }: { className?: string }) => (
   <img
-    src="/images/payment-apps/phonepe-icon.png"
+    src={phonepeLogo}
     alt="PhonePe"
     className={`${className} object-contain`}
     loading="eager"
@@ -36,7 +41,7 @@ const PhonePeIcon = ({ className = "h-5 w-auto" }: { className?: string }) => (
 
 const PaytmIcon = ({ className = "h-4 w-auto" }: { className?: string }) => (
   <img
-    src="/images/payment-apps/paytm-white.png"
+    src={paytmLogo}
     alt="Paytm"
     className={`${className} object-contain`}
     loading="eager"
@@ -45,7 +50,7 @@ const PaytmIcon = ({ className = "h-4 w-auto" }: { className?: string }) => (
 
 const BhimIcon = ({ className = "h-4 w-auto" }: { className?: string }) => (
   <img
-    src="/images/payment-apps/bhim-mark-white.png"
+    src={bhimLogo}
     alt="BHIM UPI"
     className={`${className} object-contain`}
     loading="eager"
@@ -347,10 +352,10 @@ export default function DynamicUpiPayment({
           <div className="mt-4 text-[11px] text-zinc-400 space-y-1.5">
             <span className="block text-white font-mono-editorial text-xs font-semibold">SCAN WITH ANY UPI APP</span>
             <div className="flex items-center justify-center space-x-3.5 pt-1">
-              <img src="/images/payment-apps/gpay.png" alt="Google Pay" className="h-4.5 w-auto object-contain opacity-90 hover:opacity-100 transition-opacity" />
-              <img src="/images/payment-apps/phonepe-icon.png" alt="PhonePe" className="h-4.5 w-auto object-contain opacity-90 hover:opacity-100 transition-opacity rounded-full" />
-              <img src="/images/payment-apps/paytm-white.png" alt="Paytm" className="h-3.5 w-auto object-contain opacity-90 hover:opacity-100 transition-opacity" />
-              <img src="/images/payment-apps/bhim-mark-white.png" alt="BHIM" className="h-3.5 w-auto object-contain opacity-90 hover:opacity-100 transition-opacity" />
+              <img src={gpayLogo} alt="Google Pay" className="h-4.5 w-auto object-contain opacity-90 hover:opacity-100 transition-opacity" />
+              <img src={phonepeLogo} alt="PhonePe" className="h-4.5 w-auto object-contain opacity-90 hover:opacity-100 transition-opacity rounded-full" />
+              <img src={paytmLogo} alt="Paytm" className="h-3.5 w-auto object-contain opacity-90 hover:opacity-100 transition-opacity" />
+              <img src={bhimLogo} alt="BHIM" className="h-3.5 w-auto object-contain opacity-90 hover:opacity-100 transition-opacity" />
             </div>
             <span className="text-zinc-500 font-mono-editorial text-[10px] block">Google Pay • PhonePe • Paytm • BHIM • Cred • Banking Apps</span>
           </div>
@@ -428,10 +433,10 @@ export default function DynamicUpiPayment({
 
               {/* Supported App Strip in Modal */}
               <div className="flex items-center justify-center space-x-3 mb-4 py-1">
-                <img src="/images/payment-apps/gpay.png" alt="Google Pay" className="h-4 w-auto object-contain opacity-85" />
-                <img src="/images/payment-apps/phonepe-icon.png" alt="PhonePe" className="h-4 w-auto object-contain opacity-85 rounded-full" />
-                <img src="/images/payment-apps/paytm-white.png" alt="Paytm" className="h-3.5 w-auto object-contain opacity-85" />
-                <img src="/images/payment-apps/bhim-mark-white.png" alt="BHIM" className="h-3 w-auto object-contain opacity-85" />
+                <img src={gpayLogo} alt="Google Pay" className="h-4 w-auto object-contain opacity-85" />
+                <img src={phonepeLogo} alt="PhonePe" className="h-4 w-auto object-contain opacity-85 rounded-full" />
+                <img src={paytmLogo} alt="Paytm" className="h-3.5 w-auto object-contain opacity-85" />
+                <img src={bhimLogo} alt="BHIM" className="h-3 w-auto object-contain opacity-85" />
               </div>
 
               {/* UPI Buttons in Modal */}
