@@ -57,12 +57,12 @@ interface PaymentPageProps {
 
 export default function PaymentPage({
   initialRegId = '',
-  initialMode = 'balance',
+  initialMode = 'register',
   registrationDraft = null,
   setActiveTab,
   setLookupRegId,
 }: PaymentPageProps) {
-  // If user arrives with a registration draft, default to 'register' mode, otherwise 'balance'
+  // Default to initialMode ('register' by default, or 'balance' when arriving from balance links)
   const [mode, setMode] = useState<'balance' | 'register'>(
     registrationDraft ? 'register' : initialMode
   );
@@ -536,19 +536,6 @@ export default function PaymentPage({
           <div className="inline-flex p-1 rounded-sm bg-[#12141a] border border-white/15">
             <button
               type="button"
-              onClick={() => setMode('balance')}
-              className={`px-5 py-2.5 rounded-sm font-mono-editorial text-xs font-bold uppercase tracking-wider transition-all flex items-center space-x-2 ${
-                mode === 'balance'
-                  ? 'bg-[#C6FF00] text-black shadow-lg shadow-[#C6FF00]/20'
-                  : 'text-zinc-400 hover:text-white'
-              }`}
-            >
-              <Wallet className="w-3.5 h-3.5" />
-              <span>CLEAR REMAINING BALANCE</span>
-            </button>
-
-            <button
-              type="button"
               onClick={() => setMode('register')}
               className={`px-5 py-2.5 rounded-sm font-mono-editorial text-xs font-bold uppercase tracking-wider transition-all flex items-center space-x-2 ${
                 mode === 'register'
@@ -558,6 +545,19 @@ export default function PaymentPage({
             >
               <CreditCard className="w-3.5 h-3.5" />
               <span>REGISTRATION TOKEN ADVANCE</span>
+            </button>
+
+            <button
+              type="button"
+              onClick={() => setMode('balance')}
+              className={`px-5 py-2.5 rounded-sm font-mono-editorial text-xs font-bold uppercase tracking-wider transition-all flex items-center space-x-2 ${
+                mode === 'balance'
+                  ? 'bg-[#C6FF00] text-black shadow-lg shadow-[#C6FF00]/20'
+                  : 'text-zinc-400 hover:text-white'
+              }`}
+            >
+              <Wallet className="w-3.5 h-3.5" />
+              <span>CLEAR REMAINING BALANCE</span>
             </button>
           </div>
         </div>

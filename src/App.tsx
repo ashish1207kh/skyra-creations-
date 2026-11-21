@@ -59,7 +59,7 @@ export default function App() {
   const [balanceRegId, setBalanceRegId] = useState<string>('');
   const [lookupRegId, setLookupRegId] = useState<string>('');
   const [registrationDraft, setRegistrationDraft] = useState<RegistrationDraft | null>(null);
-  const [paymentMode, setPaymentMode] = useState<'balance' | 'register'>('balance');
+  const [paymentMode, setPaymentMode] = useState<'balance' | 'register'>('register');
   const [showTermsModal, setShowTermsModal] = useState<boolean>(false);
   const [showPrivacyModal, setShowPrivacyModal] = useState<boolean>(false);
 
