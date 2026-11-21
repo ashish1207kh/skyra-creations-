@@ -200,14 +200,9 @@ export default function HumanVerificationCaptcha({
         >
           <div className="flex items-center space-x-2.5 text-emerald-400">
             <CheckCircle2 className="w-5 h-5 text-emerald-400 shrink-0" />
-            <div>
-              <span className="font-mono-editorial text-xs font-bold block uppercase tracking-wider">
-                HUMAN VERIFIED
-              </span>
-              <span className="text-[10px] text-emerald-300/80 font-mono block">
-                Session cryptographically signed against automated spam
-              </span>
-            </div>
+            <span className="font-mono-editorial text-xs font-bold block uppercase tracking-wider">
+              HUMAN VERIFIED
+            </span>
           </div>
           <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
         </motion.div>
@@ -303,8 +298,7 @@ export default function HumanVerificationCaptcha({
                 </p>
               )}
 
-              <div className="flex justify-between items-center text-[10px] font-mono-editorial text-zinc-500 pt-1">
-                <span>Solves automated bot attacks</span>
+              <div className="flex justify-end items-center text-[10px] font-mono-editorial text-zinc-500 pt-1">
                 <button
                   type="button"
                   onClick={() => setMode('slider')}
