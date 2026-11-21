@@ -28,6 +28,7 @@ import {
 import { getPaymentInfo, registerContestant } from '../lib/api';
 import { uploadFileToR2 } from '../lib/storage';
 import { PaymentInfo } from '../types/index';
+import DynamicUpiPayment from '../components/DynamicUpiPayment';
 
 interface RegistrationPageProps {
   setActiveTab: (tab: string) => void;
@@ -1087,56 +1088,13 @@ export default function RegistrationPage({ setActiveTab, setLookupRegId }: Regis
             </div>
           </div>
 
-          {/* Official Payment Info & QR */}
-          <div className="bg-[#0a0c12] border border-zinc-800 rounded-2xl p-6 mb-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-center">
-              <div>
-                <div className="flex items-center space-x-2 text-xs font-bold text-amber-400 uppercase tracking-wider mb-2">
-                  <QrCode className="w-4 h-4" />
-                  <span>Official UPI Payment Details</span>
-                </div>
-                <div className="space-y-2 text-sm text-zinc-300">
-                  <div>
-                    <span className="text-xs text-zinc-500 block">Official Payee</span>
-                    <strong className="text-white text-base">{paymentInfo?.upi_name || 'B Sriram'}</strong>
-                    <span className="text-[11px] text-zinc-400 block">Founder & CEO, Skyra Creations (Indian Bank 5056)</span>
-                  </div>
-                  <div>
-                    <span className="text-xs text-zinc-500 block">Official UPI ID</span>
-                    <div className="flex items-center space-x-2 mt-0.5">
-                      <code className="bg-zinc-900 border border-zinc-700 rounded-lg px-2.5 py-1 text-amber-300 font-mono text-sm">
-                        {paymentInfo?.upi_id || 'sri.469512-1@oksbi'}
-                      </code>
-                      <button
-                        type="button"
-                        onClick={handleCopyUpi}
-                        className="p-1.5 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-zinc-300 hover:text-white transition-colors"
-                        title="Copy UPI ID"
-                      >
-                        {copiedUpi ? <Check className="w-4 h-4 text-emerald-400" /> : <Copy className="w-4 h-4" />}
-                      </button>
-                    </div>
-                    {copiedUpi && (
-                      <p className="text-[11px] text-emerald-400 mt-1">UPI ID copied to clipboard!</p>
-                    )}
-                  </div>
-                  <div>
-                    <span className="text-xs text-zinc-500 block">Amount to Pay</span>
-                    <strong className="text-amber-400 text-xl font-bold">₹{tokenAdvance.toLocaleString('en-IN')}</strong>
-                  </div>
-                </div>
-              </div>
-
-              {/* QR Code Presentation */}
-              <div className="text-center p-4 bg-zinc-900/60 rounded-xl border border-zinc-800 flex flex-col items-center justify-center">
-                <img
-                  src="/qr_code.png"
-                  alt="Skyra Creations UPI QR Code"
-                  className="w-40 h-40 object-contain rounded-xl bg-white p-2 shadow-lg mb-2"
-                />
-                <p className="text-xs text-zinc-400 font-medium">Scan with Google Pay, PhonePe, Paytm, or BHIM</p>
-              </div>
-            </div>
+          {/* Dynamic Server-Controlled UPI Payment Component with 5 UPI App Buttons & Dynamic QR */}
+          <div className="mb-6">
+            <DynamicUpiPayment
+              amount={tokenAdvance}
+              paymentInfo={paymentInfo}
+              paymentType="INITIAL_REGISTRATION"
+            />
           </div>
 
           {/* Payment Proof Inputs */}

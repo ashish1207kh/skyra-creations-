@@ -375,6 +375,37 @@ export default function AdminDashboard() {
         </div>
       )}
 
+      {/* Official UPI Payment Recipient & Owner Verification Status Card */}
+      <div className="bg-[#12151e] border border-amber-500/30 rounded-2xl p-4 sm:p-5 mb-6 shadow-sm">
+        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+          <div className="space-y-1">
+            <div className="flex items-center space-x-2">
+              <span className="px-2.5 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 text-[10px] font-bold uppercase tracking-wider flex items-center space-x-1">
+                <CheckCircle2 className="w-3 h-3 text-emerald-400" />
+                <span>Verified Production UPI Configuration</span>
+              </span>
+              <span className="text-xs text-zinc-500">•</span>
+              <span className="text-xs text-zinc-400 font-mono">Indian Bank 5056</span>
+            </div>
+            <h3 className="text-base font-bold text-white flex items-center space-x-2">
+              <span>Official Recipient: B Sriram</span>
+              <span className="text-xs font-mono text-amber-300 font-normal">(`sri.469512-1@oksbi`)</span>
+            </h3>
+            <p className="text-xs text-zinc-400">
+              Associated Mobile: <strong className="text-zinc-200">+91 93420 49287</strong> | Currency: <strong className="text-zinc-200">INR</strong> | Intent Deep Links: <strong className="text-emerald-400">Google Pay, PhonePe, Paytm, BHIM, Generic UPI</strong>
+            </p>
+          </div>
+
+          <div className="flex items-center space-x-3 text-xs shrink-0 bg-[#0a0c12] border border-zinc-800 p-3 rounded-xl">
+            <ShieldCheck className="w-5 h-5 text-emerald-400 shrink-0" />
+            <div className="text-[11px] text-zinc-300">
+              <strong className="text-white block font-semibold">Owner Verified & Confirmed</strong>
+              <span>Dynamic QR generation active on all checkouts</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
       {/* Tabs Switcher: Verification Queue vs Participant Registry */}
       <div className="flex items-center space-x-2 border-b border-zinc-800 mb-6">
         <button

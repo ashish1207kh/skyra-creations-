@@ -55,8 +55,12 @@ export interface PaymentInfo {
   event_name: string;
   location?: string;
   bank_name?: string;
+  bank_account_ref?: string;
+  associated_mobile?: string;
   upi_id: string;
   upi_name: string;
+  currency?: string;
+  aid?: string;
   default_total_fee: number;
   allowed_token_advances?: number[];
   allowed_balance_amounts: number[];
