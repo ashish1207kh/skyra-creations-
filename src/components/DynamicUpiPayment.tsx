@@ -8,7 +8,6 @@ import {
   ShieldCheck, 
   ExternalLink, 
   AlertCircle,
-  Building2,
   Phone,
   Sparkles,
   X
@@ -293,7 +292,7 @@ export default function DynamicUpiPayment({
               <span>OFFICIAL SKYRA RECIPIENT</span>
             </span>
             <span className="text-white/30 text-xs">•</span>
-            <span className="text-[#BFC3C7] text-xs font-mono-editorial">B Sriram (Indian Bank 5056)</span>
+            <span className="text-[#BFC3C7] text-xs font-mono-editorial">B Sriram</span>
           </div>
           <h4 className="text-white text-lg sm:text-xl font-bold font-editorial mt-1 tracking-tight">
             Dynamic UPI Payment Gateway
@@ -336,15 +335,11 @@ export default function DynamicUpiPayment({
               </span>
             </div>
 
-            {/* Bank Reference & Mobile */}
-            <div className="grid grid-cols-2 gap-2 pt-3 border-t border-white/10 text-xs">
-              <div className="flex items-center space-x-2 text-zinc-300">
-                <Building2 className="w-3.5 h-3.5 text-[#C6FF00] shrink-0" />
-                <span className="font-mono-editorial text-[11px]">{bankName} ({bankAccountRef})</span>
-              </div>
+            {/* Associated Mobile Helpline */}
+            <div className="pt-3 border-t border-white/10 text-xs">
               <div className="flex items-center space-x-2 text-zinc-300">
                 <Phone className="w-3.5 h-3.5 text-[#C6FF00] shrink-0" />
-                <span className="font-mono-editorial text-[11px]">+91 {associatedMobile}</span>
+                <span className="font-mono-editorial text-[11px]">Associated Mobile: +91 {associatedMobile}</span>
               </div>
             </div>
 
@@ -459,7 +454,7 @@ export default function DynamicUpiPayment({
                   Complete Your Payment
                 </h3>
                 <p className="text-[11px] sm:text-xs text-zinc-400 font-light mt-1">
-                  Payable to <strong className="text-white">{upiName}</strong> ({bankName} • 5056)
+                  Payable to <strong className="text-white">{upiName}</strong>
                 </p>
                 <div className="mt-2 text-2xl sm:text-3xl font-black text-[#C6FF00] font-mono">
                   ₹{amount.toLocaleString('en-IN')}

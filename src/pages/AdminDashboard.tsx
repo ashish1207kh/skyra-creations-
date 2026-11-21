@@ -461,8 +461,6 @@ export default function AdminDashboard() {
                 <CheckCircle2 className="w-3 h-3 text-emerald-400" />
                 <span>Verified Production UPI Configuration</span>
               </span>
-              <span className="text-xs text-zinc-500">•</span>
-              <span className="text-xs text-[#BFC3C7] font-mono">Indian Bank 5056</span>
             </div>
             <h3 className="text-base font-bold text-white flex items-center space-x-2">
               <span>Official Recipient: B Sriram</span>

@@ -202,7 +202,7 @@ export default function EventDetailPage({ eventId = 'EVT-CHX-2026', setActiveTab
             </div>
 
             <div className="text-center font-mono-editorial text-[10px] text-zinc-400">
-              RECIPIENT: B SRIRAM (INDIAN BANK 5056)
+              RECIPIENT: B SRIRAM
             </div>
           </div>
         </div>
