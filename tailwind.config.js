@@ -29,8 +29,10 @@ export default {
         }
       },
       fontFamily: {
-        serif: ['Playfair Display', 'Cinzel', 'Georgia', 'serif'],
+        display: ['Syne', 'Playfair Display', 'Georgia', 'serif'],
+        serif: ['Playfair Display', 'Georgia', 'serif'],
         sans: ['Plus Jakarta Sans', 'Inter', 'system-ui', 'sans-serif'],
+        mono: ['Space Mono', 'JetBrains Mono', 'monospace'],
       }
     },
   },

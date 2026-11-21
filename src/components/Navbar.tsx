@@ -1,20 +1,6 @@
-import React, { useState } from 'react';
-import { 
-  Sparkles, 
-  Menu, 
-  X, 
-  Sun, 
-  Moon, 
-  Laptop, 
-  Calendar, 
-  Info, 
-  Layers, 
-  Image as ImageIcon, 
-  Phone, 
-  UserCheck, 
-  ShieldCheck,
-  ChevronDown
-} from 'lucide-react';
+import React, { useState, useEffect, useCallback } from 'react';
+import { Menu, X, Sun, Moon, Monitor } from 'lucide-react';
+import { AnimatePresence, motion } from 'motion/react';
 import { useTheme, ThemeMode } from '../lib/theme';
 
 interface NavbarProps {
@@ -24,268 +10,322 @@ interface NavbarProps {
 
 export default function Navbar({ activeTab, setActiveTab }: NavbarProps) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [themeDropdownOpen, setThemeDropdownOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
   const { themeMode, resolvedTheme, setThemeMode } = useTheme();
 
   const navLinks = [
     { id: 'home', label: 'Home' },
-    { id: 'about', label: 'About Us' },
+    { id: 'about', label: 'About' },
     { id: 'what-we-do', label: 'What We Do' },
-    { id: 'events', label: 'Upcoming Events' },
+    { id: 'events', label: 'Events' },
     { id: 'gallery', label: 'Gallery' },
     { id: 'contact', label: 'Contact' },
   ];
 
-  const handleNavClick = (tabId: string) => {
+  const handleNavClick = useCallback((tabId: string) => {
     setActiveTab(tabId);
     setMobileMenuOpen(false);
-  };
+  }, [setActiveTab]);
+
+  // Scroll listener for transparent → solid transition
+  useEffect(() => {
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 80);
+    };
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    handleScroll();
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  // Lock body scroll when mobile menu is open
+  useEffect(() => {
+    if (mobileMenuOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => { document.body.style.overflow = ''; };
+  }, [mobileMenuOpen]);
+
+  // Cycle theme: dark → light → system → dark
+  const cycleTheme = useCallback(() => {
+    const order: ThemeMode[] = ['dark', 'light', 'system'];
+    const idx = order.indexOf(themeMode);
+    setThemeMode(order[(idx + 1) % order.length]);
+  }, [themeMode, setThemeMode]);
+
+  const ThemeIcon = themeMode === 'system'
+    ? Monitor
+    : resolvedTheme === 'dark'
+      ? Moon
+      : Sun;
 
   return (
-    <header className="sticky top-0 z-50 bg-[#0d0f17]/95 dark:bg-[#0a0c12]/95 light:bg-white/95 backdrop-blur-md border-b border-zinc-200 dark:border-zinc-800 transition-colors">
-      {/* Top Event Announcement Ticker */}
-      <div className="bg-gradient-to-r from-zinc-900 via-amber-950 to-zinc-900 border-b border-amber-500/20 py-1.5 px-4 text-center text-[11px] text-amber-200/90 flex flex-wrap items-center justify-center gap-x-3 gap-y-1">
-        <span className="flex items-center space-x-1.5 text-[#d4ff14] font-semibold">
-          <span className="w-1.5 h-1.5 rounded-full bg-[#d4ff14] animate-ping" />
-          <span>RUNWAY SHOW 2026:</span>
-        </span>
-        <span className="text-zinc-300">
-          Location: <strong className="text-white">Chennai City Center</strong>
-        </span>
-        <span className="text-amber-400/30 hidden sm:inline">•</span>
-        <span className="text-zinc-400 hidden sm:inline">
-          Reporting Timings Released 10 Days Before Event
-        </span>
-        <span className="text-amber-400/30 hidden sm:inline">•</span>
-        <button
-          onClick={() => handleNavClick('events')}
-          className="text-amber-300 hover:text-white underline font-semibold transition-colors"
-        >
-          View Event Details
-        </button>
-      </div>
-
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-20">
-          {/* Brand Logo & Title */}
-          <div 
-            onClick={() => handleNavClick('home')}
-            className="flex items-center space-x-3 cursor-pointer group"
+    <>
+      <header
+        className="fixed top-0 left-0 right-0 z-50 transition-all duration-300"
+        style={{
+          backgroundColor: scrolled ? 'var(--bg-secondary)' : 'transparent',
+          borderBottom: scrolled ? '1px solid var(--border)' : '1px solid transparent',
+          backdropFilter: scrolled ? 'blur(16px)' : 'none',
+          WebkitBackdropFilter: scrolled ? 'blur(16px)' : 'none',
+        }}
+      >
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div
+            className="flex items-center justify-between transition-all duration-300"
+            style={{ height: scrolled ? '64px' : '80px' }}
           >
-            <div className="w-11 h-11 rounded-xl bg-black border border-amber-500/30 p-1 flex items-center justify-center shadow-lg shadow-amber-500/10 group-hover:border-amber-400 transition-all">
-              <img 
-                src="/logo.png" 
-                alt="SKYRA CREATIONS Logo" 
+            {/* Logo & Brand */}
+            <div
+              onClick={() => handleNavClick('home')}
+              className="flex items-center space-x-3 cursor-pointer group"
+            >
+              <img
+                src="/logo.png"
+                alt="SKYRA CREATIONS Logo"
                 width={40}
                 height={40}
-                className="w-full h-full object-contain group-hover:scale-105 transition-transform" 
+                className="w-10 h-10 object-contain group-hover:scale-105 transition-transform"
               />
-            </div>
-            <div>
-              <span className="font-editorial text-lg sm:text-xl font-bold tracking-wider text-zinc-900 dark:text-white group-hover:text-amber-500 transition-colors block">
-                SKYRA CREATIONS
-              </span>
-              <span className="text-[10px] uppercase tracking-widest text-zinc-500 dark:text-zinc-400 block font-medium">
-                Fashion • Runway • Modelling
+              <span
+                className="font-display text-lg sm:text-xl font-bold tracking-wide transition-colors"
+                style={{ color: 'var(--text-primary)' }}
+              >
+                SKYRA
               </span>
             </div>
-          </div>
 
-          {/* Desktop Navigation Links */}
-          <nav className="hidden lg:flex items-center space-x-1">
-            {navLinks.map((link) => {
-              const isActive = activeTab === link.id || (link.id === 'events' && activeTab === 'event-details');
-              return (
-                <button
-                  key={link.id}
-                  onClick={() => handleNavClick(link.id)}
-                  className={`px-3.5 py-2 rounded-xl text-xs sm:text-sm font-medium transition-all ${
-                    isActive
-                      ? 'text-amber-500 dark:text-amber-400 bg-amber-500/10 font-bold'
-                      : 'text-zinc-600 dark:text-zinc-300 hover:text-zinc-900 dark:hover:text-white hover:bg-zinc-100 dark:hover:bg-zinc-800/60'
-                  }`}
-                >
-                  {link.label}
-                </button>
-              );
-            })}
-          </nav>
+            {/* Desktop Navigation Links */}
+            <nav className="hidden lg:flex items-center space-x-1">
+              {navLinks.map((link) => {
+                const isActive = activeTab === link.id || (link.id === 'events' && activeTab === 'event-details');
+                return (
+                  <button
+                    key={link.id}
+                    onClick={() => handleNavClick(link.id)}
+                    className="font-mono-editorial relative px-4 py-2 transition-colors"
+                    style={{
+                      color: isActive ? 'var(--accent)' : 'var(--text-secondary)',
+                    }}
+                    onMouseEnter={(e) => {
+                      if (!isActive) (e.currentTarget as HTMLElement).style.color = 'var(--text-primary)';
+                    }}
+                    onMouseLeave={(e) => {
+                      if (!isActive) (e.currentTarget as HTMLElement).style.color = 'var(--text-secondary)';
+                    }}
+                  >
+                    {link.label}
+                    {isActive && (
+                      <span
+                        className="absolute bottom-0 left-1/2 -translate-x-1/2 w-5 h-[2px] rounded-full"
+                        style={{ backgroundColor: 'var(--accent)' }}
+                      />
+                    )}
+                  </button>
+                );
+              })}
+            </nav>
 
-          {/* Right Action Icons: Status + Theme Switcher + Register CTA */}
-          <div className="hidden sm:flex items-center space-x-3">
-            {/* Check Status / Pass */}
-            <button
-              onClick={() => handleNavClick('status')}
-              className={`px-3 py-2 rounded-xl text-xs font-semibold flex items-center space-x-1.5 transition-colors ${
-                activeTab === 'status'
-                  ? 'text-amber-500 bg-amber-500/10 border border-amber-500/30'
-                  : 'text-zinc-600 dark:text-zinc-300 hover:text-zinc-900 dark:hover:text-white hover:bg-zinc-100 dark:hover:bg-zinc-800/60'
-              }`}
-              title="Check Registration Status or Pass"
-            >
-              <UserCheck className="w-4 h-4 text-amber-500" />
-              <span>Pass</span>
-            </button>
-
-            {/* Theme Toggle Button */}
-            <div className="relative">
+            {/* Right side: Theme toggle + Register CTA */}
+            <div className="hidden lg:flex items-center space-x-3">
+              {/* Compact Theme Toggle */}
               <button
                 type="button"
-                onClick={() => setThemeDropdownOpen(!themeDropdownOpen)}
-                className="p-2 rounded-xl text-zinc-600 dark:text-zinc-300 hover:text-zinc-900 dark:hover:text-white hover:bg-zinc-100 dark:hover:bg-zinc-800 border border-zinc-200 dark:border-zinc-800 transition-colors flex items-center space-x-1"
-                aria-label="Toggle theme mode"
+                onClick={cycleTheme}
+                className="p-2.5 rounded-full transition-colors"
+                style={{
+                  color: 'var(--text-secondary)',
+                  border: '1px solid var(--border)',
+                }}
+                aria-label={`Theme: ${themeMode}. Click to cycle.`}
+                title={`Theme: ${themeMode}`}
               >
-                {resolvedTheme === 'dark' ? (
-                  <Moon className="w-4 h-4 text-amber-400" />
-                ) : (
-                  <Sun className="w-4 h-4 text-amber-500" />
-                )}
-                <ChevronDown className="w-3 h-3 text-zinc-400" />
+                <ThemeIcon className="w-4 h-4" />
               </button>
 
-              {themeDropdownOpen && (
-                <div className="absolute right-0 mt-2 w-36 rounded-2xl bg-white dark:bg-[#12151e] border border-zinc-200 dark:border-zinc-800 shadow-2xl p-1.5 z-50 text-xs space-y-1">
-                  <button
-                    onClick={() => {
-                      setThemeMode('dark');
-                      setThemeDropdownOpen(false);
-                    }}
-                    className={`w-full flex items-center space-x-2 px-3 py-2 rounded-xl transition-colors ${
-                      themeMode === 'dark' 
-                        ? 'bg-amber-500/10 text-amber-500 font-bold' 
-                        : 'text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800'
-                    }`}
-                  >
-                    <Moon className="w-3.5 h-3.5" />
-                    <span>Dark Mode</span>
-                  </button>
-                  <button
-                    onClick={() => {
-                      setThemeMode('light');
-                      setThemeDropdownOpen(false);
-                    }}
-                    className={`w-full flex items-center space-x-2 px-3 py-2 rounded-xl transition-colors ${
-                      themeMode === 'light' 
-                        ? 'bg-amber-500/10 text-amber-500 font-bold' 
-                        : 'text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800'
-                    }`}
-                  >
-                    <Sun className="w-3.5 h-3.5" />
-                    <span>Light Mode</span>
-                  </button>
-                  <button
-                    onClick={() => {
-                      setThemeMode('system');
-                      setThemeDropdownOpen(false);
-                    }}
-                    className={`w-full flex items-center space-x-2 px-3 py-2 rounded-xl transition-colors ${
-                      themeMode === 'system' 
-                        ? 'bg-amber-500/10 text-amber-500 font-bold' 
-                        : 'text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800'
-                    }`}
-                  >
-                    <Laptop className="w-3.5 h-3.5" />
-                    <span>System Default</span>
-                  </button>
-                </div>
-              )}
+              {/* Register CTA */}
+              <button
+                onClick={() => handleNavClick('register')}
+                className="font-mono-editorial px-5 py-2.5 rounded-full font-bold transition-all hover:scale-105 active:scale-95"
+                style={{
+                  backgroundColor: 'var(--accent)',
+                  color: '#000000',
+                }}
+              >
+                REGISTER
+              </button>
             </div>
 
-            {/* Primary Register CTA */}
-            <button
-              onClick={() => handleNavClick('register')}
-              className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-amber-400 via-amber-500 to-[#d4ff14] text-black font-bold text-xs uppercase tracking-wider shadow-md hover:scale-105 active:scale-95 transition-all flex items-center space-x-1.5"
-            >
-              <Sparkles className="w-3.5 h-3.5 text-black" />
-              <span>Register Now</span>
-            </button>
-          </div>
-
-          {/* Mobile Right Controls: Theme + Hamburger */}
-          <div className="flex lg:hidden items-center space-x-2">
-            <button
-              type="button"
-              onClick={() => setThemeMode(resolvedTheme === 'dark' ? 'light' : 'dark')}
-              className="p-2 rounded-xl text-zinc-600 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800"
-              aria-label="Toggle dark/light mode"
-            >
-              {resolvedTheme === 'dark' ? (
-                <Moon className="w-4 h-4 text-amber-400" />
-              ) : (
-                <Sun className="w-4 h-4 text-amber-500" />
-              )}
-            </button>
-
-            <button
-              onClick={() => handleNavClick('register')}
-              className="px-3 py-1.5 rounded-lg bg-amber-500 text-black text-xs font-bold"
-            >
-              Register
-            </button>
-
-            <button
-              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="p-2 rounded-xl text-zinc-600 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800"
-              aria-label="Toggle navigation menu"
-            >
-              {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-            </button>
-          </div>
-        </div>
-      </div>
-
-      {/* Mobile Drawer Menu */}
-      {mobileMenuOpen && (
-        <div className="lg:hidden border-t border-zinc-200 dark:border-zinc-800 bg-white dark:bg-[#0a0c12] px-4 pt-4 pb-8 space-y-2 shadow-2xl animate-fadeIn">
-          <div className="px-3 py-1 text-[10px] uppercase font-bold text-zinc-400 tracking-wider">
-            Navigation Menu
-          </div>
-
-          {navLinks.map((link) => {
-            const isActive = activeTab === link.id;
-            return (
+            {/* Mobile Right Controls */}
+            <div className="flex lg:hidden items-center space-x-2">
               <button
-                key={link.id}
-                onClick={() => handleNavClick(link.id)}
-                className={`w-full flex items-center justify-between px-4 py-3 rounded-xl text-sm font-medium transition-all ${
-                  isActive
-                    ? 'bg-amber-500/10 text-amber-500 font-bold border border-amber-500/30'
-                    : 'text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800'
-                }`}
+                type="button"
+                onClick={cycleTheme}
+                className="p-2 rounded-full transition-colors"
+                style={{ color: 'var(--text-secondary)' }}
+                aria-label="Toggle theme"
               >
-                <span>{link.label}</span>
-                {isActive && <span className="w-1.5 h-1.5 rounded-full bg-amber-500" />}
+                <ThemeIcon className="w-4 h-4" />
               </button>
-            );
-          })}
 
-          <div className="pt-2 border-t border-zinc-200 dark:border-zinc-800 space-y-2">
-            <button
-              onClick={() => handleNavClick('balance')}
-              className="w-full flex items-center justify-between px-4 py-2.5 rounded-xl text-xs font-semibold text-zinc-600 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800"
-            >
-              <span>Balance Payment Clearance</span>
-              <span className="text-[10px] text-amber-500">→</span>
-            </button>
-
-            <button
-              onClick={() => handleNavClick('status')}
-              className="w-full flex items-center justify-between px-4 py-2.5 rounded-xl text-xs font-semibold text-zinc-600 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800"
-            >
-              <span>Check Status &amp; Digital Pass</span>
-              <span className="text-[10px] text-amber-500">→</span>
-            </button>
-
-            <button
-              onClick={() => handleNavClick('admin')}
-              className="w-full flex items-center justify-between px-4 py-2.5 rounded-xl text-xs font-semibold text-zinc-600 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800"
-            >
-              <span>Admin Portal</span>
-              <span className="text-[10px] text-zinc-500">🔒</span>
-            </button>
+              <button
+                onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+                className="p-2 rounded-full transition-colors"
+                style={{ color: 'var(--text-primary)' }}
+                aria-label="Toggle navigation menu"
+              >
+                {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+              </button>
+            </div>
           </div>
         </div>
-      )}
-    </header>
+      </header>
+
+      {/* Mobile Full-Screen Overlay */}
+      <AnimatePresence>
+        {mobileMenuOpen && (
+          <motion.div
+            initial={{ x: '100%' }}
+            animate={{ x: 0 }}
+            exit={{ x: '100%' }}
+            transition={{ type: 'tween', duration: 0.3, ease: 'easeInOut' }}
+            className="fixed inset-0 z-[60] flex flex-col"
+            style={{ backgroundColor: 'var(--bg-primary)' }}
+          >
+            {/* Mobile Header */}
+            <div
+              className="flex items-center justify-between px-4 h-16 flex-shrink-0"
+              style={{ borderBottom: '1px solid var(--border)' }}
+            >
+              <div
+                onClick={() => handleNavClick('home')}
+                className="flex items-center space-x-3 cursor-pointer"
+              >
+                <img
+                  src="/logo.png"
+                  alt="SKYRA CREATIONS Logo"
+                  width={36}
+                  height={36}
+                  className="w-9 h-9 object-contain"
+                />
+                <span
+                  className="font-display text-lg font-bold"
+                  style={{ color: 'var(--text-primary)' }}
+                >
+                  SKYRA
+                </span>
+              </div>
+              <button
+                onClick={() => setMobileMenuOpen(false)}
+                className="p-2 rounded-full"
+                style={{ color: 'var(--text-secondary)' }}
+                aria-label="Close menu"
+              >
+                <X className="w-6 h-6" />
+              </button>
+            </div>
+
+            {/* Mobile Nav Links */}
+            <div className="flex-1 flex flex-col justify-center px-8 space-y-2">
+              {navLinks.map((link, i) => {
+                const isActive = activeTab === link.id;
+                return (
+                  <motion.button
+                    key={link.id}
+                    initial={{ opacity: 0, x: 40 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: 0.1 + i * 0.05 }}
+                    onClick={() => handleNavClick(link.id)}
+                    className="text-left font-editorial text-3xl sm:text-4xl font-bold py-3 transition-colors"
+                    style={{
+                      color: isActive ? 'var(--accent)' : 'var(--text-primary)',
+                    }}
+                  >
+                    {link.label}
+                  </motion.button>
+                );
+              })}
+            </div>
+
+            {/* Mobile Bottom Actions */}
+            <div
+              className="flex-shrink-0 px-8 pb-10 pt-6 space-y-6"
+              style={{ borderTop: '1px solid var(--border)' }}
+            >
+              {/* Theme selector row */}
+              <div className="flex items-center space-x-3">
+                <span
+                  className="font-mono-editorial"
+                  style={{ color: 'var(--text-muted)' }}
+                >
+                  THEME
+                </span>
+                <div className="flex space-x-1">
+                  {(['dark', 'light', 'system'] as ThemeMode[]).map((mode) => {
+                    const Icon = mode === 'dark' ? Moon : mode === 'light' ? Sun : Monitor;
+                    const isSelected = themeMode === mode;
+                    return (
+                      <button
+                        key={mode}
+                        onClick={() => setThemeMode(mode)}
+                        className="p-2.5 rounded-full transition-colors"
+                        style={{
+                          backgroundColor: isSelected ? 'var(--surface)' : 'transparent',
+                          color: isSelected ? 'var(--accent)' : 'var(--text-muted)',
+                          border: isSelected ? '1px solid var(--border)' : '1px solid transparent',
+                        }}
+                        aria-label={`${mode} theme`}
+                      >
+                        <Icon className="w-4 h-4" />
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {/* Mobile utility links */}
+              <div className="flex flex-wrap gap-3">
+                <button
+                  onClick={() => handleNavClick('status')}
+                  className="font-mono-editorial transition-colors"
+                  style={{ color: 'var(--text-muted)' }}
+                >
+                  STATUS / PASS
+                </button>
+                <span style={{ color: 'var(--border)' }}>·</span>
+                <button
+                  onClick={() => handleNavClick('balance')}
+                  className="font-mono-editorial transition-colors"
+                  style={{ color: 'var(--text-muted)' }}
+                >
+                  BALANCE
+                </button>
+                <span style={{ color: 'var(--border)' }}>·</span>
+                <button
+                  onClick={() => handleNavClick('admin')}
+                  className="font-mono-editorial transition-colors"
+                  style={{ color: 'var(--text-muted)' }}
+                >
+                  ADMIN
+                </button>
+              </div>
+
+              {/* Register CTA */}
+              <button
+                onClick={() => handleNavClick('register')}
+                className="w-full py-4 rounded-full font-mono-editorial text-sm font-bold tracking-widest transition-all hover:scale-[1.02] active:scale-95"
+                style={{
+                  backgroundColor: 'var(--accent)',
+                  color: '#000000',
+                }}
+              >
+                REGISTER NOW
+              </button>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </>
   );
 }

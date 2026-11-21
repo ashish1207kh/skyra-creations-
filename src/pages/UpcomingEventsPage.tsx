@@ -2,15 +2,13 @@ import React, { useState, useEffect } from 'react';
 import { 
   Calendar, 
   MapPin, 
-  Clock, 
   Sparkles, 
-  CheckCircle2, 
-  ArrowRight, 
   Eye, 
   ShieldCheck, 
-  IndianRupee,
-  Users
+  Users,
+  Check
 } from 'lucide-react';
+import { motion } from 'motion/react';
 import { getPaymentInfo } from '../lib/api';
 import { PaymentInfo } from '../types/index';
 
@@ -36,151 +34,206 @@ export default function UpcomingEventsPage({ setActiveTab, onSelectEvent }: Upco
   const advances = paymentInfo?.allowed_token_advances || [500, 1000, 1500];
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-12 animate-fadeIn">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 space-y-16">
       {/* Page Header */}
-      <div className="text-center max-w-3xl mx-auto space-y-4">
-        <span className="px-3.5 py-1 rounded-full bg-[#C6FF00]/10 text-[#789900] dark:text-[#C6FF00] border border-[#C6FF00]/30 text-xs font-bold uppercase tracking-widest inline-block">
-          Official Event Calendar
+      <motion.div 
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.7 }}
+        className="text-center max-w-3xl mx-auto space-y-4"
+      >
+        <span className="font-mono-editorial block text-[11px] tracking-widest" style={{ color: 'var(--accent)' }}>
+          OFFICIAL EVENT CALENDAR
         </span>
-        <h1 className="font-editorial text-4xl sm:text-6xl md:text-7xl font-bold text-zinc-900 dark:text-white leading-tight">
+        <h1 className="font-display text-4xl sm:text-6xl md:text-7xl font-bold leading-[1.05]" style={{ color: 'var(--text-primary)' }}>
           THE RUNWAY AWAITS.
         </h1>
-        <p className="text-base sm:text-lg text-zinc-600 dark:text-zinc-300 font-light leading-relaxed">
+        <p className="text-sm sm:text-base font-light leading-relaxed" style={{ color: 'var(--text-secondary)' }}>
           Explore upcoming fashion experiences and discover your next opportunity.
         </p>
-      </div>
+      </motion.div>
 
       {/* Events Grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-start">
         {/* Main Event Card */}
-        <div className="lg:col-span-8 p-6 sm:p-8 rounded-3xl bg-zinc-100 dark:bg-[#12151e] border border-zinc-200 dark:border-zinc-800 shadow-xl space-y-6">
-          <div className="relative rounded-2xl overflow-hidden border border-zinc-300 dark:border-zinc-700 shadow-md">
+        <motion.div 
+          initial={{ opacity: 0, y: 24 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.7 }}
+          className="lg:col-span-8 p-8 sm:p-10 rounded-sm shadow-xl space-y-6"
+          style={{ 
+            backgroundColor: 'var(--surface)', 
+            border: '1px solid var(--border)' 
+          }}
+        >
+          <div 
+            className="relative overflow-hidden rounded-sm shadow-md"
+            style={{ border: '1px solid var(--border)' }}
+          >
             <img 
               src="/images/runway-1.jpg" 
               alt={eventTitle} 
-              className="w-full h-72 sm:h-80 object-cover"
+              loading="lazy"
+              className="w-full h-72 sm:h-84 object-cover"
             />
             <div className="absolute top-4 left-4">
-              <span className="px-3 py-1 rounded-full bg-emerald-500/90 text-black font-bold text-xs uppercase tracking-wider shadow">
-                ● Registrations Active
+              <span 
+                className="px-3 py-1 font-mono-editorial text-[10px] font-bold tracking-wider rounded-sm shadow"
+                style={{ backgroundColor: 'var(--accent)', color: '#000000' }}
+              >
+                ● REGISTRATIONS ACTIVE
               </span>
             </div>
-            <div className="absolute bottom-4 right-4 px-3 py-1.5 rounded-xl bg-black/80 backdrop-blur-md border border-white/20 text-white text-xs font-mono">
+            <div 
+              className="absolute bottom-4 right-4 px-3 py-1 font-mono-editorial text-[10px] rounded-sm backdrop-blur-md"
+              style={{ backgroundColor: 'rgba(0,0,0,0.7)', border: '1px solid var(--border)', color: '#FFFFFF' }}
+            >
               ID: {paymentInfo?.event_id || 'EVT-CHX-2026'}
             </div>
           </div>
 
-          <div className="space-y-3">
-            <div className="flex flex-wrap items-center gap-3 text-xs text-zinc-500 dark:text-zinc-400">
+          <div className="space-y-4">
+            <div className="flex flex-wrap items-center gap-4 font-mono-editorial text-[10px]" style={{ color: 'var(--text-muted)' }}>
               <span className="flex items-center space-x-1.5">
-                <MapPin className="w-4 h-4 text-amber-500" />
-                <strong className="text-zinc-800 dark:text-zinc-200">{location}</strong>
+                <MapPin className="w-3.5 h-3.5" style={{ color: 'var(--accent)' }} />
+                <strong style={{ color: 'var(--text-primary)' }}>{location}</strong>
               </span>
               <span>•</span>
               <span className="flex items-center space-x-1.5">
-                <Calendar className="w-4 h-4 text-amber-500" />
-                <span>Runway Season 2026</span>
+                <Calendar className="w-3.5 h-3.5" style={{ color: 'var(--accent)' }} />
+                <span>SEASON 2026</span>
               </span>
               <span>•</span>
               <span className="flex items-center space-x-1.5">
-                <Users className="w-4 h-4 text-amber-500" />
-                <span>All Age Categories (4 to 50)</span>
+                <Users className="w-3.5 h-3.5" style={{ color: 'var(--accent)' }} />
+                <span>AGES 4 TO 50</span>
               </span>
             </div>
 
-            <h2 className="font-editorial text-2xl sm:text-3xl font-bold text-zinc-900 dark:text-white">
+            <h2 className="font-editorial text-2xl sm:text-4xl font-bold" style={{ color: 'var(--text-primary)' }}>
               {eventTitle}
             </h2>
 
-            <p className="text-xs sm:text-sm text-zinc-600 dark:text-zinc-300 leading-relaxed font-normal">
+            <p className="text-sm leading-relaxed font-light" style={{ color: 'var(--text-secondary)' }}>
               Join Tamil Nadu's celebrated runway showcase in Chennai. Featuring professional ramp walking, costume changes, certificate of participation, and live stage exposure for fresh and experienced contestants.
             </p>
           </div>
 
           {/* Pricing & Advance Tokens */}
-          <div className="p-4 rounded-2xl bg-zinc-50 dark:bg-[#0a0c12] border border-zinc-200 dark:border-zinc-800 grid grid-cols-1 sm:grid-cols-3 gap-4 text-xs">
+          <div 
+            className="p-5 rounded-sm grid grid-cols-1 sm:grid-cols-3 gap-4"
+            style={{ backgroundColor: 'var(--bg-primary)', border: '1px solid var(--border)' }}
+          >
             <div>
-              <span className="text-zinc-500 block">Total Event Fee</span>
-              <strong className="text-zinc-900 dark:text-white text-base">₹{totalFee.toLocaleString('en-IN')}</strong>
+              <span className="font-mono-editorial block text-[10px]" style={{ color: 'var(--text-muted)' }}>TOTAL EVENT FEE</span>
+              <strong className="text-base font-editorial" style={{ color: 'var(--text-primary)' }}>₹{totalFee.toLocaleString('en-IN')}</strong>
             </div>
             <div>
-              <span className="text-zinc-500 block">Token Advance Options</span>
-              <strong className="text-amber-500 text-sm">
+              <span className="font-mono-editorial block text-[10px]" style={{ color: 'var(--text-muted)' }}>TOKEN ADVANCE</span>
+              <strong className="text-sm" style={{ color: 'var(--accent)' }}>
                 {advances.map(a => `₹${a}`).join(' / ')}
               </strong>
             </div>
             <div>
-              <span className="text-zinc-500 block">Venue Notice</span>
-              <span className="text-zinc-600 dark:text-zinc-400 text-[11px] block mt-0.5">
-                Announced 10 days before event
+              <span className="font-mono-editorial block text-[10px]" style={{ color: 'var(--text-muted)' }}>VENUE NOTICE</span>
+              <span className="text-[11px] block mt-0.5 font-light" style={{ color: 'var(--text-secondary)' }}>
+                Coordinates sent 10 days prior
               </span>
             </div>
           </div>
 
           {/* Actions */}
-          <div className="flex flex-col sm:flex-row items-center gap-3 pt-2">
+          <div className="flex flex-col sm:flex-row items-center gap-4 pt-2">
             <button
               onClick={() => {
                 if (onSelectEvent) onSelectEvent('EVT-CHX-2026');
                 setActiveTab('event-details');
               }}
-              className="w-full sm:w-auto px-6 py-3 rounded-xl bg-zinc-200 dark:bg-zinc-800 hover:bg-zinc-300 dark:hover:bg-zinc-700 text-zinc-900 dark:text-white font-semibold text-xs transition-colors flex items-center justify-center space-x-2"
+              className="w-full sm:w-auto px-6 py-3.5 font-mono-editorial text-xs font-semibold rounded-sm transition-all flex items-center justify-center space-x-2"
+              style={{
+                backgroundColor: 'var(--bg-primary)',
+                border: '1px solid var(--border)',
+                color: 'var(--text-primary)'
+              }}
             >
-              <Eye className="w-4 h-4" />
-              <span>View Event Details</span>
+              <Eye className="w-3.5 h-3.5" />
+              <span>VIEW DETAILS</span>
             </button>
 
             <button
               onClick={() => setActiveTab('register')}
-              className="w-full sm:w-auto px-7 py-3 rounded-xl bg-gradient-to-r from-amber-400 to-[#d4ff14] text-black font-bold text-xs uppercase tracking-wider shadow-lg hover:scale-[1.02] active:scale-98 transition-all flex items-center justify-center space-x-2"
+              className="w-full sm:w-auto px-8 py-3.5 font-mono-editorial text-xs font-bold uppercase tracking-wider rounded-sm shadow-lg transition-all hover:scale-[1.02] active:scale-95 flex items-center justify-center space-x-2"
+              style={{
+                backgroundColor: 'var(--accent)',
+                color: '#000000'
+              }}
             >
-              <Sparkles className="w-4 h-4 text-black" />
-              <span>Register Now (from ₹500 Advance)</span>
+              <Sparkles className="w-3.5 h-3.5" />
+              <span>REGISTER NOW (ADVANCE ₹500+)</span>
             </button>
           </div>
-        </div>
+        </motion.div>
 
         {/* Sidebar Info & Event Policy */}
         <div className="lg:col-span-4 space-y-6">
-          <div className="p-6 rounded-3xl bg-zinc-100 dark:bg-[#12151e] border border-zinc-200 dark:border-zinc-800 space-y-4">
-            <h3 className="font-editorial text-lg font-bold text-zinc-900 dark:text-white flex items-center space-x-2">
-              <ShieldCheck className="w-5 h-5 text-amber-500" />
+          <motion.div 
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.7, delay: 0.2 }}
+            className="p-8 rounded-sm space-y-4 shadow-xl"
+            style={{ 
+              backgroundColor: 'var(--surface)', 
+              border: '1px solid var(--border)' 
+            }}
+          >
+            <h3 className="font-editorial text-xl font-bold flex items-center space-x-2" style={{ color: 'var(--text-primary)' }}>
+              <ShieldCheck className="w-5 h-5" style={{ color: 'var(--accent)' }} />
               <span>Event Guidelines</span>
             </h3>
-            <div className="space-y-3 text-xs text-zinc-600 dark:text-zinc-300">
-              <div className="flex items-start space-x-2">
-                <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" />
+            <div className="space-y-3 text-xs font-light" style={{ color: 'var(--text-secondary)' }}>
+              <div className="flex items-start space-x-2.5">
+                <Check className="w-4 h-4 shrink-0 mt-0.5" style={{ color: 'var(--accent)' }} />
                 <span>Strictly Chennai City Center venue (not remote outskirts).</span>
               </div>
-              <div className="flex items-start space-x-2">
-                <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" />
-                <span>Token advance of ₹500, ₹1,000, or ₹1,500 secures your audition slot.</span>
+              <div className="flex items-start space-x-2.5">
+                <Check className="w-4 h-4 shrink-0 mt-0.5" style={{ color: 'var(--accent)' }} />
+                <span>Token advance of ₹500, ₹1,000, or ₹1,500 secures audition slot.</span>
               </div>
-              <div className="flex items-start space-x-2">
-                <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />
+              <div className="flex items-start space-x-2.5">
+                <Check className="w-4 h-4 shrink-0 mt-0.5" style={{ color: 'var(--accent)' }} />
                 <span>Balance payable anytime before stage rehearsals.</span>
               </div>
-              <div className="flex items-start space-x-2">
-                <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />
+              <div className="flex items-start space-x-2.5">
+                <Check className="w-4 h-4 shrink-0 mt-0.5" style={{ color: 'var(--accent)' }} />
                 <span>Official digital pass token issued upon payment verification.</span>
               </div>
             </div>
-          </div>
+          </motion.div>
 
           {/* Assistance Box */}
-          <div className="p-6 rounded-3xl bg-amber-500/10 border border-amber-500/30 space-y-3">
-            <span className="text-[11px] font-bold text-amber-500 uppercase tracking-widest block">Need Help?</span>
-            <h4 className="text-sm font-bold text-zinc-900 dark:text-white">Have questions about registration?</h4>
-            <p className="text-xs text-zinc-600 dark:text-zinc-300">
+          <motion.div 
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.7, delay: 0.3 }}
+            className="p-8 rounded-sm space-y-3"
+            style={{ 
+              backgroundColor: 'var(--surface)', 
+              border: '1px solid var(--border)' 
+            }}
+          >
+            <span className="font-mono-editorial text-[10px] block" style={{ color: 'var(--accent)' }}>NEED ASSISTANCE?</span>
+            <h4 className="font-editorial text-base font-bold" style={{ color: 'var(--text-primary)' }}>Questions about registration?</h4>
+            <p className="text-xs font-light" style={{ color: 'var(--text-muted)' }}>
               Contact our official event coordinator on WhatsApp or Instagram for quick support.
             </p>
             <button
               onClick={() => setActiveTab('contact')}
-              className="text-xs font-bold text-amber-600 dark:text-amber-400 hover:underline inline-block pt-1"
+              className="font-mono-editorial text-[11px] font-bold hover:underline inline-block pt-1"
+              style={{ color: 'var(--accent)' }}
             >
-              Contact Event Support →
+              CONTACT EVENT SUPPORT →
             </button>
-          </div>
+          </motion.div>
         </div>
       </div>
     </div>

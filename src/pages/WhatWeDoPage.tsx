@@ -7,10 +7,9 @@ import {
   Users, 
   Star, 
   ArrowRight,
-  ShieldCheck,
-  CheckCircle2,
-  Calendar
+  Check
 } from 'lucide-react';
+import { motion } from 'motion/react';
 
 interface WhatWeDoPageProps {
   setActiveTab: (tab: string) => void;
@@ -20,9 +19,10 @@ export default function WhatWeDoPage({ setActiveTab }: WhatWeDoPageProps) {
   const activities = [
     {
       id: 'fashion-shows',
+      number: '01',
       title: 'Fashion Shows & Ramp Productions',
+      category: 'PRODUCTION',
       icon: Sparkles,
-      color: 'text-amber-500 bg-amber-500/10 border-amber-500/30',
       description: 'We conceive, produce and execute high-energy fashion runway shows across premier city-center auditoriums. Our productions feature state-of-the-art intelligent lighting, bespoke catwalk staging, crystal-clear acoustics, and curated media seating to give every contestant an unforgettable catwalk moment.',
       features: [
         'Professional audio, stage lighting & ramp choreography',
@@ -33,9 +33,10 @@ export default function WhatWeDoPage({ setActiveTab }: WhatWeDoPageProps) {
     },
     {
       id: 'runway-experiences',
+      number: '02',
       title: 'Authentic Runway Experiences',
+      category: 'CATWALK',
       icon: Camera,
-      color: 'text-emerald-500 bg-emerald-500/10 border-emerald-500/30',
       description: 'Walking a ramp is an art of poise, rhythm, and self-belief. Our runway experiences provide both first-timers and experienced models with a genuine catwalk setting where they can showcase garments, express their personality, and receive impartial evaluations from fashion professionals.',
       features: [
         'Dedicated solo and group ramp routines',
@@ -46,9 +47,10 @@ export default function WhatWeDoPage({ setActiveTab }: WhatWeDoPageProps) {
     },
     {
       id: 'model-opportunities',
+      number: '03',
       title: 'Model Opportunities & Talent Auditions',
+      category: 'OPPORTUNITY',
       icon: Star,
-      color: 'text-purple-500 bg-purple-500/10 border-purple-500/30',
       description: 'SKYRA CREATIONS creates accessible pathways for emerging models. We eliminate predatory fees and confusing contracts by hosting structured auditions with clear participation guidelines, verifiable digital passes, and transparent advance tokens.',
       features: [
         'Verifiable digital contestant passes & credential validation',
@@ -59,9 +61,10 @@ export default function WhatWeDoPage({ setActiveTab }: WhatWeDoPageProps) {
     },
     {
       id: 'designer-showcases',
+      number: '04',
       title: 'Designer Showcases & Label Features',
+      category: 'COUTURE',
       icon: Layers,
-      color: 'text-blue-500 bg-blue-500/10 border-blue-500/30',
       description: 'We collaborate with innovative apparel creators, bridal designers, ethnic wear labels, and contemporary fashion houses to showcase their collections on vibrant runway models. Each showcase is styled to accentuate garment cuts, drape, and theme.',
       features: [
         'Curated theme styling matching garment aesthetics',
@@ -72,9 +75,10 @@ export default function WhatWeDoPage({ setActiveTab }: WhatWeDoPageProps) {
     },
     {
       id: 'grooming',
+      number: '05',
       title: 'Grooming & Stage Preparation Workshops',
+      category: 'MENTORSHIP',
       icon: Award,
-      color: 'text-pink-500 bg-pink-500/10 border-pink-500/30',
       description: 'Before stepping onto the catwalk, contestants receive practical guidance on runway turns, facial poise, pacing, and wardrobe handling. Rehearsals ensure every walker feels confident and prepared for their time under the lights.',
       features: [
         'Ramp walk technique and pivot turn practice',
@@ -85,9 +89,10 @@ export default function WhatWeDoPage({ setActiveTab }: WhatWeDoPageProps) {
     },
     {
       id: 'collaborations',
+      number: '06',
       title: 'Creative Industry Collaborations',
+      category: 'INDUSTRY',
       icon: Users,
-      color: 'text-teal-500 bg-teal-500/10 border-teal-500/30',
       description: 'Fashion thrives on collaboration. SKYRA CREATIONS works alongside leading hair and makeup artists (HMUA), fashion cinematographers, event organizers, and choreographers to produce spectacles that uplift the creative community.',
       features: [
         'Networking for makeup artists and stylists',
@@ -99,48 +104,62 @@ export default function WhatWeDoPage({ setActiveTab }: WhatWeDoPageProps) {
   ];
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-16 animate-fadeIn">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 space-y-20">
       {/* Page Header */}
-      <div className="text-center max-w-3xl mx-auto space-y-4">
-        <span className="px-3 py-1 rounded-full bg-amber-500/10 text-amber-500 border border-amber-500/20 text-xs font-bold uppercase tracking-widest inline-block">
-          What We Do
+      <motion.div 
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.7 }}
+        className="text-center max-w-3xl mx-auto space-y-4"
+      >
+        <span className="font-mono-editorial block text-[11px] tracking-widest" style={{ color: 'var(--accent)' }}>
+          CORE DISCIPLINES
         </span>
-        <h1 className="font-editorial text-4xl sm:text-5xl md:text-6xl font-bold text-zinc-900 dark:text-white leading-tight">
-          Comprehensive Fashion Show &amp; Runway Productions
+        <h1 className="font-display text-4xl sm:text-6xl md:text-7xl font-bold leading-[1.05]" style={{ color: 'var(--text-primary)' }}>
+          WHAT WE CREATE.
         </h1>
-        <p className="text-sm sm:text-base text-zinc-600 dark:text-zinc-300 font-light leading-relaxed">
+        <p className="text-sm sm:text-base font-light leading-relaxed" style={{ color: 'var(--text-secondary)' }}>
           From stage choreography and model grooming to full-scale runway productions and designer showcases, discover how SKYRA CREATIONS brings fashion to life.
         </p>
-      </div>
+      </motion.div>
 
       {/* Activities Grid */}
       <div className="space-y-12">
         {activities.map((item, index) => {
-          const Icon = item.icon;
           const isEven = index % 2 === 0;
 
           return (
-            <div 
+            <motion.div 
               key={item.id}
-              className={`p-6 sm:p-10 rounded-3xl bg-zinc-100 dark:bg-[#12151e] border border-zinc-200 dark:border-zinc-800 shadow-lg grid grid-cols-1 lg:grid-cols-12 gap-8 items-center ${
-                !isEven ? 'lg:flex-row-reverse' : ''
-              }`}
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: '-60px' }}
+              transition={{ duration: 0.7 }}
+              className="p-8 sm:p-12 rounded-sm shadow-xl grid grid-cols-1 lg:grid-cols-12 gap-10 items-center"
+              style={{ 
+                backgroundColor: 'var(--surface)', 
+                border: '1px solid var(--border)' 
+              }}
             >
               <div className={`lg:col-span-7 space-y-4 ${!isEven ? 'lg:order-2' : ''}`}>
-                <div className={`w-10 h-10 rounded-xl flex items-center justify-center border ${item.color}`}>
-                  <Icon className="w-5 h-5" />
+                <div className="flex items-center space-x-3">
+                  <span className="font-mono-editorial text-xs font-bold" style={{ color: 'var(--accent)' }}>
+                    {item.number} // {item.category}
+                  </span>
                 </div>
-                <h3 className="font-editorial text-2xl sm:text-3xl font-bold text-zinc-900 dark:text-white">
+                
+                <h2 className="font-editorial text-2xl sm:text-4xl font-bold" style={{ color: 'var(--text-primary)' }}>
                   {item.title}
-                </h3>
-                <p className="text-xs sm:text-sm text-zinc-600 dark:text-zinc-300 leading-relaxed font-normal">
+                </h2>
+                
+                <p className="text-sm leading-relaxed font-light" style={{ color: 'var(--text-secondary)' }}>
                   {item.description}
                 </p>
 
-                <div className="space-y-2 pt-2">
+                <div className="space-y-2.5 pt-3">
                   {item.features.map((feat, idx) => (
-                    <div key={idx} className="flex items-center space-x-2 text-xs text-zinc-700 dark:text-zinc-300">
-                      <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0" />
+                    <div key={idx} className="flex items-start space-x-3 text-xs" style={{ color: 'var(--text-muted)' }}>
+                      <Check className="w-4 h-4 shrink-0 mt-0.5" style={{ color: 'var(--accent)' }} />
                       <span>{feat}</span>
                     </div>
                   ))}
@@ -148,35 +167,59 @@ export default function WhatWeDoPage({ setActiveTab }: WhatWeDoPageProps) {
               </div>
 
               <div className={`lg:col-span-5 ${!isEven ? 'lg:order-1' : ''}`}>
-                <div className="rounded-2xl overflow-hidden border border-zinc-300 dark:border-zinc-700 shadow-xl group">
+                <div 
+                  className="rounded-sm overflow-hidden shadow-2xl group relative"
+                  style={{ border: '1px solid var(--border)' }}
+                >
                   <img 
                     src={item.image} 
                     alt={item.title}
-                    className="w-full h-64 sm:h-72 object-cover group-hover:scale-105 transition-transform duration-500" 
+                    loading="lazy"
+                    className="w-full h-72 sm:h-80 object-cover group-hover:scale-105 transition-transform duration-700" 
+                  />
+                  <div 
+                    className="absolute inset-0 opacity-20 pointer-events-none group-hover:opacity-0 transition-opacity"
+                    style={{ backgroundColor: 'var(--accent)' }}
                   />
                 </div>
               </div>
-            </div>
+            </motion.div>
           );
         })}
       </div>
 
       {/* Bottom CTA */}
-      <div className="p-8 rounded-3xl bg-gradient-to-r from-amber-500/10 via-[#d4ff14]/10 to-amber-500/10 border border-amber-500/30 text-center space-y-4">
-        <h3 className="font-editorial text-2xl sm:text-3xl font-bold text-zinc-900 dark:text-white">
+      <motion.div 
+        initial={{ opacity: 0, scale: 0.98 }}
+        whileInView={{ opacity: 1, scale: 1 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.7 }}
+        className="p-10 sm:p-14 rounded-sm text-center space-y-5 shadow-xl"
+        style={{ 
+          backgroundColor: 'var(--surface)', 
+          border: '1px solid var(--border)' 
+        }}
+      >
+        <h3 className="font-editorial text-2xl sm:text-4xl font-bold" style={{ color: 'var(--text-primary)' }}>
           Experience a SKYRA CREATIONS Runway Show
         </h3>
-        <p className="text-xs sm:text-sm text-zinc-600 dark:text-zinc-300 max-w-xl mx-auto">
+        <p className="text-xs sm:text-sm max-w-xl mx-auto font-light leading-relaxed" style={{ color: 'var(--text-secondary)' }}>
           Explore upcoming events and register to participate as a contestant in Chennai.
         </p>
-        <button
-          onClick={() => setActiveTab('events')}
-          className="px-6 py-3 rounded-xl bg-gradient-to-r from-amber-400 to-[#d4ff14] text-black font-bold text-xs uppercase tracking-wider shadow-lg hover:scale-105 active:scale-95 transition-all inline-flex items-center space-x-2"
-        >
-          <span>Explore Upcoming Events</span>
-          <ArrowRight className="w-4 h-4" />
-        </button>
-      </div>
+        <div className="pt-2 flex justify-center">
+          <button
+            onClick={() => setActiveTab('events')}
+            className="px-8 py-4 font-mono-editorial text-xs font-bold uppercase tracking-wider rounded-sm shadow-lg transition-all hover:scale-105 active:scale-95 inline-flex items-center space-x-2"
+            style={{
+              backgroundColor: 'var(--accent)',
+              color: '#000000'
+            }}
+          >
+            <span>EXPLORE UPCOMING EVENTS</span>
+            <ArrowRight className="w-3.5 h-3.5" />
+          </button>
+        </div>
+      </motion.div>
     </div>
   );
 }

@@ -1,16 +1,11 @@
 import React from 'react';
 import { 
   Sparkles, 
-  Users, 
   Target, 
-  HeartHandshake, 
-  ShieldCheck, 
-  Award, 
-  CheckCircle2, 
   ArrowRight,
-  Eye,
   Check
 } from 'lucide-react';
+import { motion } from 'motion/react';
 import InstagramIcon from '../components/InstagramIcon';
 
 interface AboutPageProps {
@@ -19,52 +14,76 @@ interface AboutPageProps {
 
 export default function AboutPage({ setActiveTab }: AboutPageProps) {
   return (
-    <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-20 animate-fadeIn">
+    <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12 space-y-20">
       {/* ──────────────────────────────────────────────────────────
           1. LARGE EDITORIAL HERO
       ────────────────────────────────────────────────────────── */}
-      <div className="text-center max-w-4xl mx-auto space-y-4">
-        <span className="px-3.5 py-1 rounded-full bg-[#C6FF00]/10 text-[#789900] dark:text-[#C6FF00] border border-[#C6FF00]/30 text-xs font-bold uppercase tracking-widest inline-block">
-          About SKYRA CREATIONS
+      <motion.div 
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.7 }}
+        className="text-center max-w-4xl mx-auto space-y-4"
+      >
+        <span className="font-mono-editorial block text-[11px] tracking-widest" style={{ color: 'var(--accent)' }}>
+          ABOUT SKYRA CREATIONS
         </span>
-        <h1 className="font-editorial text-4xl sm:text-6xl md:text-7xl font-bold text-zinc-900 dark:text-white leading-[1.08]">
+        <h1 className="font-editorial text-4xl sm:text-6xl md:text-7xl font-bold leading-[1.05]" style={{ color: 'var(--text-primary)' }}>
           THE STORY BEHIND THE SPOTLIGHT.
         </h1>
-        <p className="text-base sm:text-lg text-zinc-600 dark:text-zinc-300 font-light max-w-2xl mx-auto leading-relaxed">
+        <p className="text-base sm:text-lg font-light max-w-2xl mx-auto leading-relaxed" style={{ color: 'var(--text-secondary)' }}>
           SKYRA CREATIONS is an international-standard fashion event and modelling platform designed to discover, groom and showcase genuine runway talent.
         </p>
-      </div>
+      </motion.div>
 
       {/* ──────────────────────────────────────────────────────────
           2. BRAND INTRODUCTION & LEADERSHIP SPOTLIGHT
       ────────────────────────────────────────────────────────── */}
-      <div className="p-8 sm:p-12 rounded-3xl bg-zinc-100 dark:bg-[#111111] border border-zinc-200 dark:border-[#202020] shadow-xl">
+      <motion.div 
+        initial={{ opacity: 0, y: 24 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.7 }}
+        className="p-8 sm:p-12 rounded-sm shadow-xl"
+        style={{ 
+          backgroundColor: 'var(--surface)', 
+          border: '1px solid var(--border)' 
+        }}
+      >
         <div className="grid grid-cols-1 md:grid-cols-12 gap-10 items-center">
           <div className="md:col-span-5 flex justify-center">
-            <div className="relative rounded-2xl overflow-hidden border-2 border-[#C6FF00]/40 shadow-2xl max-w-xs group">
+            <div 
+              className="relative overflow-hidden shadow-2xl max-w-xs group rounded-sm"
+              style={{ border: '1px solid var(--border)' }}
+            >
               <img 
                 src="/founder.png" 
                 alt="B Sriram — Founder & CEO, SKYRA CREATIONS" 
+                loading="lazy"
                 className="w-full h-auto object-cover group-hover:scale-105 transition-transform duration-500"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent flex items-end p-4">
+              <div 
+                className="absolute inset-0 flex items-end p-4"
+                style={{ background: 'linear-gradient(to top, rgba(0,0,0,0.85) 0%, transparent 60%)' }}
+              >
                 <div className="text-white">
-                  <span className="text-[11px] uppercase font-bold text-[#C6FF00] block tracking-wider">Founder &amp; CEO</span>
-                  <span className="font-editorial text-xl font-bold">B Sriram</span>
+                  <span className="font-mono-editorial block text-[10px]" style={{ color: 'var(--accent)' }}>FOUNDER &amp; CEO</span>
+                  <span className="font-editorial text-xl font-bold text-white">B Sriram</span>
                 </div>
               </div>
             </div>
           </div>
 
           <div className="md:col-span-7 space-y-5">
-            <span className="text-xs font-bold text-[#789900] dark:text-[#C6FF00] uppercase tracking-widest">Founder &amp; Visionary</span>
-            <h2 className="font-editorial text-2xl sm:text-4xl font-bold text-zinc-900 dark:text-white leading-snug">
+            <span className="font-mono-editorial block text-[11px]" style={{ color: 'var(--accent)' }}>
+              LEADERSHIP PHILOSOPHY
+            </span>
+            <h2 className="font-editorial text-2xl sm:text-4xl font-bold leading-snug" style={{ color: 'var(--text-primary)' }}>
               “Every Aspiring Model Deserves a Real Stage to Shine.”
             </h2>
-            <p className="text-sm text-zinc-600 dark:text-zinc-300 leading-relaxed font-light">
+            <p className="text-sm leading-relaxed font-light" style={{ color: 'var(--text-secondary)' }}>
               Founded by <strong>B Sriram</strong>, SKYRA CREATIONS was established to challenge the traditional barriers of the fashion industry. For years, aspiring models across South India have faced opaque selection processes, unrealistic height standards and lack of authentic stage grooming.
             </p>
-            <p className="text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed">
+            <p className="text-sm leading-relaxed" style={{ color: 'var(--text-muted)' }}>
               SKYRA CREATIONS replaces industry gatekeeping with transparent event production, curated city center venues, professional lighting choreography, and verified participant credentials.
             </p>
 
@@ -73,76 +92,129 @@ export default function AboutPage({ setActiveTab }: AboutPageProps) {
                 href="https://www.instagram.com/skyra_creations_/"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center space-x-2 px-4 py-2.5 rounded-xl bg-pink-500/10 hover:bg-pink-500/20 text-pink-500 border border-pink-500/30 text-xs font-semibold transition-colors"
+                className="inline-flex items-center space-x-2 px-4 py-2.5 rounded-sm text-xs font-semibold transition-all group"
+                style={{ 
+                  backgroundColor: 'var(--bg-primary)', 
+                  border: '1px solid var(--border)',
+                  color: 'var(--text-primary)'
+                }}
               >
-                <InstagramIcon className="w-4 h-4" />
-                <span>Follow @skyra_creations_</span>
+                <InstagramIcon className="w-4 h-4 text-[#E1306C]" />
+                <span className="font-mono-editorial text-[10px]">FOLLOW @SKYRA_CREATIONS_</span>
               </a>
             </div>
           </div>
         </div>
-      </div>
+      </motion.div>
 
       {/* ──────────────────────────────────────────────────────────
           3. VISION AND MISSION (SOPHISTICATED TWO-COLUMN)
       ────────────────────────────────────────────────────────── */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-        <div className="p-8 sm:p-10 rounded-3xl bg-zinc-100 dark:bg-[#111111] border border-zinc-200 dark:border-[#202020] space-y-4">
-          <div className="w-12 h-12 rounded-xl bg-[#C6FF00]/10 text-[#789900] dark:text-[#C6FF00] flex items-center justify-center">
-            <Target className="w-6 h-6" />
+        <motion.div 
+          initial={{ opacity: 0, x: -20 }}
+          whileInView={{ opacity: 1, x: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.7 }}
+          className="p-8 sm:p-10 rounded-sm space-y-4"
+          style={{ 
+            backgroundColor: 'var(--surface)', 
+            border: '1px solid var(--border)' 
+          }}
+        >
+          <div 
+            className="w-10 h-10 rounded-sm flex items-center justify-center font-mono-editorial text-xs font-bold"
+            style={{ backgroundColor: 'var(--bg-primary)', border: '1px solid var(--border)', color: 'var(--accent)' }}
+          >
+            01
           </div>
-          <h3 className="text-2xl font-bold text-zinc-900 dark:text-white font-editorial">Our Vision</h3>
-          <p className="text-sm text-zinc-600 dark:text-zinc-300 leading-relaxed font-light">
+          <h3 className="text-2xl font-bold font-editorial" style={{ color: 'var(--text-primary)' }}>Our Vision</h3>
+          <p className="text-sm leading-relaxed font-light" style={{ color: 'var(--text-secondary)' }}>
             To build a celebrated, trustworthy runway platform across India that discovers and nurtures emerging talent, fosters body positivity, and connects aspiring models with verified designers, photographers and creative directors.
           </p>
-        </div>
+        </motion.div>
 
-        <div className="p-8 sm:p-10 rounded-3xl bg-zinc-100 dark:bg-[#111111] border border-zinc-200 dark:border-[#202020] space-y-4">
-          <div className="w-12 h-12 rounded-xl bg-[#C6FF00]/10 text-[#789900] dark:text-[#C6FF00] flex items-center justify-center">
-            <Sparkles className="w-6 h-6" />
+        <motion.div 
+          initial={{ opacity: 0, x: 20 }}
+          whileInView={{ opacity: 1, x: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.7 }}
+          className="p-8 sm:p-10 rounded-sm space-y-4"
+          style={{ 
+            backgroundColor: 'var(--surface)', 
+            border: '1px solid var(--border)' 
+          }}
+        >
+          <div 
+            className="w-10 h-10 rounded-sm flex items-center justify-center font-mono-editorial text-xs font-bold"
+            style={{ backgroundColor: 'var(--bg-primary)', border: '1px solid var(--border)', color: 'var(--accent)' }}
+          >
+            02
           </div>
-          <h3 className="text-2xl font-bold text-zinc-900 dark:text-white font-editorial">Our Mission</h3>
-          <p className="text-sm text-zinc-600 dark:text-zinc-300 leading-relaxed font-light">
+          <h3 className="text-2xl font-bold font-editorial" style={{ color: 'var(--text-primary)' }}>Our Mission</h3>
+          <p className="text-sm leading-relaxed font-light" style={{ color: 'var(--text-secondary)' }}>
             To deliver transparent, impeccably organized runway events where every participant receives personalized stage grooming, authentic catwalk exposure, and steps onto the stage with confidence, elegance and pride.
           </p>
-        </div>
+        </motion.div>
       </div>
 
       {/* ──────────────────────────────────────────────────────────
           4. BRAND PHILOSOPHY & EDITORIAL PHOTOGRAPH
       ────────────────────────────────────────────────────────── */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
-        <div className="lg:col-span-7 space-y-5">
-          <span className="text-xs font-bold text-[#789900] dark:text-[#C6FF00] uppercase tracking-widest">Brand Philosophy</span>
-          <h2 className="font-editorial text-3xl sm:text-4xl font-bold text-zinc-900 dark:text-white leading-tight">
+        <motion.div 
+          initial={{ opacity: 0, x: -20 }}
+          whileInView={{ opacity: 1, x: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.7 }}
+          className="lg:col-span-7 space-y-5"
+        >
+          <span className="font-mono-editorial block text-[11px]" style={{ color: 'var(--accent)' }}>
+            BRAND PHILOSOPHY
+          </span>
+          <h2 className="font-editorial text-3xl sm:text-4xl font-bold leading-tight" style={{ color: 'var(--text-primary)' }}>
             Confidence Is Built On Stage, Not In A Spreadsheet.
           </h2>
-          <p className="text-sm sm:text-base text-zinc-600 dark:text-zinc-300 leading-relaxed font-light">
+          <p className="text-sm sm:text-base leading-relaxed font-light" style={{ color: 'var(--text-secondary)' }}>
             We believe that true runway elegance stems from self-assurance, rhythm and presence. Regardless of whether an aspirant is walking their first catwalk at age 6 or debuting at age 45, our mentorship equips them with posture control, stage presence and genuine poise.
           </p>
           <div className="space-y-3 pt-2">
             <div className="flex items-start space-x-3">
-              <Check className="w-5 h-5 text-[#789900] dark:text-[#C6FF00] shrink-0 mt-0.5" />
-              <p className="text-xs sm:text-sm text-zinc-600 dark:text-zinc-400">Strict adherence to safe, professional event environments for all participants.</p>
+              <Check className="w-4 h-4 shrink-0 mt-1" style={{ color: 'var(--accent)' }} />
+              <p className="text-xs sm:text-sm" style={{ color: 'var(--text-muted)' }}>
+                Strict adherence to safe, professional event environments for all participants.
+              </p>
             </div>
             <div className="flex items-start space-x-3">
-              <Check className="w-5 h-5 text-[#789900] dark:text-[#C6FF00] shrink-0 mt-0.5" />
-              <p className="text-xs sm:text-sm text-zinc-600 dark:text-zinc-400">Zero artificial height restrictions or unrealistic body prerequisites.</p>
+              <Check className="w-4 h-4 shrink-0 mt-1" style={{ color: 'var(--accent)' }} />
+              <p className="text-xs sm:text-sm" style={{ color: 'var(--text-muted)' }}>
+                Zero artificial height restrictions or unrealistic body prerequisites.
+              </p>
             </div>
             <div className="flex items-start space-x-3">
-              <Check className="w-5 h-5 text-[#789900] dark:text-[#C6FF00] shrink-0 mt-0.5" />
-              <p className="text-xs sm:text-sm text-zinc-600 dark:text-zinc-400">Direct access to official high-resolution media photography from every showcase.</p>
+              <Check className="w-4 h-4 shrink-0 mt-1" style={{ color: 'var(--accent)' }} />
+              <p className="text-xs sm:text-sm" style={{ color: 'var(--text-muted)' }}>
+                Direct access to official high-resolution media photography from every showcase.
+              </p>
             </div>
           </div>
-        </div>
+        </motion.div>
 
-        <div className="lg:col-span-5 rounded-3xl overflow-hidden border border-zinc-200 dark:border-zinc-800 shadow-xl">
+        <motion.div 
+          initial={{ opacity: 0, x: 20 }}
+          whileInView={{ opacity: 1, x: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.7 }}
+          className="lg:col-span-5 overflow-hidden shadow-xl rounded-sm"
+          style={{ border: '1px solid var(--border)' }}
+        >
           <img 
             src="/images/runway-2.jpg" 
             alt="SKYRA Fashion Editorial Ramp Walk" 
+            loading="lazy"
             className="w-full h-96 object-cover"
           />
-        </div>
+        </motion.div>
       </div>
 
       {/* ──────────────────────────────────────────────────────────
@@ -150,41 +222,43 @@ export default function AboutPage({ setActiveTab }: AboutPageProps) {
       ────────────────────────────────────────────────────────── */}
       <div className="space-y-8">
         <div className="text-center space-y-2">
-          <span className="text-xs font-bold text-[#789900] dark:text-[#C6FF00] uppercase tracking-widest">Distinctive Quality</span>
-          <h3 className="font-editorial text-3xl sm:text-4xl font-bold text-zinc-900 dark:text-white">
+          <span className="font-mono-editorial block text-[11px]" style={{ color: 'var(--accent)' }}>
+            DISTINCTIVE QUALITY
+          </span>
+          <h3 className="font-editorial text-3xl sm:text-4xl font-bold" style={{ color: 'var(--text-primary)' }}>
             What Sets SKYRA Apart
           </h3>
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          <div className="p-6 rounded-2xl bg-zinc-50 dark:bg-[#111111] border border-zinc-200 dark:border-[#202020] space-y-2">
-            <span className="text-[#789900] dark:text-[#C6FF00] font-mono text-xs font-bold">01</span>
-            <h4 className="font-bold text-zinc-900 dark:text-white text-base">City Center Venues</h4>
-            <p className="text-xs text-zinc-500 dark:text-zinc-400 leading-relaxed">
+          <div className="p-6 rounded-sm space-y-2" style={{ backgroundColor: 'var(--surface)', border: '1px solid var(--border)' }}>
+            <span className="font-mono-editorial text-xs font-bold" style={{ color: 'var(--accent)' }}>01</span>
+            <h4 className="font-bold text-base" style={{ color: 'var(--text-primary)' }}>City Center Venues</h4>
+            <p className="text-xs leading-relaxed" style={{ color: 'var(--text-muted)' }}>
               We exclusively select accessible, premium city centers in Chennai with verified stage facilities.
             </p>
           </div>
 
-          <div className="p-6 rounded-2xl bg-zinc-50 dark:bg-[#111111] border border-zinc-200 dark:border-[#202020] space-y-2">
-            <span className="text-[#789900] dark:text-[#C6FF00] font-mono text-xs font-bold">02</span>
-            <h4 className="font-bold text-zinc-900 dark:text-white text-base">Certified Recognition</h4>
-            <p className="text-xs text-zinc-500 dark:text-zinc-400 leading-relaxed">
+          <div className="p-6 rounded-sm space-y-2" style={{ backgroundColor: 'var(--surface)', border: '1px solid var(--border)' }}>
+            <span className="font-mono-editorial text-xs font-bold" style={{ color: 'var(--accent)' }}>02</span>
+            <h4 className="font-bold text-base" style={{ color: 'var(--text-primary)' }}>Certified Recognition</h4>
+            <p className="text-xs leading-relaxed" style={{ color: 'var(--text-muted)' }}>
               Official printed and verified digital certificates acknowledging each participant's runway credentials.
             </p>
           </div>
 
-          <div className="p-6 rounded-2xl bg-zinc-50 dark:bg-[#111111] border border-zinc-200 dark:border-[#202020] space-y-2">
-            <span className="text-[#789900] dark:text-[#C6FF00] font-mono text-xs font-bold">03</span>
-            <h4 className="font-bold text-zinc-900 dark:text-white text-base">Hands-on Grooming</h4>
-            <p className="text-xs text-zinc-500 dark:text-zinc-400 leading-relaxed">
+          <div className="p-6 rounded-sm space-y-2" style={{ backgroundColor: 'var(--surface)', border: '1px solid var(--border)' }}>
+            <span className="font-mono-editorial text-xs font-bold" style={{ color: 'var(--accent)' }}>03</span>
+            <h4 className="font-bold text-base" style={{ color: 'var(--text-primary)' }}>Hands-on Grooming</h4>
+            <p className="text-xs leading-relaxed" style={{ color: 'var(--text-muted)' }}>
               Pre-show choreography walk-throughs and stage rehearsal support tailored to every category.
             </p>
           </div>
 
-          <div className="p-6 rounded-2xl bg-zinc-50 dark:bg-[#111111] border border-zinc-200 dark:border-[#202020] space-y-2">
-            <span className="text-[#789900] dark:text-[#C6FF00] font-mono text-xs font-bold">04</span>
-            <h4 className="font-bold text-zinc-900 dark:text-white text-base">Media Deliverables</h4>
-            <p className="text-xs text-zinc-500 dark:text-zinc-400 leading-relaxed">
+          <div className="p-6 rounded-sm space-y-2" style={{ backgroundColor: 'var(--surface)', border: '1px solid var(--border)' }}>
+            <span className="font-mono-editorial text-xs font-bold" style={{ color: 'var(--accent)' }}>04</span>
+            <h4 className="font-bold text-base" style={{ color: 'var(--text-primary)' }}>Media Deliverables</h4>
+            <p className="text-xs leading-relaxed" style={{ color: 'var(--text-muted)' }}>
               High-resolution stage photography provided directly to contestants to build their professional portfolios.
             </p>
           </div>
@@ -194,23 +268,37 @@ export default function AboutPage({ setActiveTab }: AboutPageProps) {
       {/* ──────────────────────────────────────────────────────────
           6. FINAL REGISTRATION CALL TO ACTION
       ────────────────────────────────────────────────────────── */}
-      <div className="p-10 sm:p-14 rounded-3xl bg-[#080808] border border-[#303030] text-center space-y-5 text-white">
-        <h3 className="font-editorial text-3xl sm:text-4xl font-bold">
+      <motion.div 
+        initial={{ opacity: 0, scale: 0.98 }}
+        whileInView={{ opacity: 1, scale: 1 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.7 }}
+        className="p-10 sm:p-14 text-center space-y-5 rounded-sm shadow-xl"
+        style={{ 
+          backgroundColor: 'var(--surface)', 
+          border: '1px solid var(--border)' 
+        }}
+      >
+        <h3 className="font-editorial text-3xl sm:text-4xl font-bold" style={{ color: 'var(--text-primary)' }}>
           Ready to Take Your First Step on the Runway?
         </h3>
-        <p className="text-sm text-zinc-300 max-w-xl mx-auto font-light leading-relaxed">
+        <p className="text-sm max-w-xl mx-auto font-light leading-relaxed" style={{ color: 'var(--text-secondary)' }}>
           Explore upcoming fashion shows, inspect event dates and submit your model audition entry today.
         </p>
         <div className="pt-2 flex justify-center">
           <button
             onClick={() => setActiveTab('events')}
-            className="px-8 py-4 rounded-xl bg-[#C6FF00] hover:bg-[#b0e600] text-black font-extrabold text-xs uppercase tracking-wider shadow-lg hover:scale-105 active:scale-95 transition-all inline-flex items-center space-x-2"
+            className="px-8 py-4 font-mono-editorial text-xs font-bold uppercase tracking-wider rounded-sm shadow-lg transition-all hover:scale-105 active:scale-95 inline-flex items-center space-x-2"
+            style={{
+              backgroundColor: 'var(--accent)',
+              color: '#000000'
+            }}
           >
             <span>EXPLORE UPCOMING EVENTS</span>
-            <ArrowRight className="w-4 h-4 text-black" />
+            <ArrowRight className="w-3.5 h-3.5" />
           </button>
         </div>
-      </div>
+      </motion.div>
     </div>
   );
 }

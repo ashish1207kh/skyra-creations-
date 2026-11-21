@@ -85,12 +85,15 @@ export default function App() {
 
   return (
     <ThemeProvider>
-      <div className="min-h-screen flex flex-col bg-[#0a0c12] dark:bg-[#0a0c12] light:bg-[#f8fafc] text-zinc-900 dark:text-zinc-100 transition-colors">
+      <div 
+        className="min-h-screen flex flex-col transition-colors"
+        style={{ backgroundColor: 'var(--bg-primary)', color: 'var(--text-primary)' }}
+      >
         {/* Navigation Header */}
         <Navbar activeTab={activeTab} setActiveTab={setActiveTab} />
 
         {/* Main Content Area */}
-        <main className="flex-1">
+        <main className={`flex-1 ${activeTab === 'home' ? '' : 'pt-24'}`}>
           {activeTab === 'home' && (
             <HomePage 
               setActiveTab={setActiveTab} 
@@ -170,16 +173,26 @@ export default function App() {
         </main>
 
         {/* Unified Editorial Footer */}
-        <footer className="bg-zinc-900/95 dark:bg-[#06080c] light:bg-zinc-100 border-t border-zinc-200 dark:border-zinc-800/80 py-12 text-xs text-zinc-400 transition-colors">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
-            <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6 pb-8 border-b border-zinc-200 dark:border-zinc-800/60">
+        <footer 
+          className="py-16 text-xs transition-colors"
+          style={{ 
+            backgroundColor: 'var(--bg-secondary)', 
+            borderTop: '1px solid var(--border)',
+            color: 'var(--text-secondary)'
+          }}
+        >
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10">
+            <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-8 pb-10" style={{ borderBottom: '1px solid var(--border)' }}>
               {/* Brand & Description */}
-              <div className="space-y-3 max-w-md">
+              <div className="space-y-4 max-w-md">
                 <div 
                   onClick={() => setActiveTab('home')}
                   className="flex items-center space-x-3 cursor-pointer group"
                 >
-                  <div className="w-10 h-10 rounded-xl bg-black border border-amber-500/30 p-1 flex items-center justify-center shadow-lg group-hover:border-amber-400 transition-all">
+                  <div 
+                    className="w-10 h-10 rounded-sm p-1 flex items-center justify-center shadow-lg transition-all"
+                    style={{ backgroundColor: '#000000', border: '1px solid var(--border)' }}
+                  >
                     <img 
                       src="/logo.png" 
                       alt="SKYRA CREATIONS Logo" 
@@ -188,11 +201,11 @@ export default function App() {
                       className="w-full h-full object-contain" 
                     />
                   </div>
-                  <span className="font-editorial text-lg font-bold tracking-wider text-zinc-900 dark:text-white">
+                  <span className="font-display text-lg font-bold tracking-wider" style={{ color: 'var(--text-primary)' }}>
                     SKYRA CREATIONS
                   </span>
                 </div>
-                <p className="text-xs text-zinc-500 dark:text-zinc-400 leading-relaxed font-light">
+                <p className="text-xs leading-relaxed font-light" style={{ color: 'var(--text-muted)' }}>
                   A premier fashion, runway and modelling event platform empowering emerging talent through professional catwalk showcases, stage grooming and designer collaborations.
                 </p>
 
@@ -202,62 +215,70 @@ export default function App() {
                     href="https://www.instagram.com/skyra_creations_/"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center space-x-2 px-3 py-1.5 rounded-full bg-pink-500/10 hover:bg-pink-500/20 text-pink-500 border border-pink-500/30 text-xs font-semibold transition-all group shadow-sm"
+                    className="inline-flex items-center space-x-2 px-3 py-1.5 rounded-sm text-xs font-semibold transition-all group shadow-sm"
+                    style={{ 
+                      backgroundColor: 'var(--surface)', 
+                      border: '1px solid var(--border)',
+                      color: 'var(--text-primary)'
+                    }}
                   >
-                    <InstagramIcon className="w-4 h-4 text-pink-500 group-hover:scale-110 transition-transform" />
-                    <span>Follow @skyra_creations_</span>
+                    <InstagramIcon className="w-3.5 h-3.5 text-[#E1306C] group-hover:scale-110 transition-transform" />
+                    <span className="font-mono-editorial" style={{ fontSize: '10px' }}>@skyra_creations_</span>
                   </a>
                 </div>
               </div>
 
               {/* Navigation Links Grid */}
-              <div className="grid grid-cols-2 sm:grid-cols-3 gap-6 text-xs text-zinc-600 dark:text-zinc-300 font-medium">
-                <div className="space-y-2">
-                  <span className="text-[10px] uppercase font-bold text-zinc-400 dark:text-zinc-500 tracking-wider block">Explore</span>
-                  <button onClick={() => setActiveTab('home')} className="block hover:text-amber-500 transition-colors">Home</button>
-                  <button onClick={() => setActiveTab('about')} className="block hover:text-amber-500 transition-colors">About Us</button>
-                  <button onClick={() => setActiveTab('what-we-do')} className="block hover:text-amber-500 transition-colors">What We Do</button>
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-8 text-xs font-medium">
+                <div className="space-y-3">
+                  <span className="font-mono-editorial block" style={{ color: 'var(--text-muted)', fontSize: '10px' }}>EXPLORE</span>
+                  <button onClick={() => setActiveTab('home')} className="block hover:opacity-75 transition-opacity" style={{ color: 'var(--text-secondary)' }}>Home</button>
+                  <button onClick={() => setActiveTab('about')} className="block hover:opacity-75 transition-opacity" style={{ color: 'var(--text-secondary)' }}>About Us</button>
+                  <button onClick={() => setActiveTab('what-we-do')} className="block hover:opacity-75 transition-opacity" style={{ color: 'var(--text-secondary)' }}>What We Do</button>
                 </div>
 
-                <div className="space-y-2">
-                  <span className="text-[10px] uppercase font-bold text-zinc-400 dark:text-zinc-500 tracking-wider block">Events</span>
-                  <button onClick={() => setActiveTab('events')} className="block hover:text-amber-500 transition-colors">Upcoming Events</button>
-                  <button onClick={() => setActiveTab('register')} className="block hover:text-amber-500 transition-colors">Runway Registration</button>
-                  <button onClick={() => setActiveTab('gallery')} className="block hover:text-amber-500 transition-colors">Photo Gallery</button>
+                <div className="space-y-3">
+                  <span className="font-mono-editorial block" style={{ color: 'var(--text-muted)', fontSize: '10px' }}>EVENTS</span>
+                  <button onClick={() => setActiveTab('events')} className="block hover:opacity-75 transition-opacity" style={{ color: 'var(--text-secondary)' }}>Upcoming Events</button>
+                  <button onClick={() => setActiveTab('register')} className="block hover:opacity-75 transition-opacity" style={{ color: 'var(--text-secondary)' }}>Runway Registration</button>
+                  <button onClick={() => setActiveTab('gallery')} className="block hover:opacity-75 transition-opacity" style={{ color: 'var(--text-secondary)' }}>Photo Gallery</button>
                 </div>
 
-                <div className="space-y-2 col-span-2 sm:col-span-1">
-                  <span className="text-[10px] uppercase font-bold text-zinc-400 dark:text-zinc-500 tracking-wider block">Support</span>
-                  <button onClick={() => setActiveTab('balance')} className="block hover:text-amber-500 transition-colors">Balance Payment</button>
-                  <button onClick={() => setActiveTab('status')} className="block hover:text-amber-500 transition-colors">Check Status / Pass</button>
-                  <button onClick={() => setActiveTab('contact')} className="block hover:text-amber-500 transition-colors">Contact Support</button>
+                <div className="space-y-3 col-span-2 sm:col-span-1">
+                  <span className="font-mono-editorial block" style={{ color: 'var(--text-muted)', fontSize: '10px' }}>SUPPORT</span>
+                  <button onClick={() => setActiveTab('balance')} className="block hover:opacity-75 transition-opacity" style={{ color: 'var(--text-secondary)' }}>Balance Payment</button>
+                  <button onClick={() => setActiveTab('status')} className="block hover:opacity-75 transition-opacity" style={{ color: 'var(--text-secondary)' }}>Check Status / Pass</button>
+                  <button onClick={() => setActiveTab('contact')} className="block hover:opacity-75 transition-opacity" style={{ color: 'var(--text-secondary)' }}>Contact Support</button>
                 </div>
               </div>
             </div>
 
             {/* Bottom Row: Copyright + Legal Modals */}
-            <div className="flex flex-col sm:flex-row items-center justify-between gap-4 text-[11px] text-zinc-500">
-              <span>© 2026 SKYRA CREATIONS. All rights reserved. Official Runway Showcase Platform.</span>
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-4 text-[11px]" style={{ color: 'var(--text-muted)' }}>
+              <span>© 2026 SKYRA CREATIONS. All rights reserved. BEYOND THE RUNWAY.</span>
               <div className="flex items-center space-x-4">
                 <button 
                   onClick={() => setShowTermsModal(true)}
-                  className="hover:text-amber-500 transition-colors"
+                  className="hover:underline transition-all"
+                  style={{ color: 'var(--text-muted)' }}
                 >
                   Terms &amp; Conditions
                 </button>
-                <span>•</span>
+                <span>·</span>
                 <button 
                   onClick={() => setShowPrivacyModal(true)}
-                  className="hover:text-amber-500 transition-colors"
+                  className="hover:underline transition-all"
+                  style={{ color: 'var(--text-muted)' }}
                 >
                   Privacy Policy
                 </button>
-                <span>•</span>
+                <span>·</span>
                 <button 
                   onClick={() => setActiveTab('admin')}
-                  className="hover:text-amber-500 transition-colors"
+                  className="hover:underline transition-all font-mono-editorial"
+                  style={{ color: 'var(--text-muted)', fontSize: '10px' }}
                 >
-                  Admin Portal
+                  ADMIN
                 </button>
               </div>
             </div>
@@ -266,35 +287,43 @@ export default function App() {
 
         {/* Terms & Conditions Modal */}
         {showTermsModal && (
-          <div className="fixed inset-0 z-50 bg-black/90 backdrop-blur-sm flex items-center justify-center p-4">
-            <div className="bg-white dark:bg-[#12151e] border border-zinc-200 dark:border-zinc-800 rounded-3xl max-w-2xl w-full p-6 sm:p-8 max-h-[85vh] overflow-y-auto shadow-2xl relative">
+          <div className="fixed inset-0 z-50 bg-black/90 backdrop-blur-md flex items-center justify-center p-4">
+            <div 
+              className="max-w-2xl w-full p-6 sm:p-8 max-h-[85vh] overflow-y-auto shadow-2xl relative rounded-sm"
+              style={{ 
+                backgroundColor: 'var(--surface)', 
+                border: '1px solid var(--border)',
+                color: 'var(--text-primary)'
+              }}
+            >
               <button
                 onClick={() => setShowTermsModal(false)}
-                className="absolute top-5 right-5 p-2 rounded-full bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-300 hover:text-white transition-colors"
+                className="absolute top-5 right-5 p-2 rounded-full transition-colors"
+                style={{ backgroundColor: 'var(--surface-elevated)', color: 'var(--text-primary)' }}
               >
                 <X className="w-5 h-5" />
               </button>
 
-              <div className="space-y-4 text-xs sm:text-sm text-zinc-700 dark:text-zinc-300">
-                <h3 className="font-editorial text-2xl font-bold text-zinc-900 dark:text-white">
+              <div className="space-y-4 text-xs sm:text-sm">
+                <h3 className="font-editorial text-2xl font-bold">
                   Official Terms and Conditions (Version 2026.2)
                 </h3>
-                <p className="text-xs text-zinc-500">
+                <p className="font-mono-editorial" style={{ color: 'var(--text-muted)' }}>
                   Authoritative Participant Agreement &amp; Event Rules
                 </p>
 
-                <div className="space-y-3 pt-2 leading-relaxed">
+                <div className="space-y-3 pt-2 leading-relaxed" style={{ color: 'var(--text-secondary)' }}>
                   <p>
-                    <strong>1. Non-Refundable Fee Policy:</strong> The total event registration fee is ₹3,000. All fees, token advance payments (₹500, ₹1,000, ₹1,500), and balance payments are strictly non-refundable and non-transferable under all circumstances.
+                    <strong style={{ color: 'var(--text-primary)' }}>1. Non-Refundable Fee Policy:</strong> The total event registration fee is ₹3,000. All fees, token advance payments (₹500, ₹1,000, ₹1,500), and balance payments are strictly non-refundable and non-transferable under all circumstances.
                   </p>
                   <p>
-                    <strong>2. Event Venue &amp; Timings:</strong> The event is held in Chennai City Center. Reporting timings, stage dress code, and exact auditorium coordinates are released to verified participants 10 days before the event.
+                    <strong style={{ color: 'var(--text-primary)' }}>2. Event Venue &amp; Timings:</strong> The event is held in Chennai City Center. Reporting timings, stage dress code, and exact auditorium coordinates are released to verified participants 10 days before the event.
                   </p>
                   <p>
-                    <strong>3. Model Conduct &amp; Compliance:</strong> Participants must adhere to stage choreography, rehearsal timings, and conduct guidelines issued by SKYRA CREATIONS event directors.
+                    <strong style={{ color: 'var(--text-primary)' }}>3. Model Conduct &amp; Compliance:</strong> Participants must adhere to stage choreography, rehearsal timings, and conduct guidelines issued by SKYRA CREATIONS event directors.
                   </p>
                   <p>
-                    <strong>4. Media Rights:</strong> Official event photographs, video recordings, and stage performances may be utilized by SKYRA CREATIONS for promotional lookbooks, event archives, and digital media.
+                    <strong style={{ color: 'var(--text-primary)' }}>4. Media Rights:</strong> Official event photographs, video recordings, and stage performances may be utilized by SKYRA CREATIONS for promotional lookbooks, event archives, and digital media.
                   </p>
                 </div>
               </div>
@@ -304,32 +333,40 @@ export default function App() {
 
         {/* Privacy Policy Modal */}
         {showPrivacyModal && (
-          <div className="fixed inset-0 z-50 bg-black/90 backdrop-blur-sm flex items-center justify-center p-4">
-            <div className="bg-white dark:bg-[#12151e] border border-zinc-200 dark:border-zinc-800 rounded-3xl max-w-2xl w-full p-6 sm:p-8 max-h-[85vh] overflow-y-auto shadow-2xl relative">
+          <div className="fixed inset-0 z-50 bg-black/90 backdrop-blur-md flex items-center justify-center p-4">
+            <div 
+              className="max-w-2xl w-full p-6 sm:p-8 max-h-[85vh] overflow-y-auto shadow-2xl relative rounded-sm"
+              style={{ 
+                backgroundColor: 'var(--surface)', 
+                border: '1px solid var(--border)',
+                color: 'var(--text-primary)'
+              }}
+            >
               <button
                 onClick={() => setShowPrivacyModal(false)}
-                className="absolute top-5 right-5 p-2 rounded-full bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-300 hover:text-white transition-colors"
+                className="absolute top-5 right-5 p-2 rounded-full transition-colors"
+                style={{ backgroundColor: 'var(--surface-elevated)', color: 'var(--text-primary)' }}
               >
                 <X className="w-5 h-5" />
               </button>
 
-              <div className="space-y-4 text-xs sm:text-sm text-zinc-700 dark:text-zinc-300">
-                <h3 className="font-editorial text-2xl font-bold text-zinc-900 dark:text-white">
+              <div className="space-y-4 text-xs sm:text-sm">
+                <h3 className="font-editorial text-2xl font-bold">
                   Privacy Policy &amp; Data Security
                 </h3>
-                <p className="text-xs text-zinc-500">
+                <p className="font-mono-editorial" style={{ color: 'var(--text-muted)' }}>
                   How SKYRA CREATIONS protects participant data
                 </p>
 
-                <div className="space-y-3 pt-2 leading-relaxed">
+                <div className="space-y-3 pt-2 leading-relaxed" style={{ color: 'var(--text-secondary)' }}>
                   <p>
-                    <strong>1. PII Encryption:</strong> Sensitive participant details such as phone numbers, dates of birth, and WhatsApp contact numbers are encrypted using industry-standard AES-256-GCM.
+                    <strong style={{ color: 'var(--text-primary)' }}>1. PII Encryption:</strong> Sensitive participant details such as phone numbers, dates of birth, and WhatsApp contact numbers are encrypted using industry-standard AES-256-GCM.
                   </p>
                   <p>
-                    <strong>2. Cloudflare R2 Storage:</strong> Model photographs and payment receipts are stored securely in private Cloudflare R2 object storage with short-lived signed URLs. No public image URLs or base64 blobs are exposed.
+                    <strong style={{ color: 'var(--text-primary)' }}>2. Cloudflare R2 Storage:</strong> Model photographs and payment receipts are stored securely in private Cloudflare R2 object storage with short-lived signed URLs. No public image URLs or base64 blobs are exposed.
                   </p>
                   <p>
-                    <strong>3. Data Retention:</strong> Registration records are retained solely for event coordination, verification pass issuance, and financial audit compliance.
+                    <strong style={{ color: 'var(--text-primary)' }}>3. Data Retention:</strong> Registration records are retained solely for event coordination, verification pass issuance, and financial audit compliance.
                   </p>
                 </div>
               </div>

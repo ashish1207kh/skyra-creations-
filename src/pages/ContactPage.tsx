@@ -5,11 +5,9 @@ import {
   Globe, 
   MessageSquare, 
   HelpCircle, 
-  ShieldCheck, 
-  CheckCircle2, 
-  Send,
-  Sparkles
+  Send
 } from 'lucide-react';
+import { motion } from 'motion/react';
 import InstagramIcon from '../components/InstagramIcon';
 
 interface ContactPageProps {
@@ -57,111 +55,168 @@ export default function ContactPage({ setActiveTab }: ContactPageProps) {
   ];
 
   return (
-    <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-16 animate-fadeIn">
+    <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12 space-y-16">
       {/* Page Header */}
-      <div className="text-center max-w-3xl mx-auto space-y-4">
-        <span className="px-3 py-1 rounded-full bg-amber-500/10 text-amber-500 border border-amber-500/20 text-xs font-bold uppercase tracking-widest inline-block">
-          Official Support &amp; Enquiries
+      <motion.div 
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.7 }}
+        className="text-center max-w-3xl mx-auto space-y-4"
+      >
+        <span className="font-mono-editorial block text-[11px] tracking-widest" style={{ color: 'var(--accent)' }}>
+          OFFICIAL SUPPORT &amp; ENQUIRIES
         </span>
-        <h1 className="font-editorial text-4xl sm:text-5xl md:text-6xl font-bold text-zinc-900 dark:text-white leading-tight">
-          Connect with SKYRA CREATIONS
+        <h1 className="font-display text-4xl sm:text-6xl md:text-7xl font-bold leading-[1.05]" style={{ color: 'var(--text-primary)' }}>
+          GET IN TOUCH.
         </h1>
-        <p className="text-sm sm:text-base text-zinc-600 dark:text-zinc-300 font-light leading-relaxed">
+        <p className="text-sm sm:text-base font-light leading-relaxed" style={{ color: 'var(--text-secondary)' }}>
           Have queries regarding registration, audition schedules, or event logistics? Reach out to our team directly.
         </p>
-      </div>
+      </motion.div>
 
       {/* Official Contact Cards Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         {/* Card 1: Instagram */}
-        <a
+        <motion.a
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.1 }}
           href="https://www.instagram.com/skyra_creations_/"
           target="_blank"
           rel="noopener noreferrer"
-          className="p-6 rounded-3xl bg-zinc-100 dark:bg-[#12151e] border border-zinc-200 dark:border-zinc-800 hover:border-pink-500/40 transition-all group shadow-sm flex flex-col justify-between"
+          className="p-6 rounded-sm transition-all group flex flex-col justify-between shadow-sm"
+          style={{ 
+            backgroundColor: 'var(--surface)', 
+            border: '1px solid var(--border)' 
+          }}
         >
           <div>
-            <div className="w-12 h-12 rounded-2xl bg-pink-500/10 text-pink-500 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
-              <InstagramIcon className="w-6 h-6" />
+            <div 
+              className="w-10 h-10 rounded-sm flex items-center justify-center mb-4 group-hover:scale-105 transition-transform"
+              style={{ backgroundColor: 'var(--bg-primary)', border: '1px solid var(--border)' }}
+            >
+              <InstagramIcon className="w-5 h-5 text-[#E1306C]" />
             </div>
-            <span className="text-xs font-bold text-zinc-500 block uppercase tracking-wider">Social Media</span>
-            <h3 className="font-editorial text-lg font-bold text-zinc-900 dark:text-white mt-1">@skyra_creations_</h3>
-            <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-2">
+            <span className="font-mono-editorial block text-[10px]" style={{ color: 'var(--text-muted)' }}>SOCIAL MEDIA</span>
+            <h3 className="font-editorial text-lg font-bold mt-1" style={{ color: 'var(--text-primary)' }}>@skyra_creations_</h3>
+            <p className="text-xs mt-2 font-light" style={{ color: 'var(--text-secondary)' }}>
               Official Instagram profile for updates, casting calls, and backstage media.
             </p>
           </div>
-          <span className="text-xs font-bold text-pink-500 mt-4 block">Visit Profile →</span>
-        </a>
+          <span className="font-mono-editorial text-[10px] font-bold mt-4 block" style={{ color: 'var(--accent)' }}>VISIT PROFILE →</span>
+        </motion.a>
 
         {/* Card 2: Helpline */}
-        <a
+        <motion.a
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.2 }}
           href="tel:+919342049287"
-          className="p-6 rounded-3xl bg-zinc-100 dark:bg-[#12151e] border border-zinc-200 dark:border-zinc-800 hover:border-amber-500/40 transition-all group shadow-sm flex flex-col justify-between"
+          className="p-6 rounded-sm transition-all group flex flex-col justify-between shadow-sm"
+          style={{ 
+            backgroundColor: 'var(--surface)', 
+            border: '1px solid var(--border)' 
+          }}
         >
           <div>
-            <div className="w-12 h-12 rounded-2xl bg-amber-500/10 text-amber-500 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
-              <Phone className="w-6 h-6" />
+            <div 
+              className="w-10 h-10 rounded-sm flex items-center justify-center mb-4 group-hover:scale-105 transition-transform"
+              style={{ backgroundColor: 'var(--bg-primary)', border: '1px solid var(--border)' }}
+            >
+              <Phone className="w-5 h-5" style={{ color: 'var(--accent)' }} />
             </div>
-            <span className="text-xs font-bold text-zinc-500 block uppercase tracking-wider">Event Support</span>
-            <h3 className="font-editorial text-lg font-bold text-zinc-900 dark:text-white mt-1">+91 93420 49287</h3>
-            <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-2">
+            <span className="font-mono-editorial block text-[10px]" style={{ color: 'var(--text-muted)' }}>EVENT HELPLINE</span>
+            <h3 className="font-editorial text-lg font-bold mt-1" style={{ color: 'var(--text-primary)' }}>+91 93420 49287</h3>
+            <p className="text-xs mt-2 font-light" style={{ color: 'var(--text-secondary)' }}>
               Calling &amp; WhatsApp helpline for registered models and parent enquiries.
             </p>
           </div>
-          <span className="text-xs font-bold text-amber-500 mt-4 block">Call Helpline →</span>
-        </a>
+          <span className="font-mono-editorial text-[10px] font-bold mt-4 block" style={{ color: 'var(--accent)' }}>CALL HELPLINE →</span>
+        </motion.a>
 
         {/* Card 3: Location */}
-        <div className="p-6 rounded-3xl bg-zinc-100 dark:bg-[#12151e] border border-zinc-200 dark:border-zinc-800 shadow-sm flex flex-col justify-between">
+        <motion.div 
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.3 }}
+          className="p-6 rounded-sm flex flex-col justify-between shadow-sm"
+          style={{ 
+            backgroundColor: 'var(--surface)', 
+            border: '1px solid var(--border)' 
+          }}
+        >
           <div>
-            <div className="w-12 h-12 rounded-2xl bg-emerald-500/10 text-emerald-500 flex items-center justify-center mb-4">
-              <MapPin className="w-6 h-6" />
+            <div 
+              className="w-10 h-10 rounded-sm flex items-center justify-center mb-4"
+              style={{ backgroundColor: 'var(--bg-primary)', border: '1px solid var(--border)' }}
+            >
+              <MapPin className="w-5 h-5" style={{ color: 'var(--accent)' }} />
             </div>
-            <span className="text-xs font-bold text-zinc-500 block uppercase tracking-wider">City of Operation</span>
-            <h3 className="font-editorial text-lg font-bold text-zinc-900 dark:text-white mt-1">Chennai, Tamil Nadu</h3>
-            <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-2">
+            <span className="font-mono-editorial block text-[10px]" style={{ color: 'var(--text-muted)' }}>DESTINATION</span>
+            <h3 className="font-editorial text-lg font-bold mt-1" style={{ color: 'var(--text-primary)' }}>Chennai, Tamil Nadu</h3>
+            <p className="text-xs mt-2 font-light" style={{ color: 'var(--text-secondary)' }}>
               Premier city center auditorium destinations across Chennai.
             </p>
           </div>
-          <span className="text-xs text-zinc-500 mt-4 block">Venue City</span>
-        </div>
+          <span className="font-mono-editorial text-[10px] mt-4 block" style={{ color: 'var(--text-muted)' }}>VENUE CITY</span>
+        </motion.div>
 
         {/* Card 4: Website */}
-        <a
+        <motion.a
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.4 }}
           href="https://www.skyracreations.site"
-          className="p-6 rounded-3xl bg-zinc-100 dark:bg-[#12151e] border border-zinc-200 dark:border-zinc-800 hover:border-blue-500/40 transition-all group shadow-sm flex flex-col justify-between"
+          className="p-6 rounded-sm transition-all group flex flex-col justify-between shadow-sm"
+          style={{ 
+            backgroundColor: 'var(--surface)', 
+            border: '1px solid var(--border)' 
+          }}
         >
           <div>
-            <div className="w-12 h-12 rounded-2xl bg-blue-500/10 text-blue-500 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
-              <Globe className="w-6 h-6" />
+            <div 
+              className="w-10 h-10 rounded-sm flex items-center justify-center mb-4 group-hover:scale-105 transition-transform"
+              style={{ backgroundColor: 'var(--bg-primary)', border: '1px solid var(--border)' }}
+            >
+              <Globe className="w-5 h-5" style={{ color: 'var(--accent)' }} />
             </div>
-            <span className="text-xs font-bold text-zinc-500 block uppercase tracking-wider">Official Portal</span>
-            <h3 className="font-editorial text-lg font-bold text-zinc-900 dark:text-white mt-1">skyracreations.site</h3>
-            <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-2">
+            <span className="font-mono-editorial block text-[10px]" style={{ color: 'var(--text-muted)' }}>OFFICIAL PORTAL</span>
+            <h3 className="font-editorial text-lg font-bold mt-1" style={{ color: 'var(--text-primary)' }}>skyracreations.site</h3>
+            <p className="text-xs mt-2 font-light" style={{ color: 'var(--text-secondary)' }}>
               Authoritative registration, balance clearance, and digital pass gateway.
             </p>
           </div>
-          <span className="text-xs font-bold text-blue-500 mt-4 block">Secure Site →</span>
-        </a>
+          <span className="font-mono-editorial text-[10px] font-bold mt-4 block" style={{ color: 'var(--accent)' }}>SECURE SITE →</span>
+        </motion.a>
       </div>
 
-      {/* Contact Form & WhatsApp Outreach */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+      {/* Contact Form & FAQs */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-start">
         {/* Form */}
-        <div className="lg:col-span-7 p-8 rounded-3xl bg-zinc-100 dark:bg-[#12151e] border border-zinc-200 dark:border-zinc-800 shadow-xl space-y-6">
+        <motion.div 
+          initial={{ opacity: 0, x: -20 }}
+          whileInView={{ opacity: 1, x: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.7 }}
+          className="lg:col-span-7 p-8 sm:p-10 rounded-sm shadow-xl space-y-6"
+          style={{ 
+            backgroundColor: 'var(--surface)', 
+            border: '1px solid var(--border)' 
+          }}
+        >
           <div>
-            <h2 className="font-editorial text-2xl font-bold text-zinc-900 dark:text-white">
+            <h2 className="font-editorial text-2xl sm:text-3xl font-bold" style={{ color: 'var(--text-primary)' }}>
               Send an Inquiry to Official Desk
             </h2>
-            <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-1">
+            <p className="text-xs mt-1" style={{ color: 'var(--text-muted)' }}>
               Connect directly via verified WhatsApp messaging for instant assistance.
             </p>
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-              <label className="block text-xs font-semibold text-zinc-700 dark:text-zinc-300 mb-1">
-                Your Full Name <span className="text-amber-500">*</span>
+              <label className="block font-mono-editorial text-[10px] mb-1.5" style={{ color: 'var(--text-muted)' }}>
+                YOUR FULL NAME *
               </label>
               <input
                 type="text"
@@ -169,26 +224,36 @@ export default function ContactPage({ setActiveTab }: ContactPageProps) {
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 placeholder="Enter your name"
-                className="w-full bg-white dark:bg-[#0a0c12] border border-zinc-300 dark:border-zinc-700 rounded-xl px-4 py-3 text-xs sm:text-sm text-zinc-900 dark:text-white placeholder-zinc-400 focus:outline-none focus:border-amber-500"
+                className="w-full px-4 py-3 text-xs sm:text-sm rounded-sm transition-all focus:outline-none"
+                style={{
+                  backgroundColor: 'var(--bg-primary)',
+                  border: '1px solid var(--border)',
+                  color: 'var(--text-primary)'
+                }}
               />
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-zinc-700 dark:text-zinc-300 mb-1">
-                Calling / WhatsApp Mobile Number
+              <label className="block font-mono-editorial text-[10px] mb-1.5" style={{ color: 'var(--text-muted)' }}>
+                CALLING / WHATSAPP NUMBER
               </label>
               <input
                 type="tel"
                 value={phone}
                 onChange={(e) => setPhone(e.target.value)}
                 placeholder="e.g. +91 9876543210"
-                className="w-full bg-white dark:bg-[#0a0c12] border border-zinc-300 dark:border-zinc-700 rounded-xl px-4 py-3 text-xs sm:text-sm text-zinc-900 dark:text-white placeholder-zinc-400 focus:outline-none focus:border-amber-500"
+                className="w-full px-4 py-3 text-xs sm:text-sm rounded-sm transition-all focus:outline-none"
+                style={{
+                  backgroundColor: 'var(--bg-primary)',
+                  border: '1px solid var(--border)',
+                  color: 'var(--text-primary)'
+                }}
               />
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-zinc-700 dark:text-zinc-300 mb-1">
-                Message / Query <span className="text-amber-500">*</span>
+              <label className="block font-mono-editorial text-[10px] mb-1.5" style={{ color: 'var(--text-muted)' }}>
+                MESSAGE / QUERY *
               </label>
               <textarea
                 rows={4}
@@ -196,43 +261,62 @@ export default function ContactPage({ setActiveTab }: ContactPageProps) {
                 value={message}
                 onChange={(e) => setMessage(e.target.value)}
                 placeholder="Ask about auditions, age criteria, reporting schedule, or payments..."
-                className="w-full bg-white dark:bg-[#0a0c12] border border-zinc-300 dark:border-zinc-700 rounded-xl p-4 text-xs sm:text-sm text-zinc-900 dark:text-white placeholder-zinc-400 focus:outline-none focus:border-amber-500"
+                className="w-full p-4 text-xs sm:text-sm rounded-sm transition-all focus:outline-none"
+                style={{
+                  backgroundColor: 'var(--bg-primary)',
+                  border: '1px solid var(--border)',
+                  color: 'var(--text-primary)'
+                }}
               />
             </div>
 
             <button
               type="submit"
-              className="w-full py-3.5 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-white font-bold text-xs uppercase tracking-wider shadow-lg flex items-center justify-center space-x-2 transition-all"
+              className="w-full py-4 font-mono-editorial text-xs font-bold uppercase tracking-wider rounded-sm shadow-lg flex items-center justify-center space-x-2 transition-all hover:scale-[1.02] active:scale-95"
+              style={{
+                backgroundColor: 'var(--accent)',
+                color: '#000000'
+              }}
             >
               <MessageSquare className="w-4 h-4" />
-              <span>Connect via WhatsApp (+91 93420 49287)</span>
+              <span>CONNECT VIA WHATSAPP (+91 93420 49287)</span>
             </button>
           </form>
-        </div>
+        </motion.div>
 
         {/* FAQs */}
-        <div className="lg:col-span-5 space-y-4">
-          <div className="flex items-center space-x-2 text-xs font-bold text-amber-500 uppercase tracking-widest">
+        <motion.div 
+          initial={{ opacity: 0, x: 20 }}
+          whileInView={{ opacity: 1, x: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.7 }}
+          className="lg:col-span-5 space-y-4"
+        >
+          <div className="flex items-center space-x-2 font-mono-editorial text-[11px] font-bold" style={{ color: 'var(--accent)' }}>
             <HelpCircle className="w-4 h-4" />
-            <span>Frequently Asked Questions</span>
+            <span>FREQUENTLY ASKED QUESTIONS</span>
           </div>
 
           <div className="space-y-3">
             {faqs.map((faq, i) => (
               <div 
                 key={i} 
-                className="p-4 rounded-2xl bg-zinc-100 dark:bg-[#12151e] border border-zinc-200 dark:border-zinc-800 space-y-1"
+                className="p-5 rounded-sm space-y-1.5"
+                style={{ 
+                  backgroundColor: 'var(--surface)', 
+                  border: '1px solid var(--border)' 
+                }}
               >
-                <h4 className="text-xs font-bold text-zinc-900 dark:text-white">
+                <h4 className="text-xs font-bold" style={{ color: 'var(--text-primary)' }}>
                   {faq.q}
                 </h4>
-                <p className="text-[11px] text-zinc-600 dark:text-zinc-400 leading-relaxed">
+                <p className="text-[11px] leading-relaxed font-light" style={{ color: 'var(--text-muted)' }}>
                   {faq.a}
                 </p>
               </div>
             ))}
           </div>
-        </div>
+        </motion.div>
       </div>
     </div>
   );

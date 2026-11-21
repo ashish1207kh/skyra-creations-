@@ -2,21 +2,11 @@ import React from 'react';
 import { 
   Sparkles, 
   ArrowRight, 
-  Compass, 
-  Calendar, 
-  MapPin, 
-  Users, 
-  Award, 
-  Camera, 
-  Star, 
-  CheckCircle2, 
   ChevronRight,
-  ShieldCheck,
   Eye,
-  Layers,
-  Sparkle
+  Check
 } from 'lucide-react';
-import InstagramIcon from '../components/InstagramIcon';
+import { motion } from 'motion/react';
 import VirtualRunwayScene from '../components/VirtualRunwayScene';
 
 interface HomePageProps {
@@ -26,294 +16,450 @@ interface HomePageProps {
 
 export default function HomePage({ setActiveTab, onSelectEvent }: HomePageProps) {
   return (
-    <div className="space-y-24 sm:space-y-32 pb-20">
+    <div className="space-y-28 sm:space-y-36 pb-24 overflow-x-hidden">
       {/* ──────────────────────────────────────────────────────────
-          SECTION 1: FULL-SCREEN VIRTUAL RUNWAY HERO
+          SECTION 1: 100svh VIRTUAL RUNWAY HERO
       ────────────────────────────────────────────────────────── */}
-      <section className="relative min-h-[90vh] sm:min-h-[96vh] flex items-center justify-center overflow-hidden pt-8 pb-16">
+      <section className="relative h-[100svh] min-h-[640px] flex items-center justify-center overflow-hidden">
         {/* Three.js Virtual Runway Catwalk Canvas */}
         <div className="absolute inset-0 z-0">
           <VirtualRunwayScene className="w-full h-full" />
         </div>
 
         {/* Ambient Overlay for High-Fashion Contrast */}
-        <div className="absolute inset-0 bg-gradient-to-b from-black/80 via-black/45 to-[#080808] dark:to-[#080808] to-transparent pointer-events-none z-10" />
+        <div 
+          className="absolute inset-0 pointer-events-none z-10"
+          style={{
+            background: 'linear-gradient(to bottom, rgba(8,8,8,0.7) 0%, transparent 40%, rgba(8,8,8,0.4) 70%, var(--bg-primary) 100%)'
+          }}
+        />
 
-        {/* Subtle Ambient Electric Lime & Silver Glow */}
-        <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[700px] h-[350px] bg-gradient-to-r from-[#C6FF00]/15 via-white/10 to-transparent blur-3xl pointer-events-none z-10" />
+        {/* Subtle Ambient Accent Glow */}
+        <div 
+          className="absolute top-1/3 left-1/2 -translate-x-1/2 w-[700px] h-[350px] blur-3xl pointer-events-none z-10 opacity-30"
+          style={{ background: 'radial-gradient(ellipse at center, var(--accent) 0%, transparent 70%)' }}
+        />
 
-        <div className="relative z-20 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-8">
-          {/* Subtle Runway Badge */}
-          <div className="inline-flex items-center space-x-2 px-4 py-1.5 rounded-full bg-black/60 dark:bg-black/60 bg-white/70 backdrop-blur-md border border-[#C6FF00]/30 text-xs sm:text-sm font-medium text-[#C6FF00] dark:text-[#C6FF00] text-[#789900] tracking-widest uppercase animate-fadeIn">
-            <span className="w-2 h-2 rounded-full bg-[#C6FF00] animate-ping" />
-            <span>Official Fashion, Modelling &amp; Runway Experience</span>
-          </div>
+        <div className="relative z-20 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-6 pt-12">
+          {/* Editorial Category Tag */}
+          <motion.div 
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            className="inline-flex items-center space-x-2 px-3.5 py-1 rounded-full backdrop-blur-md"
+            style={{ 
+              backgroundColor: 'rgba(0,0,0,0.5)', 
+              border: '1px solid var(--border)',
+              color: 'var(--accent)'
+            }}
+          >
+            <span className="w-1.5 h-1.5 rounded-full animate-ping" style={{ backgroundColor: 'var(--accent)' }} />
+            <span className="font-mono-editorial text-[10px] sm:text-[11px] tracking-widest">
+              OFFICIAL FASHION &amp; RUNWAY PLATFORM
+            </span>
+          </motion.div>
 
           {/* Hero Headline */}
-          <h1 className="font-editorial text-5xl sm:text-7xl md:text-8xl lg:text-9xl font-bold tracking-tight text-white leading-[1.02] max-w-5xl mx-auto">
+          <motion.h1 
+            initial={{ opacity: 0, y: 24 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.1 }}
+            className="font-display font-extrabold tracking-tight leading-[0.98] max-w-5xl mx-auto text-hero"
+            style={{ color: '#F5F5F5' }}
+          >
             BEYOND THE <br className="hidden sm:inline" />
-            <span className="bg-gradient-to-r from-white via-[#BFC3C7] to-[#C6FF00] bg-clip-text text-transparent">
+            <span style={{ color: 'var(--accent)' }}>
               RUNWAY.
             </span>
-          </h1>
+          </motion.h1>
 
           {/* Supporting Text */}
-          <p className="max-w-2xl mx-auto text-base sm:text-lg md:text-xl text-zinc-300 font-light leading-relaxed">
+          <motion.p 
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.2 }}
+            className="max-w-2xl mx-auto text-sm sm:text-lg md:text-xl font-light leading-relaxed"
+            style={{ color: 'var(--silver)' }}
+          >
             An expression of fashion, confidence and creative individuality.
-          </p>
+          </motion.p>
 
           {/* Action CTAs */}
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4">
+          <motion.div 
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.3 }}
+            className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4"
+          >
             <button
               onClick={() => setActiveTab('events')}
-              className="w-full sm:w-auto px-9 py-4 rounded-xl bg-gradient-to-r from-zinc-100 via-white to-[#C6FF00] text-black font-extrabold text-xs sm:text-sm tracking-wider uppercase shadow-xl hover:scale-105 active:scale-95 transition-all flex items-center justify-center space-x-2"
+              className="w-full sm:w-auto px-9 py-4 font-mono-editorial text-xs tracking-widest uppercase transition-all hover:scale-[1.03] active:scale-95 flex items-center justify-center space-x-2 rounded-sm shadow-xl"
+              style={{
+                backgroundColor: 'var(--accent)',
+                color: '#000000',
+                fontWeight: 700
+              }}
             >
               <span>EXPLORE EVENTS</span>
-              <ArrowRight className="w-4 h-4 text-black" />
+              <ArrowRight className="w-3.5 h-3.5" />
             </button>
 
             <button
               onClick={() => setActiveTab('register')}
-              className="w-full sm:w-auto px-8 py-4 rounded-xl bg-black/60 hover:bg-black/80 dark:bg-white/5 dark:hover:bg-white/10 backdrop-blur-md border border-white/20 text-white font-semibold text-xs sm:text-sm tracking-wider uppercase transition-all flex items-center justify-center space-x-2"
+              className="w-full sm:w-auto px-8 py-4 font-mono-editorial text-xs tracking-widest uppercase transition-all backdrop-blur-md flex items-center justify-center space-x-2 rounded-sm hover:opacity-80"
+              style={{
+                backgroundColor: 'rgba(0,0,0,0.5)',
+                border: '1px solid var(--border)',
+                color: '#FFFFFF'
+              }}
             >
-              <Sparkles className="w-4 h-4 text-[#C6FF00]" />
+              <Sparkles className="w-3.5 h-3.5" style={{ color: 'var(--accent)' }} />
               <span>JOIN THE RUNWAY</span>
             </button>
-          </div>
+          </motion.div>
 
           {/* Architectural Metadata Bar */}
-          <div className="pt-8 border-t border-white/10 grid grid-cols-2 sm:grid-cols-4 gap-4 text-center">
+          <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 1.0, delay: 0.4 }}
+            className="pt-10 grid grid-cols-2 sm:grid-cols-4 gap-4 text-center max-w-4xl mx-auto"
+            style={{ borderTop: '1px solid var(--border)' }}
+          >
             <div className="p-2">
-              <div className="text-xl sm:text-2xl font-bold text-white font-editorial">Chennai</div>
-              <div className="text-xs text-zinc-400 mt-0.5 tracking-wide">City Center Runway Venue</div>
+              <div className="text-lg sm:text-xl font-bold font-editorial" style={{ color: '#FFFFFF' }}>Chennai</div>
+              <div className="font-mono-editorial mt-0.5" style={{ color: 'var(--text-muted)', fontSize: '10px' }}>CITY CENTER VENUE</div>
             </div>
             <div className="p-2">
-              <div className="text-xl sm:text-2xl font-bold text-[#C6FF00] font-editorial">Inclusive</div>
-              <div className="text-xs text-zinc-400 mt-0.5 tracking-wide">Kids, Teens, Adults &amp; Fitness</div>
+              <div className="text-lg sm:text-xl font-bold font-editorial" style={{ color: 'var(--accent)' }}>Inclusive</div>
+              <div className="font-mono-editorial mt-0.5" style={{ color: 'var(--text-muted)', fontSize: '10px' }}>KIDS TO ADULTS</div>
             </div>
             <div className="p-2">
-              <div className="text-xl sm:text-2xl font-bold text-zinc-200 font-editorial">Grooming</div>
-              <div className="text-xs text-zinc-400 mt-0.5 tracking-wide">Choreography &amp; Ramp Walk Prep</div>
+              <div className="text-lg sm:text-xl font-bold font-editorial" style={{ color: 'var(--silver)' }}>Grooming</div>
+              <div className="font-mono-editorial mt-0.5" style={{ color: 'var(--text-muted)', fontSize: '10px' }}>STAGE CHOREOGRAPHY</div>
             </div>
             <div className="p-2">
-              <div className="text-xl sm:text-2xl font-bold text-white font-editorial">Verified</div>
-              <div className="text-xs text-zinc-400 mt-0.5 tracking-wide">Transparent Administration</div>
+              <div className="text-lg sm:text-xl font-bold font-editorial" style={{ color: '#FFFFFF' }}>Verified</div>
+              <div className="font-mono-editorial mt-0.5" style={{ color: 'var(--text-muted)', fontSize: '10px' }}>TRANSPARENT SYSTEM</div>
             </div>
-          </div>
+          </motion.div>
         </div>
       </section>
 
       {/* ──────────────────────────────────────────────────────────
-          SECTION 2: BRAND INTRODUCTION (TWO-COLUMN EDITORIAL)
+          SECTION 2: BRAND INTRODUCTION (ASYMMETRIC 2-COLUMN)
       ────────────────────────────────────────────────────────── */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
-          {/* Left: Editorial Image */}
-          <div className="lg:col-span-5 relative">
-            <div className="relative rounded-3xl overflow-hidden border border-zinc-200 dark:border-zinc-800 shadow-2xl group">
+          {/* Left: Editorial Image 3:4 */}
+          <motion.div 
+            initial={{ opacity: 0, x: -30 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true, margin: '-80px' }}
+            transition={{ duration: 0.8 }}
+            className="lg:col-span-5 relative"
+          >
+            <div 
+              className="relative overflow-hidden shadow-2xl group rounded-sm"
+              style={{ border: '1px solid var(--border)' }}
+            >
               <img 
                 src="/images/runway-2.jpg" 
                 alt="SKYRA CREATIONS Runway Fashion Model" 
+                loading="lazy"
                 className="w-full h-[520px] object-cover group-hover:scale-105 transition-transform duration-700"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent flex items-end p-6">
+              <div 
+                className="absolute inset-0 flex items-end p-6"
+                style={{ background: 'linear-gradient(to top, rgba(0,0,0,0.85) 0%, transparent 60%)' }}
+              >
                 <div>
-                  <span className="text-[11px] uppercase tracking-widest text-[#C6FF00] font-bold block">Live Catwalk</span>
-                  <span className="text-white font-editorial text-lg font-bold">Confidence on the Ramp</span>
+                  <span className="font-mono-editorial block text-[10px]" style={{ color: 'var(--accent)' }}>
+                    LIVE CATWALK SHOWCASE
+                  </span>
+                  <span className="font-editorial text-lg font-bold text-white">
+                    Confidence on the Ramp
+                  </span>
                 </div>
               </div>
             </div>
-          </div>
+          </motion.div>
 
-          {/* Right: Large Editorial Typography & Description */}
-          <div className="lg:col-span-7 space-y-6">
-            <div className="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-[#C6FF00]/10 text-[#789900] dark:text-[#C6FF00] border border-[#C6FF00]/20 text-xs font-semibold uppercase tracking-wider">
-              <span>Brand Introduction</span>
-            </div>
+          {/* Right: Large Editorial Typography & Story */}
+          <motion.div 
+            initial={{ opacity: 0, x: 30 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true, margin: '-80px' }}
+            transition={{ duration: 0.8 }}
+            className="lg:col-span-7 space-y-6"
+          >
+            <span className="font-mono-editorial block" style={{ color: 'var(--accent)', fontSize: '11px' }}>
+              01 // BRAND INTRODUCTION
+            </span>
 
-            <h2 className="font-editorial text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-zinc-900 dark:text-white leading-[1.1]">
+            <h2 
+              className="font-editorial text-3xl sm:text-5xl lg:text-6xl font-bold leading-[1.08]"
+              style={{ color: 'var(--text-primary)' }}
+            >
               FASHION IS MORE THAN WHAT YOU WEAR.
             </h2>
 
-            <p className="text-base sm:text-lg text-zinc-600 dark:text-zinc-300 leading-relaxed font-light">
+            <p 
+              className="text-base sm:text-lg leading-relaxed font-light"
+              style={{ color: 'var(--text-secondary)' }}
+            >
               SKYRA CREATIONS is an international-standard fashion and creative platform designed to empower aspiring talent, emerging models and creative directors through premier runway showcases, structured stage grooming and verified industry opportunities.
             </p>
 
-            <p className="text-sm sm:text-base text-zinc-600 dark:text-zinc-400 leading-relaxed">
+            <p 
+              className="text-sm sm:text-base leading-relaxed"
+              style={{ color: 'var(--text-muted)' }}
+            >
               Founded by <strong>B Sriram</strong>, SKYRA CREATIONS breaks traditional industry gatekeeping by providing an accessible, authentic stage where contestants gain genuine ramp exposure, stage presence and verified credentials.
             </p>
 
             <div className="pt-4">
               <button
                 onClick={() => setActiveTab('about')}
-                className="inline-flex items-center space-x-2 text-sm font-bold uppercase tracking-wider text-zinc-900 dark:text-[#C6FF00] hover:text-[#789900] dark:hover:text-white transition-colors group"
+                className="inline-flex items-center space-x-2 font-mono-editorial text-xs font-bold transition-all group"
+                style={{ color: 'var(--text-primary)' }}
               >
-                <span>EXPLORE OUR STORY</span>
-                <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                <span className="group-hover:underline">EXPLORE OUR STORY</span>
+                <ChevronRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" style={{ color: 'var(--accent)' }} />
               </button>
             </div>
-          </div>
+          </motion.div>
         </div>
       </section>
 
       {/* ──────────────────────────────────────────────────────────
-          SECTION 3: WHAT WE DO (IMAGE-LED ALTERNATING SHOWCASE)
+          SECTION 3: WHAT WE DO (ALTERNATING EDITORIAL BANDS)
       ────────────────────────────────────────────────────────── */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-16">
-        <div className="text-center max-w-2xl mx-auto space-y-3">
-          <span className="text-xs font-bold text-[#789900] dark:text-[#C6FF00] uppercase tracking-widest">Core Disciplines</span>
-          <h2 className="font-editorial text-3xl sm:text-4xl md:text-5xl font-bold text-zinc-900 dark:text-white">
-            What We Do at SKYRA
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
+        <div className="text-center max-w-2xl mx-auto space-y-2">
+          <span className="font-mono-editorial block" style={{ color: 'var(--accent)', fontSize: '11px' }}>
+            02 // CORE DISCIPLINES
+          </span>
+          <h2 className="font-editorial text-3xl sm:text-5xl font-bold" style={{ color: 'var(--text-primary)' }}>
+            What We Create
           </h2>
-          <p className="text-sm text-zinc-600 dark:text-zinc-400">
+          <p className="text-xs sm:text-sm" style={{ color: 'var(--text-muted)' }}>
             A complete ecosystem connecting models, designers, choreographers and fashion enthusiasts.
           </p>
         </div>
 
         {/* Alternating Feature Rows */}
-        <div className="space-y-16">
+        <div className="space-y-12">
           {/* Row 1: Fashion Shows */}
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center p-8 rounded-3xl bg-zinc-100 dark:bg-[#111111] border border-zinc-200 dark:border-[#202020] hover:border-[#C6FF00]/40 transition-all">
-            <div className="lg:col-span-6 relative rounded-2xl overflow-hidden h-72 sm:h-80">
+          <motion.div 
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: '-60px' }}
+            transition={{ duration: 0.7 }}
+            className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center p-8 sm:p-10 rounded-sm"
+            style={{ 
+              backgroundColor: 'var(--surface)', 
+              border: '1px solid var(--border)' 
+            }}
+          >
+            <div className="lg:col-span-6 relative overflow-hidden h-72 sm:h-80 rounded-sm" style={{ border: '1px solid var(--border)' }}>
               <img 
                 src="/images/runway-1.jpg" 
                 alt="Fashion Shows & Runway Lighting" 
+                loading="lazy"
                 className="w-full h-full object-cover"
               />
-              <div className="absolute top-4 left-4 px-3 py-1 rounded-full bg-black/70 text-[#C6FF00] font-mono text-xs font-bold">
+              <div 
+                className="absolute top-4 left-4 px-3 py-1 font-mono-editorial text-[10px] font-bold"
+                style={{ backgroundColor: 'rgba(0,0,0,0.75)', color: 'var(--accent)' }}
+              >
                 01 / FASHION SHOWS
               </div>
             </div>
             <div className="lg:col-span-6 space-y-4">
-              <h3 className="font-editorial text-2xl sm:text-3xl font-bold text-zinc-900 dark:text-white">
+              <h3 className="font-editorial text-2xl sm:text-3xl font-bold" style={{ color: 'var(--text-primary)' }}>
                 Full-Scale Runway Productions
               </h3>
-              <p className="text-sm text-zinc-600 dark:text-zinc-300 leading-relaxed">
+              <p className="text-sm leading-relaxed" style={{ color: 'var(--text-secondary)' }}>
                 We produce high-impact fashion show productions featuring architectural lighting, dynamic sound design, precision catwalk choreography and professional media coverage across top city centers.
               </p>
               <button
                 onClick={() => setActiveTab('what-we-do')}
-                className="inline-flex items-center space-x-1.5 text-xs font-bold uppercase tracking-wider text-[#789900] dark:text-[#C6FF00] hover:underline"
+                className="inline-flex items-center space-x-1 font-mono-editorial text-[11px] font-bold transition-all hover:underline"
+                style={{ color: 'var(--accent)' }}
               >
-                <span>Learn more about productions</span>
+                <span>LEARN MORE ABOUT PRODUCTIONS</span>
                 <ChevronRight className="w-3.5 h-3.5" />
               </button>
             </div>
-          </div>
+          </motion.div>
 
           {/* Row 2: Model Opportunities (Reversed Layout) */}
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center p-8 rounded-3xl bg-zinc-100 dark:bg-[#111111] border border-zinc-200 dark:border-[#202020] hover:border-[#C6FF00]/40 transition-all">
-            <div className="lg:col-span-6 lg:order-2 relative rounded-2xl overflow-hidden h-72 sm:h-80">
+          <motion.div 
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: '-60px' }}
+            transition={{ duration: 0.7 }}
+            className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center p-8 sm:p-10 rounded-sm"
+            style={{ 
+              backgroundColor: 'var(--surface)', 
+              border: '1px solid var(--border)' 
+            }}
+          >
+            <div className="lg:col-span-6 lg:order-2 relative overflow-hidden h-72 sm:h-80 rounded-sm" style={{ border: '1px solid var(--border)' }}>
               <img 
                 src="/images/runway-3.jpg" 
                 alt="Model Opportunities" 
+                loading="lazy"
                 className="w-full h-full object-cover"
               />
-              <div className="absolute top-4 left-4 px-3 py-1 rounded-full bg-black/70 text-[#C6FF00] font-mono text-xs font-bold">
+              <div 
+                className="absolute top-4 left-4 px-3 py-1 font-mono-editorial text-[10px] font-bold"
+                style={{ backgroundColor: 'rgba(0,0,0,0.75)', color: 'var(--accent)' }}
+              >
                 02 / OPPORTUNITIES
               </div>
             </div>
             <div className="lg:col-span-6 lg:order-1 space-y-4">
-              <h3 className="font-editorial text-2xl sm:text-3xl font-bold text-zinc-900 dark:text-white">
+              <h3 className="font-editorial text-2xl sm:text-3xl font-bold" style={{ color: 'var(--text-primary)' }}>
                 Curated Platforms for Emerging Models
               </h3>
-              <p className="text-sm text-zinc-600 dark:text-zinc-300 leading-relaxed">
+              <p className="text-sm leading-relaxed" style={{ color: 'var(--text-secondary)' }}>
                 Every contestant receives verified credentials, stage photographs and transparent evaluation. We champion diversity with dedicated categories for Kids, Teens, Adults, Plus-size, and Fitness contestants.
               </p>
               <button
                 onClick={() => setActiveTab('what-we-do')}
-                className="inline-flex items-center space-x-1.5 text-xs font-bold uppercase tracking-wider text-[#789900] dark:text-[#C6FF00] hover:underline"
+                className="inline-flex items-center space-x-1 font-mono-editorial text-[11px] font-bold transition-all hover:underline"
+                style={{ color: 'var(--accent)' }}
               >
-                <span>Explore model benefits</span>
+                <span>EXPLORE MODEL BENEFITS</span>
                 <ChevronRight className="w-3.5 h-3.5" />
               </button>
             </div>
-          </div>
+          </motion.div>
 
           {/* Row 3: Stage Grooming */}
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center p-8 rounded-3xl bg-zinc-100 dark:bg-[#111111] border border-zinc-200 dark:border-[#202020] hover:border-[#C6FF00]/40 transition-all">
-            <div className="lg:col-span-6 relative rounded-2xl overflow-hidden h-72 sm:h-80">
+          <motion.div 
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: '-60px' }}
+            transition={{ duration: 0.7 }}
+            className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center p-8 sm:p-10 rounded-sm"
+            style={{ 
+              backgroundColor: 'var(--surface)', 
+              border: '1px solid var(--border)' 
+            }}
+          >
+            <div className="lg:col-span-6 relative overflow-hidden h-72 sm:h-80 rounded-sm" style={{ border: '1px solid var(--border)' }}>
               <img 
                 src="/founder.png" 
                 alt="Stage Grooming & Mentorship" 
+                loading="lazy"
                 className="w-full h-full object-cover"
               />
-              <div className="absolute top-4 left-4 px-3 py-1 rounded-full bg-black/70 text-[#C6FF00] font-mono text-xs font-bold">
+              <div 
+                className="absolute top-4 left-4 px-3 py-1 font-mono-editorial text-[10px] font-bold"
+                style={{ backgroundColor: 'rgba(0,0,0,0.75)', color: 'var(--accent)' }}
+              >
                 03 / GROOMING
               </div>
             </div>
             <div className="lg:col-span-6 space-y-4">
-              <h3 className="font-editorial text-2xl sm:text-3xl font-bold text-zinc-900 dark:text-white">
+              <h3 className="font-editorial text-2xl sm:text-3xl font-bold" style={{ color: 'var(--text-primary)' }}>
                 Posture, Walk &amp; Ramp Rehearsal
               </h3>
-              <p className="text-sm text-zinc-600 dark:text-zinc-300 leading-relaxed">
+              <p className="text-sm leading-relaxed" style={{ color: 'var(--text-secondary)' }}>
                 Pre-show rehearsal sessions guide models through catwalk pacing, poise, expression and confident posture under genuine stage spotlights, led directly by verified industry choreographers.
               </p>
               <button
                 onClick={() => setActiveTab('what-we-do')}
-                className="inline-flex items-center space-x-1.5 text-xs font-bold uppercase tracking-wider text-[#789900] dark:text-[#C6FF00] hover:underline"
+                className="inline-flex items-center space-x-1 font-mono-editorial text-[11px] font-bold transition-all hover:underline"
+                style={{ color: 'var(--accent)' }}
               >
-                <span>Read grooming curriculum</span>
+                <span>READ GROOMING CURRICULUM</span>
                 <ChevronRight className="w-3.5 h-3.5" />
               </button>
             </div>
-          </div>
+          </motion.div>
         </div>
       </section>
 
       {/* ──────────────────────────────────────────────────────────
-          SECTION 4: UPCOMING EVENTS (EDITORIAL DISCOVERY)
+          SECTION 4: UPCOMING EVENTS (MAGAZINE-STYLE DISCOVERY)
       ────────────────────────────────────────────────────────── */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
         <div className="text-center max-w-2xl mx-auto space-y-2">
-          <span className="text-xs font-bold text-[#789900] dark:text-[#C6FF00] uppercase tracking-widest">Event Discovery</span>
-          <h2 className="font-editorial text-3xl sm:text-4xl md:text-5xl font-bold text-zinc-900 dark:text-white">
+          <span className="font-mono-editorial block" style={{ color: 'var(--accent)', fontSize: '11px' }}>
+            03 // EVENT DISCOVERY
+          </span>
+          <h2 className="font-editorial text-3xl sm:text-5xl font-bold" style={{ color: 'var(--text-primary)' }}>
             THE NEXT MOMENT STARTS HERE.
           </h2>
-          <p className="text-sm text-zinc-600 dark:text-zinc-400">
+          <p className="text-xs sm:text-sm" style={{ color: 'var(--text-muted)' }}>
             Official runway show schedules and audition registrations.
           </p>
         </div>
 
         {/* Featured Event Card */}
-        <div className="p-8 sm:p-12 rounded-3xl bg-[#111111] text-white border border-[#303030] relative overflow-hidden shadow-2xl">
+        <motion.div 
+          initial={{ opacity: 0, scale: 0.98 }}
+          whileInView={{ opacity: 1, scale: 1 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.7 }}
+          className="p-8 sm:p-12 rounded-sm relative overflow-hidden shadow-2xl"
+          style={{ 
+            backgroundColor: 'var(--surface)', 
+            border: '1px solid var(--border)' 
+          }}
+        >
           <div className="relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
             <div className="lg:col-span-7 space-y-5">
-              <div className="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-[#C6FF00]/10 text-[#C6FF00] border border-[#C6FF00]/30 text-xs font-bold uppercase tracking-wider">
-                <span className="w-2 h-2 rounded-full bg-[#C6FF00] animate-pulse" />
-                <span>Registrations Open</span>
+              <div 
+                className="inline-flex items-center space-x-2 px-3 py-1 rounded-full font-mono-editorial text-[10px] font-bold tracking-wider"
+                style={{ 
+                  backgroundColor: 'rgba(0,0,0,0.4)', 
+                  border: '1px solid var(--border)',
+                  color: 'var(--accent)' 
+                }}
+              >
+                <span className="w-1.5 h-1.5 rounded-full animate-pulse" style={{ backgroundColor: 'var(--accent)' }} />
+                <span>REGISTRATIONS ACTIVE</span>
               </div>
 
-              <h3 className="font-editorial text-3xl sm:text-4xl lg:text-5xl font-bold leading-tight text-white">
+              <h3 className="font-editorial text-3xl sm:text-4xl lg:text-5xl font-bold leading-tight" style={{ color: 'var(--text-primary)' }}>
                 SKYRA CREATIONS — RUNWAY SHOW 2026
               </h3>
 
-              <p className="text-zinc-300 text-sm sm:text-base leading-relaxed font-light">
+              <p className="text-sm sm:text-base leading-relaxed font-light" style={{ color: 'var(--text-secondary)' }}>
                 Step into the spotlight at our premier runway event in Chennai. Featuring full-stage catwalk choreography, industry judges and official certificate recognition.
               </p>
 
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 pt-2 text-xs">
-                <div className="p-3 rounded-xl bg-black/60 border border-zinc-800">
-                  <span className="text-zinc-400 block text-[11px]">Venue</span>
-                  <strong className="text-white">Chennai City Center</strong>
+                <div className="p-3 rounded-sm" style={{ backgroundColor: 'var(--bg-primary)', border: '1px solid var(--border)' }}>
+                  <span className="font-mono-editorial block text-[10px]" style={{ color: 'var(--text-muted)' }}>VENUE</span>
+                  <strong style={{ color: 'var(--text-primary)' }}>Chennai City Center</strong>
                 </div>
-                <div className="p-3 rounded-xl bg-black/60 border border-zinc-800">
-                  <span className="text-zinc-400 block text-[11px]">Total Event Fee</span>
-                  <strong className="text-[#C6FF00] text-sm">₹3,000</strong>
+                <div className="p-3 rounded-sm" style={{ backgroundColor: 'var(--bg-primary)', border: '1px solid var(--border)' }}>
+                  <span className="font-mono-editorial block text-[10px]" style={{ color: 'var(--text-muted)' }}>TOTAL FEE</span>
+                  <strong className="text-sm" style={{ color: 'var(--accent)' }}>₹3,000</strong>
                 </div>
-                <div className="p-3 rounded-xl bg-black/60 border border-zinc-800 col-span-2 sm:col-span-1">
-                  <span className="text-zinc-400 block text-[11px]">Token Advance</span>
-                  <strong className="text-white">₹500 / ₹1,000 / ₹1,500</strong>
+                <div className="p-3 rounded-sm col-span-2 sm:col-span-1" style={{ backgroundColor: 'var(--bg-primary)', border: '1px solid var(--border)' }}>
+                  <span className="font-mono-editorial block text-[10px]" style={{ color: 'var(--text-muted)' }}>ADVANCE TOKEN</span>
+                  <strong style={{ color: 'var(--text-primary)' }}>₹500 / ₹1,000 / ₹1,500</strong>
                 </div>
               </div>
 
               <div className="flex flex-wrap items-center gap-4 pt-4">
                 <button
                   onClick={() => setActiveTab('register')}
-                  className="px-7 py-3.5 rounded-xl bg-[#C6FF00] text-black font-extrabold text-xs uppercase tracking-wider hover:scale-105 active:scale-95 transition-all flex items-center space-x-2 shadow-lg shadow-[#C6FF00]/20"
+                  className="px-7 py-3.5 font-mono-editorial text-xs font-bold uppercase tracking-wider rounded-sm transition-all hover:scale-105 active:scale-95 shadow-lg flex items-center space-x-2"
+                  style={{
+                    backgroundColor: 'var(--accent)',
+                    color: '#000000'
+                  }}
                 >
-                  <Sparkles className="w-4 h-4 text-black" />
-                  <span>Register Now for ₹3,000</span>
+                  <Sparkles className="w-3.5 h-3.5" />
+                  <span>REGISTER NOW FOR ₹3,000</span>
                 </button>
 
                 <button
@@ -321,88 +467,121 @@ export default function HomePage({ setActiveTab, onSelectEvent }: HomePageProps)
                     if (onSelectEvent) onSelectEvent('EVT-CHX-2026');
                     setActiveTab('event-details');
                   }}
-                  className="px-6 py-3.5 rounded-xl bg-white/10 hover:bg-white/15 text-white font-semibold text-xs border border-white/20 transition-all flex items-center space-x-2"
+                  className="px-6 py-3.5 font-mono-editorial text-xs font-semibold rounded-sm transition-all flex items-center space-x-2"
+                  style={{
+                    backgroundColor: 'var(--bg-primary)',
+                    border: '1px solid var(--border)',
+                    color: 'var(--text-primary)'
+                  }}
                 >
-                  <Eye className="w-4 h-4 text-zinc-300" />
-                  <span>View Event Details</span>
+                  <Eye className="w-3.5 h-3.5" />
+                  <span>VIEW EVENT DETAILS</span>
                 </button>
               </div>
             </div>
 
             <div className="lg:col-span-5 relative">
-              <div className="rounded-2xl overflow-hidden border border-zinc-700 shadow-2xl">
+              <div className="overflow-hidden shadow-2xl rounded-sm" style={{ border: '1px solid var(--border)' }}>
                 <img 
                   src="/images/runway-3.jpg" 
                   alt="Runway Show 2026 Live Catwalk" 
+                  loading="lazy"
                   className="w-full h-80 object-cover"
                 />
               </div>
             </div>
           </div>
-        </div>
+        </motion.div>
       </section>
 
       {/* ──────────────────────────────────────────────────────────
-          SECTION 5: FASHION CAMPAIGN (FULL-WIDTH EDITORIAL)
+          SECTION 5: CAMPAIGN INTERLUDE (FULL-BLEED EDITORIAL BREAK)
       ────────────────────────────────────────────────────────── */}
-      <section className="relative py-24 sm:py-32 overflow-hidden bg-cover bg-center rounded-3xl mx-4 sm:mx-8 border border-zinc-200 dark:border-zinc-800" style={{ backgroundImage: `url('/images/runway-1.jpg')` }}>
-        <div className="absolute inset-0 bg-black/80 backdrop-blur-xs" />
+      <section 
+        className="relative py-28 sm:py-36 overflow-hidden bg-cover bg-center mx-4 sm:mx-8 rounded-sm"
+        style={{ 
+          backgroundImage: `url('/images/runway-1.jpg')`,
+          border: '1px solid var(--border)'
+        }}
+      >
+        <div className="absolute inset-0 bg-black/85 backdrop-blur-xs" />
         
-        <div className="relative z-10 max-w-4xl mx-auto px-4 sm:px-6 text-center space-y-6">
-          <span className="text-xs font-bold tracking-widest text-[#C6FF00] uppercase">
-            Fashion Campaign
+        <motion.div 
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.8 }}
+          className="relative z-10 max-w-4xl mx-auto px-4 sm:px-6 text-center space-y-6"
+        >
+          <span className="font-mono-editorial block text-[11px] tracking-widest" style={{ color: 'var(--accent)' }}>
+            CAMPAIGN INTERLUDE
           </span>
-          <h2 className="font-editorial text-4xl sm:text-6xl md:text-7xl font-bold text-white tracking-tight leading-tight">
+          <h2 className="font-display text-4xl sm:text-6xl md:text-7xl font-bold tracking-tight text-white leading-tight">
             OWN YOUR PRESENCE.
           </h2>
-          <p className="text-base sm:text-xl text-zinc-300 font-light max-w-2xl mx-auto leading-relaxed">
+          <p className="text-base sm:text-xl font-light max-w-2xl mx-auto leading-relaxed text-zinc-300">
             Every runway begins with the confidence to take the first step.
           </p>
           <div className="pt-4 flex justify-center">
             <button
               onClick={() => setActiveTab('register')}
-              className="px-8 py-4 rounded-xl bg-white text-black font-extrabold text-xs uppercase tracking-wider hover:bg-[#C6FF00] hover:text-black transition-all flex items-center space-x-2"
+              className="px-8 py-4 font-mono-editorial text-xs font-bold uppercase tracking-wider rounded-sm transition-all hover:scale-105 active:scale-95 flex items-center space-x-2"
+              style={{
+                backgroundColor: 'var(--accent)',
+                color: '#000000'
+              }}
             >
               <span>DISCOVER YOUR OPPORTUNITY</span>
-              <ArrowRight className="w-4 h-4" />
+              <ArrowRight className="w-3.5 h-3.5" />
             </button>
           </div>
-        </div>
+        </motion.div>
       </section>
 
       {/* ──────────────────────────────────────────────────────────
-          SECTION 6: GALLERY PREVIEW (EDITORIAL IMAGE GRID)
+          SECTION 6: GALLERY PREVIEW (ASYMMETRIC GRID)
       ────────────────────────────────────────────────────────── */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
         <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
           <div>
-            <span className="text-xs font-bold text-[#789900] dark:text-[#C6FF00] uppercase tracking-widest block">Visual Archive</span>
-            <h2 className="font-editorial text-3xl sm:text-4xl font-bold text-zinc-900 dark:text-white mt-1">
+            <span className="font-mono-editorial block" style={{ color: 'var(--accent)', fontSize: '11px' }}>
+              04 // VISUAL ARCHIVE
+            </span>
+            <h2 className="font-editorial text-3xl sm:text-4xl font-bold mt-1" style={{ color: 'var(--text-primary)' }}>
               Catwalk Moments &amp; Highlights
             </h2>
           </div>
           <button
             onClick={() => setActiveTab('gallery')}
-            className="text-xs font-bold uppercase tracking-wider text-zinc-900 dark:text-[#C6FF00] hover:underline flex items-center space-x-1"
+            className="font-mono-editorial text-xs font-bold transition-all hover:underline flex items-center space-x-1"
+            style={{ color: 'var(--accent)' }}
           >
             <span>VIEW FULL GALLERY</span>
-            <ChevronRight className="w-4 h-4" />
+            <ChevronRight className="w-3.5 h-3.5" />
           </button>
         </div>
 
         {/* Varied Proportions Grid */}
         <div className="grid grid-cols-1 md:grid-cols-12 gap-6 items-stretch">
-          <div className="md:col-span-7 rounded-2xl overflow-hidden border border-zinc-200 dark:border-zinc-800 shadow-lg group">
+          <div 
+            className="md:col-span-7 overflow-hidden shadow-lg group rounded-sm"
+            style={{ border: '1px solid var(--border)' }}
+          >
             <img 
               src="/images/runway-2.jpg" 
               alt="Runway Stage Catwalk" 
+              loading="lazy"
               className="w-full h-80 sm:h-96 object-cover group-hover:scale-105 transition-transform duration-700"
             />
           </div>
-          <div className="md:col-span-5 rounded-2xl overflow-hidden border border-zinc-200 dark:border-zinc-800 shadow-lg group">
+          <div 
+            className="md:col-span-5 overflow-hidden shadow-lg group rounded-sm"
+            style={{ border: '1px solid var(--border)' }}
+          >
             <img 
               src="/founder.png" 
               alt="Founder & CEO B Sriram" 
+              loading="lazy"
               className="w-full h-80 sm:h-96 object-cover group-hover:scale-105 transition-transform duration-700"
             />
           </div>
@@ -413,27 +592,44 @@ export default function HomePage({ setActiveTab, onSelectEvent }: HomePageProps)
           SECTION 7: FINAL CALL TO ACTION (POWERFUL CLOSING)
       ────────────────────────────────────────────────────────── */}
       <section className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="p-10 sm:p-16 rounded-3xl bg-[#080808] border border-[#303030] text-center space-y-6 relative overflow-hidden shadow-2xl">
-          <div className="absolute top-0 right-1/2 translate-x-1/2 w-96 h-96 bg-[#C6FF00]/10 rounded-full blur-3xl pointer-events-none" />
+        <motion.div 
+          initial={{ opacity: 0, scale: 0.98 }}
+          whileInView={{ opacity: 1, scale: 1 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.7 }}
+          className="p-10 sm:p-16 text-center space-y-6 relative overflow-hidden shadow-2xl rounded-sm"
+          style={{ 
+            backgroundColor: 'var(--surface)', 
+            border: '1px solid var(--border)' 
+          }}
+        >
+          <div 
+            className="absolute top-0 right-1/2 translate-x-1/2 w-96 h-96 rounded-full blur-3xl pointer-events-none opacity-20"
+            style={{ background: 'radial-gradient(circle, var(--accent) 0%, transparent 70%)' }}
+          />
 
-          <h2 className="font-editorial text-4xl sm:text-6xl font-bold text-white tracking-tight relative z-10">
+          <h2 className="font-editorial text-4xl sm:text-6xl font-bold tracking-tight relative z-10" style={{ color: 'var(--text-primary)' }}>
             YOUR MOMENT. YOUR RUNWAY.
           </h2>
 
-          <p className="max-w-xl mx-auto text-sm sm:text-base text-zinc-300 font-light relative z-10 leading-relaxed">
+          <p className="max-w-xl mx-auto text-sm sm:text-base font-light relative z-10 leading-relaxed" style={{ color: 'var(--text-secondary)' }}>
             Step onto the catwalk with confidence. Secure your registration for the upcoming Chennai Runway Show 2026.
           </p>
 
           <div className="pt-4 flex justify-center relative z-10">
             <button
               onClick={() => setActiveTab('register')}
-              className="px-10 py-4 rounded-xl bg-[#C6FF00] hover:bg-[#b0e600] text-black font-extrabold text-xs sm:text-sm uppercase tracking-wider shadow-xl shadow-[#C6FF00]/25 hover:scale-105 active:scale-95 transition-all flex items-center space-x-2"
+              className="px-10 py-4 font-mono-editorial text-xs sm:text-sm font-bold uppercase tracking-widest rounded-sm shadow-xl transition-all hover:scale-105 active:scale-95 flex items-center space-x-2"
+              style={{
+                backgroundColor: 'var(--accent)',
+                color: '#000000'
+              }}
             >
-              <Sparkle className="w-4 h-4 text-black" />
+              <Sparkles className="w-4 h-4" />
               <span>REGISTER NOW</span>
             </button>
           </div>
-        </div>
+        </motion.div>
       </section>
     </div>
   );
