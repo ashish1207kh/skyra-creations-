@@ -16,6 +16,7 @@ import {
   Layers
 } from 'lucide-react';
 import InstagramIcon from '../components/InstagramIcon';
+import VirtualRunwayScene from '../components/VirtualRunwayScene';
 
 interface HomePageProps {
   setActiveTab: (tab: string) => void;
@@ -25,36 +26,37 @@ interface HomePageProps {
 export default function HomePage({ setActiveTab, onSelectEvent }: HomePageProps) {
   return (
     <div className="space-y-20 sm:space-y-28 pb-16">
-      {/* 1. HERO SECTION — High Fashion Editorial */}
-      <section className="relative min-h-[85vh] sm:min-h-[90vh] flex items-center justify-center overflow-hidden pt-8 pb-16">
-        {/* Background Atmosphere */}
-        <div className="absolute inset-0 bg-gradient-to-b from-black/80 via-black/60 to-black/95 z-10" />
-        <div 
-          className="absolute inset-0 bg-cover bg-center scale-105 transition-transform duration-1000"
-          style={{ backgroundImage: `url('/images/runway-1.jpg')` }}
-        />
+      {/* 1. HERO SECTION — High Fashion Editorial & 3D Virtual Runway Experience */}
+      <section className="relative min-h-[85vh] sm:min-h-[92vh] flex items-center justify-center overflow-hidden pt-8 pb-16">
+        {/* Three.js Virtual Runway Catwalk */}
+        <div className="absolute inset-0 z-0">
+          <VirtualRunwayScene className="w-full h-full" />
+        </div>
 
-        {/* Ambient Lights */}
-        <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[600px] h-[300px] bg-gradient-to-r from-amber-500/20 via-[#d4ff14]/15 to-transparent blur-3xl pointer-events-none z-10" />
+        {/* Ambient Overlay for Cinematic Fashion Depth & Legibility */}
+        <div className="absolute inset-0 bg-gradient-to-b from-black/75 via-black/45 to-black/95 pointer-events-none z-10" />
+
+        {/* Subtle Ambient Glow */}
+        <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[600px] h-[300px] bg-gradient-to-r from-amber-500/15 via-[#d4ff14]/15 to-transparent blur-3xl pointer-events-none z-10" />
 
         <div className="relative z-20 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-8">
           {/* Subtle Label */}
-          <div className="inline-flex items-center space-x-2 px-4 py-1.5 rounded-full bg-white/10 dark:bg-white/5 backdrop-blur-md border border-white/20 text-xs sm:text-sm font-medium text-amber-300 tracking-wider uppercase animate-fadeIn">
+          <div className="inline-flex items-center space-x-2 px-4 py-1.5 rounded-full bg-black/60 backdrop-blur-md border border-[#d4ff14]/30 text-xs sm:text-sm font-medium text-[#d4ff14] tracking-wider uppercase animate-fadeIn">
             <span className="w-2 h-2 rounded-full bg-[#d4ff14] animate-ping" />
             <span>Official Fashion, Modelling &amp; Runway Experience</span>
           </div>
 
           {/* Hero Headline */}
-          <h1 className="font-editorial text-4xl sm:text-6xl md:text-7xl font-bold tracking-tight text-white leading-[1.1] max-w-4xl mx-auto">
-            Where Fashion <br className="hidden sm:inline" />
-            <span className="bg-gradient-to-r from-white via-amber-200 to-[#d4ff14] bg-clip-text text-transparent">
-              Meets Confidence.
+          <h1 className="font-editorial text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-bold tracking-tight text-white leading-[1.05] max-w-4xl mx-auto">
+            BEYOND THE <br className="hidden sm:inline" />
+            <span className="bg-gradient-to-r from-white via-zinc-200 to-[#d4ff14] bg-clip-text text-transparent">
+              RUNWAY.
             </span>
           </h1>
 
           {/* Supporting Copy */}
           <p className="max-w-2xl mx-auto text-base sm:text-lg md:text-xl text-zinc-300 font-light leading-relaxed">
-            SKYRA CREATIONS brings together aspiring models, creative talent and fashion experiences through premier runway shows, modelling opportunities and professional event showcases.
+            An expression of fashion, confidence and creative individuality.
           </p>
 
           {/* Action CTAs */}
