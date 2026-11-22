@@ -423,10 +423,10 @@ export default function PaymentPage({
                 <strong className="text-white">Call Sheets &amp; Schedule:</strong> Exact venue address and runway reporting schedules are released <strong className="text-[#C6FF00]">10 days before the show</strong> to your registered WhatsApp.
               </li>
               <li>
-                <strong className="text-white">Balance Settlement:</strong> Clear your remaining balance prior to stage rehearsals via this Payment portal.
+                <strong className="text-white">Fee Settlement:</strong> Clear your remaining balance prior to stage rehearsals via the Payment page.
               </li>
               <li>
-                <strong className="text-white">Digital Pass:</strong> Once your UTR is verified by accounts, your digital venue pass unlocks on the Status portal.
+                <strong className="text-white">Digital Pass:</strong> Once your UTR is verified by accounts, your digital venue pass unlocks on the Status page.
               </li>
             </ul>
           </div>
@@ -538,10 +538,10 @@ export default function PaymentPage({
           OFFICIAL FINANCIAL GATEWAY // CHENNAI 2026
         </span>
         <h1 className="font-display text-3xl sm:text-5xl md:text-6xl font-bold leading-[1.08] text-white">
-          PAYMENT &amp; BALANCE SETTLEMENT
+          REGISTRATION FEE PAYMENT &amp; CLEARANCE
         </h1>
         <p className="text-xs sm:text-sm text-[#BFC3C7] font-light leading-relaxed max-w-2xl mx-auto">
-          Secure, bank-verified UPI payment gateway for SKYRA CREATIONS Runway Show 2026. Settle token advances, clear remaining balance installments, and upload bank transaction references.
+          Secure, bank-verified UPI payment gateway for Skyra Creations runway model registrations and showcase participation. Settle token advances, clear fee installments, and submit bank transaction references.
         </p>
 
         {/* Dual Mode Switcher Tabs */}
@@ -737,7 +737,7 @@ export default function PaymentPage({
                     ALL REGISTRATION DUES ARE FULLY SETTLED
                   </h3>
                   <p className="text-xs text-[#BFC3C7] font-light max-w-md mx-auto">
-                    You have cleared 100% of your showcase participation fees. Your digital entry pass is available on the Status portal.
+                    You have cleared 100% of your showcase participation fees. Your digital entry pass is available on the Status page.
                   </p>
                   <MagneticButton
                     onClick={() => {

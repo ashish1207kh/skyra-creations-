@@ -432,10 +432,10 @@ export default function RegistrationPage({ setActiveTab, setLookupRegId, onProce
                 <strong className="text-white">Call Sheets &amp; Schedule:</strong> Exact venue address and runway reporting schedules are released <strong className="text-[#C6FF00]">10 days before the show</strong> to your registered WhatsApp ({whatsapp}).
               </li>
               <li>
-                <strong className="text-white">Balance Settlement:</strong> You can clear your remaining balance of <strong className="text-white">₹{remainingBalance.toLocaleString('en-IN')}</strong> prior to stage rehearsals via the Payment portal.
+                <strong className="text-white">Fee Settlement:</strong> You can clear your remaining balance of <strong className="text-white">₹{remainingBalance.toLocaleString('en-IN')}</strong> prior to stage rehearsals via the Payment page.
               </li>
               <li>
-                <strong className="text-white">Digital Pass:</strong> Once your UTR is verified by accounts, your digital venue pass unlocks on the Status portal.
+                <strong className="text-white">Digital Pass:</strong> Once your UTR is verified by accounts, your digital venue pass unlocks on the Status page.
               </li>
             </ul>
           </div>

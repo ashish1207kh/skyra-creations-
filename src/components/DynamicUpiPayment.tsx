@@ -408,7 +408,7 @@ export default function DynamicUpiPayment({
               <div className="text-center mb-4 sm:mb-6 pr-8 sm:pr-0">
                 <span className="px-3 py-1 rounded-sm bg-[#C6FF00]/10 text-[#C6FF00] border border-[#C6FF00]/30 font-mono-editorial text-[10px] font-bold uppercase tracking-wider inline-flex items-center space-x-1.5">
                   <Sparkles className="w-3.5 h-3.5" />
-                  <span>SKYRA CREATIONS SECURE PORTAL</span>
+                  <span>SKYRA CREATIONS SECURE GATEWAY</span>
                 </span>
                 <h3 className="text-xl sm:text-2xl font-bold font-editorial text-white mt-2">
                   Complete Your Payment

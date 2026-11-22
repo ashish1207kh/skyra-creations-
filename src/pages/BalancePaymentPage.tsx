@@ -301,14 +301,14 @@ export default function BalancePaymentPage({ initialRegId, setActiveTab, setLook
           <div>
             <div className="flex items-center space-x-2 text-[#C6FF00] font-mono-editorial text-[10px] font-semibold tracking-widest uppercase mb-2">
               <CreditCard className="w-3.5 h-3.5" />
-              <span>SKYRA CREATIONS — BALANCE SETTLEMENT PORTAL</span>
+              <span>SKYRA CREATIONS — REGISTRATION FEE CLEARANCE</span>
             </div>
 
             <h1 className="font-display text-3xl sm:text-5xl font-bold text-white tracking-tight leading-[1.08]">
-              SETTLE OUTSTANDING BALANCE.
+              COMPLETE REGISTRATION PAYMENT.
             </h1>
             <p className="text-sm sm:text-base text-[#BFC3C7] mt-2 font-light">
-              Already registered for the Runway Show 2026? Look up your registration ID and submit an installment or full balance clearance.
+              Already registered as a model for Runway Show 2026? Look up your registration ID to clear your remaining participation balance before stage rehearsals.
             </p>
           </div>
 

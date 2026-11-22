@@ -6,6 +6,7 @@
 User-agent: *
 Allow: /
 Disallow: /admin
+Disallow: /api/
 
 # Sitemap Declaration
 Sitemap: https://www.skyracreations.site/sitemap.xml

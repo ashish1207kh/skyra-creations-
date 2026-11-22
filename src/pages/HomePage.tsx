@@ -38,7 +38,7 @@ const faqs = [
   },
   {
     question: "When and how do I receive my official digital Runway Pass?",
-    answer: "Once your payment is submitted with the 12-digit UPI reference (UTR), our accounts verification team cross-checks it directly with bank settlement statements. Upon approval, your verified digital pass and unique pass token are immediately unlocked on the Check Status portal for download and print."
+    answer: "Once your payment is submitted with the 12-digit UPI reference (UTR), our accounts verification team cross-checks it directly with bank settlement statements. Upon approval, your verified digital pass and unique pass token are immediately unlocked on the Check Status desk for download and print."
   }
 ];
 
@@ -222,17 +222,37 @@ export default function HomePage({ setActiveTab, onSelectEvent }: HomePageProps)
             </div>
           </motion.div>
 
+          {/* Subheadline / Category Badge */}
+          <motion.div
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.7, delay: 0.05 }}
+            className="flex justify-center"
+          >
+            <span 
+              className="inline-flex items-center space-x-2 px-4 py-1.5 rounded-full font-mono-editorial text-[10px] sm:text-xs font-semibold tracking-widest uppercase"
+              style={{
+                backgroundColor: 'rgba(198, 255, 0, 0.08)',
+                border: '1px solid rgba(198, 255, 0, 0.3)',
+                color: 'var(--accent)'
+              }}
+            >
+              <Sparkles className="w-3.5 h-3.5" />
+              <span>Professional Runway Training &amp; Modelling with Skyra Creations</span>
+            </span>
+          </motion.div>
+
           {/* Hero Headline */}
           <motion.h1 
             initial={{ opacity: 0, y: 24 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.1 }}
-            className="font-display font-extrabold tracking-tight leading-[0.95] max-w-5xl mx-auto text-hero break-words"
+            className="font-display font-extrabold tracking-tight leading-[1.05] max-w-5xl mx-auto text-hero break-words"
             style={{ color: '#F5F5F5' }}
           >
-            <span className="block">BEYOND THE</span>
+            <span className="block">Discover Your Confidence.</span>
             <span className="block" style={{ color: 'var(--accent)' }}>
-              RUNWAY.
+              Own the Runway.
             </span>
           </motion.h1>
 
@@ -241,10 +261,10 @@ export default function HomePage({ setActiveTab, onSelectEvent }: HomePageProps)
             initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.2 }}
-            className="max-w-2xl mx-auto text-sm sm:text-lg md:text-xl font-light leading-relaxed"
+            className="max-w-3xl mx-auto text-sm sm:text-lg md:text-xl font-light leading-relaxed"
             style={{ color: 'var(--silver)' }}
           >
-            An expression of fashion, confidence and creative individuality.
+            Step into the world of fashion, develop your modelling skills, build your confidence and turn your passion into a runway-ready journey.
           </motion.p>
 
           {/* Action CTAs */}
@@ -376,14 +396,14 @@ export default function HomePage({ setActiveTab, onSelectEvent }: HomePageProps)
               className="text-base sm:text-lg leading-relaxed font-light"
               style={{ color: 'var(--text-secondary)' }}
             >
-              SKYRA CREATIONS is an international fashion and runway platform dedicated to emerging models, designers, and creative artists. Through premier catwalk productions, structured stage grooming, and certified recognition, we provide a genuine spotlight for true talent.
+              Skyra Creations is dedicated to professional runway training, catwalk grooming, and modelling opportunities. Through premier catwalk productions, structured stage mentorship, and certified recognition, we empower emerging models to step confidently onto the ramp and into the fashion industry.
             </p>
 
             <p 
               className="text-sm sm:text-base leading-relaxed"
               style={{ color: 'var(--text-muted)' }}
             >
-              Founded by <strong>B Sriram</strong>, SKYRA CREATIONS replaces industry gatekeeping with transparent production, prestigious city-center venues, and verified credentials for every participant.
+              Founded by <strong>B Sriram</strong>, Skyra Creations provides structured training, prestigious city-center venues, and verified credentials for every model and participant.
             </p>
 
             <div className="pt-4">

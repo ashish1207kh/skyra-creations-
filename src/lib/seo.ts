@@ -7,80 +7,80 @@ export interface PageSeoConfig {
 
 export const SEO_CONFIGS: Record<string, PageSeoConfig> = {
   home: {
-    title: 'SKYRA CREATIONS — Fashion Model Training & Events Organising',
-    description: 'Premier fashion model training, catwalk grooming, and fashion event organising platform by B Sriram. Professional auditions, runway showcases, and designer events in Chennai.',
+    title: 'Skyra Creations | Runway Training & Modelling Academy',
+    description: 'Skyra Creations offers runway training and modelling opportunities to help aspiring models build confidence, develop their skills and step into the fashion industry.',
     canonicalPath: '/',
     noindex: false,
   },
   about: {
-    title: 'About SKYRA CREATIONS | Fashion Model Training & Runway Platform',
-    description: 'Learn about SKYRA CREATIONS, founded by B Sriram. Empowering aspiring models through professional catwalk showcases, stage grooming, model training, and inclusive fashion event organising.',
+    title: 'About Us | Runway Training & Modelling Academy | Skyra Creations',
+    description: 'Founded by B Sriram, Skyra Creations is dedicated to runway training and modelling excellence, empowering aspiring models through professional catwalk grooming and showcase opportunities.',
     canonicalPath: '/about',
     noindex: false,
   },
   'what-we-do': {
-    title: 'What We Do | Fashion Model Training & Events Organising | SKYRA CREATIONS',
-    description: 'Explore our services: Fashion Model Training, Runway Shows, Event Organising, Designer Showcases, Ramp Walk Coaching, and Creative Productions.',
+    title: 'Runway Training & Modelling Disciplines | Skyra Creations',
+    description: 'Explore our core disciplines: Runway Training, Catwalk Grooming, Stage Choreography, Modelling Opportunities, and Designer Showcases with Skyra Creations.',
     canonicalPath: '/what-we-do',
     noindex: false,
   },
   events: {
-    title: 'Upcoming Events & Auditions | SKYRA CREATIONS',
-    description: 'Browse upcoming runway fashion shows and model audition events by SKYRA CREATIONS. View details and register online.',
+    title: 'Upcoming Runway Shows & Auditions | Skyra Creations',
+    description: 'Discover upcoming fashion runway shows and model auditions with Skyra Creations. Build your confidence and step onto the catwalk in Chennai.',
     canonicalPath: '/events',
     noindex: false,
   },
   'event-details': {
-    title: 'Runway Show 2026 Details & Registration | SKYRA CREATIONS',
-    description: 'Event details, location, fee breakdown, eligibility and guidelines for SKYRA CREATIONS Runway Show 2026 in Chennai.',
+    title: 'Runway Show 2026 Registration & Schedule | Skyra Creations',
+    description: 'Complete details, venue specifications, and model registration guidelines for the signature Runway Show 2026 by Skyra Creations.',
     canonicalPath: '/events/runway-2026',
     noindex: false,
   },
   gallery: {
-    title: 'Runway Gallery & Highlights | SKYRA CREATIONS',
-    description: 'View highlights from official SKYRA CREATIONS fashion runways, catwalk presentations, model showcases and stage moments.',
+    title: 'Runway Showcase & Model Gallery | Skyra Creations',
+    description: 'Explore catwalk highlights, backstage moments, and model performances from official Skyra Creations runway events.',
     canonicalPath: '/gallery',
     noindex: false,
   },
   contact: {
-    title: 'Contact Us | SKYRA CREATIONS Official Helpdesk',
-    description: 'Connect with SKYRA CREATIONS on Instagram @skyra_creations_ or via verified helpline for registration and audition support.',
+    title: 'Contact Us | Skyra Creations Runway Academy',
+    description: 'Get in touch with Skyra Creations for runway training inquiries, model auditions, and fashion event collaborations.',
     canonicalPath: '/contact',
     noindex: false,
   },
   register: {
-    title: 'Model Registration & Auditions 2026 | SKYRA CREATIONS',
-    description: 'Register for SKYRA CREATIONS fashion model training and Runway Show 2026 auditions in Chennai. Token advance options ₹500, ₹1,000, or ₹1,500. All categories welcome.',
+    title: 'Model Registration & Runway Auditions | Skyra Creations',
+    description: 'Register for professional runway training and audition for Runway Show 2026 with Skyra Creations. Open to kids, teens, adults, and plus-size models.',
     canonicalPath: '/register',
     noindex: false,
   },
   payment: {
-    title: 'Official Fee Payment & Verification | SKYRA CREATIONS',
-    description: 'Secure UPI payment portal for SKYRA CREATIONS Runway Show 2026. Settle token advances, clear fee installments, and upload bank UTR proofs.',
+    title: 'Official Registration Fee Payment | Skyra Creations',
+    description: 'Official secure UPI payment gateway for Skyra Creations runway training and showcase event registrations.',
     canonicalPath: '/payment',
     noindex: false,
   },
   balance: {
-    title: 'Event Payment & Clearance | SKYRA CREATIONS',
-    description: 'Complete your fashion show registration payment and clear remaining dues securely for upcoming SKYRA CREATIONS runway events.',
+    title: 'Registration Fee Clearance | Skyra Creations',
+    description: 'Complete your runway show registration fee clearance securely for upcoming Skyra Creations events.',
     canonicalPath: '/balance',
     noindex: false,
   },
   status: {
-    title: 'Check Registration Status & Entry Pass | SKYRA CREATIONS',
-    description: 'Track your SKYRA CREATIONS Runway Show 2026 registration verification progress and access your official digital runway entry pass.',
+    title: 'Registration Verification & Runway Pass | Skyra Creations',
+    description: 'Track your runway model registration verification status and access your official digital credential pass.',
     canonicalPath: '/status',
     noindex: false,
   },
   admin: {
-    title: 'Admin Operations Portal | SKYRA CREATIONS',
-    description: 'Restricted administrative dashboard for SKYRA CREATIONS event operations and verification.',
+    title: 'Admin Operations Portal | Skyra Creations',
+    description: 'Restricted administrative dashboard for Skyra Creations runway training and event operations.',
     canonicalPath: '/admin',
     noindex: true,
   },
   'not-found': {
-    title: 'Page Not Found | SKYRA CREATIONS',
-    description: 'The requested page could not be found on SKYRA CREATIONS.',
+    title: 'Page Not Found | Skyra Creations',
+    description: 'The requested page could not be found on Skyra Creations.',
     canonicalPath: '/404',
     noindex: true,
   },
@@ -139,4 +139,11 @@ export function updatePageSeo(tabId: string) {
 
   const ogUrl = document.querySelector('meta[property="og:url"]');
   if (ogUrl) ogUrl.setAttribute('content', fullCanonicalUrl);
+
+  // 6. Update Twitter Card Metadata
+  const twitterTitle = document.querySelector('meta[name="twitter:title"]');
+  if (twitterTitle) twitterTitle.setAttribute('content', config.title);
+
+  const twitterDesc = document.querySelector('meta[name="twitter:description"]');
+  if (twitterDesc) twitterDesc.setAttribute('content', config.description);
 }

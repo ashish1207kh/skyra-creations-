@@ -132,7 +132,7 @@ export default function ContactPage({ setActiveTab }: ContactPageProps) {
             <div className="w-10 h-10 rounded-sm flex items-center justify-center mb-4 bg-[#080808] border border-white/10 group-hover:scale-105 transition-transform">
               <Globe className="w-5 h-5 text-[#C6FF00]" />
             </div>
-            <span className="font-mono-editorial block text-[10px] text-[#BFC3C7]">OFFICIAL PORTAL</span>
+            <span className="font-mono-editorial block text-[10px] text-[#BFC3C7]">OFFICIAL PLATFORM</span>
             <h3 className="font-display text-xl font-bold mt-1 text-white">skyracreations.site</h3>
             <p className="text-xs mt-2 font-light text-[#BFC3C7]">
               Authoritative registration, balance clearance, and digital pass gateway.

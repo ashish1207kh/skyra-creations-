@@ -309,7 +309,7 @@ export default function App() {
 
                 <div className="space-y-3 col-span-2 sm:col-span-1">
                   <span className="font-mono-editorial block" style={{ color: 'var(--text-muted)', fontSize: '10px' }}>SUPPORT</span>
-                  <button onClick={() => setActiveTab('payment')} className="block hover:opacity-75 transition-opacity" style={{ color: 'var(--text-secondary)' }}>Payment Portal</button>
+                  <button onClick={() => setActiveTab('payment')} className="block hover:opacity-75 transition-opacity" style={{ color: 'var(--text-secondary)' }}>Fee Payment</button>
                   <button onClick={() => setActiveTab('balance')} className="block hover:opacity-75 transition-opacity" style={{ color: 'var(--text-secondary)' }}>Fee Clearance</button>
                   <button onClick={() => setActiveTab('status')} className="block hover:opacity-75 transition-opacity" style={{ color: 'var(--text-secondary)' }}>Check Status / Pass</button>
                   <button onClick={() => setActiveTab('contact')} className="block hover:opacity-75 transition-opacity" style={{ color: 'var(--text-secondary)' }}>Contact Support</button>
