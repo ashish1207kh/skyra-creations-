@@ -181,44 +181,23 @@ export default function HomePage({ setActiveTab, onSelectEvent }: HomePageProps)
           style={{ scale: heroScale, opacity: heroOpacity, y: heroY }}
           className="relative z-20 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-5 sm:space-y-6 pt-14 sm:pt-20 pb-4 sm:pb-6 will-change-transform transform-gpu"
         >
-          {/* Official SKYRA CREATIONS Brandmark Showcase */}
+          {/* Brandmark Showcase */}
           <motion.div
-            initial={{ opacity: 0, scale: 0.88, y: -12 }}
+            initial={{ opacity: 0, scale: 0.92, y: -10 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
-            transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
+            transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
             className="flex justify-center pb-2"
           >
             <div 
               onClick={() => setActiveTab('about')}
-              className="relative group cursor-pointer select-none"
-              title="SKYRA CREATIONS — Certified Fashion & Runway Platform"
+              className="cursor-pointer select-none transition-transform duration-500 hover:scale-105"
+              title="Skyra Creations — Runway Training &amp; Modelling Academy"
             >
-              {/* Dynamic Multicolored Ambient Glow */}
-              <div 
-                className="absolute -inset-4 rounded-3xl blur-2xl opacity-40 group-hover:opacity-80 transition-opacity duration-700 pointer-events-none"
-                style={{
-                  background: 'radial-gradient(ellipse at center, rgba(220, 38, 38, 0.5) 0%, rgba(198, 255, 0, 0.3) 45%, transparent 70%)',
-                }}
+              <img
+                src="/logo-clean.png"
+                alt="Skyra Creations Logo"
+                className="h-14 sm:h-18 md:h-20 w-auto object-contain drop-shadow-[0_4px_24px_rgba(0,0,0,0.9)]"
               />
-              
-              <div 
-                className="relative px-6 py-3.5 sm:px-8 sm:py-4 rounded-2xl transition-all duration-500 group-hover:scale-105"
-                style={{
-                  backgroundColor: 'rgba(0, 0, 0, 0.65)',
-                  border: '1px solid rgba(255, 255, 255, 0.14)',
-                  boxShadow: '0 20px 40px -15px rgba(0,0,0,0.9), 0 0 25px rgba(198,255,0,0.1)',
-                  backdropFilter: 'blur(12px)',
-                }}
-              >
-                <img
-                  src="/logo-clean.png"
-                  alt="SKYRA CREATIONS Official Logo"
-                  className="h-16 sm:h-20 md:h-24 w-auto object-contain transition-transform duration-500"
-                  style={{
-                    filter: 'drop-shadow(0 4px 16px rgba(0,0,0,0.95)) contrast(1.08)',
-                  }}
-                />
-              </div>
             </div>
           </motion.div>
 
@@ -603,39 +582,17 @@ export default function HomePage({ setActiveTab, onSelectEvent }: HomePageProps)
           >
             <div className="relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
               <div className="lg:col-span-7 space-y-5">
-                <div className="flex flex-wrap items-center gap-2.5">
+                <div className="flex items-center space-x-2">
                   <div 
                     className="inline-flex items-center space-x-2 px-3 py-1 rounded-full font-mono-editorial text-[10px] font-bold tracking-wider"
                     style={{ 
-                      backgroundColor: 'rgba(0,0,0,0.4)', 
-                      border: '1px solid var(--border)',
+                      backgroundColor: 'rgba(198, 255, 0, 0.1)', 
+                      border: '1px solid rgba(198, 255, 0, 0.3)',
                       color: 'var(--accent)' 
                     }}
                   >
                     <span className="w-1.5 h-1.5 rounded-full animate-pulse" style={{ backgroundColor: 'var(--accent)' }} />
                     <span>REGISTRATIONS ACTIVE</span>
-                  </div>
-
-                  <div className="flex items-center space-x-2 font-mono-editorial text-[10px] text-[#C6FF00] bg-[#C6FF00]/10 border border-[#C6FF00]/30 px-3 py-1 rounded-full">
-                    <span className="w-1.5 h-1.5 rounded-full bg-[#C6FF00] animate-ping" />
-                    <span className="font-bold">84% SLOTS COMMITTED</span>
-                  </div>
-                </div>
-
-                {/* Live Slot Allocation Visualizer */}
-                <div className="space-y-1.5 max-w-md">
-                  <div className="flex justify-between font-mono-editorial text-[9px] text-[#BFC3C7] tracking-wider uppercase">
-                    <span>Audition Slot Availability</span>
-                    <span className="text-[#C6FF00] font-bold">16% Slots Left</span>
-                  </div>
-                  <div className="w-full bg-black/50 h-1.5 rounded-full overflow-hidden border border-white/10">
-                    <motion.div 
-                      initial={{ width: 0 }}
-                      whileInView={{ width: '84%' }}
-                      viewport={{ once: true }}
-                      transition={{ duration: 1.4, ease: [0.16, 1, 0.3, 1] }}
-                      className="h-full bg-gradient-to-r from-[#C6FF00] via-[#D8FF33] to-[#E5FF7F] rounded-full shadow-[0_0_12px_rgba(198,255,0,0.6)]"
-                    />
                   </div>
                 </div>
 
@@ -798,14 +755,14 @@ export default function HomePage({ setActiveTab, onSelectEvent }: HomePageProps)
           </button>
         </div>
 
-        {/* Varied Proportions Grid with Rock-Solid Alignment */}
-        <div className="grid grid-cols-1 md:grid-cols-12 gap-6 items-stretch">
+        {/* Balanced Magazine 2-Column Grid with Rock-Solid Alignment */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-stretch">
           <motion.div 
             initial={{ opacity: 0, y: 24 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: '-60px' }}
             transition={{ duration: 0.6 }}
-            className="md:col-span-7"
+            className="w-full"
           >
             <TiltCard className="rounded-sm overflow-hidden shadow-lg group h-full">
               <div 
@@ -827,7 +784,7 @@ export default function HomePage({ setActiveTab, onSelectEvent }: HomePageProps)
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: '-60px' }}
             transition={{ duration: 0.6, delay: 0.1 }}
-            className="md:col-span-5"
+            className="w-full"
           >
             <TiltCard className="rounded-sm overflow-hidden shadow-lg group h-full">
               <div 

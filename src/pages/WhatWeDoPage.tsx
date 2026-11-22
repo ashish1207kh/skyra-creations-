@@ -172,9 +172,6 @@ export default function WhatWeDoPage({ setActiveTab }: WhatWeDoPageProps) {
                     loading="lazy"
                     className="w-full h-64 sm:h-80 lg:h-96 object-cover object-center group-hover:scale-105 transition-transform duration-700" 
                   />
-                  <div 
-                    className="absolute inset-0 bg-[#C6FF00]/10 opacity-30 pointer-events-none group-hover:opacity-0 transition-opacity"
-                  />
                 </TiltCard>
               </div>
             </motion.div>

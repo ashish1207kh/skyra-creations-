@@ -28,27 +28,12 @@ export default function AboutPage({ setActiveTab }: AboutPageProps) {
       >
         {/* Official Brandmark */}
         <div className="flex justify-center pb-2">
-          <div className="relative group select-none">
-            <div 
-              className="absolute -inset-3 rounded-2xl blur-xl opacity-40 pointer-events-none"
-              style={{
-                background: 'radial-gradient(ellipse at center, rgba(220, 38, 38, 0.45) 0%, rgba(198, 255, 0, 0.25) 50%, transparent 70%)',
-              }}
+          <div className="select-none transition-transform duration-500 hover:scale-105">
+            <img
+              src="/logo-clean.png"
+              alt="Skyra Creations Logo"
+              className="h-14 sm:h-16 w-auto object-contain drop-shadow-[0_4px_20px_rgba(0,0,0,0.85)]"
             />
-            <div 
-              className="relative px-6 py-3 rounded-2xl shadow-xl transition-transform duration-500 group-hover:scale-105"
-              style={{
-                backgroundColor: 'rgba(0, 0, 0, 0.6)',
-                border: '1px solid rgba(255, 255, 255, 0.12)',
-              }}
-            >
-              <img
-                src="/logo-clean.png"
-                alt="SKYRA CREATIONS Official Logo"
-                className="h-14 sm:h-16 w-auto object-contain"
-                style={{ filter: 'drop-shadow(0 4px 12px rgba(0,0,0,0.85))' }}
-              />
-            </div>
           </div>
         </div>
 
@@ -261,7 +246,7 @@ export default function AboutPage({ setActiveTab }: AboutPageProps) {
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          <div className="p-6 rounded-sm space-y-2" style={{ backgroundColor: 'var(--surface)', border: '1px solid var(--border)' }}>
+          <div className="p-6 rounded-sm space-y-2 flex flex-col justify-start h-full" style={{ backgroundColor: 'var(--surface)', border: '1px solid var(--border)' }}>
             <span className="font-mono-editorial text-xs font-bold" style={{ color: 'var(--accent)' }}>01</span>
             <h4 className="font-bold text-base" style={{ color: 'var(--text-primary)' }}>City Center Venues</h4>
             <p className="text-xs leading-relaxed" style={{ color: 'var(--text-muted)' }}>
@@ -269,7 +254,7 @@ export default function AboutPage({ setActiveTab }: AboutPageProps) {
             </p>
           </div>
 
-          <div className="p-6 rounded-sm space-y-2" style={{ backgroundColor: 'var(--surface)', border: '1px solid var(--border)' }}>
+          <div className="p-6 rounded-sm space-y-2 flex flex-col justify-start h-full" style={{ backgroundColor: 'var(--surface)', border: '1px solid var(--border)' }}>
             <span className="font-mono-editorial text-xs font-bold" style={{ color: 'var(--accent)' }}>02</span>
             <h4 className="font-bold text-base" style={{ color: 'var(--text-primary)' }}>Certified Recognition</h4>
             <p className="text-xs leading-relaxed" style={{ color: 'var(--text-muted)' }}>
@@ -277,7 +262,7 @@ export default function AboutPage({ setActiveTab }: AboutPageProps) {
             </p>
           </div>
 
-          <div className="p-6 rounded-sm space-y-2" style={{ backgroundColor: 'var(--surface)', border: '1px solid var(--border)' }}>
+          <div className="p-6 rounded-sm space-y-2 flex flex-col justify-start h-full" style={{ backgroundColor: 'var(--surface)', border: '1px solid var(--border)' }}>
             <span className="font-mono-editorial text-xs font-bold" style={{ color: 'var(--accent)' }}>03</span>
             <h4 className="font-bold text-base" style={{ color: 'var(--text-primary)' }}>Hands-on Grooming</h4>
             <p className="text-xs leading-relaxed" style={{ color: 'var(--text-muted)' }}>
@@ -285,7 +270,7 @@ export default function AboutPage({ setActiveTab }: AboutPageProps) {
             </p>
           </div>
 
-          <div className="p-6 rounded-sm space-y-2" style={{ backgroundColor: 'var(--surface)', border: '1px solid var(--border)' }}>
+          <div className="p-6 rounded-sm space-y-2 flex flex-col justify-start h-full" style={{ backgroundColor: 'var(--surface)', border: '1px solid var(--border)' }}>
             <span className="font-mono-editorial text-xs font-bold" style={{ color: 'var(--accent)' }}>04</span>
             <h4 className="font-bold text-base" style={{ color: 'var(--text-primary)' }}>Media Deliverables</h4>
             <p className="text-xs leading-relaxed" style={{ color: 'var(--text-muted)' }}>

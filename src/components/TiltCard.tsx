@@ -19,9 +19,9 @@ export default function TiltCard({ children, className = '', onClick, glare = tr
   }));
 
   const calc = (x: number, y: number, rect: DOMRect) => [
-    -((y - rect.top) / rect.height - 0.5) * 12,
-    ((x - rect.left) / rect.width - 0.5) * 12,
-    1.02,
+    -((y - rect.top) / rect.height - 0.5) * 3.5,
+    ((x - rect.left) / rect.width - 0.5) * 3.5,
+    1.01,
   ];
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
