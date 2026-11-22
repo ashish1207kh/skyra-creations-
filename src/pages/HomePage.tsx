@@ -519,10 +519,10 @@ export default function HomePage({ setActiveTab, onSelectEvent }: HomePageProps)
           >
             <div className="lg:col-span-6 relative overflow-hidden h-64 sm:h-80 rounded-sm" style={{ border: '1px solid var(--border)' }}>
               <img 
-                src="/founder.png" 
-                alt="Stage Grooming & Mentorship" 
+                src="/images/runway-grooming.jpg" 
+                alt="Runway Model Posture and Walk Rehearsal" 
                 loading="lazy"
-                className="w-full h-full object-cover object-top"
+                className="w-full h-full object-cover object-center"
               />
               <div 
                 className="absolute top-4 left-4 px-3 py-1 font-mono-editorial text-[10px] font-bold"
@@ -792,10 +792,10 @@ export default function HomePage({ setActiveTab, onSelectEvent }: HomePageProps)
                 style={{ border: '1px solid var(--border)' }}
               >
                 <img 
-                  src="/founder.png" 
-                  alt="Founder & CEO B Sriram" 
+                  src="/images/catwalk-highlight.jpg" 
+                  alt="Editorial Haute Couture Runway Showcase" 
                   loading="lazy"
-                  className="w-full h-80 sm:h-96 lg:h-[420px] object-cover object-top group-hover:scale-105 transition-transform duration-700"
+                  className="w-full h-80 sm:h-96 lg:h-[420px] object-cover object-center group-hover:scale-105 transition-transform duration-700"
                 />
               </div>
             </TiltCard>

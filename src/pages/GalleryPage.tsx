@@ -42,10 +42,10 @@ export default function GalleryPage({ setActiveTab }: GalleryPageProps) {
     },
     {
       id: 3,
-      src: '/founder.png',
-      title: 'Leadership & Model Mentorship',
+      src: '/images/runway-grooming.jpg',
+      title: 'Model Grooming & Ramp Rehearsal',
       category: 'MENTORSHIP',
-      description: 'Founder & CEO B Sriram guiding contestants on stage etiquette and presentation.',
+      description: 'Pre-show masterclass guiding models through catwalk poise, posture, and pacing.',
       span: 'md:col-span-4 md:row-span-1'
     },
     {
@@ -58,11 +58,19 @@ export default function GalleryPage({ setActiveTab }: GalleryPageProps) {
     },
     {
       id: 5,
+      src: '/images/catwalk-highlight.jpg',
+      title: 'Catwalk Editorial Finale',
+      category: 'RUNWAY',
+      description: 'Dramatic catwalk edge presentation showcasing bespoke couture designer creation.',
+      span: 'md:col-span-6 md:row-span-1'
+    },
+    {
+      id: 6,
       src: '/og-image.png',
       title: 'Official Runway Showcase Banner',
       category: 'STAGE',
       description: 'SKYRA CREATIONS official event identity and runway visual showcase production.',
-      span: 'md:col-span-6 md:row-span-1'
+      span: 'md:col-span-12 md:row-span-1'
     },
   ];
 
