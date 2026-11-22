@@ -61,7 +61,7 @@ export default function EventDetailPage({ eventId = 'EVT-CHX-2026', setActiveTab
         </div>
 
         <h1 className="font-display text-4xl sm:text-6xl font-bold leading-tight text-white">
-          SKYRA CREATIONS — RUNWAY SHOW 2026
+          RUNWAY SHOW 2026
         </h1>
 
         <div className="flex flex-wrap items-center gap-4 font-mono-editorial text-[11px] text-[#BFC3C7]">

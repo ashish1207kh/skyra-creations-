@@ -30,7 +30,7 @@ export default function UpcomingEventsPage({ setActiveTab, onSelectEvent }: Upco
       .finally(() => setLoading(false));
   }, []);
 
-  const eventTitle = paymentInfo?.event_name || 'SKYRA CREATIONS — RUNWAY SHOW 2026';
+  const eventTitle = paymentInfo?.event_name || 'RUNWAY SHOW 2026';
   const location = paymentInfo?.location || 'Chennai (City Center — Not outer)';
   const totalFee = paymentInfo?.default_total_fee || 3000;
   const advances = paymentInfo?.allowed_token_advances || [500, 1000, 1500];

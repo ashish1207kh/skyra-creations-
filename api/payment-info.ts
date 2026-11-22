@@ -22,7 +22,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
     return res.status(200).json({
       event_id: eventConfig.event_id,
-      event_name: eventConfig.title || 'SKYRA CREATIONS - RUNWAY SHOW',
+      event_name: eventConfig.title || 'RUNWAY SHOW 2026',
       location: eventConfig.location,
       upi_id: process.env.UPI_ID || 'sri.469512-1@oksbi',
       upi_name: process.env.UPI_NAME || 'B Sriram',
@@ -41,7 +41,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   } catch (err: any) {
     return res.status(200).json({
       event_id: 'EVT-CHX-2026',
-      event_name: 'SKYRA CREATIONS - RUNWAY SHOW',
+      event_name: 'RUNWAY SHOW 2026',
       location: 'Chennai & Selected Nearby Locations',
       upi_id: process.env.UPI_ID || 'sri.469512-1@oksbi',
       upi_name: process.env.UPI_NAME || 'B Sriram',

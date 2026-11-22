@@ -614,7 +614,7 @@ export default function HomePage({ setActiveTab, onSelectEvent }: HomePageProps)
                 </div>
 
                 <h3 className="font-editorial text-3xl sm:text-4xl lg:text-5xl font-bold leading-tight" style={{ color: 'var(--text-primary)' }}>
-                  SKYRA CREATIONS — RUNWAY SHOW 2026
+                  RUNWAY SHOW 2026
                 </h3>
 
                 <p className="text-sm sm:text-base leading-relaxed font-light" style={{ color: 'var(--text-secondary)' }}>
