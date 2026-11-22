@@ -17,7 +17,13 @@
     --accent-hover: #D8FF33;
     --silver: #BFC3C7;
     --accent-amber: #f59e0b;
+    --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+    --ease-smooth: cubic-bezier(0.22, 1, 0.36, 1);
     color-scheme: dark;
+  }
+
+  html {
+    scroll-behavior: smooth;
   }
 
   html, body, #root {

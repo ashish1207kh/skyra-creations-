@@ -26,12 +26,15 @@ export default function TiltCard({ children, className = '', onClick, glare = tr
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
     if (!cardRef.current) return;
+    if (typeof window !== 'undefined' && window.matchMedia && !window.matchMedia('(hover: hover)').matches) {
+      return;
+    }
     const rect = cardRef.current.getBoundingClientRect();
     setSpring.start({ xys: calc(e.clientX, e.clientY, rect) });
     if (glare) {
       const px = ((e.clientX - rect.left) / rect.width) * 100;
       const py = ((e.clientY - rect.top) / rect.height) * 100;
-      setGlarePos({ x: px, y: py, opacity: 0.22 });
+      setGlarePos({ x: px, y: py, opacity: 0.18 });
     }
   };
 

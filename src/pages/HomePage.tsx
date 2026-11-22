@@ -176,8 +176,8 @@ export default function HomePage({ setActiveTab, onSelectEvent }: HomePageProps)
         />
 
         <motion.div 
-          style={{ scale: heroScale, opacity: heroOpacity, y: heroY, filter: heroFilter }}
-          className="relative z-20 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-5 sm:space-y-6 pt-14 sm:pt-20 pb-4 sm:pb-6 will-change-transform"
+          style={{ scale: heroScale, opacity: heroOpacity, y: heroY }}
+          className="relative z-20 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-5 sm:space-y-6 pt-14 sm:pt-20 pb-4 sm:pb-6 will-change-transform transform-gpu"
         >
           {/* Official SKYRA CREATIONS Brandmark Showcase */}
           <motion.div
@@ -368,14 +368,14 @@ export default function HomePage({ setActiveTab, onSelectEvent }: HomePageProps)
               className="text-base sm:text-lg leading-relaxed font-light"
               style={{ color: 'var(--text-secondary)' }}
             >
-              SKYRA CREATIONS is an international-standard fashion and creative platform designed to empower aspiring talent, emerging models and creative directors through premier runway showcases, structured stage grooming and verified industry opportunities.
+              SKYRA CREATIONS is an international fashion and runway platform dedicated to emerging models, designers, and creative artists. Through premier catwalk productions, structured stage grooming, and certified recognition, we provide a genuine spotlight for true talent.
             </p>
 
             <p 
               className="text-sm sm:text-base leading-relaxed"
               style={{ color: 'var(--text-muted)' }}
             >
-              Founded by <strong>B Sriram</strong>, SKYRA CREATIONS breaks traditional industry gatekeeping by providing an accessible, authentic stage where contestants gain genuine ramp exposure, stage presence and verified credentials.
+              Founded by <strong>B Sriram</strong>, SKYRA CREATIONS replaces industry gatekeeping with transparent production, prestigious city-center venues, and verified credentials for every participant.
             </p>
 
             <div className="pt-4">

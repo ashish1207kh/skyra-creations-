@@ -1404,8 +1404,8 @@ export default function RegistrationPage({ setActiveTab, setLookupRegId, onProce
                         </motion.div>
                       </div>
 
-                      <div className="flex justify-between text-[10px] font-mono-editorial text-zinc-500 pt-0.5">
-                        <span>STAGE 04 // CRYPTOGRAPHIC VAULT</span>
+                      <div className="flex justify-between text-[10px] font-mono-editorial text-zinc-400 pt-0.5">
+                        <span>TRANSMITTING ENCRYPTED APPLICATION</span>
                         <span>DO NOT REFRESH</span>
                       </div>
                     </motion.div>

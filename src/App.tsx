@@ -105,8 +105,8 @@ export default function App() {
       className="min-h-screen flex flex-col transition-colors relative"
       style={{ backgroundColor: 'var(--bg-primary)', color: 'var(--text-primary)' }}
     >
-        {/* Luxury Haute Couture First-Load Video Preloader */}
-        <LuxuryPageLoader durationMs={5500} />
+        {/* Luxury Haute Couture First-Load Reveal */}
+        <LuxuryPageLoader durationMs={1400} />
 
         {/* High-Speed Route Switcher Laser Loading Beam */}
         <AnimatePresence>
@@ -143,10 +143,11 @@ export default function App() {
           <AnimatePresence mode="wait">
             <motion.div
               key={activeTab}
-              initial={{ opacity: 0, y: 14, scale: 0.99, filter: 'blur(4px)' }}
-              animate={{ opacity: 1, y: 0, scale: 1, filter: 'blur(0px)' }}
-              exit={{ opacity: 0, y: -14, scale: 0.99, filter: 'blur(4px)' }}
-              transition={{ duration: 0.38, ease: [0.16, 1, 0.3, 1] }}
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -8 }}
+              transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
+              className="will-change-transform"
             >
               {activeTab === 'home' && (
                 <HomePage 

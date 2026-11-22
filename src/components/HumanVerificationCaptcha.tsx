@@ -11,7 +11,7 @@ interface HumanVerificationCaptchaProps {
 export default function HumanVerificationCaptcha({
   onVerified,
   className = '',
-  label = 'HUMAN VERIFICATION & ANTI-BOT SECURITY',
+  label = 'VERIFICATION & SECURITY CHECK',
 }: HumanVerificationCaptchaProps) {
   const [mode, setMode] = useState<'slider' | 'math'>('slider');
   const [isVerified, setIsVerified] = useState(false);

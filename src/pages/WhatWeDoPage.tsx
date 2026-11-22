@@ -115,13 +115,13 @@ export default function WhatWeDoPage({ setActiveTab }: WhatWeDoPageProps) {
         className="text-center max-w-3xl mx-auto space-y-4"
       >
         <span className="font-mono-editorial block text-[11px] tracking-widest text-[#C6FF00]">
-          HAUTE COUTURE SPECIFICATIONS
+          OUR DISCIPLINES & EXPERTISE
         </span>
         <h1 className="font-display text-4xl sm:text-6xl md:text-7xl font-bold leading-[1.05] text-white">
           WHAT WE CREATE.
         </h1>
         <p className="text-sm sm:text-base font-light leading-relaxed text-[#BFC3C7]">
-          From stage choreography and model grooming to full-scale runway productions and designer showcases, discover how SKYRA CREATIONS engineers high-fashion excellence.
+          From stage choreography and model grooming to full-scale runway productions and designer showcases, discover how SKYRA CREATIONS brings fashion to life on the catwalk.
         </p>
       </motion.div>
 

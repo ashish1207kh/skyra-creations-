@@ -353,9 +353,9 @@ export default function AdminDashboard() {
               </div>
             </div>
 
-            {/* Anti-Brute-Force Security Challenge */}
+            {/* Admin Verification */}
             <HumanVerificationCaptcha 
-              label="ADMIN SECURITY CHALLENGE"
+              label="ADMIN IDENTITY VERIFICATION"
               onVerified={(v) => {
                 setIsCaptchaVerified(v);
                 setLoginError('');
