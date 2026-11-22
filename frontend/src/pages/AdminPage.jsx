@@ -267,7 +267,7 @@ export default function AdminPage() {
               <IndianRupee className="w-4 h-4 text-zinc-400" />
             </div>
             <div className="text-2xl font-bold text-white">₹{stats.total_balance_due.toLocaleString()}</div>
-            <div className="text-[11px] text-zinc-500 mt-1">Collectible via Balance Portal</div>
+            <div className="text-[11px] text-zinc-500 mt-1">Collectible via Balance Payments</div>
           </div>
         </div>
       )}

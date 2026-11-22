@@ -118,7 +118,7 @@ export default function Navbar({ activeTab, setActiveTab }: NavbarProps) {
                     ? 'text-[#C6FF00]'
                     : 'text-zinc-400 hover:text-white'
                 }`}
-                title="Official Payment & Balance Portal"
+                title="Official Fee Payment &amp; Event Clearance"
               >
                 <CreditCard className="w-3.5 h-3.5 text-[#C6FF00]" />
                 <span>PAYMENT</span>

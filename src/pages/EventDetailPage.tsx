@@ -187,7 +187,7 @@ export default function EventDetailPage({ eventId = 'EVT-CHX-2026', setActiveTab
                 ))}
               </div>
               <p className="text-[11px] font-light text-zinc-400">
-                Remaining balance is payable securely through our balance portal prior to the event.
+                Remaining balance is payable securely prior to the event.
               </p>
             </div>
 

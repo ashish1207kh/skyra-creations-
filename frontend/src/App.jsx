@@ -59,7 +59,7 @@ export default function App() {
           <div className="flex items-center space-x-2">
             <span className="font-serif font-bold text-amber-400">SKYRA CREATIONS</span>
             <span>•</span>
-            <span>Runway Show 2026 Official Portal</span>
+            <span>Fashion Model Training &amp; Events Organising</span>
           </div>
 
           <div className="flex items-center space-x-6 text-zinc-400">
@@ -73,7 +73,7 @@ export default function App() {
               onClick={() => setActiveTab('balance')}
               className="hover:text-amber-400 transition-colors"
             >
-              Balance Portal
+              Balance Payment
             </button>
             <button 
               onClick={() => setActiveTab('status')}

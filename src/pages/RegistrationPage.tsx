@@ -456,7 +456,7 @@ export default function RegistrationPage({ setActiveTab, setLookupRegId, onProce
               }}
               className="w-full sm:w-auto px-8 py-4 rounded-sm bg-white/5 hover:bg-white/10 text-white font-mono-editorial text-xs font-semibold uppercase tracking-wider border border-white/15"
             >
-              PAYMENT &amp; BALANCE PORTAL
+              PAYMENT &amp; CLEARANCE
             </button>
           </div>
         </motion.div>

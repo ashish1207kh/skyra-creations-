@@ -22,7 +22,7 @@ interface HomePageProps {
 const faqs = [
   {
     question: "What is the total participation fee and advance token structure?",
-    answer: "The total participation fee for Runway Show 2026 is ₹3,000. To reserve your audition slot, you can commit an advance token (₹500, ₹1,000, or full ₹3,000). The remaining balance can be cleared anytime prior to the event date through the Balance Settlement portal."
+    answer: "The total participation fee for Runway Show 2026 is ₹3,000. To reserve your audition slot, you can commit an advance token (₹500, ₹1,000, or full ₹3,000). The remaining balance can be cleared anytime prior to the event date through the Payment section."
   },
   {
     question: "Where and when is Runway Show 2026 hosted?",

@@ -450,7 +450,7 @@ export default function PaymentPage({
               }}
               className="w-full sm:w-auto px-8 py-4 rounded-sm bg-white/5 hover:bg-white/10 text-white font-mono-editorial text-xs font-semibold uppercase tracking-wider border border-white/15"
             >
-              VIEW BALANCE PORTAL
+              PAY REMAINING BALANCE
             </button>
           </div>
         </motion.div>

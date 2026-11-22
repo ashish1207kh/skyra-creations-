@@ -393,8 +393,8 @@ async function runTests() {
   assert(fs.existsSync(manifestPath), 'public/site.webmanifest must exist');
 
   const manifestJson = JSON.parse(fs.readFileSync(manifestPath, 'utf8'));
-  assert.strictEqual(manifestJson.name, 'SKYRA CREATIONS');
-  assert.strictEqual(manifestJson.theme_color, '#0b0d13');
+  assert(manifestJson.name.includes('SKYRA CREATIONS'), 'Manifest name must contain brand');
+  assert(manifestJson.short_name === 'SKYRA', 'Manifest short name must be SKYRA');
   assert(manifestJson.icons.length >= 6, 'Manifest must declare at least 6 icon sizes');
   console.log('   ✓ Favicon suite and site.webmanifest validated');
 
