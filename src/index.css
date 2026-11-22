@@ -26,8 +26,16 @@
     scroll-behavior: smooth;
   }
 
-  html, body, #root {
-    max-width: 100vw;
+  html, body {
+    width: 100%;
+    max-width: 100%;
+    overflow-x: hidden;
+    position: relative;
+  }
+
+  #root {
+    width: 100%;
+    max-width: 100%;
     overflow-x: hidden;
   }
 
@@ -59,9 +67,11 @@
 
   /* Responsive editorial headline clamp */
   .text-hero {
-    font-size: clamp(2.35rem, 8vw, 7.5rem);
-    line-height: 0.98;
+    font-size: clamp(2rem, 7.5vw, 7.5rem);
+    line-height: 0.95;
     letter-spacing: -0.03em;
+    word-break: break-word;
+    overflow-wrap: break-word;
   }
 }
 

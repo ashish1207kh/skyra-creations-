@@ -82,7 +82,7 @@ export default function GalleryPage({ setActiveTab }: GalleryPageProps) {
         <span className="font-mono-editorial block text-[11px] tracking-widest" style={{ color: 'var(--accent)' }}>
           VISUAL ARCHIVE
         </span>
-        <h1 className="font-display text-4xl sm:text-6xl md:text-7xl font-bold leading-[1.05]" style={{ color: 'var(--text-primary)' }}>
+        <h1 className="font-display text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-bold leading-[1.05] break-words" style={{ color: 'var(--text-primary)' }}>
           CATWALK MOMENTS.
         </h1>
         <p className="text-sm sm:text-base font-light leading-relaxed" style={{ color: 'var(--text-secondary)' }}>
@@ -134,7 +134,7 @@ export default function GalleryPage({ setActiveTab }: GalleryPageProps) {
                 src={item.src} 
                 alt={item.title}
                 loading="lazy"
-                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" 
+                className={`w-full h-full object-cover ${item.src.includes('founder') ? 'object-top' : 'object-center'} group-hover:scale-105 transition-transform duration-700`} 
               />
 
               {/* Editorial Caption Bar */}
@@ -221,7 +221,7 @@ export default function GalleryPage({ setActiveTab }: GalleryPageProps) {
       <motion.div 
         initial={{ opacity: 0, scale: 0.98 }}
         whileInView={{ opacity: 1, scale: 1 }}
-        viewport={{ once: false, margin: '-50px' }}
+        viewport={{ once: true, margin: '-50px' }}
         transition={{ duration: 0.7 }}
         className="p-10 sm:p-14 text-center space-y-5 rounded-sm shadow-xl"
         style={{ 

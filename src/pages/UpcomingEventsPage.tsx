@@ -47,7 +47,7 @@ export default function UpcomingEventsPage({ setActiveTab, onSelectEvent }: Upco
         <span className="font-mono-editorial block text-[11px] tracking-widest" style={{ color: 'var(--accent)' }}>
           OFFICIAL EVENT CALENDAR
         </span>
-        <h1 className="font-display text-4xl sm:text-6xl md:text-7xl font-bold leading-[1.05]" style={{ color: 'var(--text-primary)' }}>
+        <h1 className="font-display text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-bold leading-[1.05] break-words" style={{ color: 'var(--text-primary)' }}>
           THE RUNWAY AWAITS.
         </h1>
         <p className="text-sm sm:text-base font-light leading-relaxed" style={{ color: 'var(--text-secondary)' }}>
@@ -77,7 +77,7 @@ export default function UpcomingEventsPage({ setActiveTab, onSelectEvent }: Upco
                 src="/images/runway-1.jpg" 
                 alt={eventTitle} 
                 loading="lazy"
-                className="w-full h-72 sm:h-84 object-cover"
+                className="w-full h-56 sm:h-72 lg:h-84 object-cover object-center"
               />
               <div className="absolute top-4 left-4">
                 <span 

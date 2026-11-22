@@ -72,7 +72,7 @@ export default function MarqueeStrip({
     <div 
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
-      className={`overflow-hidden py-3.5 select-none flex cursor-default ${className}`}
+      className={`w-full max-w-full overflow-hidden py-3.5 select-none flex cursor-default ${className}`}
       style={{
         backgroundColor: '#0c0d11',
         borderTop: '1px solid rgba(255, 255, 255, 0.08)',

@@ -102,7 +102,7 @@ export default function App() {
 
   return (
     <div 
-      className="min-h-screen flex flex-col transition-colors relative"
+      className="min-h-screen flex flex-col transition-colors relative w-full max-w-full overflow-x-hidden"
       style={{ backgroundColor: 'var(--bg-primary)', color: 'var(--text-primary)' }}
     >
         {/* Luxury Haute Couture First-Load Video Reveal */}
@@ -139,7 +139,7 @@ export default function App() {
         <Navbar activeTab={activeTab} setActiveTab={setActiveTab} />
 
         {/* Main Content Area with Smooth Page Transitions */}
-        <main className={`flex-1 ${activeTab === 'home' ? '' : 'pt-16 sm:pt-20'}`}>
+        <main className={`flex-1 w-full max-w-full overflow-x-hidden ${activeTab === 'home' ? '' : 'pt-16 sm:pt-20'}`}>
           <AnimatePresence mode="wait">
             <motion.div
               key={activeTab}
@@ -318,9 +318,9 @@ export default function App() {
             </div>
 
             {/* Bottom Row: Copyright + Legal Modals */}
-            <div className="flex flex-col sm:flex-row items-center justify-between gap-4 text-[11px]" style={{ color: 'var(--text-muted)' }}>
-              <span>© 2026 SKYRA CREATIONS. All rights reserved. BEYOND THE RUNWAY.</span>
-              <div className="flex items-center space-x-4">
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-4 text-[11px] text-center sm:text-left" style={{ color: 'var(--text-muted)' }}>
+              <span className="break-words">© 2026 SKYRA CREATIONS. All rights reserved.</span>
+              <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-2">
                 <button 
                   onClick={() => setShowTermsModal(true)}
                   className="hover:underline transition-all"

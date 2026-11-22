@@ -55,7 +55,7 @@ export default function AboutPage({ setActiveTab }: AboutPageProps) {
         <span className="font-mono-editorial block text-[11px] tracking-widest" style={{ color: 'var(--accent)' }}>
           ABOUT SKYRA CREATIONS
         </span>
-        <h1 className="font-editorial text-4xl sm:text-6xl md:text-7xl font-bold leading-[1.05]" style={{ color: 'var(--text-primary)' }}>
+        <h1 className="font-editorial text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-bold leading-[1.05] break-words" style={{ color: 'var(--text-primary)' }}>
           THE STORY BEHIND THE SPOTLIGHT.
         </h1>
         <p className="text-base sm:text-lg font-light max-w-2xl mx-auto leading-relaxed" style={{ color: 'var(--text-secondary)' }}>
@@ -69,7 +69,7 @@ export default function AboutPage({ setActiveTab }: AboutPageProps) {
       <motion.div 
         initial={{ opacity: 0, y: 24 }}
         whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: false, margin: '-50px' }}
+        viewport={{ once: true, margin: '-50px' }}
         transition={{ duration: 0.7 }}
         className="p-8 sm:p-12 rounded-sm shadow-xl"
         style={{ 
@@ -88,7 +88,7 @@ export default function AboutPage({ setActiveTab }: AboutPageProps) {
                   src="/founder.png" 
                   alt="B Sriram — Founder & CEO, SKYRA CREATIONS" 
                   loading="lazy"
-                  className="w-full h-auto object-cover group-hover:scale-105 transition-transform duration-500"
+                  className="w-full h-auto object-cover object-top group-hover:scale-105 transition-transform duration-500"
                 />
                 <div 
                   className="absolute inset-0 flex items-end p-4"
@@ -144,7 +144,7 @@ export default function AboutPage({ setActiveTab }: AboutPageProps) {
         <motion.div 
           initial={{ opacity: 0, x: -20 }}
           whileInView={{ opacity: 1, x: 0 }}
-          viewport={{ once: false, margin: '-50px' }}
+          viewport={{ once: true, margin: '-50px' }}
           transition={{ duration: 0.7 }}
           className="p-8 sm:p-10 rounded-sm space-y-4"
           style={{ 
@@ -167,7 +167,7 @@ export default function AboutPage({ setActiveTab }: AboutPageProps) {
         <motion.div 
           initial={{ opacity: 0, x: 20 }}
           whileInView={{ opacity: 1, x: 0 }}
-          viewport={{ once: false, margin: '-50px' }}
+          viewport={{ once: true, margin: '-50px' }}
           transition={{ duration: 0.7 }}
           className="p-8 sm:p-10 rounded-sm space-y-4"
           style={{ 
@@ -195,7 +195,7 @@ export default function AboutPage({ setActiveTab }: AboutPageProps) {
         <motion.div 
           initial={{ opacity: 0, x: -20 }}
           whileInView={{ opacity: 1, x: 0 }}
-          viewport={{ once: false, margin: '-50px' }}
+          viewport={{ once: true, margin: '-50px' }}
           transition={{ duration: 0.7 }}
           className="lg:col-span-7 space-y-5"
         >
@@ -233,7 +233,7 @@ export default function AboutPage({ setActiveTab }: AboutPageProps) {
         <motion.div 
           initial={{ opacity: 0, x: 20 }}
           whileInView={{ opacity: 1, x: 0 }}
-          viewport={{ once: false, margin: '-50px' }}
+          viewport={{ once: true, margin: '-50px' }}
           transition={{ duration: 0.7 }}
           className="lg:col-span-5 overflow-hidden shadow-xl rounded-sm"
           style={{ border: '1px solid var(--border)' }}
@@ -242,7 +242,7 @@ export default function AboutPage({ setActiveTab }: AboutPageProps) {
             src="/images/runway-2.jpg" 
             alt="SKYRA Fashion Editorial Ramp Walk" 
             loading="lazy"
-            className="w-full h-96 object-cover"
+            className="w-full h-80 sm:h-96 object-cover object-center"
           />
         </motion.div>
       </div>
@@ -301,7 +301,7 @@ export default function AboutPage({ setActiveTab }: AboutPageProps) {
       <motion.div 
         initial={{ opacity: 0, scale: 0.98 }}
         whileInView={{ opacity: 1, scale: 1 }}
-        viewport={{ once: false, margin: '-50px' }}
+        viewport={{ once: true, margin: '-50px' }}
         transition={{ duration: 0.7 }}
         className="p-10 sm:p-14 text-center space-y-5 rounded-sm shadow-xl"
         style={{ 

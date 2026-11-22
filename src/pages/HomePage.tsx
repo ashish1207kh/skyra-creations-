@@ -133,32 +133,34 @@ export default function HomePage({ setActiveTab, onSelectEvent }: HomePageProps)
   const sec7Opacity = useTransform(sec7Progress, [0, 0.45], [0.4, 1]);
 
   return (
-    <div className="space-y-12 sm:space-y-20 pb-12 sm:pb-16 overflow-x-hidden relative">
-      {/* Continuous Drifting Ambient Runway Glow Orb */}
-      <motion.div
-        animate={{
-          x: [-30, 40, -30],
-          y: [-20, 30, -20],
-          scale: [1, 1.15, 1],
-        }}
-        transition={{
-          duration: 18,
-          repeat: Infinity,
-          ease: 'easeInOut',
-        }}
-        className="fixed top-1/3 left-1/3 w-[650px] h-[400px] rounded-full blur-[150px] pointer-events-none opacity-20 z-0"
-        style={{
-          background: 'radial-gradient(circle, rgba(198, 255, 0, 0.35) 0%, rgba(220, 38, 38, 0.2) 55%, transparent 75%)',
-        }}
-      />
+    <div className="space-y-12 sm:space-y-20 pb-12 sm:pb-16 overflow-x-clip relative w-full max-w-full">
+      {/* Continuous Drifting Ambient Runway Glow Orb (Strictly Viewport Clipped) */}
+      <div className="fixed inset-0 overflow-hidden pointer-events-none z-0">
+        <motion.div
+          animate={{
+            x: [-20, 25, -20],
+            y: [-15, 20, -15],
+            scale: [1, 1.1, 1],
+          }}
+          transition={{
+            duration: 18,
+            repeat: Infinity,
+            ease: 'easeInOut',
+          }}
+          className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[300px] sm:w-[580px] h-[220px] sm:h-[380px] rounded-full blur-[90px] sm:blur-[140px] opacity-20"
+          style={{
+            background: 'radial-gradient(circle, rgba(198, 255, 0, 0.35) 0%, rgba(220, 38, 38, 0.2) 55%, transparent 75%)',
+          }}
+        />
+      </div>
 
       {/* ──────────────────────────────────────────────────────────
           SECTION 1: 100svh VIRTUAL RUNWAY HERO WITH SCROLL PARALLAX
       ────────────────────────────────────────────────────────── */}
-      <section ref={heroRef} className="relative min-h-[85svh] sm:min-h-[92svh] py-10 sm:py-20 flex items-center justify-center overflow-hidden">
+      <section ref={heroRef} className="relative min-h-[85svh] sm:min-h-[92svh] py-10 sm:py-20 flex items-center justify-center overflow-hidden w-full max-w-full">
         {/* Three.js Virtual Runway Catwalk Canvas */}
-        <div className="absolute inset-0 z-0">
-          <VirtualRunwayScene className="w-full h-full" />
+        <div className="absolute inset-0 z-0 w-full h-full overflow-hidden max-w-full">
+          <VirtualRunwayScene className="w-full h-full block max-w-full" />
         </div>
 
         {/* Ambient Overlay for High-Fashion Contrast */}
@@ -171,7 +173,7 @@ export default function HomePage({ setActiveTab, onSelectEvent }: HomePageProps)
 
         {/* Subtle Ambient Accent Glow */}
         <div 
-          className="absolute top-1/3 left-1/2 -translate-x-1/2 w-[700px] h-[350px] blur-3xl pointer-events-none z-10 opacity-30"
+          className="absolute top-1/3 left-1/2 -translate-x-1/2 w-[300px] sm:w-[650px] max-w-full h-[200px] sm:h-[350px] blur-3xl pointer-events-none z-10 opacity-30"
           style={{ background: 'radial-gradient(ellipse at center, var(--accent) 0%, transparent 70%)' }}
         />
 
@@ -225,11 +227,11 @@ export default function HomePage({ setActiveTab, onSelectEvent }: HomePageProps)
             initial={{ opacity: 0, y: 24 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.1 }}
-            className="font-display font-extrabold tracking-tight leading-[0.98] max-w-5xl mx-auto text-hero"
+            className="font-display font-extrabold tracking-tight leading-[0.95] max-w-5xl mx-auto text-hero break-words"
             style={{ color: '#F5F5F5' }}
           >
-            BEYOND THE <br className="hidden sm:inline" />
-            <span style={{ color: 'var(--accent)' }}>
+            <span className="block">BEYOND THE</span>
+            <span className="block" style={{ color: 'var(--accent)' }}>
               RUNWAY.
             </span>
           </motion.h1>
@@ -308,7 +310,7 @@ export default function HomePage({ setActiveTab, onSelectEvent }: HomePageProps)
       </section>
 
       {/* Infinite Runway Couture Marquee */}
-      <div className="-my-4 sm:-my-6">
+      <div className="w-full max-w-full overflow-hidden -my-4 sm:-my-6">
         <MarqueeStrip />
       </div>
 
@@ -316,11 +318,14 @@ export default function HomePage({ setActiveTab, onSelectEvent }: HomePageProps)
           SECTION 2: BRAND INTRODUCTION (ASYMMETRIC 2-COLUMN)
       ────────────────────────────────────────────────────────── */}
       <section ref={sec2Ref} className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
-          {/* Left: Editorial Image 3:4 with Continuous Cinematic Scroll Parallax */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-16 items-center">
+          {/* Left: Editorial Image 3:4 */}
           <motion.div 
-            style={{ y: sec2ImgY, scale: sec2ImgScale, opacity: sec2Opacity }}
-            className="lg:col-span-5 relative will-change-transform"
+            initial={{ opacity: 0, y: 24 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: '-60px' }}
+            transition={{ duration: 0.7 }}
+            className="lg:col-span-5 relative"
           >
             <div 
               className="relative overflow-hidden shadow-2xl group rounded-sm"
@@ -330,7 +335,7 @@ export default function HomePage({ setActiveTab, onSelectEvent }: HomePageProps)
                 src="/images/runway-2.jpg" 
                 alt="SKYRA CREATIONS Runway Fashion Model" 
                 loading="lazy"
-                className="w-full h-[520px] object-cover group-hover:scale-105 transition-transform duration-700"
+                className="w-full h-[320px] sm:h-[420px] lg:h-[520px] object-cover object-center group-hover:scale-105 transition-transform duration-700"
               />
               <div 
                 className="absolute inset-0 flex items-end p-6"
@@ -348,10 +353,13 @@ export default function HomePage({ setActiveTab, onSelectEvent }: HomePageProps)
             </div>
           </motion.div>
 
-          {/* Right: Large Editorial Typography & Story with Continuous Motion */}
+          {/* Right: Large Editorial Typography & Story */}
           <motion.div 
-            style={{ y: sec2TextY, opacity: sec2Opacity }}
-            className="lg:col-span-7 space-y-6 will-change-transform"
+            initial={{ opacity: 0, y: 24 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: '-60px' }}
+            transition={{ duration: 0.7, delay: 0.1 }}
+            className="lg:col-span-7 space-y-6"
           >
             <span className="font-mono-editorial block" style={{ color: 'var(--accent)', fontSize: '11px' }}>
               01 // BRAND INTRODUCTION
@@ -408,27 +416,26 @@ export default function HomePage({ setActiveTab, onSelectEvent }: HomePageProps)
           </p>
         </div>
 
-        {/* Alternating Feature Rows with Multiplane Motion */}
+        {/* Alternating Feature Rows */}
         <div className="space-y-12">
           {/* Row 1: Fashion Shows */}
           <motion.div 
-            initial={{ opacity: 0, y: 30 }}
+            initial={{ opacity: 0, y: 24 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: false, margin: '-60px' }}
-            transition={{ duration: 0.7 }}
-            className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center p-5 sm:p-10 rounded-sm will-change-transform"
+            viewport={{ once: true, margin: '-60px' }}
+            transition={{ duration: 0.6 }}
+            className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center p-5 sm:p-10 rounded-sm"
             style={{ 
               backgroundColor: 'var(--surface)', 
-              border: '1px solid var(--border)',
-              y: sec3Row1Y
+              border: '1px solid var(--border)'
             }}
           >
-            <div className="lg:col-span-6 relative overflow-hidden h-72 sm:h-80 rounded-sm" style={{ border: '1px solid var(--border)' }}>
+            <div className="lg:col-span-6 relative overflow-hidden h-64 sm:h-80 rounded-sm" style={{ border: '1px solid var(--border)' }}>
               <img 
                 src="/images/runway-1.jpg" 
                 alt="Fashion Shows & Runway Lighting" 
                 loading="lazy"
-                className="w-full h-full object-cover"
+                className="w-full h-full object-cover object-center"
               />
               <div 
                 className="absolute top-4 left-4 px-3 py-1 font-mono-editorial text-[10px] font-bold"
@@ -457,23 +464,22 @@ export default function HomePage({ setActiveTab, onSelectEvent }: HomePageProps)
 
           {/* Row 2: Model Opportunities (Reversed Layout) */}
           <motion.div 
-            initial={{ opacity: 0, y: 30 }}
+            initial={{ opacity: 0, y: 24 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: false, margin: '-60px' }}
-            transition={{ duration: 0.7 }}
-            className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center p-5 sm:p-10 rounded-sm will-change-transform"
+            viewport={{ once: true, margin: '-60px' }}
+            transition={{ duration: 0.6, delay: 0.1 }}
+            className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center p-5 sm:p-10 rounded-sm"
             style={{ 
               backgroundColor: 'var(--surface)', 
-              border: '1px solid var(--border)',
-              y: sec3Row2Y
+              border: '1px solid var(--border)'
             }}
           >
-            <div className="lg:col-span-6 lg:order-2 relative overflow-hidden h-72 sm:h-80 rounded-sm" style={{ border: '1px solid var(--border)' }}>
+            <div className="lg:col-span-6 lg:order-2 relative overflow-hidden h-64 sm:h-80 rounded-sm" style={{ border: '1px solid var(--border)' }}>
               <img 
                 src="/images/runway-3.jpg" 
                 alt="Model Opportunities" 
                 loading="lazy"
-                className="w-full h-full object-cover"
+                className="w-full h-full object-cover object-center"
               />
               <div 
                 className="absolute top-4 left-4 px-3 py-1 font-mono-editorial text-[10px] font-bold"
@@ -502,23 +508,22 @@ export default function HomePage({ setActiveTab, onSelectEvent }: HomePageProps)
 
           {/* Row 3: Stage Grooming */}
           <motion.div 
-            initial={{ opacity: 0, y: 30 }}
+            initial={{ opacity: 0, y: 24 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: false, margin: '-60px' }}
-            transition={{ duration: 0.7 }}
-            className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center p-5 sm:p-10 rounded-sm will-change-transform"
+            viewport={{ once: true, margin: '-60px' }}
+            transition={{ duration: 0.6, delay: 0.1 }}
+            className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center p-5 sm:p-10 rounded-sm"
             style={{ 
               backgroundColor: 'var(--surface)', 
-              border: '1px solid var(--border)',
-              y: sec3Row3Y
+              border: '1px solid var(--border)'
             }}
           >
-            <div className="lg:col-span-6 relative overflow-hidden h-72 sm:h-80 rounded-sm" style={{ border: '1px solid var(--border)' }}>
+            <div className="lg:col-span-6 relative overflow-hidden h-64 sm:h-80 rounded-sm" style={{ border: '1px solid var(--border)' }}>
               <img 
                 src="/founder.png" 
                 alt="Stage Grooming & Mentorship" 
                 loading="lazy"
-                className="w-full h-full object-cover"
+                className="w-full h-full object-cover object-top"
               />
               <div 
                 className="absolute top-4 left-4 px-3 py-1 font-mono-editorial text-[10px] font-bold"
@@ -563,17 +568,18 @@ export default function HomePage({ setActiveTab, onSelectEvent }: HomePageProps)
           </p>
         </div>
 
-        {/* Featured Event Card with Continuous Movie Zoom */}
+        {/* Featured Event Card */}
         <TiltCard className="rounded-sm overflow-hidden">
           <motion.div 
+            initial={{ opacity: 0, y: 24 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: '-60px' }}
+            transition={{ duration: 0.7 }}
             style={{ 
               backgroundColor: 'var(--surface)', 
-              border: '1px solid var(--border)',
-              scale: sec4CardScale,
-              y: sec4CardY,
-              opacity: sec4Opacity
+              border: '1px solid var(--border)'
             }}
-            className="p-8 sm:p-12 rounded-sm relative overflow-hidden shadow-2xl will-change-transform"
+            className="p-6 sm:p-10 lg:p-12 rounded-sm relative overflow-hidden shadow-2xl"
           >
             <div className="relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
               <div className="lg:col-span-7 space-y-5">
@@ -667,13 +673,13 @@ export default function HomePage({ setActiveTab, onSelectEvent }: HomePageProps)
                 </div>
               </div>
 
-              <div className="lg:col-span-5 relative">
-                <div className="overflow-hidden shadow-2xl rounded-sm" style={{ border: '1px solid var(--border)' }}>
+              <div className="lg:col-span-5 relative h-full flex flex-col justify-center">
+                <div className="overflow-hidden shadow-2xl rounded-sm h-full w-full" style={{ border: '1px solid var(--border)' }}>
                   <img 
                     src="/images/runway-3.jpg" 
                     alt="Runway Show 2026 Live Catwalk" 
                     loading="lazy"
-                    className="w-full h-80 object-cover"
+                    className="w-full h-64 sm:h-80 lg:h-full min-h-[260px] lg:min-h-[360px] object-cover object-top"
                   />
                 </div>
               </div>
@@ -683,7 +689,7 @@ export default function HomePage({ setActiveTab, onSelectEvent }: HomePageProps)
       </section>
 
       {/* Reverse Couture Marquee Strip */}
-      <div className="-my-4 sm:-my-6">
+      <div className="w-full max-w-full overflow-hidden -my-4 sm:-my-6">
         <MarqueeStrip 
           reverse={true} 
           text={[
@@ -716,18 +722,20 @@ export default function HomePage({ setActiveTab, onSelectEvent }: HomePageProps)
         <div className="absolute inset-0 bg-black/85 backdrop-blur-xs" />
         
         <motion.div 
-          style={{ scale: interludeScale, opacity: interludeOpacity }}
-          className="relative z-10 max-w-4xl mx-auto px-4 sm:px-6 text-center space-y-6 will-change-transform"
+          initial={{ opacity: 0, y: 24 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.7 }}
+          className="relative z-10 max-w-4xl mx-auto px-4 sm:px-6 text-center space-y-6"
         >
           <span className="font-mono-editorial block text-[11px] tracking-widest" style={{ color: 'var(--accent)' }}>
             CAMPAIGN INTERLUDE
           </span>
-          <motion.h2 
-            style={{ letterSpacing: interludeLetterSpacing }}
+          <h2 
             className="font-display text-4xl sm:text-6xl md:text-7xl font-bold tracking-tight text-white leading-tight"
           >
             OWN YOUR PRESENCE.
-          </motion.h2>
+          </h2>
           <p className="text-base sm:text-xl font-light max-w-2xl mx-auto leading-relaxed text-zinc-300">
             Every runway begins with the confidence to take the first step.
           </p>
@@ -770,35 +778,47 @@ export default function HomePage({ setActiveTab, onSelectEvent }: HomePageProps)
           </button>
         </div>
 
-        {/* Varied Proportions Grid with Differential Motion */}
+        {/* Varied Proportions Grid with Rock-Solid Alignment */}
         <div className="grid grid-cols-1 md:grid-cols-12 gap-6 items-stretch">
-          <motion.div style={{ y: sec6Img1Y }} className="md:col-span-7 will-change-transform">
-            <TiltCard className="rounded-sm overflow-hidden shadow-lg group">
+          <motion.div 
+            initial={{ opacity: 0, y: 24 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: '-60px' }}
+            transition={{ duration: 0.6 }}
+            className="md:col-span-7"
+          >
+            <TiltCard className="rounded-sm overflow-hidden shadow-lg group h-full">
               <div 
-                className="overflow-hidden rounded-sm"
+                className="overflow-hidden rounded-sm h-full"
                 style={{ border: '1px solid var(--border)' }}
               >
                 <img 
                   src="/images/runway-2.jpg" 
                   alt="Runway Stage Catwalk" 
                   loading="lazy"
-                  className="w-full h-80 sm:h-96 object-cover group-hover:scale-105 transition-transform duration-700"
+                  className="w-full h-80 sm:h-96 lg:h-[420px] object-cover object-center group-hover:scale-105 transition-transform duration-700"
                 />
               </div>
             </TiltCard>
           </motion.div>
 
-          <motion.div style={{ y: sec6Img2Y }} className="md:col-span-5 will-change-transform">
-            <TiltCard className="rounded-sm overflow-hidden shadow-lg group">
+          <motion.div 
+            initial={{ opacity: 0, y: 24 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: '-60px' }}
+            transition={{ duration: 0.6, delay: 0.1 }}
+            className="md:col-span-5"
+          >
+            <TiltCard className="rounded-sm overflow-hidden shadow-lg group h-full">
               <div 
-                className="overflow-hidden rounded-sm"
+                className="overflow-hidden rounded-sm h-full"
                 style={{ border: '1px solid var(--border)' }}
               >
                 <img 
                   src="/founder.png" 
                   alt="Founder & CEO B Sriram" 
                   loading="lazy"
-                  className="w-full h-80 sm:h-96 object-cover group-hover:scale-105 transition-transform duration-700"
+                  className="w-full h-80 sm:h-96 lg:h-[420px] object-cover object-top group-hover:scale-105 transition-transform duration-700"
                 />
               </div>
             </TiltCard>
@@ -886,14 +906,15 @@ export default function HomePage({ setActiveTab, onSelectEvent }: HomePageProps)
       ────────────────────────────────────────────────────────── */}
       <section ref={sec7Ref} className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
         <motion.div 
+          initial={{ opacity: 0, y: 24 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: '-60px' }}
+          transition={{ duration: 0.7 }}
           style={{ 
             backgroundColor: 'var(--surface)', 
             border: '1px solid var(--border)',
-            scale: sec7Scale,
-            y: sec7Y,
-            opacity: sec7Opacity
           }}
-          className="p-6 sm:p-12 text-center space-y-6 relative overflow-hidden shadow-2xl rounded-sm will-change-transform"
+          className="p-6 sm:p-12 text-center space-y-6 relative overflow-hidden shadow-2xl rounded-sm"
         >
           <div 
             className="absolute top-0 right-1/2 translate-x-1/2 w-96 h-96 rounded-full blur-3xl pointer-events-none opacity-20"

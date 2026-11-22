@@ -60,7 +60,7 @@ export default function EventDetailPage({ eventId = 'EVT-CHX-2026', setActiveTab
           </span>
         </div>
 
-        <h1 className="font-display text-4xl sm:text-6xl font-bold leading-tight text-white">
+        <h1 className="font-display text-3xl sm:text-5xl md:text-6xl font-bold leading-tight text-white break-words">
           RUNWAY SHOW 2026
         </h1>
 
@@ -88,7 +88,7 @@ export default function EventDetailPage({ eventId = 'EVT-CHX-2026', setActiveTab
           src="/images/runway-2.jpg" 
           alt="Runway Show 2026 Stage" 
           loading="lazy"
-          className="w-full h-80 sm:h-96 object-cover"
+          className="w-full h-64 sm:h-80 lg:h-96 object-cover object-center"
         />
       </div>
 

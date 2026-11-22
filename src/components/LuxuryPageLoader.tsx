@@ -7,14 +7,9 @@ interface LuxuryPageLoaderProps {
   durationMs?: number;
 }
 
-export default function LuxuryPageLoader({ onLoaded, durationMs = 10000 }: LuxuryPageLoaderProps) {
+export default function LuxuryPageLoader({ onLoaded, durationMs = 12000 }: LuxuryPageLoaderProps) {
   const [progress, setProgress] = useState(0);
-  const [isDone, setIsDone] = useState<boolean>(() => {
-    if (typeof window !== 'undefined') {
-      return Boolean(sessionStorage.getItem('skyra_intro_video_seen'));
-    }
-    return false;
-  });
+  const [isDone, setIsDone] = useState<boolean>(false);
   const [isLandscape, setIsLandscape] = useState(
     typeof window !== 'undefined' ? window.innerWidth >= window.innerHeight : true
   );
@@ -39,7 +34,6 @@ export default function LuxuryPageLoader({ onLoaded, durationMs = 10000 }: Luxur
   // Safe dismiss callback
   const handleComplete = () => {
     if (isDone) return;
-    sessionStorage.setItem('skyra_intro_video_seen', 'true');
     setIsDone(true);
     if (onLoaded) {
       onLoaded();
@@ -51,6 +45,7 @@ export default function LuxuryPageLoader({ onLoaded, durationMs = 10000 }: Luxur
     if (isDone) return;
     const activeVideo = isLandscape ? landscapeVideoRef.current : portraitVideoRef.current;
     if (activeVideo) {
+      activeVideo.muted = true;
       activeVideo.play().catch(() => {
         // Autoplay policy fallback
       });

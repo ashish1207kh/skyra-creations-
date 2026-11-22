@@ -170,11 +170,11 @@ export default function Navbar({ activeTab, setActiveTab }: NavbarProps) {
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: '100%' }}
             transition={{ type: 'spring', damping: 28, stiffness: 260 }}
-            className="fixed inset-0 z-50 flex flex-col justify-between"
+            className="fixed inset-0 z-50 flex flex-col justify-between overflow-y-auto"
             style={{ backgroundColor: '#050507' }}
           >
             {/* Header in Drawer */}
-            <div className="flex items-center justify-between px-6 h-20 border-b border-white/10">
+            <div className="flex items-center justify-between px-6 h-16 sm:h-20 border-b border-white/10 shrink-0">
               <div 
                 className="flex items-center cursor-pointer"
                 onClick={() => handleNavClick('home')}
@@ -182,7 +182,7 @@ export default function Navbar({ activeTab, setActiveTab }: NavbarProps) {
                 <img 
                   src="/logo-clean.png" 
                   alt="SKYRA CREATIONS Official Logo" 
-                  className="h-10 w-auto object-contain" 
+                  className="h-9 sm:h-10 w-auto object-contain" 
                   style={{ filter: 'drop-shadow(0 2px 8px rgba(0,0,0,0.8))' }}
                 />
               </div>
@@ -196,7 +196,7 @@ export default function Navbar({ activeTab, setActiveTab }: NavbarProps) {
             </div>
 
             {/* Navigation Links */}
-            <div className="flex flex-col px-8 py-8 space-y-4">
+            <div className="flex flex-col px-6 sm:px-8 py-6 space-y-3 shrink-0">
               {navLinks.map((link, i) => {
                 const isActive = activeTab === link.id;
                 return (
@@ -219,7 +219,7 @@ export default function Navbar({ activeTab, setActiveTab }: NavbarProps) {
             </div>
 
             {/* Footer in Drawer */}
-            <div className="p-8 space-y-4 border-t border-white/10">
+            <div className="p-6 sm:p-8 space-y-4 border-t border-white/10 shrink-0 mt-auto">
               <div className="grid grid-cols-3 gap-2 font-mono-editorial text-xs text-center text-zinc-400">
                 <button onClick={() => handleNavClick('payment')} className="p-2 bg-white/5 rounded-sm hover:text-white">
                   PAYMENT

@@ -77,7 +77,7 @@ export default function StatusPassPage({ initialRegId, setActiveTab, setBalanceR
           <Sparkles className="w-3.5 h-3.5" />
           <span>PARTICIPANT CREDENTIAL DESK</span>
         </div>
-        <h1 className="font-display text-4xl sm:text-6xl font-bold text-white tracking-tight leading-[1.05]">
+        <h1 className="font-display text-3xl sm:text-5xl md:text-6xl font-bold text-white tracking-tight leading-[1.05] break-words">
           TRACK REGISTRATION.
         </h1>
         <p className="text-sm sm:text-base text-[#BFC3C7] font-light leading-relaxed">
@@ -311,7 +311,7 @@ export default function StatusPassPage({ initialRegId, setActiveTab, setBalanceR
           {(participant.status === 'FULLY_PAID' || participant.status === 'PARTIALLY_PAID') && (
             <div className="relative overflow-hidden bg-[#12141a] border-2 border-white/20 rounded-sm p-6 sm:p-10 shadow-2xl print:border-black print:bg-white print:text-black">
               {/* Pass Card Header */}
-              <div className="flex items-center justify-between border-b border-white/10 pb-5 mb-6">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-white/10 pb-5 mb-6">
                 <div className="flex items-center space-x-4">
                   <div className="relative px-3.5 py-2 rounded-sm bg-black border border-white/20 shadow-xl shrink-0">
                     <img 

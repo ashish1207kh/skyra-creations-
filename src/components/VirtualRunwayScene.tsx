@@ -38,9 +38,12 @@ export default function VirtualRunwayScene({ className = '', onSceneReady }: Vir
     scene.fog = new THREE.FogExp2(0x050507, 0.045);
 
     const isMobileInitial = typeof window !== 'undefined' && window.innerWidth < 768;
+    const width = Math.min(container.clientWidth || (typeof window !== 'undefined' ? window.innerWidth : 375), typeof window !== 'undefined' ? window.innerWidth : 375);
+    const height = container.clientHeight || 500;
+
     const camera = new THREE.PerspectiveCamera(
       isMobileInitial ? 58 : 46,
-      container.clientWidth / container.clientHeight,
+      width / height,
       0.1,
       80
     );
@@ -53,7 +56,7 @@ export default function VirtualRunwayScene({ className = '', onSceneReady }: Vir
       alpha: true,
       powerPreference: 'high-performance',
     });
-    renderer.setSize(container.clientWidth, container.clientHeight);
+    renderer.setSize(width, height);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.5));
     renderer.shadowMap.enabled = true;
     renderer.shadowMap.type = THREE.PCFSoftShadowMap;
@@ -194,8 +197,8 @@ export default function VirtualRunwayScene({ className = '', onSceneReady }: Vir
     // 7. Responsive Resize Observer
     const handleResize = () => {
       if (!container || !renderer) return;
-      const width = container.clientWidth;
-      const height = container.clientHeight;
+      const width = Math.min(container.clientWidth || window.innerWidth, window.innerWidth);
+      const height = container.clientHeight || 500;
       camera.aspect = width / height;
       camera.fov = width < 768 ? 58 : 46;
       camera.updateProjectionMatrix();
@@ -292,7 +295,7 @@ export default function VirtualRunwayScene({ className = '', onSceneReady }: Vir
       ref={containerRef} 
       className={`relative w-full h-full overflow-hidden select-none pointer-events-none ${className}`}
     >
-      <canvas ref={canvasRef} className="w-full h-full block" />
+      <canvas ref={canvasRef} className="w-full h-full block max-w-full" style={{ maxWidth: '100vw' }} />
       {!isLoaded && (
         <div className="absolute inset-0 bg-[#050507] transition-opacity duration-700" />
       )}

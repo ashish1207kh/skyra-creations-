@@ -117,7 +117,7 @@ export default function WhatWeDoPage({ setActiveTab }: WhatWeDoPageProps) {
         <span className="font-mono-editorial block text-[11px] tracking-widest text-[#C6FF00]">
           OUR DISCIPLINES & EXPERTISE
         </span>
-        <h1 className="font-display text-4xl sm:text-6xl md:text-7xl font-bold leading-[1.05] text-white">
+        <h1 className="font-display text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-bold leading-[1.05] text-white break-words">
           WHAT WE CREATE.
         </h1>
         <p className="text-sm sm:text-base font-light leading-relaxed text-[#BFC3C7]">
@@ -135,7 +135,7 @@ export default function WhatWeDoPage({ setActiveTab }: WhatWeDoPageProps) {
               key={item.id}
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: false, margin: '-60px' }}
+              viewport={{ once: true, margin: '-60px' }}
               transition={{ duration: 0.7 }}
               className="p-8 sm:p-12 rounded-sm shadow-2xl grid grid-cols-1 lg:grid-cols-12 gap-10 items-center bg-[#12141a] border border-white/10"
             >
@@ -170,7 +170,7 @@ export default function WhatWeDoPage({ setActiveTab }: WhatWeDoPageProps) {
                     src={item.image} 
                     alt={item.title}
                     loading="lazy"
-                    className="w-full h-80 sm:h-96 object-cover group-hover:scale-105 transition-transform duration-700" 
+                    className="w-full h-64 sm:h-80 lg:h-96 object-cover object-center group-hover:scale-105 transition-transform duration-700" 
                   />
                   <div 
                     className="absolute inset-0 bg-[#C6FF00]/10 opacity-30 pointer-events-none group-hover:opacity-0 transition-opacity"
@@ -186,7 +186,7 @@ export default function WhatWeDoPage({ setActiveTab }: WhatWeDoPageProps) {
       <motion.div 
         initial={{ opacity: 0, scale: 0.98 }}
         whileInView={{ opacity: 1, scale: 1 }}
-        viewport={{ once: false, margin: '-40px' }}
+        viewport={{ once: true, margin: '-40px' }}
         transition={{ duration: 0.7 }}
         className="p-12 sm:p-16 rounded-sm text-center space-y-6 shadow-2xl bg-[#12141a] border border-white/10 relative overflow-hidden"
       >

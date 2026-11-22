@@ -303,7 +303,7 @@ export default function DynamicUpiPayment({
                 BENEFICIARY UPI ID / VPA
               </span>
               <div className="flex items-center space-x-2">
-                <code className="bg-[#080808] border border-white/15 rounded-sm px-3.5 py-2 text-[#C6FF00] font-mono text-xs sm:text-sm font-bold flex-1 select-all tracking-wide">
+                <code className="bg-[#080808] border border-white/15 rounded-sm px-2.5 sm:px-3.5 py-2 text-[#C6FF00] font-mono text-xs sm:text-sm font-bold flex-1 select-all tracking-wide truncate">
                   {upiId}
                 </code>
                 <button
