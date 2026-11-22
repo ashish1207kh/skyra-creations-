@@ -17,7 +17,6 @@ import { updatePageSeo } from './lib/seo';
 import { motion, useScroll, useSpring, AnimatePresence } from 'motion/react';
 import { Globe, Phone, ShieldCheck, X } from 'lucide-react';
 import InstagramIcon from './components/InstagramIcon';
-import LuxuryPageLoader from './components/LuxuryPageLoader';
 
 function getTabFromPath(pathname: string): string {
   const p = pathname.toLowerCase().replace(/\/+$/, '');
@@ -105,9 +104,6 @@ export default function App() {
       className="min-h-screen flex flex-col transition-colors relative w-full max-w-full overflow-x-hidden"
       style={{ backgroundColor: 'var(--bg-primary)', color: 'var(--text-primary)' }}
     >
-        {/* Luxury Haute Couture First-Load Video Reveal */}
-        <LuxuryPageLoader durationMs={12000} />
-
         {/* High-Speed Route Switcher Laser Loading Beam */}
         <AnimatePresence>
           {isNavigating && (

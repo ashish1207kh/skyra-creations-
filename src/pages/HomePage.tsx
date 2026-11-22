@@ -226,12 +226,14 @@ export default function HomePage({ setActiveTab, onSelectEvent }: HomePageProps)
             initial={{ opacity: 0, y: 24 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.1 }}
-            className="font-display font-extrabold tracking-tight leading-[1.05] max-w-5xl mx-auto text-hero break-words"
+            className="font-display font-extrabold tracking-tight leading-[1.05] max-w-5xl mx-auto text-hero"
             style={{ color: '#F5F5F5' }}
           >
-            <span className="block">Discover Your Confidence.</span>
+            <span className="block sm:inline">Discover Your </span>
+            <span className="block sm:inline whitespace-nowrap">Confidence.</span>{' '}
             <span className="block" style={{ color: 'var(--accent)' }}>
-              Own the Runway.
+              <span className="block sm:inline">Own the </span>
+              <span className="block sm:inline whitespace-nowrap">Runway.</span>
             </span>
           </motion.h1>
 
@@ -322,7 +324,7 @@ export default function HomePage({ setActiveTab, onSelectEvent }: HomePageProps)
           <motion.div 
             initial={{ opacity: 0, y: 24 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: '-60px' }}
+            viewport={{ once: false, margin: '-20px' }}
             transition={{ duration: 0.7 }}
             className="lg:col-span-5 relative"
           >
@@ -356,7 +358,7 @@ export default function HomePage({ setActiveTab, onSelectEvent }: HomePageProps)
           <motion.div 
             initial={{ opacity: 0, y: 24 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: '-60px' }}
+            viewport={{ once: false, margin: '-20px' }}
             transition={{ duration: 0.7, delay: 0.1 }}
             className="lg:col-span-7 space-y-6"
           >
@@ -421,7 +423,7 @@ export default function HomePage({ setActiveTab, onSelectEvent }: HomePageProps)
           <motion.div 
             initial={{ opacity: 0, y: 24 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: '-60px' }}
+            viewport={{ once: false, margin: '-20px' }}
             transition={{ duration: 0.6 }}
             className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center p-5 sm:p-10 rounded-sm"
             style={{ 
@@ -465,7 +467,7 @@ export default function HomePage({ setActiveTab, onSelectEvent }: HomePageProps)
           <motion.div 
             initial={{ opacity: 0, y: 24 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: '-60px' }}
+            viewport={{ once: false, margin: '-20px' }}
             transition={{ duration: 0.6, delay: 0.1 }}
             className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center p-5 sm:p-10 rounded-sm"
             style={{ 
@@ -509,7 +511,7 @@ export default function HomePage({ setActiveTab, onSelectEvent }: HomePageProps)
           <motion.div 
             initial={{ opacity: 0, y: 24 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: '-60px' }}
+            viewport={{ once: false, margin: '-20px' }}
             transition={{ duration: 0.6, delay: 0.1 }}
             className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center p-5 sm:p-10 rounded-sm"
             style={{ 
@@ -572,7 +574,7 @@ export default function HomePage({ setActiveTab, onSelectEvent }: HomePageProps)
           <motion.div 
             initial={{ opacity: 0, y: 24 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: '-60px' }}
+            viewport={{ once: false, margin: '-20px' }}
             transition={{ duration: 0.7 }}
             style={{ 
               backgroundColor: 'var(--surface)', 
@@ -701,7 +703,7 @@ export default function HomePage({ setActiveTab, onSelectEvent }: HomePageProps)
         <motion.div 
           initial={{ opacity: 0, y: 24 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
+          viewport={{ once: false }}
           transition={{ duration: 0.7 }}
           className="relative z-10 max-w-4xl mx-auto px-4 sm:px-6 text-center space-y-6"
         >
@@ -760,7 +762,7 @@ export default function HomePage({ setActiveTab, onSelectEvent }: HomePageProps)
           <motion.div 
             initial={{ opacity: 0, y: 24 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: '-60px' }}
+            viewport={{ once: false, margin: '-20px' }}
             transition={{ duration: 0.6 }}
             className="w-full"
           >
@@ -782,7 +784,7 @@ export default function HomePage({ setActiveTab, onSelectEvent }: HomePageProps)
           <motion.div 
             initial={{ opacity: 0, y: 24 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: '-60px' }}
+            viewport={{ once: false, margin: '-20px' }}
             transition={{ duration: 0.6, delay: 0.1 }}
             className="w-full"
           >
@@ -827,7 +829,7 @@ export default function HomePage({ setActiveTab, onSelectEvent }: HomePageProps)
                 key={idx}
                 initial={{ opacity: 0, y: 15 }}
                 whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
+                viewport={{ once: false }}
                 transition={{ duration: 0.4, delay: idx * 0.08 }}
                 className="bg-[#12141a] border border-white/10 rounded-sm overflow-hidden transition-all duration-300 hover:border-white/20"
                 style={{
@@ -885,7 +887,7 @@ export default function HomePage({ setActiveTab, onSelectEvent }: HomePageProps)
         <motion.div 
           initial={{ opacity: 0, y: 24 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: '-60px' }}
+          viewport={{ once: false, margin: '-20px' }}
           transition={{ duration: 0.7 }}
           style={{ 
             backgroundColor: 'var(--surface)', 

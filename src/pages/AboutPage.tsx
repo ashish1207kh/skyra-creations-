@@ -54,7 +54,7 @@ export default function AboutPage({ setActiveTab }: AboutPageProps) {
       <motion.div 
         initial={{ opacity: 0, y: 24 }}
         whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true, margin: '-50px' }}
+        viewport={{ once: false, margin: '-20px' }}
         transition={{ duration: 0.7 }}
         className="p-8 sm:p-12 rounded-sm shadow-xl"
         style={{ 
@@ -129,7 +129,7 @@ export default function AboutPage({ setActiveTab }: AboutPageProps) {
         <motion.div 
           initial={{ opacity: 0, x: -20 }}
           whileInView={{ opacity: 1, x: 0 }}
-          viewport={{ once: true, margin: '-50px' }}
+          viewport={{ once: false, margin: '-20px' }}
           transition={{ duration: 0.7 }}
           className="p-8 sm:p-10 rounded-sm space-y-4"
           style={{ 
@@ -152,7 +152,7 @@ export default function AboutPage({ setActiveTab }: AboutPageProps) {
         <motion.div 
           initial={{ opacity: 0, x: 20 }}
           whileInView={{ opacity: 1, x: 0 }}
-          viewport={{ once: true, margin: '-50px' }}
+          viewport={{ once: false, margin: '-20px' }}
           transition={{ duration: 0.7 }}
           className="p-8 sm:p-10 rounded-sm space-y-4"
           style={{ 
@@ -180,7 +180,7 @@ export default function AboutPage({ setActiveTab }: AboutPageProps) {
         <motion.div 
           initial={{ opacity: 0, x: -20 }}
           whileInView={{ opacity: 1, x: 0 }}
-          viewport={{ once: true, margin: '-50px' }}
+          viewport={{ once: false, margin: '-20px' }}
           transition={{ duration: 0.7 }}
           className="lg:col-span-7 space-y-5"
         >
@@ -218,7 +218,7 @@ export default function AboutPage({ setActiveTab }: AboutPageProps) {
         <motion.div 
           initial={{ opacity: 0, x: 20 }}
           whileInView={{ opacity: 1, x: 0 }}
-          viewport={{ once: true, margin: '-50px' }}
+          viewport={{ once: false, margin: '-20px' }}
           transition={{ duration: 0.7 }}
           className="lg:col-span-5 overflow-hidden shadow-xl rounded-sm"
           style={{ border: '1px solid var(--border)' }}
@@ -286,7 +286,7 @@ export default function AboutPage({ setActiveTab }: AboutPageProps) {
       <motion.div 
         initial={{ opacity: 0, scale: 0.98 }}
         whileInView={{ opacity: 1, scale: 1 }}
-        viewport={{ once: true, margin: '-50px' }}
+        viewport={{ once: false, margin: '-20px' }}
         transition={{ duration: 0.7 }}
         className="p-10 sm:p-14 text-center space-y-5 rounded-sm shadow-xl"
         style={{ 
