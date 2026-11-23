@@ -226,13 +226,13 @@ export default function HomePage({ setActiveTab, onSelectEvent }: HomePageProps)
             initial={{ opacity: 0, y: 24 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.1 }}
-            className="font-display font-extrabold tracking-tight leading-[1.05] max-w-5xl mx-auto text-hero"
+            className="font-display font-extrabold tracking-tight leading-[1.08] max-w-5xl mx-auto text-[28px] min-[380px]:text-[32px] sm:text-6xl md:text-7xl lg:text-8xl select-none"
             style={{ color: '#F5F5F5' }}
           >
-            <span className="block sm:inline">Discover Your </span>
+            <span className="block sm:inline whitespace-nowrap">Discover Your </span>
             <span className="block sm:inline whitespace-nowrap">Confidence.</span>{' '}
             <span className="block" style={{ color: 'var(--accent)' }}>
-              <span className="block sm:inline">Own the </span>
+              <span className="block sm:inline whitespace-nowrap">Own the </span>
               <span className="block sm:inline whitespace-nowrap">Runway.</span>
             </span>
           </motion.h1>

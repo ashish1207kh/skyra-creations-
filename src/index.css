@@ -67,12 +67,13 @@
 
   /* Responsive editorial headline clamp */
   .text-hero {
-    font-size: clamp(2.1rem, 7.5vw, 7.5rem);
-    line-height: 1.02;
+    font-size: clamp(1.85rem, 6.5vw, 6.5rem);
+    line-height: 1.06;
     letter-spacing: -0.02em;
-    word-break: normal;
+    word-break: keep-all;
     overflow-wrap: normal;
     hyphens: none;
+    white-space: normal;
   }
 }
 
