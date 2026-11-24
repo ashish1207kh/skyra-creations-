@@ -157,7 +157,7 @@ export default function HomePage({ setActiveTab, onSelectEvent }: HomePageProps)
       {/* ──────────────────────────────────────────────────────────
           SECTION 1: 100svh VIRTUAL RUNWAY HERO WITH SCROLL PARALLAX
       ────────────────────────────────────────────────────────── */}
-      <section ref={heroRef} className="relative min-h-[85svh] sm:min-h-[92svh] py-10 sm:py-20 flex items-center justify-center overflow-hidden w-full max-w-full">
+      <section ref={heroRef} className="relative min-h-[80svh] sm:min-h-[88svh] pt-16 sm:pt-20 pb-8 sm:pb-12 flex items-center justify-center overflow-hidden w-full max-w-full">
         {/* Three.js Virtual Runway Catwalk Canvas */}
         <div className="absolute inset-0 z-0 w-full h-full overflow-hidden max-w-full">
           <VirtualRunwayScene className="w-full h-full block max-w-full" />
@@ -179,7 +179,7 @@ export default function HomePage({ setActiveTab, onSelectEvent }: HomePageProps)
 
         <motion.div 
           style={{ scale: heroScale, opacity: heroOpacity, y: heroY }}
-          className="relative z-20 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-5 sm:space-y-6 pt-14 sm:pt-20 pb-4 sm:pb-6 will-change-transform transform-gpu"
+          className="relative z-20 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-4 sm:space-y-5 pt-0 pb-4 sm:pb-6 will-change-transform transform-gpu"
         >
           {/* Brandmark Showcase */}
           <motion.div
