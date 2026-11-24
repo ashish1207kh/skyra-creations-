@@ -361,7 +361,7 @@ export default function HomePage({ setActiveTab, onSelectEvent }: HomePageProps)
             className="lg:col-span-7 space-y-6"
           >
             <span className="font-mono-editorial block" style={{ color: 'var(--accent)', fontSize: '11px' }}>
-              01 // BRAND INTRODUCTION
+              01 // BRAND VISION &amp; PHILOSOPHY
             </span>
 
             <h2 
@@ -372,20 +372,27 @@ export default function HomePage({ setActiveTab, onSelectEvent }: HomePageProps)
             </h2>
 
             <p 
-              className="text-base sm:text-lg leading-relaxed font-light"
-              style={{ color: 'var(--text-secondary)' }}
+              className="text-base sm:text-lg leading-relaxed font-medium"
+              style={{ color: 'var(--accent)' }}
             >
-              Skyra Creations is dedicated to professional runway training, catwalk grooming, and modelling opportunities. Through premier catwalk productions, structured stage mentorship, and certified recognition, we empower emerging models to step confidently onto the ramp and into the fashion industry.
+              At Skyra Creations, our vision extends beyond the runway, embracing fashion as a powerful platform for confidence, creativity, learning, and personal growth.
             </p>
 
             <p 
-              className="text-sm sm:text-base leading-relaxed"
-              style={{ color: 'var(--text-muted)' }}
+              className="text-sm sm:text-base leading-relaxed font-light"
+              style={{ color: 'var(--text-secondary)' }}
             >
-              Founded by <strong>B Sriram</strong>, Skyra Creations provides structured training, prestigious city-center venues, and verified credentials for every model and participant.
+              Fashion is more than just walking the runway or wearing stylish outfits. It is a world of creativity, confidence, discipline, learning, and self-development. Beyond the glamour, fashion teaches us how to express ourselves, overcome insecurities, build confidence, develop our personality, improve communication, and discover our true potential.
             </p>
 
-            <div className="pt-4">
+            <p 
+              className="text-sm sm:text-base leading-relaxed font-light"
+              style={{ color: 'var(--text-secondary)' }}
+            >
+              We believe fashion is not just about appearance — it is about transformation, growth, and discovering what you are capable of. Our vision is to create a platform where every individual gets the opportunity to learn, experience, evolve, and grow beyond fashion, both personally and professionally.
+            </p>
+
+            <div className="pt-2">
               <button
                 onClick={() => setActiveTab('about')}
                 className="inline-flex items-center space-x-2 font-mono-editorial text-xs font-bold transition-all group"

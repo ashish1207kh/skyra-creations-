@@ -145,7 +145,7 @@ export default function AboutPage({ setActiveTab }: AboutPageProps) {
           </div>
           <h3 className="text-2xl font-bold font-editorial" style={{ color: 'var(--text-primary)' }}>Our Vision</h3>
           <p className="text-sm leading-relaxed font-light" style={{ color: 'var(--text-secondary)' }}>
-            To build a celebrated, trustworthy runway platform across India that discovers and nurtures emerging talent, fosters body positivity, and connects aspiring models with verified designers, photographers and creative directors.
+            At Skyra Creations, our vision extends beyond the runway, embracing fashion as a powerful platform for confidence, creativity, learning, and personal growth. We create a platform where every individual gets the opportunity to learn, experience, evolve, and grow beyond fashion, both personally and professionally.
           </p>
         </motion.div>
 
