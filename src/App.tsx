@@ -265,7 +265,7 @@ export default function App() {
                   </div>
                 </div>
                 <p className="text-xs leading-relaxed font-light" style={{ color: 'var(--text-muted)' }}>
-                  A premier fashion, runway and modelling event platform empowering emerging talent through professional catwalk showcases, stage grooming and designer collaborations.
+                  A premier fashion, runway and modelling event platform empowering emerging talent through professional walk showcases, stage grooming and designer collaborations.
                 </p>
 
                 {/* Instagram Quick Link */}
@@ -377,7 +377,7 @@ export default function App() {
                     <strong style={{ color: 'var(--text-primary)' }}>1. Non-Refundable Fee Policy:</strong> The total event registration fee is ₹3,000. All fees, token advance payments (₹500, ₹1,000, ₹1,500), and balance payments are strictly non-refundable and non-transferable under all circumstances.
                   </p>
                   <p>
-                    <strong style={{ color: 'var(--text-primary)' }}>2. Event Venue &amp; Timings:</strong> The event is held in Chennai City Center. Reporting timings, stage dress code, and exact auditorium coordinates are released to verified participants 10 days before the event.
+                    <strong style={{ color: 'var(--text-primary)' }}>2. Event Venue &amp; Timings:</strong> The event is held in Chennai and selected areas starting January 2027. Reporting timings, stage dress code, and exact auditorium coordinates are released to verified participants 10 days before the event.
                   </p>
                   <p>
                     <strong style={{ color: 'var(--text-primary)' }}>3. Model Conduct &amp; Compliance:</strong> Participants must adhere to stage choreography, rehearsal timings, and conduct guidelines issued by SKYRA CREATIONS event directors.

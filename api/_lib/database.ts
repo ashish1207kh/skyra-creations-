@@ -85,10 +85,10 @@ export async function getEventConfig(eventId: string = DEFAULT_EVENT_ID): Promis
       if (doc) {
         return {
           event_id: doc.event_id,
-          title: doc.title || 'Runway Show 2026 — Chennai City Center',
+          title: doc.title || 'Runway Show — Chennai & Selected Areas',
           status: doc.status || 'ACTIVE',
-          location: doc.location || 'Chennai & Selected Nearby Locations',
-          event_date: doc.event_date || '2026-05-15T18:00:00Z',
+          location: doc.location || 'Chennai & Selected Areas',
+          event_date: doc.event_date || '2027-01-10T09:00:00Z',
           registration_deadline: doc.registration_deadline,
           total_capacity: doc.total_capacity,
           total_fee: typeof doc.total_fee === 'number' ? doc.total_fee : 3000,
@@ -106,10 +106,10 @@ export async function getEventConfig(eventId: string = DEFAULT_EVENT_ID): Promis
 
   return {
     event_id: DEFAULT_EVENT_ID,
-    title: 'Runway Show 2026 — Chennai City Center',
+    title: 'Runway Show — Chennai & Selected Areas',
     status: 'ACTIVE',
-    location: 'Chennai & Selected Nearby Locations',
-    event_date: '2026-05-15T18:00:00Z',
+    location: 'Chennai & Selected Areas',
+    event_date: '2027-01-10T09:00:00Z',
     registration_deadline: '2026-04-30T23:59:59Z',
     total_capacity: 500,
     total_fee: 3000,

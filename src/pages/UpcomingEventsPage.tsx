@@ -30,13 +30,13 @@ export default function UpcomingEventsPage({ setActiveTab, onSelectEvent }: Upco
       .finally(() => setLoading(false));
   }, []);
 
-  const eventTitle = paymentInfo?.event_name || 'RUNWAY SHOW 2026';
-  const location = paymentInfo?.location || 'Chennai (City Center — Not outer)';
+  const eventTitle = paymentInfo?.event_name || 'RUNWAY SHOW';
+  const location = paymentInfo?.location || 'Chennai & Selected Areas';
   const totalFee = paymentInfo?.default_total_fee || 3000;
   const advances = paymentInfo?.allowed_token_advances || [500, 1000, 1500];
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 space-y-16">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-4 pb-12 sm:pt-6 sm:pb-16 space-y-8 sm:space-y-12">
       {/* Page Header */}
       <motion.div 
         initial={{ opacity: 0, y: 20 }}
@@ -105,7 +105,7 @@ export default function UpcomingEventsPage({ setActiveTab, onSelectEvent }: Upco
                 <span>•</span>
                 <span className="flex items-center space-x-1.5">
                   <Calendar className="w-3.5 h-3.5" style={{ color: 'var(--accent)' }} />
-                  <span>SEASON 2026</span>
+                  <span>STARTING JANUARY 2027</span>
                 </span>
                 <span>•</span>
                 <span className="flex items-center space-x-1.5">
@@ -119,7 +119,7 @@ export default function UpcomingEventsPage({ setActiveTab, onSelectEvent }: Upco
               </h2>
 
               <p className="text-sm leading-relaxed font-light" style={{ color: 'var(--text-secondary)' }}>
-                Join Tamil Nadu's celebrated runway showcase in Chennai. Featuring professional ramp walking, costume changes, certificate of participation, and live stage exposure for fresh and experienced contestants.
+                Join Tamil Nadu's celebrated runway showcase in Chennai and selected areas starting January 2027. Featuring professional ramp walking, costume changes, certificate of participation, and live stage exposure for fresh and experienced contestants.
               </p>
             </div>
 
@@ -199,7 +199,7 @@ export default function UpcomingEventsPage({ setActiveTab, onSelectEvent }: Upco
             <div className="space-y-3 text-xs font-light" style={{ color: 'var(--text-secondary)' }}>
               <div className="flex items-start space-x-2.5">
                 <Check className="w-4 h-4 shrink-0 mt-0.5" style={{ color: 'var(--accent)' }} />
-                <span>Strictly Chennai City Center venue (not remote outskirts).</span>
+                <span>Premier venues located across Chennai and selected areas.</span>
               </div>
               <div className="flex items-start space-x-2.5">
                 <Check className="w-4 h-4 shrink-0 mt-0.5" style={{ color: 'var(--accent)' }} />

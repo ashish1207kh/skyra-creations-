@@ -219,25 +219,22 @@ export default function Navbar({ activeTab, setActiveTab }: NavbarProps) {
             </div>
 
             {/* Footer in Drawer */}
-            <div className="p-6 sm:p-8 space-y-4 border-t border-white/10 shrink-0 mt-auto">
-              <div className="grid grid-cols-3 gap-2 font-mono-editorial text-xs text-center text-zinc-400">
-                <button onClick={() => handleNavClick('payment')} className="p-2 bg-white/5 rounded-sm hover:text-white">
-                  PAYMENT
-                </button>
-                <button onClick={() => handleNavClick('status')} className="p-2 bg-white/5 rounded-sm hover:text-white">
-                  PASS
-                </button>
-                <button onClick={() => handleNavClick('admin')} className="p-2 bg-white/5 rounded-sm hover:text-white">
-                  ADMIN
-                </button>
-              </div>
+            <div className="p-6 sm:p-8 space-y-3 border-t border-white/10 shrink-0 mt-auto">
+              <button 
+                onClick={() => handleNavClick('payment')} 
+                className="w-full py-3 bg-white/5 border border-white/10 rounded-sm hover:bg-white/10 text-zinc-300 hover:text-white font-mono-editorial text-xs font-semibold tracking-wider flex items-center justify-center space-x-2 transition-colors"
+              >
+                <CreditCard className="w-3.5 h-3.5 text-[#C6FF00]" />
+                <span>PAYMENT</span>
+              </button>
 
               <button
                 onClick={() => handleNavClick('register')}
-                className="w-full py-4 font-mono-editorial text-xs font-bold uppercase tracking-widest rounded-sm"
+                className="w-full py-4 font-mono-editorial text-xs font-bold uppercase tracking-widest rounded-sm flex items-center justify-center space-x-2 shadow-lg"
                 style={{ backgroundColor: '#C6FF00', color: '#000000' }}
               >
-                REGISTER NOW
+                <Sparkles className="w-4 h-4" />
+                <span>REGISTER NOW</span>
               </button>
             </div>
           </motion.div>

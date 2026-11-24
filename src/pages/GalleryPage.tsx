@@ -27,7 +27,7 @@ export default function GalleryPage({ setActiveTab }: GalleryPageProps) {
     {
       id: 1,
       src: '/images/events/skyra-event-03.jpg',
-      title: 'Official Skyra Main Stage Catwalk',
+      title: 'Official Skyra Main Stage Walk',
       category: 'RUNWAY',
       description: 'Runway presentation with the signature glowing Skyra Creations LED backdrop and couture ensembles.',
       span: 'md:col-span-8 md:row-span-2'
@@ -53,7 +53,7 @@ export default function GalleryPage({ setActiveTab }: GalleryPageProps) {
       src: '/images/events/skyra-event-01.jpg',
       title: 'Haute Couture Grand Finale',
       category: 'RUNWAY',
-      description: 'Runway models assembled on the catwalk under stage lighting for the collection finale.',
+      description: 'Runway models assembled for the walk under stage lighting for the collection finale.',
       span: 'md:col-span-6 md:row-span-1'
     },
     {
@@ -101,7 +101,7 @@ export default function GalleryPage({ setActiveTab }: GalleryPageProps) {
       src: '/images/events/skyra-event-05.jpg',
       title: 'Skyra Creations Production Arena',
       category: 'STAGE',
-      description: 'Intelligent stage lighting, curved LED trusses, and illuminated catwalk ramp arena.',
+      description: 'Intelligent stage lighting, curved LED trusses, and illuminated walk ramp arena.',
       span: 'md:col-span-4 md:row-span-1'
     },
     {
@@ -115,7 +115,7 @@ export default function GalleryPage({ setActiveTab }: GalleryPageProps) {
     {
       id: 12,
       src: '/images/events/skyra-event-06.jpg',
-      title: 'Catwalk Stage Horizon',
+      title: 'Walk Stage Horizon',
       category: 'RUNWAY',
       description: 'Panoramic view of the fashion contest runway and media seating at Chennai City Centre.',
       span: 'md:col-span-6 md:row-span-1'
@@ -133,7 +133,7 @@ export default function GalleryPage({ setActiveTab }: GalleryPageProps) {
       src: '/images/events/skyra-event-09.jpg',
       title: 'Runway Arena Showcase',
       category: 'STAGE',
-      description: 'Live catwalk production bringing together designers, models, and industry leaders.',
+      description: 'Live walk production bringing together designers, models, and industry leaders.',
       span: 'md:col-span-12 md:row-span-1'
     }
   ];
@@ -143,7 +143,7 @@ export default function GalleryPage({ setActiveTab }: GalleryPageProps) {
     : galleryItems.filter(item => item.category === activeFilter);
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 space-y-16">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-4 pb-12 sm:pt-6 sm:pb-16 space-y-8 sm:space-y-12">
       {/* Page Header */}
       <motion.div 
         initial={{ opacity: 0, y: 20 }}
@@ -155,10 +155,10 @@ export default function GalleryPage({ setActiveTab }: GalleryPageProps) {
           VISUAL ARCHIVE
         </span>
         <h1 className="font-display text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-bold leading-[1.05] break-words" style={{ color: 'var(--text-primary)' }}>
-          CATWALK MOMENTS.
+          SKYRA MOMENTS.
         </h1>
         <p className="text-sm sm:text-base font-light leading-relaxed" style={{ color: 'var(--text-secondary)' }}>
-          Moments of fashion, poise and catwalk elegance from official SKYRA CREATIONS runway shows and model showcases.
+          Moments of fashion, poise and runway elegance from official SKYRA CREATIONS runway shows and model showcases.
         </p>
 
         {/* Filter Tabs */}

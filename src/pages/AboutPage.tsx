@@ -16,7 +16,7 @@ interface AboutPageProps {
 
 export default function AboutPage({ setActiveTab }: AboutPageProps) {
   return (
-    <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12 space-y-20">
+    <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pt-4 pb-12 sm:pt-6 sm:pb-16 space-y-10 sm:space-y-14">
       {/* ──────────────────────────────────────────────────────────
           1. LARGE EDITORIAL HERO
       ────────────────────────────────────────────────────────── */}
@@ -99,7 +99,7 @@ export default function AboutPage({ setActiveTab }: AboutPageProps) {
               Founded by <strong>B Sriram</strong>, SKYRA CREATIONS was established to challenge the traditional barriers of the fashion industry. For years, aspiring models across South India have faced opaque selection processes, unrealistic height standards and lack of authentic stage grooming.
             </p>
             <p className="text-sm leading-relaxed" style={{ color: 'var(--text-muted)' }}>
-              SKYRA CREATIONS replaces industry gatekeeping with transparent event production, curated city center venues, professional lighting choreography, and verified participant credentials.
+              SKYRA CREATIONS replaces industry gatekeeping with transparent event production, curated venues across Chennai and selected areas, professional lighting choreography, and verified participant credentials starting January 2027.
             </p>
 
             <div className="pt-2 flex items-center space-x-4">
@@ -168,7 +168,7 @@ export default function AboutPage({ setActiveTab }: AboutPageProps) {
           </div>
           <h3 className="text-2xl font-bold font-editorial" style={{ color: 'var(--text-primary)' }}>Our Mission</h3>
           <p className="text-sm leading-relaxed font-light" style={{ color: 'var(--text-secondary)' }}>
-            To deliver transparent, impeccably organized runway events where every participant receives personalized stage grooming, authentic catwalk exposure, and steps onto the stage with confidence, elegance and pride.
+            To deliver transparent, impeccably organized runway events where every participant receives personalized stage grooming, authentic walk exposure, and steps onto the stage with confidence, elegance and pride.
           </p>
         </motion.div>
       </div>
@@ -191,7 +191,7 @@ export default function AboutPage({ setActiveTab }: AboutPageProps) {
             Confidence Is Built On Stage, Not In A Spreadsheet.
           </h2>
           <p className="text-sm sm:text-base leading-relaxed font-light" style={{ color: 'var(--text-secondary)' }}>
-            We believe that true runway elegance stems from self-assurance, rhythm and presence. Regardless of whether an aspirant is walking their first catwalk at age 6 or debuting at age 45, our mentorship equips them with posture control, stage presence and genuine poise.
+            We believe that true runway elegance stems from self-assurance, rhythm and presence. Regardless of whether an aspirant is walking their first runway walk at age 6 or debuting at age 45, our mentorship equips them with posture control, stage presence and genuine poise.
           </p>
           <div className="space-y-3 pt-2">
             <div className="flex items-start space-x-3">
@@ -248,9 +248,9 @@ export default function AboutPage({ setActiveTab }: AboutPageProps) {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
           <div className="p-6 rounded-sm space-y-2 flex flex-col justify-start h-full" style={{ backgroundColor: 'var(--surface)', border: '1px solid var(--border)' }}>
             <span className="font-mono-editorial text-xs font-bold" style={{ color: 'var(--accent)' }}>01</span>
-            <h4 className="font-bold text-base" style={{ color: 'var(--text-primary)' }}>City Center Venues</h4>
+            <h4 className="font-bold text-base" style={{ color: 'var(--text-primary)' }}>Chennai &amp; Selected Areas</h4>
             <p className="text-xs leading-relaxed" style={{ color: 'var(--text-muted)' }}>
-              We exclusively select accessible, premium city centers in Chennai with verified stage facilities.
+              We exclusively select accessible, premium auditoriums in Chennai and selected areas with verified stage facilities.
             </p>
           </div>
 

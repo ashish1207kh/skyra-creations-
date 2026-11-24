@@ -57,10 +57,10 @@ async function migrate() {
     {
       $setOnInsert: {
         event_id: DEFAULT_EVENT_ID,
-        title: 'Runway Show 2026 — Chennai City Center',
+        title: 'Runway Show — Chennai & Selected Areas',
         status: 'ACTIVE',
-        location: 'Chennai (City Center)',
-        event_date: '2026-05-15T18:00:00Z',
+        location: 'Chennai and Selected Areas',
+        event_date: '2027-01-10T09:00:00Z',
         registration_deadline: '2026-04-30T23:59:59Z',
         created_at: new Date().toISOString(),
         updated_at: new Date().toISOString(),

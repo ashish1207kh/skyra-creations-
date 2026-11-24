@@ -25,12 +25,12 @@ const faqs = [
     answer: "The total participation fee for Runway Show 2026 is ₹3,000. To reserve your audition slot, you can commit an advance token (₹500, ₹1,000, or full ₹3,000). The remaining balance can be cleared anytime prior to the event date through the Payment section."
   },
   {
-    question: "Where and when is Runway Show 2026 hosted?",
-    answer: "The flagship showcase will take place in central Chennai at Chennai City Center Auditorium. The exact venue address, call times, and backstage rehearsal schedule are dispatched directly to your registered WhatsApp 10 days before the show."
+    question: "Where and when is the Runway Show hosted?",
+    answer: "The flagship showcase will take place in Chennai and selected areas starting January 2027. The exact venue address, call times, and backstage rehearsal schedule are dispatched directly to your registered WhatsApp 10 days before the show."
   },
   {
     question: "Who is eligible to participate and what are the categories?",
-    answer: "We welcome all aspiring and experienced models! There are curated competitive and showcase categories: Kids (Ages 4–12), Teens (Ages 13–17), Adults (Ages 18–35), Plus-Size, and Classic (up to 50). No prior portfolio is required."
+    answer: "We welcome all aspiring and experienced models! There are four curated showcase categories: Male above 18, Female above 18, Other above 18, and Kids below 18. No prior portfolio is required."
   },
   {
     question: "What is the advance token refund policy?",
@@ -133,7 +133,7 @@ export default function HomePage({ setActiveTab, onSelectEvent }: HomePageProps)
   const sec7Opacity = useTransform(sec7Progress, [0, 0.45], [0.4, 1]);
 
   return (
-    <div className="space-y-12 sm:space-y-20 pb-12 sm:pb-16 overflow-x-clip relative w-full max-w-full">
+    <div className="space-y-8 sm:space-y-14 pb-10 sm:pb-12 overflow-x-clip relative w-full max-w-full">
       {/* Continuous Drifting Ambient Runway Glow Orb (Strictly Viewport Clipped) */}
       <div className="fixed inset-0 overflow-hidden pointer-events-none z-0">
         <motion.div
@@ -155,10 +155,10 @@ export default function HomePage({ setActiveTab, onSelectEvent }: HomePageProps)
       </div>
 
       {/* ──────────────────────────────────────────────────────────
-          SECTION 1: 100svh VIRTUAL RUNWAY HERO WITH SCROLL PARALLAX
+          SECTION 1: VIRTUAL RUNWAY HERO WITH SCROLL PARALLAX
       ────────────────────────────────────────────────────────── */}
-      <section ref={heroRef} className="relative min-h-[70svh] sm:min-h-[80svh] pt-14 sm:pt-16 pb-2 sm:pb-4 flex items-center justify-center overflow-hidden w-full max-w-full">
-        {/* Three.js Virtual Runway Catwalk Canvas */}
+      <section ref={heroRef} className="relative pt-16 sm:pt-20 pb-2 sm:pb-4 flex flex-col items-center justify-start overflow-hidden w-full max-w-full">
+        {/* Three.js Virtual Runway Walk Canvas */}
         <div className="absolute inset-0 z-0 w-full h-full overflow-hidden max-w-full">
           <VirtualRunwayScene className="w-full h-full block max-w-full" />
         </div>
@@ -179,14 +179,14 @@ export default function HomePage({ setActiveTab, onSelectEvent }: HomePageProps)
 
         <motion.div 
           style={{ scale: heroScale, opacity: heroOpacity, y: heroY }}
-          className="relative z-20 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-3 sm:space-y-4 pt-0 pb-1 sm:pb-3 will-change-transform transform-gpu"
+          className="relative z-20 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-2.5 sm:space-y-3.5 pt-0 pb-1 sm:pb-2 will-change-transform transform-gpu"
         >
           {/* Brandmark Showcase */}
           <motion.div
             initial={{ opacity: 0, scale: 0.92, y: -10 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-            className="flex justify-center pb-1"
+            className="flex justify-center pt-1 pb-0.5"
           >
             <div 
               onClick={() => setActiveTab('about')}
@@ -196,7 +196,7 @@ export default function HomePage({ setActiveTab, onSelectEvent }: HomePageProps)
               <img
                 src="/logo-clean.png"
                 alt="Skyra Creations Logo"
-                className="h-14 sm:h-18 md:h-20 w-auto object-contain drop-shadow-[0_4px_24px_rgba(0,0,0,0.9)]"
+                className="h-12 sm:h-16 md:h-18 w-auto object-contain drop-shadow-[0_4px_24px_rgba(0,0,0,0.9)]"
               />
             </div>
           </motion.div>
@@ -290,7 +290,7 @@ export default function HomePage({ setActiveTab, onSelectEvent }: HomePageProps)
           >
             <div className="py-1 px-2">
               <div className="text-base sm:text-xl font-bold font-editorial" style={{ color: '#FFFFFF' }}>Chennai</div>
-              <div className="font-mono-editorial mt-0.5" style={{ color: 'var(--text-muted)', fontSize: '10px' }}>CITY CENTER VENUE</div>
+              <div className="font-mono-editorial mt-0.5" style={{ color: 'var(--text-muted)', fontSize: '10px' }}>&amp; SELECTED AREAS</div>
             </div>
             <div className="py-1 px-2">
               <div className="text-base sm:text-xl font-bold font-editorial" style={{ color: 'var(--accent)' }}>Inclusive</div>
@@ -332,7 +332,7 @@ export default function HomePage({ setActiveTab, onSelectEvent }: HomePageProps)
             >
               <img 
                 src="/images/events/skyra-event-03.jpg" 
-                alt="SKYRA CREATIONS Runway Fashion Catwalk with Official LED Stage Backdrop" 
+                alt="SKYRA CREATIONS Runway Fashion Walk with Official LED Stage Backdrop" 
                 loading="lazy"
                 className="w-full h-[320px] sm:h-[420px] lg:h-[520px] object-cover object-center group-hover:scale-105 transition-transform duration-700"
               />
@@ -342,7 +342,7 @@ export default function HomePage({ setActiveTab, onSelectEvent }: HomePageProps)
               >
                 <div>
                   <span className="font-mono-editorial block text-[10px]" style={{ color: 'var(--accent)' }}>
-                    OFFICIAL SKYRA CATWALK PRODUCTION // CHENNAI
+                    OFFICIAL SKYRA WALK PRODUCTION // CHENNAI
                   </span>
                   <span className="font-editorial text-lg font-bold text-white">
                     Confidence on the Ramp
@@ -409,7 +409,7 @@ export default function HomePage({ setActiveTab, onSelectEvent }: HomePageProps)
       {/* ──────────────────────────────────────────────────────────
           SECTION 3: WHAT WE DO (ALTERNATING EDITORIAL BANDS)
       ────────────────────────────────────────────────────────── */}
-      <section ref={sec3Ref} className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
+      <section ref={sec3Ref} className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6 sm:space-y-8">
         <div className="text-center max-w-2xl mx-auto space-y-2">
           <span className="font-mono-editorial block" style={{ color: 'var(--accent)', fontSize: '11px' }}>
             02 // CORE DISCIPLINES
@@ -423,7 +423,7 @@ export default function HomePage({ setActiveTab, onSelectEvent }: HomePageProps)
         </div>
 
         {/* Alternating Feature Rows */}
-        <div className="space-y-12">
+        <div className="space-y-6 sm:space-y-8">
           {/* Row 1: Fashion Shows */}
           <motion.div 
             initial={{ opacity: 0, y: 24 }}
@@ -455,7 +455,7 @@ export default function HomePage({ setActiveTab, onSelectEvent }: HomePageProps)
                 Full-Scale Runway Productions
               </h3>
               <p className="text-sm leading-relaxed" style={{ color: 'var(--text-secondary)' }}>
-                We produce high-impact fashion show productions featuring architectural lighting, dynamic sound design, precision catwalk choreography and professional media coverage across top city centers.
+                We produce high-impact fashion show productions featuring architectural lighting, dynamic sound design, precision walk choreography and professional media coverage across premier auditoriums in Chennai and selected areas.
               </p>
               <button
                 onClick={() => setActiveTab('what-we-do')}
@@ -499,7 +499,7 @@ export default function HomePage({ setActiveTab, onSelectEvent }: HomePageProps)
                 Curated Platforms for Emerging Models
               </h3>
               <p className="text-sm leading-relaxed" style={{ color: 'var(--text-secondary)' }}>
-                Every contestant receives verified credentials, stage photographs and transparent evaluation. We champion diversity with dedicated categories for Kids, Teens, Adults, Plus-size, and Fitness contestants.
+                Every contestant receives verified credentials, stage photographs and transparent evaluation. We champion diversity with dedicated categories for Male above 18, Female above 18, Other above 18, and Kids below 18.
               </p>
               <button
                 onClick={() => setActiveTab('what-we-do')}
@@ -543,7 +543,7 @@ export default function HomePage({ setActiveTab, onSelectEvent }: HomePageProps)
                 Posture, Walk &amp; Ramp Rehearsal
               </h3>
               <p className="text-sm leading-relaxed" style={{ color: 'var(--text-secondary)' }}>
-                Pre-show rehearsal sessions guide models through catwalk pacing, poise, expression and confident posture under genuine stage spotlights, led directly by verified industry choreographers.
+                Pre-show rehearsal sessions guide models through walk pacing, poise, expression and confident posture under genuine stage spotlights, led directly by verified industry choreographers.
               </p>
               <button
                 onClick={() => setActiveTab('what-we-do')}
@@ -608,19 +608,23 @@ export default function HomePage({ setActiveTab, onSelectEvent }: HomePageProps)
                 </h3>
 
                 <p className="text-sm sm:text-base leading-relaxed font-light" style={{ color: 'var(--text-secondary)' }}>
-                  Step into the spotlight at our premier runway event in Chennai. Featuring full-stage catwalk choreography, industry judges and official certificate recognition.
+                  Step into the spotlight at our premier runway event in Chennai and selected areas. Featuring full-stage walk choreography, industry judges and official certificate recognition starting January 2027.
                 </p>
 
-                <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 pt-2 text-xs">
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-2 text-xs">
                   <div className="p-3 rounded-sm" style={{ backgroundColor: 'var(--bg-primary)', border: '1px solid var(--border)' }}>
                     <span className="font-mono-editorial block text-[10px]" style={{ color: 'var(--text-muted)' }}>VENUE</span>
-                    <strong style={{ color: 'var(--text-primary)' }}>Chennai City Center</strong>
+                    <strong style={{ color: 'var(--text-primary)' }}>Chennai &amp; Selected Areas</strong>
+                  </div>
+                  <div className="p-3 rounded-sm" style={{ backgroundColor: 'var(--bg-primary)', border: '1px solid var(--border)' }}>
+                    <span className="font-mono-editorial block text-[10px]" style={{ color: 'var(--text-muted)' }}>START DATE</span>
+                    <strong style={{ color: 'var(--accent)' }}>January 2027</strong>
                   </div>
                   <div className="p-3 rounded-sm" style={{ backgroundColor: 'var(--bg-primary)', border: '1px solid var(--border)' }}>
                     <span className="font-mono-editorial block text-[10px]" style={{ color: 'var(--text-muted)' }}>TOTAL FEE</span>
                     <strong className="text-sm" style={{ color: 'var(--accent)' }}>₹3,000</strong>
                   </div>
-                  <div className="p-3 rounded-sm col-span-2 sm:col-span-1" style={{ backgroundColor: 'var(--bg-primary)', border: '1px solid var(--border)' }}>
+                  <div className="p-3 rounded-sm" style={{ backgroundColor: 'var(--bg-primary)', border: '1px solid var(--border)' }}>
                     <span className="font-mono-editorial block text-[10px]" style={{ color: 'var(--text-muted)' }}>ADVANCE TOKEN</span>
                     <strong style={{ color: 'var(--text-primary)' }}>₹500 / ₹1,000 / ₹1,500</strong>
                   </div>
@@ -661,7 +665,7 @@ export default function HomePage({ setActiveTab, onSelectEvent }: HomePageProps)
                 <div className="overflow-hidden shadow-2xl rounded-sm h-full w-full" style={{ border: '1px solid var(--border)' }}>
                   <img 
                     src="/images/events/skyra-event-02.jpg" 
-                    alt="Runway Show 2026 Live Catwalk" 
+                    alt="Runway Show 2026 Live Walk" 
                     loading="lazy"
                     className="w-full h-64 sm:h-80 lg:h-full min-h-[260px] lg:min-h-[360px] object-cover object-top"
                   />
@@ -677,11 +681,12 @@ export default function HomePage({ setActiveTab, onSelectEvent }: HomePageProps)
         <MarqueeStrip 
           reverse={true} 
           text={[
-            'HAUTE COUTURE 2026',
-            'CHENNAI CITY CENTER',
+            'HAUTE COUTURE RUNWAY',
+            'STARTING JANUARY 2027',
+            'CHENNAI & SELECTED AREAS',
             'EXCLUSIVE AUDITIONS',
             'STAGE GROOMING',
-            'LIVE CATWALK',
+            'LIVE WALK',
             'CERTIFIED ACCREDITATION',
             'DIRECTOR B SRIRAM',
           ]} 
@@ -693,7 +698,7 @@ export default function HomePage({ setActiveTab, onSelectEvent }: HomePageProps)
       ────────────────────────────────────────────────────────── */}
       <section 
         ref={interludeRef}
-        className="relative py-14 sm:py-24 overflow-hidden mx-4 sm:mx-8 rounded-sm"
+        className="relative py-10 sm:py-16 overflow-hidden mx-4 sm:mx-8 rounded-sm"
         style={{ border: '1px solid var(--border)' }}
       >
         <motion.div 
@@ -749,7 +754,7 @@ export default function HomePage({ setActiveTab, onSelectEvent }: HomePageProps)
               04 // VISUAL ARCHIVE
             </span>
             <h2 className="font-editorial text-3xl sm:text-4xl font-bold mt-1" style={{ color: 'var(--text-primary)' }}>
-              Catwalk Moments &amp; Highlights
+              Skyra Moments &amp; Highlights
             </h2>
           </div>
           <button
@@ -910,7 +915,7 @@ export default function HomePage({ setActiveTab, onSelectEvent }: HomePageProps)
           </h2>
 
           <p className="max-w-xl mx-auto text-sm sm:text-base font-light relative z-10 leading-relaxed" style={{ color: 'var(--text-secondary)' }}>
-            Step onto the catwalk with confidence. Secure your registration for the upcoming Chennai Runway Show 2026.
+            Step onto the runway walk with confidence. Secure your registration for the upcoming Runway Show in Chennai and selected areas starting January 2027.
           </p>
 
           <div className="pt-4 flex justify-center relative z-10">

@@ -35,7 +35,7 @@ export default function ContactPage({ setActiveTab }: ContactPageProps) {
   };
 
   return (
-    <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-16 space-y-20">
+    <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pt-4 pb-12 sm:pt-6 sm:pb-16 space-y-10 sm:space-y-14">
       {/* Page Header */}
       <motion.div 
         initial={{ opacity: 0, y: 20 }}
@@ -116,9 +116,9 @@ export default function ContactPage({ setActiveTab }: ContactPageProps) {
               <MapPin className="w-5 h-5 text-[#C6FF00]" />
             </div>
             <span className="font-mono-editorial block text-[10px] text-[#BFC3C7]">DESTINATION</span>
-            <h3 className="font-display text-xl font-bold mt-1 text-white">Chennai, Tamil Nadu</h3>
+            <h3 className="font-display text-xl font-bold mt-1 text-white">Chennai &amp; Selected Areas</h3>
             <p className="text-xs mt-2 font-light text-[#BFC3C7]">
-              Premier city center auditorium destinations across central Chennai.
+              Premier auditorium destinations across Chennai and selected regional areas.
             </p>
           </div>
           <span className="font-mono-editorial text-[10px] mt-4 block text-zinc-400">VENUE CITY</span>

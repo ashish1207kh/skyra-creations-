@@ -70,7 +70,7 @@ export default function StatusPassPage({ initialRegId, setActiveTab, setBalanceR
   const currentStage = participant ? getTimelineStage(participant) : 1;
 
   return (
-    <div className="max-w-4xl mx-auto py-6 sm:py-10 px-4 sm:px-6 space-y-6 sm:space-y-8">
+    <div className="max-w-4xl mx-auto pt-3 pb-8 sm:pt-4 sm:pb-12 px-4 sm:px-6 space-y-6 sm:space-y-8">
       {/* Page Header */}
       <div className="text-center space-y-4 max-w-2xl mx-auto">
         <div className="inline-flex items-center space-x-2 px-3.5 py-1 rounded-sm bg-[#C6FF00]/10 border border-[#C6FF00]/30 text-[#C6FF00] font-mono-editorial text-[10px] font-bold uppercase tracking-widest">
@@ -144,11 +144,11 @@ export default function StatusPassPage({ initialRegId, setActiveTab, setBalanceR
                 VENUE POLICY &amp; REPORTING DATES
               </span>
               <span className="px-2 py-0.5 rounded-sm bg-white/10 text-white font-mono-editorial text-[10px] uppercase tracking-wider">
-                Chennai (City Center)
+                Chennai &amp; Selected Areas
               </span>
             </div>
             <p className="text-xs sm:text-sm text-white leading-relaxed font-light">
-              <strong className="font-medium">Event Location:</strong> Central Chennai prime city auditorium (never remote outskirts).
+              <strong className="font-medium">Event Location:</strong> Premier auditoriums in Chennai and selected areas starting January 2027.
             </p>
             <p className="text-xs sm:text-sm text-[#BFC3C7] leading-relaxed font-light">
               <strong className="font-medium text-white">Venue Release:</strong> Exact venue address and show timings are <strong className="text-[#C6FF00]">announced 10 days before the show</strong> and communicated directly via registered WhatsApp.
@@ -395,7 +395,7 @@ export default function StatusPassPage({ initialRegId, setActiveTab, setBalanceR
                       <MapPin className="w-4 h-4 text-[#C6FF00] shrink-0 mt-0.5" />
                       <div>
                         <span className="text-[10px] uppercase tracking-wider text-[#C6FF00] font-bold block">EVENT DESTINATION</span>
-                        <strong className="text-white text-xs block font-sans">Chennai City Center (Prime Auditorium)</strong>
+                        <strong className="text-white text-xs block font-sans">Chennai &amp; Selected Areas (Auditorium Venue)</strong>
                       </div>
                     </div>
                     <div className="flex items-start space-x-2">

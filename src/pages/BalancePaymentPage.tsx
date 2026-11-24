@@ -256,7 +256,7 @@ export default function BalancePaymentPage({ initialRegId, setActiveTab, setLook
             </p>
             <p className="text-zinc-300 border-t border-white/10 pt-2 flex items-center space-x-1.5 text-[11px]">
               <MapPin className="w-3.5 h-3.5 text-[#C6FF00] shrink-0" />
-              <span>Venue is in <strong className="text-white">Chennai City Center</strong>. Exact address and timing released 10 days before the show.</span>
+              <span>Venue is in <strong className="text-white">Chennai and selected areas</strong>. Exact address and timing released 10 days before the show.</span>
             </p>
           </div>
 
@@ -294,7 +294,7 @@ export default function BalancePaymentPage({ initialRegId, setActiveTab, setLook
   const validAmounts = allAmounts.filter(amount => amount <= currentBalance);
 
   return (
-    <div className="max-w-4xl mx-auto py-6 sm:py-10 px-4 sm:px-6 space-y-6 sm:space-y-8">
+    <div className="max-w-4xl mx-auto pt-3 pb-8 sm:pt-4 sm:pb-12 px-4 sm:px-6 space-y-6 sm:space-y-8">
       {/* Master Spec Banner */}
       <div className="relative overflow-hidden bg-[#12141a] border border-white/10 rounded-sm p-6 sm:p-10 shadow-2xl">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6 mb-6">
@@ -351,11 +351,11 @@ export default function BalancePaymentPage({ initialRegId, setActiveTab, setLook
                 VENUE ANNOUNCEMENT &amp; SCHEDULE
               </span>
               <span className="px-2 py-0.5 rounded-sm bg-white/10 text-white font-mono-editorial text-[10px] uppercase tracking-wider">
-                Chennai (City Center)
+                Chennai &amp; Selected Areas
               </span>
             </div>
             <p className="text-xs sm:text-sm text-white leading-relaxed font-light">
-              <strong className="font-medium">Event Location:</strong> Central Chennai city center auditorium (prime location, not outer areas).
+              <strong className="font-medium">Event Location:</strong> Premier auditoriums in Chennai and selected areas starting January 2027.
             </p>
             <p className="text-xs sm:text-sm text-[#BFC3C7] leading-relaxed font-light">
               <strong className="font-medium text-white">Venue Address &amp; Timings:</strong> Exact address &amp; call sheets are <strong className="text-[#C6FF00]">announced 10 days before the show</strong> and shared with all participants via registered WhatsApp.

@@ -423,7 +423,7 @@ export default function PaymentPage({
             </h4>
             <ul className="text-xs sm:text-sm text-[#BFC3C7] space-y-2 list-disc list-inside font-light">
               <li>
-                <strong className="text-white">Venue Location:</strong> Hosted strictly in <strong className="text-[#C6FF00]">Chennai City Center</strong> (prime urban auditorium, not remote outskirts).
+                <strong className="text-white">Venue Location:</strong> Hosted in <strong className="text-[#C6FF00]">Chennai and selected areas</strong> (premier auditoriums).
               </li>
               <li>
                 <strong className="text-white">Call Sheets &amp; Schedule:</strong> Exact venue address and runway reporting schedules are released <strong className="text-[#C6FF00]">10 days before the show</strong> to your registered WhatsApp.
@@ -537,11 +537,11 @@ export default function PaymentPage({
   // MAIN PAYMENT PORTAL
   // ───────────────────────────────────────────────────────────────────
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-10 space-y-6 sm:space-y-8">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-3 pb-8 sm:pt-4 sm:pb-12 space-y-6 sm:space-y-8">
       {/* Editorial Page Header */}
       <div className="text-center max-w-3xl mx-auto space-y-3 sm:space-y-4">
         <span className="font-mono-editorial text-[10px] sm:text-[11px] tracking-widest text-[#C6FF00] uppercase block">
-          OFFICIAL FINANCIAL GATEWAY // CHENNAI 2026
+          OFFICIAL FINANCIAL GATEWAY // CHENNAI &amp; SELECTED AREAS
         </span>
         <h1 className="font-display text-3xl sm:text-5xl md:text-6xl font-bold leading-[1.08] text-white">
           REGISTRATION FEE PAYMENT &amp; CLEARANCE
@@ -773,7 +773,7 @@ export default function PaymentPage({
                         <span>VENUE LOCATION POLICY</span>
                       </div>
                       <p className="font-light">
-                        Hosted in <strong className="text-white">Chennai City Center</strong> (urban auditorium, not outskirts). Exact venue and rehearsal schedules are released <strong className="text-[#C6FF00]">10 days before the show</strong> to your registered WhatsApp.
+                        Hosted in <strong className="text-white">Chennai and selected areas</strong> (premier auditoriums). Exact venue and rehearsal schedules are released <strong className="text-[#C6FF00]">10 days before the show</strong> to your registered WhatsApp.
                       </p>
                     </div>
                   </div>
@@ -1059,7 +1059,7 @@ export default function PaymentPage({
                       <span>VENUE &amp; SCHEDULE RELEASE</span>
                     </div>
                     <p className="font-light">
-                      Hosted in <strong className="text-white">Chennai City Center</strong>. Exact auditorium address and call schedules are released <strong className="text-[#C6FF00]">10 days before the show</strong> to your registered WhatsApp.
+                      Hosted in <strong className="text-white">Chennai and selected areas</strong>. Exact auditorium address and call schedules are released <strong className="text-[#C6FF00]">10 days before the show</strong> to your registered WhatsApp.
                     </p>
                   </div>
                 </div>
@@ -1297,7 +1297,7 @@ export default function PaymentPage({
                   START YOUR REGISTRATION FIRST
                 </h3>
                 <p className="text-xs sm:text-sm text-[#BFC3C7] font-light mt-2 leading-relaxed">
-                  To register for Runway Show 2026, please complete your personal information, contact credentials, and recent model photograph on our Registration form before submitting payment.
+                  To register for the Runway Show in Chennai and selected areas (starting January 2027), please complete your personal information, contact credentials, and recent model photograph on our Registration form before submitting payment.
                 </p>
               </div>
 

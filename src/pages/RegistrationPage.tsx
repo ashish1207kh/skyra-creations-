@@ -11,6 +11,7 @@ import {
   MapPin, 
   Calendar, 
   User, 
+  Wallet,
   ShieldCheck, 
   Copy, 
   Check,
@@ -45,11 +46,10 @@ interface RegistrationPageProps {
 }
 
 const CATEGORY_OPTIONS = [
-  { id: 'Adult Commercial & Couture', label: 'Adult Commercial & Couture', desc: 'Ages 18–35. High-fashion ramp and designer editorial walk.' },
-  { id: 'Kids Category', label: 'Kids Runway (Ages 4–12)', desc: 'Confidence grooming and fun ramp walk for young aspirants.' },
-  { id: 'Teens Category', label: 'Teens Runway (Ages 13–17)', desc: 'Pre-professional ramp choreography and stage posture.' },
-  { id: 'Plus-Size & Fitness', label: 'Plus-Size & Fitness Category', desc: 'Celebrating body positivity, silhouette, and athletic presence.' },
-  { id: 'Classic Category', label: 'Classic Category (Up to age 50)', desc: 'Timeless runway poise for experienced and mature models.' },
+  { id: 'Male above 18', label: 'Male above 18', desc: 'Male models aged 18 and above. Professional ramp presentation and fashion walk grooming.' },
+  { id: 'Female above 18', label: 'Female above 18', desc: 'Female models aged 18 and above. High-fashion runway elegance and designer showcases.' },
+  { id: 'Other above 18', label: 'Other above 18', desc: 'Open category for models aged 18 and above of all non-binary and diverse identities.' },
+  { id: 'Kids below 18', label: 'Kids below 18', desc: 'Youth, teens, and junior aspirants below 18. Confidence grooming and stage presentation.' },
 ];
 
 const EXPERIENCE_OPTIONS = [
@@ -78,7 +78,7 @@ export default function RegistrationPage({ setActiveTab, setLookupRegId, onProce
   const [city, setCity] = useState('');
 
   // ─── STEP 2: MODEL PROFILE & PHOTOGRAPH ───────────────────────────────────
-  const [category, setCategory] = useState('Adult Commercial & Couture');
+  const [category, setCategory] = useState('Female above 18');
   const [instagram, setInstagram] = useState('');
   const [experience, setExperience] = useState('Fresher (First Time on Runway)');
   const [modelPhotoFile, setModelPhotoFile] = useState<File | null>(null);
@@ -431,7 +431,7 @@ export default function RegistrationPage({ setActiveTab, setLookupRegId, onProce
             </h4>
             <ul className="text-xs sm:text-sm text-[#BFC3C7] space-y-2 list-disc list-inside font-light">
               <li>
-                <strong className="text-white">Venue Location:</strong> Hosted strictly in <strong className="text-[#C6FF00]">Chennai City Center</strong> (prime urban auditorium, not remote outskirts).
+                <strong className="text-white">Venue Location:</strong> Hosted in <strong className="text-[#C6FF00]">Chennai and selected areas</strong> (premier auditoriums).
               </li>
               <li>
                 <strong className="text-white">Call Sheets &amp; Schedule:</strong> Exact venue address and runway reporting schedules are released <strong className="text-[#C6FF00]">10 days before the show</strong> to your registered WhatsApp ({whatsapp}).
@@ -481,6 +481,38 @@ export default function RegistrationPage({ setActiveTab, setLookupRegId, onProce
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-8 space-y-5 sm:space-y-6">
+      {/* ─── REGISTRATION WELCOME & ACTION GATEWAY (FROM PAYMENT SCREEN) ──── */}
+      <div className="bg-[#12141a] border border-white/10 rounded-sm p-5 sm:p-6 shadow-xl space-y-3 relative overflow-hidden">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div className="flex items-center space-x-3">
+            <div className="w-10 h-10 rounded-full bg-[#C6FF00]/10 border border-[#C6FF00]/30 flex items-center justify-center text-[#C6FF00] shrink-0">
+              <User className="w-5 h-5" />
+            </div>
+            <div>
+              <span className="font-mono-editorial text-[10px] text-[#C6FF00] uppercase tracking-widest block mb-0.5">
+                NEW CONTESTANT REGISTRATION
+              </span>
+              <h1 className="font-display text-xl sm:text-2xl font-bold text-white">
+                START YOUR REGISTRATION
+              </h1>
+            </div>
+          </div>
+
+          <button
+            type="button"
+            onClick={() => setActiveTab('balance')}
+            className="self-start sm:self-auto px-4 py-2.5 rounded-sm bg-white/5 hover:bg-white/10 text-white font-mono-editorial text-xs font-semibold uppercase tracking-wider border border-white/15 transition-colors flex items-center space-x-2"
+          >
+            <Wallet className="w-3.5 h-3.5 text-[#C6FF00]" />
+            <span>CLEAR EXISTING BALANCE →</span>
+          </button>
+        </div>
+
+        <p className="text-xs sm:text-sm text-[#BFC3C7] font-light leading-relaxed border-t border-white/10 pt-3">
+          To register for the Runway Show in Chennai and selected areas (starting January 2027), please complete your <strong className="text-white">personal information</strong>, <strong className="text-white">contact credentials</strong>, and attach a <strong className="text-white">recent model photograph</strong> before submitting your token advance payment.
+        </p>
+      </div>
+
       {/* ─── TOP WIZARD PROGRESS BAR (DESKTOP & MOBILE RESPONSIVE) ─────────── */}
       <div className="bg-[#12141a] border border-white/10 rounded-sm p-3.5 sm:p-5 shadow-xl">
         {/* Mobile Header / Step Indicator */}
@@ -611,17 +643,17 @@ export default function RegistrationPage({ setActiveTab, setLookupRegId, onProce
               </div>
 
               <p className="text-xs text-[#BFC3C7] leading-relaxed border-l-2 border-[#C6FF00] pl-3 py-0.5 font-light">
-                "We provide an accessible, transparent stage where contestants gain genuine catwalk grooming, high-resolution media captures, and certified industry accreditation."
+                "We provide an accessible, transparent stage where contestants gain genuine walk grooming, high-resolution media captures, and certified industry accreditation."
               </p>
 
               {/* Event Location & Schedule Notice in Founder Card */}
               <div className="p-4 rounded-sm bg-[#080808] border border-white/10 space-y-3">
                 <div className="flex items-center space-x-2 text-[#C6FF00] font-mono-editorial text-[10px] font-bold">
                   <MapPin className="w-3.5 h-3.5 shrink-0" />
-                  <span>VENUE: CHENNAI CITY CENTER</span>
+                  <span>VENUE: CHENNAI &amp; SELECTED AREAS</span>
                 </div>
                 <p className="text-[11px] text-zinc-400 font-light leading-normal">
-                  Hosted within <strong className="text-white">prime central Chennai</strong> (central auditorium, not remote outskirts).
+                  Hosted across <strong className="text-white">Chennai and selected areas</strong> (premier auditoriums).
                 </p>
 
                 <div className="flex items-center space-x-2 text-[#C6FF00] font-mono-editorial text-[10px] font-bold pt-2 border-t border-white/10">

@@ -67,7 +67,7 @@ export default function VirtualRunwayScene({ className = '', onSceneReady }: Vir
     const runwayWidth = 3.8;
     const runwayLength = 36;
 
-    // Main Runway Catwalk Floor (High-Gloss Obsidian Slab)
+    // Main Runway Walk Floor (High-Gloss Obsidian Slab)
     const runwayGeo = new THREE.PlaneGeometry(runwayWidth, runwayLength, 32, 32);
     const runwayMat = new THREE.MeshStandardMaterial({
       color: 0x090b10,
@@ -231,7 +231,7 @@ export default function VirtualRunwayScene({ className = '', onSceneReady }: Vir
 
       const elapsed = clock.getElapsedTime();
 
-      // Smooth camera crane glide along catwalk on scroll (Both Down & Back Up)
+      // Smooth camera crane glide along runway walk on scroll (Both Down & Back Up)
       const scrollFactor = Math.min(currentScrollY / 750, 1.6);
       const targetCamZ = 9.5 - scrollFactor * 4.2;
       camera.position.z += (targetCamZ - camera.position.z) * 0.07;

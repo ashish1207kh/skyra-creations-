@@ -25,7 +25,7 @@ export default function WhatWeDoPage({ setActiveTab }: WhatWeDoPageProps) {
       title: 'Fashion Shows & Ramp Productions',
       category: 'PRODUCTION',
       icon: Sparkles,
-      description: 'We conceive, produce and execute high-energy fashion runway shows across premier city-center auditoriums. Our productions feature state-of-the-art intelligent lighting, bespoke catwalk staging, crystal-clear acoustics, and curated media seating to give every contestant an unforgettable catwalk moment.',
+      description: 'We conceive, produce and execute high-energy fashion runway shows across premier city-center auditoriums. Our productions feature state-of-the-art intelligent lighting, bespoke walk staging, crystal-clear acoustics, and curated media seating to give every contestant an unforgettable walk moment.',
       features: [
         'Professional audio, stage lighting & ramp choreography',
         'Seated audience including fashion industry delegates and families',
@@ -37,9 +37,9 @@ export default function WhatWeDoPage({ setActiveTab }: WhatWeDoPageProps) {
       id: 'runway-experiences',
       number: '02',
       title: 'Authentic Runway Experiences',
-      category: 'CATWALK',
+      category: 'WALK',
       icon: Camera,
-      description: 'Walking a ramp is an art of poise, rhythm, and self-belief. Our runway experiences provide both first-timers and experienced models with a genuine catwalk setting where they can showcase garments, express their personality, and receive impartial evaluations from fashion professionals.',
+      description: 'Walking a ramp is an art of poise, rhythm, and self-belief. Our runway experiences provide both first-timers and experienced models with a genuine walk setting where they can showcase garments, express their personality, and receive impartial evaluations from fashion professionals.',
       features: [
         'Dedicated solo and group ramp routines',
         'Constructive feedback on posture and walk dynamics',
@@ -81,7 +81,7 @@ export default function WhatWeDoPage({ setActiveTab }: WhatWeDoPageProps) {
       title: 'Grooming & Stage Preparation Workshops',
       category: 'MENTORSHIP',
       icon: Award,
-      description: 'Before stepping onto the catwalk, contestants receive practical guidance on runway turns, facial poise, pacing, and wardrobe handling. Rehearsals ensure every walker feels confident and prepared for their time under the lights.',
+      description: 'Before stepping onto the walk, contestants receive practical guidance on runway turns, facial poise, pacing, and wardrobe handling. Rehearsals ensure every walker feels confident and prepared for their time under the lights.',
       features: [
         'Ramp walk technique and pivot turn practice',
         'Personal grooming tips and makeup alignment',
@@ -106,7 +106,7 @@ export default function WhatWeDoPage({ setActiveTab }: WhatWeDoPageProps) {
   ];
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 space-y-24">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-4 pb-12 sm:pt-6 sm:pb-16 space-y-10 sm:space-y-14">
       {/* Page Header */}
       <motion.div 
         initial={{ opacity: 0, y: 20 }}
@@ -121,12 +121,12 @@ export default function WhatWeDoPage({ setActiveTab }: WhatWeDoPageProps) {
           WHAT WE CREATE.
         </h1>
         <p className="text-sm sm:text-base font-light leading-relaxed text-[#BFC3C7]">
-          From stage choreography and model grooming to full-scale runway productions and designer showcases, discover how SKYRA CREATIONS brings fashion to life on the catwalk.
+          From stage choreography and model grooming to full-scale runway productions and designer showcases, discover how SKYRA CREATIONS brings fashion to life on the walk.
         </p>
       </motion.div>
 
       {/* Activities Grid */}
-      <div className="space-y-16">
+      <div className="space-y-8 sm:space-y-10">
         {activities.map((item, index) => {
           const isEven = index % 2 === 0;
 

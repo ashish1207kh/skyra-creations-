@@ -32,7 +32,7 @@ export default function EventDetailPage({ eventId = 'EVT-CHX-2026', setActiveTab
   const advances = paymentInfo?.allowed_token_advances || [500, 1000, 1500];
 
   return (
-    <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12 space-y-12">
+    <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 pt-4 pb-12 sm:pt-6 sm:pb-16 space-y-8 sm:space-y-10">
       {/* Back button */}
       <div>
         <button
@@ -67,12 +67,12 @@ export default function EventDetailPage({ eventId = 'EVT-CHX-2026', setActiveTab
         <div className="flex flex-wrap items-center gap-4 font-mono-editorial text-[11px] text-[#BFC3C7]">
           <span className="flex items-center space-x-1.5">
             <MapPin className="w-3.5 h-3.5 text-[#C6FF00]" />
-            <strong className="text-white">Chennai City Center (Tamil Nadu)</strong>
+            <strong className="text-white">Chennai &amp; Selected Areas (Tamil Nadu)</strong>
           </span>
           <span>•</span>
           <span className="flex items-center space-x-1.5">
             <Calendar className="w-3.5 h-3.5 text-[#C6FF00]" />
-            <span>SEASON 2026</span>
+            <span>STARTING JANUARY 2027</span>
           </span>
           <span>•</span>
           <span className="flex items-center space-x-1.5">
@@ -102,7 +102,7 @@ export default function EventDetailPage({ eventId = 'EVT-CHX-2026', setActiveTab
               EVENT OVERVIEW
             </h2>
             <p className="text-sm leading-relaxed font-light text-[#BFC3C7]">
-              SKYRA CREATIONS invites aspiring and experienced models, children, teens, and fashion enthusiasts to take part in our signature Runway Show 2026 in Chennai. Participants walk on a professionally designed runway stage equipped with intelligent moving heads, runway sound engineering, and dedicated press photography.
+              SKYRA CREATIONS invites aspiring and experienced models, children, teens, and fashion enthusiasts to take part in our signature Runway Show in Chennai and selected areas starting January 2027. Participants walk on a professionally designed runway stage equipped with intelligent moving heads, runway sound engineering, and dedicated press photography.
             </p>
           </div>
 
@@ -141,11 +141,10 @@ export default function EventDetailPage({ eventId = 'EVT-CHX-2026', setActiveTab
                 Participation is open to all applicants regardless of previous modelling experience. Categories are organized as follows:
               </p>
               <ul className="list-disc pl-5 space-y-1.5 text-[#BFC3C7]">
-                <li><strong className="text-white">Kids Category:</strong> Ages 4 to 12 years.</li>
-                <li><strong className="text-white">Teens Category:</strong> Ages 13 to 17 years.</li>
-                <li><strong className="text-white">Adult Commercial &amp; Couture:</strong> Ages 18 to 35 years.</li>
-                <li><strong className="text-white">Plus-Size &amp; Fitness Category:</strong> Celebrating body diversity and athletic presentation.</li>
-                <li><strong className="text-white">Classic Category:</strong> Contestants up to age 50.</li>
+                <li><strong className="text-white">Male above 18:</strong> Professional ramp &amp; fashion walk grooming.</li>
+                <li><strong className="text-white">Female above 18:</strong> High-fashion runway and couture presentation.</li>
+                <li><strong className="text-white">Other above 18:</strong> Inclusive runway showcase for non-binary and diverse participants.</li>
+                <li><strong className="text-white">Kids below 18:</strong> Youth &amp; junior runway training and confidence grooming.</li>
               </ul>
             </div>
           </div>
