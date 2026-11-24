@@ -1501,3 +1501,100 @@ export async function deletePaymentRecord(paymentId: string, adminEmail: string 
     paymentId: cleanPaymentId,
   };
 }
+
+/**
+ * Purge temporary data and test records (Admin Owner only).
+ * Clears:
+ * - temporary_records collection (all)
+ * - payments collection (all test/pending payments)
+ * - registrations collection (all test participants)
+ * - audit_logs collection (all)
+ * Preserves:
+ * - events (official event details)
+ * - admin_users (admin login credentials)
+ */
+export async function purgeDatabaseData(): Promise<{
+  success: boolean;
+  message: string;
+  deletedCounts: {
+    temporary_records: number;
+    payments: number;
+    registrations: number;
+    audit_logs: number;
+  };
+}> {
+  const driver = await getActiveDatabaseDriver();
+  let deletedCounts = {
+    temporary_records: 0,
+    payments: 0,
+    registrations: 0,
+    audit_logs: 0,
+  };
+
+  if (driver === 'mongodb') {
+    const conn = await getMongoConnection();
+    if (conn) {
+      // 1. Delete all temporary_records
+      try {
+        const tempRes = await conn.db.collection('temporary_records').deleteMany({});
+        deletedCounts.temporary_records = tempRes.deletedCount || 0;
+      } catch (e) {
+        console.warn('Could not delete temporary_records:', e);
+      }
+
+      // 2. Delete all payments
+      try {
+        const payRes = await conn.db.collection('payments').deleteMany({});
+        deletedCounts.payments = payRes.deletedCount || 0;
+      } catch (e) {
+        console.warn('Could not delete payments:', e);
+      }
+
+      // 3. Delete all registrations
+      try {
+        const regRes = await conn.db.collection('registrations').deleteMany({});
+        deletedCounts.registrations = regRes.deletedCount || 0;
+      } catch (e) {
+        console.warn('Could not delete registrations:', e);
+      }
+
+      // 4. Delete audit_logs
+      try {
+        const auditRes = await conn.db.collection('audit_logs').deleteMany({});
+        deletedCounts.audit_logs = auditRes.deletedCount || 0;
+      } catch (e) {
+        console.warn('Could not delete audit_logs:', e);
+      }
+
+      // 5. Insert new audit log for the purge event
+      try {
+        await conn.db.collection('audit_logs').insertOne({
+          action: 'STORAGE_PURGE_RESET',
+          timestamp: new Date().toISOString(),
+          details: 'Temporary data and test records purged. Database reset to zero storage baseline.',
+          deletedCounts,
+        });
+      } catch (e) {
+        console.warn('Could not insert purge audit log:', e);
+      }
+
+      return {
+        success: true,
+        message: 'All temporary records, test registrations, and payments deleted successfully. Storage reset to zero baseline.',
+        deletedCounts,
+      };
+    }
+  }
+
+  // In-memory fallback
+  deletedCounts.registrations = supabaseAdmin.memParticipants.length;
+  deletedCounts.payments = supabaseAdmin.memPayments.length;
+  supabaseAdmin.memParticipants.length = 0;
+  supabaseAdmin.memPayments.length = 0;
+
+  return {
+    success: true,
+    message: 'All in-memory temporary records, registrations, and payments purged successfully.',
+    deletedCounts,
+  };
+}

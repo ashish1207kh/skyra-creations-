@@ -13,7 +13,8 @@ import {
   updatePaymentVerification,
   getStorageMetrics,
   deleteParticipantRecord,
-  deletePaymentRecord
+  deletePaymentRecord,
+  purgeDatabaseData
 } from '../_lib/database.js';
 import { 
   isSupabaseConfigured, 
@@ -333,6 +334,20 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       return res.status(200).json(result);
     } catch (err: any) {
       return res.status(400).json({ detail: err.message || 'Failed to delete payment record.' });
+    }
+  }
+
+  // 5.3 POST /api/admin/purge-data (Clear temporary data & reset storage to zero)
+  if (action === 'purge-data') {
+    if (req.method !== 'POST') {
+      return res.status(405).json({ detail: 'Method not allowed' });
+    }
+
+    try {
+      const result = await purgeDatabaseData();
+      return res.status(200).json(result);
+    } catch (err: any) {
+      return res.status(400).json({ detail: err.message || 'Failed to purge database data.' });
     }
   }
 

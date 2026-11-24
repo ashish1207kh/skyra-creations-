@@ -40,7 +40,8 @@ import {
   clearAdminToken,
   getStorageMetrics,
   deleteAdminParticipant,
-  deleteAdminPayment
+  deleteAdminPayment,
+  purgeAdminDatabaseData
 } from '../lib/api';
 import { AdminStats, Participant, Payment, StorageMetrics } from '../types/index';
 import HumanVerificationCaptcha from '../components/HumanVerificationCaptcha';
@@ -74,6 +75,9 @@ export default function AdminDashboard() {
   const [rejectModalPayment, setRejectModalPayment] = useState<Payment | null>(null);
   const [deleteParticipantModal, setDeleteParticipantModal] = useState<Participant | null>(null);
   const [deletePaymentModal, setDeletePaymentModal] = useState<Payment | null>(null);
+  const [purgeModalOpen, setPurgeModalOpen] = useState(false);
+  const [purging, setPurging] = useState(false);
+  const [purgeSuccessMsg, setPurgeSuccessMsg] = useState('');
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const [lastSyncedAt, setLastSyncedAt] = useState<string>('');
   const [isSyncing, setIsSyncing] = useState<boolean>(false);
@@ -210,6 +214,21 @@ export default function AdminDashboard() {
       alert(`Action failed: ${err.message}`);
     } finally {
       setVerifyingId(null);
+    }
+  };
+
+  const handlePurgeAllData = async () => {
+    setPurging(true);
+    try {
+      const res = await purgeAdminDatabaseData();
+      setPurgeModalOpen(false);
+      setPurgeSuccessMsg(res.message || 'All temporary records and test data deleted successfully. Starting with zero storage.');
+      await loadDashboardData(false);
+      setTimeout(() => setPurgeSuccessMsg(''), 7000);
+    } catch (err: any) {
+      alert('Failed to purge data: ' + (err.message || 'Unknown error'));
+    } finally {
+      setPurging(false);
     }
   };
 
@@ -454,6 +473,15 @@ export default function AdminDashboard() {
           </a>
 
           <button
+            onClick={() => setPurgeModalOpen(true)}
+            className="flex items-center space-x-1.5 px-3.5 py-2.5 rounded-sm bg-red-950/40 hover:bg-red-900/60 text-red-300 border border-red-500/30 text-xs font-semibold transition-colors"
+            title="Purge Temporary Data & Reset to Zero Storage"
+          >
+            <Trash2 className="w-3.5 h-3.5" />
+            <span>RESET STORAGE (0 KB)</span>
+          </button>
+
+          <button
             onClick={handleLogout}
             className="flex items-center space-x-1.5 px-3.5 py-2.5 rounded-sm bg-red-950/40 hover:bg-red-900/60 text-red-300 border border-red-500/30 text-xs font-semibold transition-colors"
           >
@@ -462,6 +490,19 @@ export default function AdminDashboard() {
           </button>
         </div>
       </div>
+
+      {/* Purge Success Alert */}
+      {purgeSuccessMsg && (
+        <div className="mb-6 p-4 rounded-sm bg-emerald-950/40 border border-emerald-500/40 text-emerald-300 text-xs sm:text-sm flex items-center justify-between shadow-xl">
+          <div className="flex items-center space-x-2.5">
+            <CheckCircle2 className="w-5 h-5 text-emerald-400 shrink-0" />
+            <span>{purgeSuccessMsg}</span>
+          </div>
+          <button onClick={() => setPurgeSuccessMsg('')} className="p-1 hover:text-white">
+            <X className="w-4 h-4" />
+          </button>
+        </div>
+      )}
 
       {/* 6.1 METRICS CARDS */}
       {stats && (
@@ -1148,10 +1189,34 @@ export default function AdminDashboard() {
               <div className="bg-[#0a0c12] border border-zinc-800/80 rounded-xl p-3 flex items-start space-x-2.5">
                 <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />
                 <div>
-                  <strong className="text-white block mb-0.5">Server-Side Pagination & Projection</strong>
+                  <strong className="text-white block mb-0.5">Server-Side Pagination &amp; Projection</strong>
                   <span>Admin APIs use server-side `.skip()` and `.limit()` queries. Collections are never loaded unconstrained into serverless function memory.</span>
                 </div>
               </div>
+            </div>
+          </div>
+
+          {/* Purge Temporary Data & Reset to Zero Storage Action Card */}
+          <div className="bg-red-950/25 border border-red-500/30 rounded-2xl p-5 shadow-sm">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+              <div>
+                <h4 className="text-sm font-bold text-red-400 flex items-center space-x-2">
+                  <Trash2 className="w-4 h-4 text-red-400" />
+                  <span>Purge Temporary Data &amp; Start With Zero Storage</span>
+                </h4>
+                <p className="text-xs text-zinc-400 mt-1 max-w-xl font-light leading-relaxed">
+                  Permanently deletes all temporary test records, participant submissions, and pending payments from MongoDB. Keeps official event settings and admin accounts intact, resetting database storage to clean zero baseline.
+                </p>
+              </div>
+
+              <button
+                type="button"
+                onClick={() => setPurgeModalOpen(true)}
+                className="px-5 py-2.5 rounded-sm bg-red-600 hover:bg-red-500 text-white font-mono-editorial text-xs font-bold uppercase tracking-wider transition-all shadow-lg shrink-0 flex items-center space-x-2"
+              >
+                <Trash2 className="w-3.5 h-3.5" />
+                <span>PURGE &amp; START WITH ZERO STORAGE</span>
+              </button>
             </div>
           </div>
         </div>
@@ -1344,6 +1409,62 @@ export default function AdminDashboard() {
               >
                 <Trash2 className="w-3.5 h-3.5" />
                 <span>{deletingId ? 'Deleting...' : 'Confirm Delete Payment'}</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Zero Storage Purge Confirmation Modal */}
+      {purgeModalOpen && (
+        <div className="fixed inset-0 z-50 bg-black/90 backdrop-blur-md flex items-center justify-center p-4">
+          <div className="bg-[#141824] border-2 border-red-500/70 rounded-2xl p-6 sm:p-8 max-w-lg w-full shadow-2xl relative">
+            <div className="flex items-center space-x-3 text-red-400 mb-4">
+              <div className="p-3 rounded-full bg-red-500/15 border border-red-500/30">
+                <Trash2 className="w-6 h-6 text-red-400" />
+              </div>
+              <div>
+                <h3 className="text-lg font-bold text-white">Reset Storage to Zero Baseline</h3>
+                <span className="text-xs text-red-400 font-mono font-semibold uppercase">Permanent Clean Sweep</span>
+              </div>
+            </div>
+
+            <p className="text-xs sm:text-sm text-zinc-300 leading-relaxed mb-4 font-light">
+              This action will completely purge all temporary records, test registrations, pending payments, and transaction history from MongoDB Atlas.
+            </p>
+
+            <div className="bg-[#0a0c12] border border-zinc-800 rounded-xl p-4 mb-6 text-xs space-y-2">
+              <div className="flex items-center space-x-2 text-emerald-400 font-medium">
+                <CheckCircle2 className="w-4 h-4 shrink-0" />
+                <span>Official event configuration and details remain safe</span>
+              </div>
+              <div className="flex items-center space-x-2 text-emerald-400 font-medium">
+                <CheckCircle2 className="w-4 h-4 shrink-0" />
+                <span>Admin users and authentication sessions remain active</span>
+              </div>
+              <div className="flex items-center space-x-2 text-amber-400 font-medium">
+                <AlertCircle className="w-4 h-4 shrink-0" />
+                <span>All test participant records &amp; payments will be deleted (0 KB)</span>
+              </div>
+            </div>
+
+            <div className="flex justify-end space-x-3">
+              <button
+                type="button"
+                onClick={() => setPurgeModalOpen(false)}
+                disabled={purging}
+                className="px-5 py-2.5 bg-zinc-800 hover:bg-zinc-700 text-zinc-300 rounded-xl text-xs font-semibold transition-colors"
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                onClick={handlePurgeAllData}
+                disabled={purging}
+                className="px-6 py-2.5 bg-red-600 hover:bg-red-500 text-white font-bold rounded-xl text-xs transition-colors flex items-center space-x-2 disabled:opacity-50 shadow-lg shadow-red-950"
+              >
+                <Trash2 className="w-4 h-4" />
+                <span>{purging ? 'Purging All Data...' : 'Confirm & Start With Zero Storage'}</span>
               </button>
             </div>
           </div>

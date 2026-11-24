@@ -157,3 +157,19 @@ export async function deleteAdminPayment(paymentId: string): Promise<{ success: 
     body: JSON.stringify({ payment_id: paymentId }),
   });
 }
+
+export async function purgeAdminDatabaseData(): Promise<{
+  success: boolean;
+  message: string;
+  deletedCounts: {
+    temporary_records: number;
+    payments: number;
+    registrations: number;
+    audit_logs: number;
+  };
+}> {
+  return fetchJson('/api/admin/purge-data', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+  });
+}
