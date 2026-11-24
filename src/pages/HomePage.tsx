@@ -133,7 +133,7 @@ export default function HomePage({ setActiveTab, onSelectEvent }: HomePageProps)
   const sec7Opacity = useTransform(sec7Progress, [0, 0.45], [0.4, 1]);
 
   return (
-    <div className="space-y-8 sm:space-y-14 pb-10 sm:pb-12 overflow-x-clip relative w-full max-w-full">
+    <div className="pb-10 sm:pb-12 overflow-x-clip relative w-full max-w-full">
       {/* Continuous Drifting Ambient Runway Glow Orb (Strictly Viewport Clipped) */}
       <div className="fixed inset-0 overflow-hidden pointer-events-none z-0">
         <motion.div
@@ -157,7 +157,7 @@ export default function HomePage({ setActiveTab, onSelectEvent }: HomePageProps)
       {/* ──────────────────────────────────────────────────────────
           SECTION 1: VIRTUAL RUNWAY HERO WITH SCROLL PARALLAX
       ────────────────────────────────────────────────────────── */}
-      <section ref={heroRef} className="relative pt-16 sm:pt-20 pb-2 sm:pb-4 flex flex-col items-center justify-start overflow-hidden w-full max-w-full">
+      <section ref={heroRef} className="relative pt-[72px] sm:pt-[90px] pb-0 flex flex-col items-center justify-start overflow-hidden w-full max-w-full">
         {/* Three.js Virtual Runway Walk Canvas */}
         <div className="absolute inset-0 z-0 w-full h-full overflow-hidden max-w-full">
           <VirtualRunwayScene className="w-full h-full block max-w-full" />
@@ -179,14 +179,14 @@ export default function HomePage({ setActiveTab, onSelectEvent }: HomePageProps)
 
         <motion.div 
           style={{ scale: heroScale, opacity: heroOpacity, y: heroY }}
-          className="relative z-20 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-2.5 sm:space-y-3.5 pt-0 pb-1 sm:pb-2 will-change-transform transform-gpu"
+          className="relative z-20 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-2 sm:space-y-3 pt-0 pb-0 will-change-transform transform-gpu"
         >
           {/* Brandmark Showcase */}
           <motion.div
             initial={{ opacity: 0, scale: 0.92, y: -10 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-            className="flex justify-center pt-1 pb-0.5"
+            className="flex justify-center pt-0 pb-0"
           >
             <div 
               onClick={() => setActiveTab('about')}
@@ -285,7 +285,7 @@ export default function HomePage({ setActiveTab, onSelectEvent }: HomePageProps)
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 1.0, delay: 0.4 }}
-            className="pt-3 sm:pt-4 grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-4 text-center max-w-4xl mx-auto"
+            className="pt-2 sm:pt-2.5 grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-4 text-center max-w-4xl mx-auto"
             style={{ borderTop: '1px solid var(--border)' }}
           >
             <div className="py-1 px-2">
@@ -309,9 +309,11 @@ export default function HomePage({ setActiveTab, onSelectEvent }: HomePageProps)
       </section>
 
       {/* Infinite Runway Couture Marquee */}
-      <div className="w-full max-w-full overflow-hidden -my-4 sm:-my-6">
+      <div className="w-full max-w-full overflow-hidden mt-1 sm:mt-2 mb-6 sm:mb-10">
         <MarqueeStrip />
       </div>
+
+      <div className="space-y-8 sm:space-y-14">
 
       {/* ──────────────────────────────────────────────────────────
           SECTION 2: BRAND INTRODUCTION (ASYMMETRIC 2-COLUMN)
@@ -933,6 +935,7 @@ export default function HomePage({ setActiveTab, onSelectEvent }: HomePageProps)
           </div>
         </motion.div>
       </section>
+    </div>
 
       {/* Floating Luxury Back to Top Dial with Radial Progress Circle */}
       <AnimatePresence>

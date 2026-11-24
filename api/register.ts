@@ -16,8 +16,8 @@ const registerSchema = z.object({
   instagram: z.string().optional().nullable(),
   experience: z.string().optional().nullable(),
   model_photo_r2_key: z.string().min(5, 'Please upload your recent model photograph'),
-  amount: z.number().refine((val) => [500, 1000, 1500].includes(val), {
-    message: 'Token advance must be ₹500, ₹1,000, or ₹1,500',
+  amount: z.number().refine((val) => [500, 1000, 1500, 3000].includes(val), {
+    message: 'Payment amount must be ₹500 (Token Advance), ₹1,000 (Partial Advance), ₹1,500 (Half Payment), or ₹3,000 (Full Payment)',
   }),
   transaction_id: z.string().min(4, 'Please enter a valid 12-digit UPI reference / UTR number').max(100),
   r2_object_key: z.string().min(5, 'Payment screenshot proof is required'),

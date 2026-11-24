@@ -258,7 +258,7 @@ export async function lookupPublicParticipant(query: string) {
     full_name: p.full_name,
     category: p.category,
     city: p.city,
-    total_fee: Number(p.total_fee || 5000),
+    total_fee: Number(p.total_fee || 3000),
     amount_paid: Number(p.amount_paid || 0),
     balance_due: Number(p.balance_due || 0),
     status: p.status,

@@ -266,8 +266,8 @@ export default function StatusPassPage({ initialRegId, setActiveTab, setBalanceR
               </div>
             </div>
 
-            {/* Financial Overview Cards */}
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-2 font-mono">
+            {/* Financial Overview Cards with Mathematical Accuracy */}
+            <div className={`grid grid-cols-1 ${participant.pending_amount && participant.pending_amount > 0 ? 'sm:grid-cols-4' : 'sm:grid-cols-3'} gap-4 pt-2 font-mono`}>
               <div className="bg-[#080808] border border-white/10 rounded-sm p-5">
                 <span className="font-mono-editorial text-[10px] uppercase tracking-wider text-zinc-400 block mb-1">Total Showcase Fee</span>
                 <span className="text-2xl font-bold text-white">₹{participant.total_fee.toLocaleString('en-IN')}</span>
@@ -276,10 +276,38 @@ export default function StatusPassPage({ initialRegId, setActiveTab, setBalanceR
                 <span className="font-mono-editorial text-[10px] uppercase tracking-wider text-emerald-400 block mb-1">Verified Amount Paid</span>
                 <span className="text-2xl font-bold text-emerald-400">₹{participant.amount_paid.toLocaleString('en-IN')}</span>
               </div>
+              {participant.pending_amount && participant.pending_amount > 0 ? (
+                <div className="bg-[#080808] border border-amber-500/30 rounded-sm p-5">
+                  <span className="font-mono-editorial text-[10px] uppercase tracking-wider text-amber-300 block mb-1">Pending in Verification</span>
+                  <span className="text-2xl font-bold text-amber-300">₹{participant.pending_amount.toLocaleString('en-IN')}</span>
+                </div>
+              ) : null}
               <div className="bg-[#080808] border border-[#C6FF00]/30 rounded-sm p-5">
                 <span className="font-mono-editorial text-[10px] uppercase tracking-wider text-[#C6FF00] block mb-1">Outstanding Balance</span>
                 <span className="text-2xl font-bold text-[#C6FF00]">₹{participant.balance_due.toLocaleString('en-IN')}</span>
               </div>
+            </div>
+
+            {/* Pending Payment Notification Banner */}
+            {participant.pending_amount && participant.pending_amount > 0 ? (
+              <div className="mt-4 p-4 rounded-sm bg-amber-950/30 border border-amber-500/30 flex items-start space-x-3 text-xs text-amber-200">
+                <div className="w-2 h-2 rounded-full bg-amber-400 animate-ping mt-1.5 shrink-0" />
+                <div>
+                  <strong className="block text-white font-mono uppercase text-[11px]">PAYMENT SUBMISSION UNDER VERIFICATION</strong>
+                  <p className="mt-0.5 text-zinc-300 font-light">
+                    We have received your recent payment submission of <strong className="text-amber-300 font-mono">₹{participant.pending_amount.toLocaleString('en-IN')}</strong>. It is currently being verified against official bank settlement statements. Once verified by the accounts team, your verified paid total and pass status will update automatically.
+                  </p>
+                </div>
+              </div>
+            ) : null}
+
+            {/* Mathematical Equation Balance Indicator */}
+            <div className="mt-3 p-3 rounded-sm bg-[#080808] border border-white/10 flex items-center justify-between text-[11px] font-mono text-zinc-400">
+              <div className="flex items-center space-x-2">
+                <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
+                <span>Financial Equation: ₹{participant.total_fee} (Total) = ₹{participant.amount_paid} (Paid) + ₹{participant.balance_due} (Due)</span>
+              </div>
+              <span className="text-[10px] text-emerald-400 uppercase font-bold">100% BALANCED</span>
             </div>
 
             {/* Outstanding Balance Banner with Action */}

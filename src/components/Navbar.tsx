@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { Menu, X, UserCheck, Sparkles, CreditCard } from 'lucide-react';
+import { Menu, X, Sparkles } from 'lucide-react';
 import { AnimatePresence, motion } from 'motion/react';
 
 interface NavbarProps {
@@ -110,20 +110,7 @@ export default function Navbar({ activeTab, setActiveTab }: NavbarProps) {
             </nav>
 
             {/* Desktop Right CTAs */}
-            <div className="hidden lg:flex items-center space-x-3.5 xl:space-x-5 shrink-0">
-              <button
-                onClick={() => handleNavClick('payment')}
-                className={`font-mono-editorial text-[11px] tracking-wider py-2 px-2.5 transition-colors flex items-center space-x-1.5 ${
-                  activeTab === 'payment' || activeTab === 'balance'
-                    ? 'text-[#C6FF00]'
-                    : 'text-zinc-400 hover:text-white'
-                }`}
-                title="Official Fee Payment &amp; Event Clearance"
-              >
-                <CreditCard className="w-3.5 h-3.5 text-[#C6FF00]" />
-                <span>PAYMENT</span>
-              </button>
-
+            <div className="hidden lg:flex items-center shrink-0">
               <button
                 onClick={() => handleNavClick('register')}
                 className="px-5 py-2.5 rounded-sm font-mono-editorial text-xs font-bold tracking-widest uppercase transition-all hover:scale-105 active:scale-95 flex items-center space-x-1.5 shadow-lg"
@@ -220,14 +207,6 @@ export default function Navbar({ activeTab, setActiveTab }: NavbarProps) {
 
             {/* Footer in Drawer */}
             <div className="p-6 sm:p-8 space-y-3 border-t border-white/10 shrink-0 mt-auto">
-              <button 
-                onClick={() => handleNavClick('payment')} 
-                className="w-full py-3 bg-white/5 border border-white/10 rounded-sm hover:bg-white/10 text-zinc-300 hover:text-white font-mono-editorial text-xs font-semibold tracking-wider flex items-center justify-center space-x-2 transition-colors"
-              >
-                <CreditCard className="w-3.5 h-3.5 text-[#C6FF00]" />
-                <span>PAYMENT</span>
-              </button>
-
               <button
                 onClick={() => handleNavClick('register')}
                 className="w-full py-4 font-mono-editorial text-xs font-bold uppercase tracking-widest rounded-sm flex items-center justify-center space-x-2 shadow-lg"

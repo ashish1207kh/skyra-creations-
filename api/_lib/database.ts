@@ -92,8 +92,8 @@ export async function getEventConfig(eventId: string = DEFAULT_EVENT_ID): Promis
           registration_deadline: doc.registration_deadline,
           total_capacity: doc.total_capacity,
           total_fee: typeof doc.total_fee === 'number' ? doc.total_fee : 3000,
-          allowed_token_advances: Array.isArray(doc.allowed_token_advances) ? doc.allowed_token_advances : [500, 1000, 1500],
-          allowed_balance_amounts: Array.isArray(doc.allowed_balance_amounts) ? doc.allowed_balance_amounts : [500, 1000, 1500, 2000, 2500],
+          allowed_token_advances: Array.isArray(doc.allowed_token_advances) ? doc.allowed_token_advances : [500, 1000, 1500, 3000],
+          allowed_balance_amounts: Array.isArray(doc.allowed_balance_amounts) ? doc.allowed_balance_amounts : [500, 1000, 1500, 2000, 2500, 3000],
           currency: doc.currency || 'INR',
           terms_version: doc.terms_version || '2026.2',
           photo_required: doc.photo_required ?? true,
@@ -113,8 +113,8 @@ export async function getEventConfig(eventId: string = DEFAULT_EVENT_ID): Promis
     registration_deadline: '2026-04-30T23:59:59Z',
     total_capacity: 500,
     total_fee: 3000,
-    allowed_token_advances: [500, 1000, 1500],
-    allowed_balance_amounts: [500, 1000, 1500, 2000, 2500],
+    allowed_token_advances: [500, 1000, 1500, 3000],
+    allowed_balance_amounts: [500, 1000, 1500, 2000, 2500, 3000],
     currency: 'INR',
     terms_version: '2026.2',
     photo_required: true,
@@ -807,9 +807,10 @@ export async function registerParticipant(data: {
   const eventConfig = await getEventConfig(DEFAULT_EVENT_ID);
   const cleanTxId = data.transaction_id.trim();
 
-  // Enforce allowed token advance amounts
-  if (!eventConfig.allowed_token_advances.includes(data.amount)) {
-    throw new Error(`Token advance must be one of ₹${eventConfig.allowed_token_advances.join(', ₹')}. Received: ₹${data.amount}`);
+  // Enforce allowed token advance amounts (Full: 3000, Half: 1500, Partial: 1000, Token: 500)
+  const allowedRegistrationAmounts = [500, 1000, 1500, 3000, ...(eventConfig.allowed_token_advances || [])];
+  if (!allowedRegistrationAmounts.includes(data.amount)) {
+    throw new Error(`Payment amount must be ₹500 (Token Advance), ₹1,000 (Partial Advance), ₹1,500 (Half Payment), or ₹3,000 (Full Payment). Received: ₹${data.amount}`);
   }
 
   if (driver === 'mongodb') {
@@ -996,8 +997,17 @@ export async function submitBalancePayment(data: {
     throw new Error(`Registration ID "${regId}" was not found.`);
   }
 
-  if (data.amount > participant.balance_due) {
-    throw new Error(`Payment amount of ₹${data.amount} exceeds current outstanding balance of ₹${participant.balance_due}.`);
+  // Mathematically verify authoritative total fee and balance due
+  const authoritativeTotalFee = typeof participant.total_fee === 'number' && !isNaN(participant.total_fee) && participant.total_fee > 0
+    ? participant.total_fee
+    : 3000;
+  const currentPaid = typeof participant.amount_paid === 'number' && !isNaN(participant.amount_paid)
+    ? participant.amount_paid
+    : 0;
+  const accurateBalanceDue = Math.max(0, authoritativeTotalFee - currentPaid);
+
+  if (data.amount > accurateBalanceDue) {
+    throw new Error(`Payment amount of ₹${data.amount} exceeds current outstanding balance of ₹${accurateBalanceDue}.`);
   }
 
   const now = new Date().toISOString();
@@ -1079,6 +1089,9 @@ export async function lookupPublicParticipantRecord(query: string) {
   }
 
   let payments: any[] = [];
+  let verifiedPaid = 0;
+  let pendingPaid = 0;
+
   if (driver === 'mongodb') {
     const conn = await getMongoConnection();
     if (conn) {
@@ -1089,16 +1102,70 @@ export async function lookupPublicParticipantRecord(query: string) {
       payments = payDocs.map(p => ({
         payment_id: p.payment_id,
         payment_type: p.payment_type,
-        amount: p.amount,
+        amount: typeof p.amount === 'number' ? p.amount : 0,
         transaction_id: p.transaction_id ? p.transaction_id.replace(/^(.{3}).*(.{4})$/, '$1****$2') : '',
         status: p.status,
         created_at: p.created_at,
         verified_at: p.verified_at,
       }));
+
+      // Mathematically verified totals direct from payments ledger
+      verifiedPaid = payDocs
+        .filter(p => p.status === 'VERIFIED')
+        .reduce((sum, p) => sum + (typeof p.amount === 'number' ? p.amount : 0), 0);
+
+      pendingPaid = payDocs
+        .filter(p => p.status === 'PENDING')
+        .reduce((sum, p) => sum + (typeof p.amount === 'number' ? p.amount : 0), 0);
     }
   } else {
     const res = await supabaseAdmin.lookupPublicParticipant(query);
-    if (res?.payments) payments = res.payments;
+    if (res?.payments) {
+      payments = res.payments;
+      verifiedPaid = payments
+        .filter((p: any) => p.status === 'VERIFIED')
+        .reduce((sum: number, p: any) => sum + (Number(p.amount) || 0), 0);
+      pendingPaid = payments
+        .filter((p: any) => p.status === 'PENDING')
+        .reduce((sum: number, p: any) => sum + (Number(p.amount) || 0), 0);
+    }
+  }
+
+  // Authoritative calculations: Total Fee = ₹3,000
+  const authoritativeTotalFee = typeof participant.total_fee === 'number' && !isNaN(participant.total_fee) && participant.total_fee > 0
+    ? participant.total_fee
+    : 3000;
+
+  const accurateAmountPaid = Math.max(participant.amount_paid || 0, verifiedPaid);
+  const accurateBalanceDue = Math.max(0, authoritativeTotalFee - accurateAmountPaid);
+  const effectiveBalanceDue = Math.max(0, authoritativeTotalFee - accurateAmountPaid - pendingPaid);
+
+  let accurateStatus = participant.status;
+  if (accurateAmountPaid >= authoritativeTotalFee) {
+    accurateStatus = 'FULLY_PAID';
+  } else if (accurateAmountPaid > 0) {
+    accurateStatus = 'PARTIALLY_PAID';
+  } else if (participant.status !== 'REJECTED') {
+    accurateStatus = 'PENDING_VERIFICATION';
+  }
+
+  // Self-heal registrations collection in MongoDB if data was desynchronized
+  if (driver === 'mongodb') {
+    const conn = await getMongoConnection();
+    if (conn && (participant.total_fee !== authoritativeTotalFee || participant.amount_paid !== accurateAmountPaid || participant.balance_due !== accurateBalanceDue || participant.status !== accurateStatus)) {
+      await conn.db.collection('registrations').updateOne(
+        { reg_id: participant.reg_id.toUpperCase() },
+        {
+          $set: {
+            total_fee: authoritativeTotalFee,
+            amount_paid: accurateAmountPaid,
+            balance_due: accurateBalanceDue,
+            status: accurateStatus,
+            updated_at: new Date().toISOString(),
+          }
+        }
+      ).catch(() => {});
+    }
   }
 
   return {
@@ -1106,10 +1173,12 @@ export async function lookupPublicParticipantRecord(query: string) {
     full_name: participant.full_name,
     category: participant.category,
     city: participant.city,
-    total_fee: participant.total_fee,
-    amount_paid: participant.amount_paid,
-    balance_due: participant.balance_due,
-    status: participant.status,
+    total_fee: authoritativeTotalFee,
+    amount_paid: accurateAmountPaid,
+    balance_due: accurateBalanceDue,
+    pending_amount: pendingPaid,
+    effective_balance_due: effectiveBalanceDue,
+    status: accurateStatus,
     pass_token: participant.pass_token,
     created_at: participant.created_at,
     payments,

@@ -1219,16 +1219,16 @@ export default function RegistrationPage({
                       OFFICIAL SHOWCASE PACKAGE SUMMARY
                     </span>
                     <div className="flex justify-between items-center py-1 border-b border-white/10">
-                      <span className="text-zinc-400">Total Runway Show 2026 Participation Fee</span>
+                      <span className="text-zinc-400">Total Runway Show Participation Fee</span>
                       <strong className="text-white font-mono text-sm">₹{totalFee.toLocaleString('en-IN')}</strong>
                     </div>
                     <div className="flex justify-between items-center py-1 border-b border-white/10">
-                      <span className="text-zinc-400">Token Advance (Payable in Next Step)</span>
-                      <strong className="text-[#C6FF00] font-mono text-sm">₹500 / ₹1,000 / ₹1,500</strong>
+                      <span className="text-zinc-400">Payment Tiers Available</span>
+                      <strong className="text-[#C6FF00] font-mono text-sm">Full (₹3,000) · Half (₹1,500) · Partial (₹1,000) · Token (₹500)</strong>
                     </div>
                     <div className="flex justify-between items-center py-1">
-                      <span className="text-zinc-400">Remaining Balance (Payable Prior to Event)</span>
-                      <span className="text-zinc-300 font-mono">Deducted from Total Fee</span>
+                      <span className="text-zinc-400">Remaining Balance (if paying installment)</span>
+                      <span className="text-zinc-300 font-mono">Deducted from Total Fee · Payable before show</span>
                     </div>
                   </div>
 
@@ -1342,37 +1342,108 @@ export default function RegistrationPage({
                 </div>
 
                 <form onSubmit={handleFinalSubmit} className="space-y-6">
-                  {/* Advance Amount Selector */}
+                  {/* Payment Tier Selector: Full, Half, Partial, Token */}
                   <div>
-                    <label className="block font-mono-editorial text-[10px] uppercase tracking-wider text-[#BFC3C7] mb-2.5">
-                      SELECT TOKEN ADVANCE AMOUNT <span className="text-[#C6FF00]">*</span>
-                    </label>
-                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                      {[500, 1000, 1500].map((amt) => {
-                        const isSelected = tokenAdvance === amt;
-                        const bal = totalFee - amt;
+                    <div className="flex items-center justify-between mb-2.5">
+                      <label className="font-mono-editorial text-[10px] uppercase tracking-wider text-[#BFC3C7]">
+                        SELECT PAYMENT OPTION <span className="text-[#C6FF00]">*</span>
+                      </label>
+                      <span className="font-mono text-xs text-[#C6FF00] font-bold">
+                        TOTAL SHOWCASE FEE: ₹{totalFee.toLocaleString('en-IN')}
+                      </span>
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+                      {[
+                        {
+                          amt: 3000,
+                          type: 'Full Payment',
+                          badge: '100% CLEARED',
+                          badgeColor: 'bg-emerald-500/15 text-emerald-400 border-emerald-500/30',
+                          desc: 'Zero balance remaining',
+                        },
+                        {
+                          amt: 1500,
+                          type: 'Half Payment',
+                          badge: '50% HALF FEE',
+                          badgeColor: 'bg-[#C6FF00]/15 text-[#C6FF00] border-[#C6FF00]/30',
+                          desc: '₹1,500 balance before event',
+                        },
+                        {
+                          amt: 1000,
+                          type: 'Partial Payment',
+                          badge: 'PARTIAL ADVANCE',
+                          badgeColor: 'bg-blue-500/15 text-blue-300 border-blue-500/30',
+                          desc: '₹2,000 balance before event',
+                        },
+                        {
+                          amt: 500,
+                          type: 'Token Advance',
+                          badge: 'MINIMUM TOKEN',
+                          badgeColor: 'bg-purple-500/15 text-purple-300 border-purple-500/30',
+                          desc: '₹2,500 balance before event',
+                        },
+                      ].map((pkg) => {
+                        const isSelected = tokenAdvance === pkg.amt;
+                        const bal = totalFee - pkg.amt;
                         return (
                           <div
-                            key={amt}
-                            onClick={() => setTokenAdvance(amt)}
-                            className={`p-4 rounded-sm border cursor-pointer text-center transition-all ${
+                            key={pkg.amt}
+                            onClick={() => setTokenAdvance(pkg.amt)}
+                            className={`p-4 rounded-sm border cursor-pointer text-left transition-all relative ${
                               isSelected
-                                ? 'bg-[#C6FF00]/15 border-[#C6FF00] shadow-lg shadow-[#C6FF00]/10'
+                                ? 'bg-[#C6FF00]/15 border-[#C6FF00] shadow-lg shadow-[#C6FF00]/15'
                                 : 'bg-[#080808] border-white/15 hover:border-white/30'
                             }`}
                           >
-                            <span className="font-mono-editorial text-[10px] text-[#BFC3C7] block uppercase">
-                              PAY TODAY
+                            <div className="flex items-center justify-between mb-1.5">
+                              <span className="font-mono-editorial text-[9px] uppercase tracking-wider text-zinc-400">
+                                {pkg.type}
+                              </span>
+                              <span className={`text-[8px] font-mono px-1.5 py-0.5 rounded-sm border ${pkg.badgeColor}`}>
+                                {pkg.badge}
+                              </span>
+                            </div>
+                            <span className="font-mono text-2xl font-black text-white block">
+                              ₹{pkg.amt.toLocaleString('en-IN')}
                             </span>
-                            <span className="font-mono text-2xl font-bold text-[#C6FF00] block mt-0.5">
-                              ₹{amt.toLocaleString('en-IN')}
-                            </span>
-                            <span className="font-mono-editorial text-[9px] text-zinc-400 block mt-1">
-                              Balance Due: ₹{bal.toLocaleString('en-IN')}
-                            </span>
+                            <div className="mt-2 pt-2 border-t border-white/10 text-[10px] font-mono">
+                              <span className="text-zinc-400 block">Balance Due:</span>
+                              <strong className={bal === 0 ? 'text-emerald-400 font-bold' : 'text-[#C6FF00]'}>
+                                {bal === 0 ? '₹0 (100% Cleared)' : `₹${bal.toLocaleString('en-IN')}`}
+                              </strong>
+                            </div>
                           </div>
                         );
                       })}
+                    </div>
+
+                    {/* Live Mathematical Calculation Audit Bar */}
+                    <div className="mt-4 p-4 rounded-sm bg-[#080808] border border-white/10 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-xs font-mono">
+                      <div>
+                        <span className="text-zinc-500 text-[10px] uppercase block">MATHEMATICAL BALANCE EQUATION</span>
+                        <div className="text-zinc-300 text-xs mt-0.5 flex items-center space-x-1.5">
+                          <span className="text-white font-bold">₹{totalFee.toLocaleString('en-IN')}</span>
+                          <span className="text-zinc-500">(Total)</span>
+                          <span className="text-zinc-500">=</span>
+                          <span className="text-[#C6FF00] font-bold">₹{tokenAdvance.toLocaleString('en-IN')}</span>
+                          <span className="text-zinc-500">(Paying Now)</span>
+                          <span className="text-zinc-500">+</span>
+                          <span className={remainingBalance === 0 ? 'text-emerald-400 font-bold' : 'text-amber-300 font-bold'}>
+                            ₹{remainingBalance.toLocaleString('en-IN')}
+                          </span>
+                          <span className="text-zinc-500">(Remaining Balance)</span>
+                        </div>
+                      </div>
+                      <div className="self-end sm:self-center">
+                        <span className="px-2.5 py-1 rounded-sm bg-white/5 border border-white/15 text-[10px] font-mono text-[#C6FF00] uppercase font-bold">
+                          {tokenAdvance === 3000
+                            ? '100% FULL PAYMENT SELECTED'
+                            : tokenAdvance === 1500
+                            ? '50% HALF PAYMENT SELECTED'
+                            : 'PARTIAL TOKEN ADVANCE SELECTED'}
+                        </span>
+                      </div>
                     </div>
                   </div>
 

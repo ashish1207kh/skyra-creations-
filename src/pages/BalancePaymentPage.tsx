@@ -467,7 +467,7 @@ export default function BalancePaymentPage({ initialRegId, setActiveTab, setLook
             </div>
 
             {/* 4.2 Payment Summary Cards */}
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 font-mono">
+            <div className={`grid grid-cols-1 ${participantData.pending_amount && participantData.pending_amount > 0 ? 'sm:grid-cols-4' : 'sm:grid-cols-3'} gap-4 font-mono`}>
               <div className="bg-[#080808] border border-white/10 rounded-sm p-5">
                 <span className="font-mono-editorial text-[10px] uppercase tracking-wider text-zinc-400 block mb-1">Total Fee</span>
                 <span className="text-2xl font-bold text-white">₹{participantData.total_fee.toLocaleString('en-IN')}</span>
@@ -476,6 +476,12 @@ export default function BalancePaymentPage({ initialRegId, setActiveTab, setLook
                 <span className="font-mono-editorial text-[10px] uppercase tracking-wider text-emerald-400 block mb-1">Verified Paid</span>
                 <span className="text-2xl font-bold text-emerald-400">₹{participantData.amount_paid.toLocaleString('en-IN')}</span>
               </div>
+              {participantData.pending_amount && participantData.pending_amount > 0 ? (
+                <div className="bg-[#080808] border border-amber-500/30 rounded-sm p-5">
+                  <span className="font-mono-editorial text-[10px] uppercase tracking-wider text-amber-300 block mb-1">Pending in Review</span>
+                  <span className="text-2xl font-bold text-amber-300">₹{participantData.pending_amount.toLocaleString('en-IN')}</span>
+                </div>
+              ) : null}
               <div className="bg-[#080808] border border-[#C6FF00]/30 rounded-sm p-5">
                 <span className="font-mono-editorial text-[10px] uppercase tracking-wider text-[#C6FF00] block mb-1">Balance Due</span>
                 <span className="text-2xl font-bold text-[#C6FF00]">₹{participantData.balance_due.toLocaleString('en-IN')}</span>
@@ -521,50 +527,81 @@ export default function BalancePaymentPage({ initialRegId, setActiveTab, setLook
               </p>
             </div>
 
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-4 font-mono">
-              {validAmounts.map((amt) => {
-                const isSelected = !isFullRemainingSelected && selectedAmount === amt;
-                return (
-                  <button
-                    key={amt}
-                    type="button"
-                    onClick={() => {
-                      setSelectedAmount(amt);
-                      setIsFullRemainingSelected(false);
-                    }}
-                    className={`p-4 rounded-sm border text-center transition-all ${
-                      isSelected
-                        ? 'bg-[#C6FF00]/10 border-[#C6FF00] text-white font-bold shadow-md shadow-[#C6FF00]/15'
-                        : 'bg-[#080808] border-white/15 text-zinc-300 hover:border-white/30'
-                    }`}
-                  >
-                    <div className="text-xl font-extrabold">₹{amt.toLocaleString('en-IN')}</div>
-                    <div className="font-mono-editorial text-[10px] text-zinc-400 mt-1 uppercase">Installment</div>
-                  </button>
-                );
-              })}
+            {/* Pay Full Remaining Balance option (100% Clearance) */}
+            <button
+              type="button"
+              onClick={() => {
+                setSelectedAmount(participantData.balance_due);
+                setIsFullRemainingSelected(true);
+              }}
+              className={`w-full p-4 rounded-sm border font-mono-editorial text-xs font-bold uppercase tracking-wider transition-all flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-left sm:text-center mb-3 ${
+                isFullRemainingSelected || selectedAmount === participantData.balance_due
+                  ? 'bg-[#C6FF00] text-black border-[#C6FF00] shadow-lg shadow-[#C6FF00]/20'
+                  : 'bg-[#080808] border-[#C6FF00]/50 text-[#C6FF00] hover:bg-[#C6FF00]/10'
+              }`}
+            >
+              <div className="flex items-center space-x-2">
+                <CheckCircle2 className="w-4 h-4 shrink-0" />
+                <span>CLEAR FULL REMAINING BALANCE (100%)</span>
+                <span className="text-[10px] opacity-80 font-normal">· ZERO REMAINING DUES</span>
+              </div>
+              <span className="font-mono text-base font-black">₹{participantData.balance_due.toLocaleString('en-IN')}</span>
+            </button>
 
-              {/* Pay Full Remaining Balance option */}
-              <button
-                type="button"
-                onClick={() => {
-                  setSelectedAmount(participantData.balance_due);
-                  setIsFullRemainingSelected(true);
-                }}
-                className={`p-4 rounded-sm border text-center transition-all col-span-2 sm:col-span-1 ${
-                  isFullRemainingSelected
-                    ? 'bg-emerald-500/20 border-emerald-400 text-white font-bold shadow-md shadow-emerald-500/15'
-                    : 'bg-[#080808] border-white/15 text-emerald-400 hover:border-white/30'
-                }`}
-              >
-                <div className="text-xl font-extrabold">₹{participantData.balance_due.toLocaleString('en-IN')}</div>
-                <div className="font-mono-editorial text-[10px] text-emerald-300 mt-1 uppercase">Full Balance</div>
-              </button>
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-4 font-mono">
+              {[
+                ...(participantData.balance_due > 1000 && Math.round(participantData.balance_due / 2) !== participantData.balance_due ? [Math.round(participantData.balance_due / 2)] : []),
+                ...validAmounts
+              ]
+                .filter((amt, idx, arr) => amt < participantData.balance_due && arr.indexOf(amt) === idx)
+                .sort((a, b) => b - a)
+                .map((amt) => {
+                  const isHalf = amt === Math.round(participantData.balance_due / 2) || (participantData.balance_due === 3000 && amt === 1500);
+                  const isSelected = !isFullRemainingSelected && selectedAmount === amt;
+                  return (
+                    <button
+                      key={amt}
+                      type="button"
+                      onClick={() => {
+                        setSelectedAmount(amt);
+                        setIsFullRemainingSelected(false);
+                      }}
+                      className={`p-4 rounded-sm border text-center transition-all ${
+                        isSelected
+                          ? 'bg-[#C6FF00]/15 border-[#C6FF00] text-white font-bold shadow-md shadow-[#C6FF00]/15'
+                          : 'bg-[#080808] border-white/15 text-zinc-300 hover:border-white/30'
+                      }`}
+                    >
+                      <span className="font-mono-editorial text-[9px] block text-[#BFC3C7] uppercase font-bold">
+                        {isHalf ? 'HALF PAYMENT' : 'PARTIAL INSTALLMENT'}
+                      </span>
+                      <div className="text-xl font-extrabold text-white mt-0.5">₹{amt.toLocaleString('en-IN')}</div>
+                      <span className="font-mono text-[9px] text-zinc-400 block mt-1">
+                        Remaining: ₹{(participantData.balance_due - amt).toLocaleString('en-IN')}
+                      </span>
+                    </button>
+                  );
+                })}
             </div>
 
-            <p className="font-mono-editorial text-[10px] text-zinc-500">
-              Only amounts valid for your current balance are displayed.
-            </p>
+            {/* Live Mathematical Balance Calculation Box */}
+            <div className="p-3.5 rounded-sm bg-[#080808] border border-white/10 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 text-xs font-mono">
+              <div>
+                <span className="text-zinc-500 text-[10px] uppercase block">MATHEMATICAL BALANCE PROJECTION</span>
+                <div className="text-zinc-300 text-xs mt-0.5 flex flex-wrap items-center gap-1.5">
+                  <span>Balance: <strong className="text-white">₹{participantData.balance_due.toLocaleString('en-IN')}</strong></span>
+                  <span className="text-zinc-500">−</span>
+                  <span>Paying: <strong className="text-[#C6FF00]">₹{getEffectiveAmount().toLocaleString('en-IN')}</strong></span>
+                  <span className="text-zinc-500">=</span>
+                  <span>Remaining: <strong className={Math.max(0, participantData.balance_due - getEffectiveAmount()) === 0 ? 'text-emerald-400 font-bold' : 'text-amber-300 font-bold'}>
+                    ₹{Math.max(0, participantData.balance_due - getEffectiveAmount()).toLocaleString('en-IN')}
+                  </strong></span>
+                </div>
+              </div>
+              <span className="text-[10px] font-mono px-2 py-0.5 rounded-sm bg-white/5 border border-white/15 text-[#C6FF00] uppercase font-bold self-end sm:self-auto">
+                {getEffectiveAmount() === participantData.balance_due ? 'FULL CLEARANCE (100%)' : getEffectiveAmount() === Math.round(participantData.balance_due / 2) ? 'HALF PAYMENT (50%)' : 'PARTIAL INSTALLMENT'}
+              </span>
+            </div>
           </div>
 
           {/* 4.4 Payment Information & Screenshot Upload */}
