@@ -673,47 +673,70 @@ export async function getDashboardStats(): Promise<{
   if (driver === 'mongodb') {
     const conn = await getMongoConnection();
     if (conn) {
-      const regs = await conn.db.collection('registrations').find({}).toArray();
-      const stats = {
-        totalRegistrations: regs.length,
-        total_participants: regs.length,
-        pendingVerification: 0,
-        pending_verifications_count: 0,
-        partiallyPaid: 0,
-        partially_paid_count: 0,
-        fullyPaid: 0,
-        fully_paid_count: 0,
-        rejected: 0,
-        rejected_count: 0,
-        totalCollected: 0,
-        total_verified_revenue: 0,
-        totalOutstanding: 0,
-        total_balance_due: 0,
-        total_pending_amount: 0,
-      };
+      const [regs, allPayments] = await Promise.all([
+        conn.db.collection('registrations').find({}).toArray(),
+        conn.db.collection('payments').find({}).toArray(),
+      ]);
+
+      const pendingPayments = allPayments.filter((p: any) => p.status === 'PENDING');
+      const verifiedPayments = allPayments.filter((p: any) => p.status === 'VERIFIED');
+      const rejectedPayments = allPayments.filter((p: any) => p.status === 'REJECTED');
+
+      let partiallyPaidCount = 0;
+      let fullyPaidCount = 0;
+      let rejectedRegCount = 0;
+      let pendingRegCount = 0;
+      let totalExpectedRevenue = 0;
+      let totalOutstandingBalance = 0;
+
+      // Mathematically verified sum of all verified payments
+      const totalVerifiedRevenue = verifiedPayments.reduce(
+        (sum: number, p: any) => sum + (typeof p.amount === 'number' ? p.amount : 0),
+        0
+      );
+
+      // Sum of all pending payment amounts awaiting review
+      const totalPendingAmount = pendingPayments.reduce(
+        (sum: number, p: any) => sum + (typeof p.amount === 'number' ? p.amount : 0),
+        0
+      );
 
       for (const r of regs) {
-        if (r.status === 'PENDING_VERIFICATION') {
-          stats.pendingVerification++;
-          stats.pending_verifications_count++;
-        } else if (r.status === 'PARTIALLY_PAID') {
-          stats.partiallyPaid++;
-          stats.partially_paid_count++;
-        } else if (r.status === 'FULLY_PAID') {
-          stats.fullyPaid++;
-          stats.fully_paid_count++;
-        } else if (r.status === 'REJECTED') {
-          stats.rejected++;
-          stats.rejected_count++;
-        }
+        const participantTotalFee = typeof r.total_fee === 'number' ? r.total_fee : 3000;
+        const participantPaid = typeof r.amount_paid === 'number' ? r.amount_paid : 0;
+        const participantDue = Math.max(0, participantTotalFee - participantPaid);
 
-        stats.totalCollected += (r.amount_paid || 0);
-        stats.total_verified_revenue += (r.amount_paid || 0);
-        stats.totalOutstanding += (r.balance_due || 0);
-        stats.total_balance_due += (r.balance_due || 0);
+        totalExpectedRevenue += participantTotalFee;
+        totalOutstandingBalance += participantDue;
+
+        if (r.status === 'FULLY_PAID') {
+          fullyPaidCount++;
+        } else if (r.status === 'PARTIALLY_PAID') {
+          partiallyPaidCount++;
+        } else if (r.status === 'REJECTED') {
+          rejectedRegCount++;
+        } else {
+          pendingRegCount++;
+        }
       }
 
-      return stats;
+      return {
+        totalRegistrations: regs.length,
+        total_participants: regs.length,
+        pendingVerification: pendingPayments.length,
+        pending_verifications_count: pendingPayments.length,
+        partiallyPaid: partiallyPaidCount,
+        partially_paid_count: partiallyPaidCount,
+        fullyPaid: fullyPaidCount,
+        fully_paid_count: fullyPaidCount,
+        rejected: rejectedRegCount,
+        rejected_count: rejectedRegCount,
+        totalCollected: totalVerifiedRevenue,
+        total_verified_revenue: totalVerifiedRevenue,
+        totalOutstanding: totalOutstandingBalance,
+        total_balance_due: totalOutstandingBalance,
+        total_pending_amount: totalPendingAmount,
+      };
     }
   }
 

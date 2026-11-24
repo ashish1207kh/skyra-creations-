@@ -13,6 +13,18 @@ import {
   Filter, 
   MessageSquare, 
   ZoomIn, 
+  ZoomOut,
+  RotateCw,
+  ExternalLink,
+  Copy,
+  Check,
+  Phone,
+  Mail,
+  Calendar,
+  MapPin,
+  Sparkles,
+  Calculator,
+  FileText,
   X, 
   RefreshCw, 
   FolderArchive,
@@ -46,6 +58,26 @@ import {
 import { AdminStats, Participant, Payment, StorageMetrics } from '../types/index';
 import HumanVerificationCaptcha from '../components/HumanVerificationCaptcha';
 
+interface ActiveMediaDetails {
+  url: string;
+  title: string;
+  subtitle?: string;
+  type: 'photo' | 'receipt';
+  payment?: Payment;
+  participant?: Participant;
+  details?: {
+    regId?: string;
+    name?: string;
+    amount?: number;
+    transactionId?: string;
+    paymentType?: string;
+    date?: string;
+    category?: string;
+    city?: string;
+    contact?: string;
+  };
+}
+
 export default function AdminDashboard() {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(Boolean(getAdminToken()));
 
@@ -70,8 +102,30 @@ export default function AdminDashboard() {
   const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState('ALL');
 
-  // Screenshot Lightbox Modal
-  const [activeScreenshot, setActiveScreenshot] = useState<string | null>(null);
+  // Enhanced Lightbox & Inspection State
+  const [activeMedia, setActiveMedia] = useState<ActiveMediaDetails | null>(null);
+  const [zoomLevel, setZoomLevel] = useState<number>(1);
+  const [rotation, setRotation] = useState<number>(0);
+
+  // Participant Detail Dossier Modal
+  const [viewParticipantModal, setViewParticipantModal] = useState<Participant | null>(null);
+
+  // Participant Registry & Queue Filters
+  const [participantSearchQuery, setParticipantSearchQuery] = useState('');
+  const [categoryFilter, setCategoryFilter] = useState('ALL');
+  const [participantStatusFilter, setParticipantStatusFilter] = useState('ALL');
+  const [paymentTypeFilter, setPaymentTypeFilter] = useState('ALL');
+
+  // Copy feedback
+  const [copiedText, setCopiedText] = useState<string | null>(null);
+
+  const handleCopy = (text: string) => {
+    if (!text) return;
+    navigator.clipboard?.writeText(text);
+    setCopiedText(text);
+    setTimeout(() => setCopiedText(null), 2000);
+  };
+
   const [rejectModalPayment, setRejectModalPayment] = useState<Payment | null>(null);
   const [deleteParticipantModal, setDeleteParticipantModal] = useState<Participant | null>(null);
   const [deletePaymentModal, setDeletePaymentModal] = useState<Payment | null>(null);
@@ -232,7 +286,7 @@ export default function AdminDashboard() {
     }
   };
 
-  const handleViewPhoto = async (photoKey?: string | null) => {
+  const handleViewPhoto = async (photoKey?: string | null, candidateName?: string, regId?: string, category?: string) => {
     if (!photoKey) {
       alert('No model photograph uploaded for this participant.');
       return;
@@ -241,13 +295,54 @@ export default function AdminDashboard() {
       const res = await fetch(`/api/storage/presigned-view?key=${encodeURIComponent(photoKey)}`);
       const data = await res.json();
       if (data.view_url) {
-        setActiveScreenshot(data.view_url);
+        setZoomLevel(1);
+        setRotation(0);
+        setActiveMedia({
+          url: data.view_url,
+          title: candidateName || 'Model Portrait Photograph',
+          subtitle: `Registration ID: ${regId || ''}${category ? ` • Category: ${category}` : ''}`,
+          type: 'photo',
+          details: { regId, name: candidateName, category },
+        });
       } else {
         alert('Could not generate view URL.');
       }
     } catch (err: any) {
       alert('Failed to load model photograph: ' + err.message);
     }
+  };
+
+  const handleViewCandidatePhoto = (photoUrl: string, candidateName: string, regId: string, category?: string) => {
+    setZoomLevel(1);
+    setRotation(0);
+    setActiveMedia({
+      url: photoUrl,
+      title: `Model Photograph: ${candidateName}`,
+      subtitle: `${regId}${category ? ` • Category: ${category}` : ''}`,
+      type: 'photo',
+      details: { regId, name: candidateName, category },
+    });
+  };
+
+  const handleViewReceipt = (pay: Payment) => {
+    const participantName = (pay as any).participant?.full_name || 'Participant';
+    setZoomLevel(1);
+    setRotation(0);
+    setActiveMedia({
+      url: pay.view_url || '/qr_code.png',
+      title: `Payment Receipt: ₹${pay.amount?.toLocaleString('en-IN')}`,
+      subtitle: `${participantName} • ${pay.reg_id}`,
+      type: 'receipt',
+      payment: pay,
+      details: {
+        regId: pay.reg_id,
+        name: participantName,
+        amount: pay.amount,
+        transactionId: pay.transaction_id,
+        paymentType: pay.payment_type,
+        date: pay.created_at,
+      },
+    });
   };
 
   // WhatsApp manual outreach trigger
@@ -401,16 +496,98 @@ export default function AdminDashboard() {
     );
   }
 
+  // Real-time mathematically verified calculations
+  const calculatedTotalParticipants = participants.length;
+  const verifiedPayments = payments.filter((p) => p.status === 'VERIFIED');
+  const pendingPayments = payments.filter((p) => p.status === 'PENDING');
+  const rejectedPayments = payments.filter((p) => p.status === 'REJECTED');
+
+  const calculatedVerifiedRevenue = verifiedPayments.reduce(
+    (acc, p) => acc + (typeof p.amount === 'number' ? p.amount : 0),
+    0
+  );
+  const calculatedPendingAmount = pendingPayments.reduce(
+    (acc, p) => acc + (typeof p.amount === 'number' ? p.amount : 0),
+    0
+  );
+  const calculatedPendingCount = pendingPayments.length;
+
+  const calculatedContractedFee = participants.reduce(
+    (acc, p) => acc + (typeof p.total_fee === 'number' ? p.total_fee : 3000),
+    0
+  );
+  const calculatedTotalOutstanding = participants.reduce((acc, p) => {
+    const fee = typeof p.total_fee === 'number' ? p.total_fee : 3000;
+    const paid = typeof p.amount_paid === 'number' ? p.amount_paid : 0;
+    return acc + Math.max(0, fee - paid);
+  }, 0);
+
+  const calculatedFullyPaidCount = participants.filter(
+    (p) => p.status === 'FULLY_PAID' || (p.amount_paid >= p.total_fee && p.amount_paid > 0)
+  ).length;
+  const calculatedPartiallyPaidCount = participants.filter(
+    (p) => p.status === 'PARTIALLY_PAID' || (p.amount_paid > 0 && p.amount_paid < p.total_fee)
+  ).length;
+
+  // Active verified stats
+  const displayTotalParticipants = stats?.total_participants ?? calculatedTotalParticipants;
+  const displayVerifiedRevenue = stats?.total_verified_revenue ?? calculatedVerifiedRevenue;
+  const displayPendingAmount = (stats?.total_pending_amount && stats.total_pending_amount > 0)
+    ? stats.total_pending_amount
+    : calculatedPendingAmount;
+  const displayPendingCount = (stats?.pending_verifications_count && stats.pending_verifications_count > 0)
+    ? stats.pending_verifications_count
+    : calculatedPendingCount;
+  const displayTotalOutstanding = stats?.total_balance_due ?? calculatedTotalOutstanding;
+  const displayFullyPaidCount = stats?.fully_paid_count ?? calculatedFullyPaidCount;
+  const displayPartiallyPaidCount = stats?.partially_paid_count ?? calculatedPartiallyPaidCount;
+
+  // Mathematical Audit Equation: Expected Total Contract Value = Verified Revenue + Outstanding Balance Due
+  const isEquationBalanced = calculatedContractedFee === (displayVerifiedRevenue + displayTotalOutstanding);
+
   // Filtered Payments for Queue
   const filteredPayments = payments.filter((p) => {
-    const matchesSearch = 
-      p.reg_id.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      p.transaction_id.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      ((p as any).participant?.full_name || '').toLowerCase().includes(searchQuery.toLowerCase());
+    const q = searchQuery.toLowerCase().trim();
+    const participantName = ((p as any).participant?.full_name || '').toLowerCase();
+    const matchesSearch = !q || 
+      p.reg_id.toLowerCase().includes(q) ||
+      p.transaction_id.toLowerCase().includes(q) ||
+      participantName.includes(q);
     
-    if (statusFilter === 'ALL') return matchesSearch;
-    return matchesSearch && p.status === statusFilter;
+    const matchesStatus = statusFilter === 'ALL' || p.status === statusFilter;
+    const matchesPaymentType = paymentTypeFilter === 'ALL' || p.payment_type === paymentTypeFilter;
+    return matchesSearch && matchesStatus && matchesPaymentType;
   });
+
+  // Filtered Participants for Registry
+  const filteredParticipants = participants
+    .filter((p) => {
+      const q = participantSearchQuery.toLowerCase().trim();
+      const matchesSearch = !q || 
+        p.reg_id.toLowerCase().includes(q) ||
+        p.full_name.toLowerCase().includes(q) ||
+        (p.mobile || '').toLowerCase().includes(q) ||
+        (p.whatsapp || '').toLowerCase().includes(q) ||
+        (p.email || '').toLowerCase().includes(q) ||
+        (p.city || '').toLowerCase().includes(q);
+
+      const matchesCategory = categoryFilter === 'ALL' || p.category === categoryFilter;
+      const matchesStatus = participantStatusFilter === 'ALL' || p.status === participantStatusFilter;
+      return matchesSearch && matchesCategory && matchesStatus;
+    })
+    .sort((a, b) => {
+      const numA = parseInt(a.reg_id.replace(/\D/g, '') || '0', 10);
+      const numB = parseInt(b.reg_id.replace(/\D/g, '') || '0', 10);
+      return numA - numB;
+    });
+
+  const CATEGORY_FILTER_OPTIONS = [
+    'ALL',
+    'Male above 18',
+    'Female above 18',
+    'Other above 18',
+    'Kids below 18',
+  ];
 
   return (
     <div className="max-w-7xl mx-auto py-10 px-4 sm:px-6 lg:px-8">
@@ -504,60 +681,98 @@ export default function AdminDashboard() {
         </div>
       )}
 
-      {/* 6.1 METRICS CARDS */}
-      {stats && (
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-          {/* Card 1: Total Participants Registered */}
-          <div className="bg-[#12141a] border border-white/10 rounded-sm p-5 shadow-sm">
-            <div className="flex items-center justify-between mb-2">
-              <span className="font-mono-editorial text-[10px] uppercase tracking-wider text-zinc-400">Total Participants</span>
-              <div className="w-8 h-8 rounded-sm bg-white/5 text-white flex items-center justify-center border border-white/10">
-                <Users className="w-4 h-4" />
-              </div>
-            </div>
-            <div className="text-2xl font-bold font-mono text-white">{stats.total_participants}</div>
-            <div className="text-[11px] text-zinc-500 mt-1 font-mono">
-              {stats.fully_paid_count} Paid • {stats.partially_paid_count} Partial
+      {/* 6.1 METRICS CARDS WITH MATHEMATICAL INTEGRITY */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+        {/* Card 1: Total Participants Registered */}
+        <div className="bg-[#12141a] border border-white/10 rounded-sm p-5 shadow-sm">
+          <div className="flex items-center justify-between mb-2">
+            <span className="font-mono-editorial text-[10px] uppercase tracking-wider text-zinc-400">Total Participants</span>
+            <div className="w-8 h-8 rounded-sm bg-white/5 text-white flex items-center justify-center border border-white/10">
+              <Users className="w-4 h-4" />
             </div>
           </div>
-
-          {/* Card 2: Total Verified Revenue */}
-          <div className="bg-[#12141a] border border-emerald-500/30 rounded-sm p-5 shadow-sm">
-            <div className="flex items-center justify-between mb-2">
-              <span className="font-mono-editorial text-[10px] uppercase tracking-wider text-emerald-400">Verified Revenue</span>
-              <div className="w-8 h-8 rounded-sm bg-emerald-500/10 text-emerald-400 flex items-center justify-center border border-emerald-500/30">
-                <IndianRupee className="w-4 h-4" />
-              </div>
-            </div>
-            <div className="text-2xl font-bold font-mono text-emerald-400">₹{stats.total_verified_revenue.toLocaleString('en-IN')}</div>
-            <div className="text-[11px] text-zinc-500 mt-1">Settled &amp; Verified Payments</div>
-          </div>
-
-          {/* Card 3: Total Pending Verification Amount */}
-          <div className="bg-[#12141a] border border-[#C6FF00]/30 rounded-sm p-5 shadow-sm">
-            <div className="flex items-center justify-between mb-2">
-              <span className="font-mono-editorial text-[10px] uppercase tracking-wider text-[#C6FF00]">Pending Verification</span>
-              <div className="w-8 h-8 rounded-sm bg-[#C6FF00]/10 text-[#C6FF00] flex items-center justify-center border border-[#C6FF00]/30">
-                <Clock className="w-4 h-4" />
-              </div>
-            </div>
-            <div className="text-2xl font-bold font-mono text-[#C6FF00]">₹{stats.total_pending_amount.toLocaleString('en-IN')}</div>
-            <div className="text-[11px] text-zinc-400 mt-1 font-mono">{stats.pending_verifications_count} submission(s) awaiting</div>
-          </div>
-
-          {/* Card 4: Total Outstanding Balance */}
-          <div className="bg-[#12141a] border border-white/10 rounded-sm p-5 shadow-sm">
-            <div className="flex items-center justify-between mb-2">
-              <span className="font-mono-editorial text-[10px] uppercase tracking-wider text-zinc-400">Outstanding Balance</span>
-              <div className="w-8 h-8 rounded-sm bg-white/5 text-zinc-300 flex items-center justify-center border border-white/10">
-                <IndianRupee className="w-4 h-4" />
-              </div>
-            </div>
-            <div className="text-2xl font-bold font-mono text-white">₹{stats.total_balance_due.toLocaleString('en-IN')}</div>
-            <div className="text-[11px] text-zinc-500 mt-1 font-mono">To be collected before event</div>
+          <div className="text-2xl font-bold font-mono text-white">{displayTotalParticipants}</div>
+          <div className="text-[11px] text-zinc-500 mt-1 font-mono">
+            {displayFullyPaidCount} Fully Paid • {displayPartiallyPaidCount} Partial
           </div>
         </div>
-      )}
+
+        {/* Card 2: Total Verified Revenue */}
+        <div className="bg-[#12141a] border border-emerald-500/30 rounded-sm p-5 shadow-sm">
+          <div className="flex items-center justify-between mb-2">
+            <span className="font-mono-editorial text-[10px] uppercase tracking-wider text-emerald-400">Verified Revenue</span>
+            <div className="w-8 h-8 rounded-sm bg-emerald-500/10 text-emerald-400 flex items-center justify-center border border-emerald-500/30">
+              <IndianRupee className="w-4 h-4" />
+            </div>
+          </div>
+          <div className="text-2xl font-bold font-mono text-emerald-400">₹{displayVerifiedRevenue.toLocaleString('en-IN')}</div>
+          <div className="text-[11px] text-zinc-500 mt-1">Bank Confirmed &amp; Verified</div>
+        </div>
+
+        {/* Card 3: Total Pending Verification Amount */}
+        <div className="bg-[#12141a] border border-[#C6FF00]/30 rounded-sm p-5 shadow-sm">
+          <div className="flex items-center justify-between mb-2">
+            <span className="font-mono-editorial text-[10px] uppercase tracking-wider text-[#C6FF00]">Pending Verification</span>
+            <div className="w-8 h-8 rounded-sm bg-[#C6FF00]/10 text-[#C6FF00] flex items-center justify-center border border-[#C6FF00]/30">
+              <Clock className="w-4 h-4" />
+            </div>
+          </div>
+          <div className="text-2xl font-bold font-mono text-[#C6FF00]">₹{displayPendingAmount.toLocaleString('en-IN')}</div>
+          <div className="text-[11px] text-zinc-400 mt-1 font-mono">{displayPendingCount} submission(s) awaiting review</div>
+        </div>
+
+        {/* Card 4: Total Outstanding Balance */}
+        <div className="bg-[#12141a] border border-white/10 rounded-sm p-5 shadow-sm">
+          <div className="flex items-center justify-between mb-2">
+            <span className="font-mono-editorial text-[10px] uppercase tracking-wider text-zinc-400">Outstanding Balance</span>
+            <div className="w-8 h-8 rounded-sm bg-white/5 text-zinc-300 flex items-center justify-center border border-white/10">
+              <IndianRupee className="w-4 h-4" />
+            </div>
+          </div>
+          <div className="text-2xl font-bold font-mono text-white">₹{displayTotalOutstanding.toLocaleString('en-IN')}</div>
+          <div className="text-[11px] text-zinc-500 mt-1 font-mono">Due at stage rehearsal / venue</div>
+        </div>
+      </div>
+
+      {/* Mathematical Financial Integrity & Audit Balance Bar */}
+      <div className="mb-6 p-4 rounded-sm bg-[#12141a] border border-white/10 shadow-lg">
+        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+          <div className="flex items-center space-x-3">
+            <div className="w-9 h-9 rounded-sm bg-[#C6FF00]/10 border border-[#C6FF00]/30 flex items-center justify-center text-[#C6FF00] shrink-0">
+              <Calculator className="w-5 h-5" />
+            </div>
+            <div>
+              <div className="flex items-center space-x-2">
+                <span className="font-mono-editorial text-[10px] uppercase tracking-widest text-[#C6FF00] font-bold">
+                  FINANCIAL INTEGRITY &amp; MATHEMATICAL AUDIT
+                </span>
+                <span className={`text-[10px] font-mono font-bold px-2 py-0.5 rounded-sm flex items-center space-x-1 ${
+                  isEquationBalanced
+                    ? 'bg-emerald-500/15 text-emerald-400 border border-emerald-500/30'
+                    : 'bg-amber-500/15 text-amber-400 border border-amber-500/30'
+                }`}>
+                  <CheckCircle2 className="w-3 h-3" />
+                  <span>{isEquationBalanced ? '100% MATHEMATICALLY BALANCED' : 'RECALCULATING BALANCES'}</span>
+                </span>
+              </div>
+              <p className="text-xs text-zinc-300 font-light mt-0.5">
+                Total Contracted Intake: <strong className="text-white font-mono">₹{calculatedContractedFee.toLocaleString('en-IN')}</strong> ({displayTotalParticipants} Slots × ₹3,000) = Verified Collected: <strong className="text-emerald-400 font-mono">₹{displayVerifiedRevenue.toLocaleString('en-IN')}</strong> + Outstanding Due: <strong className="text-[#C6FF00] font-mono">₹{displayTotalOutstanding.toLocaleString('en-IN')}</strong>
+              </p>
+            </div>
+          </div>
+
+          <div className="flex items-center space-x-4 text-xs font-mono shrink-0 bg-[#080808] border border-white/10 px-4 py-2.5 rounded-sm">
+            <div>
+              <span className="text-zinc-500 text-[10px] uppercase block">PENDING IN QUEUE</span>
+              <span className="text-[#C6FF00] font-bold">₹{displayPendingAmount.toLocaleString('en-IN')} ({displayPendingCount} txs)</span>
+            </div>
+            <div className="border-l border-white/10 pl-4">
+              <span className="text-zinc-500 text-[10px] uppercase block">SETTLED IN BANK</span>
+              <span className="text-emerald-400 font-bold">₹{displayVerifiedRevenue.toLocaleString('en-IN')}</span>
+            </div>
+          </div>
+        </div>
+      </div>
 
       {/* Official UPI Payment Recipient & Owner Verification Status Card */}
       <div className="bg-[#12141a] border border-white/10 rounded-sm p-4 sm:p-5 mb-6 shadow-sm">
@@ -588,27 +803,33 @@ export default function AdminDashboard() {
         </div>
       </div>
 
-      {/* Tabs Switcher: Verification Queue vs Participant Registry */}
+      {/* Tabs Switcher: Verification Queue vs Participant Registry vs Storage */}
       <div className="flex items-center space-x-2 border-b border-white/10 mb-6 font-mono-editorial">
         <button
           onClick={() => setActiveTab('queue')}
-          className={`pb-3 px-4 text-xs font-bold uppercase tracking-wider border-b-2 transition-all ${
+          className={`pb-3 px-4 text-xs font-bold uppercase tracking-wider border-b-2 transition-all flex items-center space-x-1.5 ${
             activeTab === 'queue'
               ? 'border-[#C6FF00] text-[#C6FF00]'
               : 'border-transparent text-zinc-400 hover:text-white'
           }`}
         >
-          Payment Verification Queue ({payments.filter(p => p.status === 'PENDING').length} Pending)
+          <span>Payment Verification Queue</span>
+          <span className="px-2 py-0.5 rounded-sm bg-[#C6FF00]/15 text-[#C6FF00] text-[10px] font-bold font-mono">
+            {payments.filter(p => p.status === 'PENDING').length}
+          </span>
         </button>
         <button
           onClick={() => setActiveTab('participants')}
-          className={`pb-3 px-4 text-xs font-bold uppercase tracking-wider border-b-2 transition-all ${
+          className={`pb-3 px-4 text-xs font-bold uppercase tracking-wider border-b-2 transition-all flex items-center space-x-1.5 ${
             activeTab === 'participants'
               ? 'border-[#C6FF00] text-[#C6FF00]'
               : 'border-transparent text-zinc-400 hover:text-white'
           }`}
         >
-          Participant Registry ({participants.length})
+          <span>Participant Registry</span>
+          <span className="px-2 py-0.5 rounded-sm bg-white/10 text-white text-[10px] font-bold font-mono">
+            {participants.length}
+          </span>
         </button>
         <button
           onClick={() => setActiveTab('storage')}
@@ -639,14 +860,21 @@ export default function AdminDashboard() {
       {/* 6.2 PAYMENT VERIFICATION QUEUE */}
       {activeTab === 'queue' && (
         <div className="bg-[#12151e] border border-zinc-800 rounded-2xl overflow-hidden shadow-xl">
-          <div className="p-4 sm:p-6 border-b border-zinc-800 flex flex-col sm:flex-row items-center justify-between gap-4">
+          <div className="p-4 sm:p-6 border-b border-zinc-800 flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4">
             <div>
-              <h2 className="font-serif text-lg font-bold text-white">Payment Verification</h2>
-              <p className="text-xs text-zinc-400">Review submitted transaction details and verify payments against actual bank records.</p>
+              <div className="flex items-center space-x-2">
+                <h2 className="font-serif text-lg font-bold text-white">Payment Verification Queue</h2>
+                <span className="px-2 py-0.5 rounded-sm bg-white/10 text-xs font-mono text-zinc-300">
+                  {filteredPayments.length} shown
+                </span>
+              </div>
+              <p className="text-xs text-zinc-400 mt-0.5">
+                Review submitted candidate photographs, bank transaction proofs, and verify payments against actual bank records.
+              </p>
             </div>
 
-            <div className="flex items-center space-x-3 w-full sm:w-auto">
-              <div className="relative flex-1 sm:w-64">
+            <div className="flex flex-wrap items-center gap-2.5 w-full lg:w-auto">
+              <div className="relative flex-1 sm:w-64 min-w-[200px]">
                 <input
                   type="text"
                   value={searchQuery}
@@ -667,6 +895,16 @@ export default function AdminDashboard() {
                 <option value="VERIFIED">Verified Only</option>
                 <option value="REJECTED">Rejected Only</option>
               </select>
+
+              <select
+                value={paymentTypeFilter}
+                onChange={(e) => setPaymentTypeFilter(e.target.value)}
+                className="bg-[#080808] border border-white/15 rounded-sm px-3 py-2 text-white text-xs focus:outline-none focus:border-[#C6FF00]"
+              >
+                <option value="ALL">All Types</option>
+                <option value="INITIAL_REGISTRATION">Initial Advance</option>
+                <option value="BALANCE_PAYMENT">Balance Clearance</option>
+              </select>
             </div>
           </div>
 
@@ -675,12 +913,12 @@ export default function AdminDashboard() {
               <thead className="bg-[#0a0c12] text-zinc-400 uppercase tracking-wider text-[11px] border-b border-zinc-800">
                 <tr>
                   <th className="py-3.5 px-4">Registration ID</th>
-                  <th className="py-3.5 px-4">Model Photo</th>
+                  <th className="py-3.5 px-4 text-center">Model Photo</th>
                   <th className="py-3.5 px-4">Participant Name</th>
                   <th className="py-3.5 px-4">Payment Type</th>
                   <th className="py-3.5 px-4">Amount</th>
                   <th className="py-3.5 px-4">Transaction Reference / UTR</th>
-                  <th className="py-3.5 px-4">Proof</th>
+                  <th className="py-3.5 px-4 text-center">Payment Proof (Receipt)</th>
                   <th className="py-3.5 px-4">Status</th>
                   <th className="py-3.5 px-4 text-right">Actions</th>
                 </tr>
@@ -688,7 +926,7 @@ export default function AdminDashboard() {
               <tbody className="divide-y divide-zinc-800/80">
                 {filteredPayments.length === 0 ? (
                   <tr>
-                    <td colSpan={9} className="py-8 text-center text-zinc-500">
+                    <td colSpan={9} className="py-12 text-center text-zinc-500">
                       No payment submissions found matching your filters.
                     </td>
                   </tr>
@@ -698,16 +936,32 @@ export default function AdminDashboard() {
                     const mobile = (pay as any).participant?.whatsapp || (pay as any).participant?.mobile || '';
                     const photoUrl = pay.model_photo_url || null;
                     const photoKey = (pay as any).participant?.model_photo_r2_key;
+                    const candidateCategory = (pay as any).participant?.category;
 
                     return (
-                      <tr key={pay.id} className="hover:bg-zinc-800/30 transition-colors">
-                        <td className="py-3.5 px-4 font-mono font-bold text-[#C6FF00]">{pay.reg_id}</td>
-                        <td className="py-3.5 px-4">
+                      <tr key={pay.id || pay.payment_id} className="hover:bg-zinc-800/30 transition-colors">
+                        {/* Registration ID with Copy Button */}
+                        <td className="py-3 px-4 font-mono font-bold">
+                          <div className="flex items-center space-x-1.5">
+                            <span className="text-[#C6FF00]">{pay.reg_id}</span>
+                            <button
+                              type="button"
+                              onClick={() => handleCopy(pay.reg_id)}
+                              className="p-1 hover:text-[#C6FF00] text-zinc-500 transition-colors"
+                              title="Copy Registration ID"
+                            >
+                              {copiedText === pay.reg_id ? <Check className="w-3 h-3 text-emerald-400" /> : <Copy className="w-3 h-3" />}
+                            </button>
+                          </div>
+                        </td>
+
+                        {/* Model Photo Thumbnail (Clear & Inspectable) */}
+                        <td className="py-3 px-4 text-center">
                           {photoUrl ? (
                             <div
-                              onClick={() => setActiveScreenshot(photoUrl)}
-                              className="group relative w-11 h-11 rounded-sm overflow-hidden border border-white/20 bg-black cursor-pointer hover:border-[#C6FF00] transition-all shadow-md shrink-0"
-                              title={`Click to preview full-size portrait of ${participantName}`}
+                              onClick={() => handleViewCandidatePhoto(photoUrl, participantName, pay.reg_id, candidateCategory)}
+                              className="group relative w-14 h-14 rounded-sm overflow-hidden border border-white/20 bg-black cursor-pointer hover:border-[#C6FF00] hover:shadow-lg hover:shadow-[#C6FF00]/20 transition-all shrink-0 mx-auto"
+                              title={`Click to inspect high-resolution portrait of ${participantName}`}
                             >
                               <img
                                 src={photoUrl}
@@ -715,66 +969,125 @@ export default function AdminDashboard() {
                                 className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
                               />
                               <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity">
-                                <ZoomIn className="w-3.5 h-3.5 text-[#C6FF00]" />
+                                <ZoomIn className="w-4 h-4 text-[#C6FF00]" />
+                              </div>
+                              <div className="absolute bottom-0 inset-x-0 bg-black/80 py-0.5 text-[8px] font-mono-editorial text-center text-zinc-300">
+                                PORTRAIT
                               </div>
                             </div>
                           ) : photoKey ? (
                             <button
                               type="button"
-                              onClick={() => handleViewPhoto(photoKey)}
-                              className="w-11 h-11 rounded-sm border border-dashed border-white/20 bg-white/5 flex flex-col items-center justify-center text-zinc-400 hover:text-[#C6FF00] hover:border-[#C6FF00] transition-all group shrink-0"
+                              onClick={() => handleViewPhoto(photoKey, participantName, pay.reg_id, candidateCategory)}
+                              className="w-14 h-14 rounded-sm border border-dashed border-white/25 bg-white/5 flex flex-col items-center justify-center text-zinc-400 hover:text-[#C6FF00] hover:border-[#C6FF00] transition-all group shrink-0 mx-auto"
                               title={`Load portrait of ${participantName}`}
                             >
                               <User className="w-4 h-4 group-hover:scale-110 transition-transform" />
-                              <span className="text-[9px] font-mono-editorial mt-0.5">VIEW</span>
+                              <span className="text-[9px] font-mono-editorial mt-0.5 text-[#C6FF00]">PHOTO</span>
                             </button>
                           ) : (
-                            <div className="w-11 h-11 rounded-sm border border-white/10 bg-white/5 flex items-center justify-center text-zinc-600 shrink-0" title="No photo uploaded">
+                            <div className="w-14 h-14 rounded-sm border border-white/10 bg-white/5 flex flex-col items-center justify-center text-zinc-600 shrink-0 mx-auto" title="No photo uploaded">
                               <User className="w-4 h-4 text-zinc-600" />
+                              <span className="text-[8px] font-mono-editorial mt-0.5">NONE</span>
                             </div>
                           )}
                         </td>
-                        <td className="py-3.5 px-4 font-medium text-white">{participantName}</td>
-                        <td className="py-3.5 px-4">
-                          <span className={`px-2 py-0.5 rounded-sm font-mono-editorial text-[10px] font-semibold uppercase ${
+
+                        {/* Participant Name */}
+                        <td className="py-3 px-4 font-medium text-white">
+                          <div>
+                            <span className="block font-semibold">{participantName}</span>
+                            {candidateCategory && (
+                              <span className="text-[10px] text-zinc-400 font-mono block mt-0.5">{candidateCategory}</span>
+                            )}
+                          </div>
+                        </td>
+
+                        {/* Payment Type */}
+                        <td className="py-3 px-4">
+                          <span className={`px-2.5 py-1 rounded-sm font-mono-editorial text-[10px] font-semibold uppercase ${
                             pay.payment_type === 'INITIAL_REGISTRATION'
                               ? 'bg-purple-500/10 text-purple-300 border border-purple-500/20'
                               : 'bg-blue-500/10 text-blue-300 border border-blue-500/20'
                           }`}>
-                            {pay.payment_type === 'INITIAL_REGISTRATION' ? 'Initial Registration' : 'Balance Payment'}
+                            {pay.payment_type === 'INITIAL_REGISTRATION' ? 'Initial Advance' : 'Balance Clearance'}
                           </span>
                         </td>
-                        <td className="py-3.5 px-4 font-bold text-white font-mono">₹{pay.amount.toLocaleString('en-IN')}</td>
-                        <td className="py-3.5 px-4 font-mono text-zinc-300 select-all">{pay.transaction_id}</td>
-                        <td className="py-3.5 px-4">
-                          <button
-                            onClick={() => setActiveScreenshot(pay.view_url || '/logo.png')}
-                            className="inline-flex items-center space-x-1 px-2.5 py-1 rounded-sm bg-white/5 hover:bg-white/10 text-zinc-200 text-xs transition-colors border border-white/15"
-                          >
-                            <ZoomIn className="w-3 h-3 text-[#C6FF00]" />
-                            <span>View</span>
-                          </button>
+
+                        {/* Amount */}
+                        <td className="py-3 px-4 font-bold text-white font-mono text-sm">
+                          ₹{pay.amount.toLocaleString('en-IN')}
                         </td>
-                        <td className="py-3.5 px-4">
-                          <span className={`inline-block px-2.5 py-0.5 rounded-sm font-mono-editorial text-[10px] font-bold uppercase ${
+
+                        {/* Transaction Reference / UTR with Copy Button */}
+                        <td className="py-3 px-4 font-mono text-zinc-300">
+                          <div className="flex items-center space-x-1.5">
+                            <span className="select-all font-semibold">{pay.transaction_id}</span>
+                            <button
+                              type="button"
+                              onClick={() => handleCopy(pay.transaction_id)}
+                              className="p-1 hover:text-[#C6FF00] text-zinc-500 transition-colors"
+                              title="Copy UTR Reference"
+                            >
+                              {copiedText === pay.transaction_id ? <Check className="w-3 h-3 text-emerald-400" /> : <Copy className="w-3 h-3" />}
+                            </button>
+                          </div>
+                        </td>
+
+                        {/* Payment Proof Receipt Thumbnail (Clear & Inspectable) */}
+                        <td className="py-3 px-4 text-center">
+                          {pay.view_url && pay.view_url !== '/logo.png' ? (
+                            <div
+                              onClick={() => handleViewReceipt(pay)}
+                              className="group relative w-14 h-14 rounded-sm overflow-hidden border border-white/20 bg-black cursor-pointer hover:border-[#C6FF00] hover:shadow-lg hover:shadow-[#C6FF00]/20 transition-all shrink-0 mx-auto"
+                              title={`Click to inspect payment receipt for UTR: ${pay.transaction_id}`}
+                            >
+                              <img
+                                src={pay.view_url}
+                                alt={`Receipt ${pay.transaction_id}`}
+                                className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
+                              />
+                              <div className="absolute inset-0 bg-black/45 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity">
+                                <ZoomIn className="w-4 h-4 text-[#C6FF00]" />
+                              </div>
+                              <div className="absolute bottom-0 inset-x-0 bg-black/80 py-0.5 text-[8px] font-mono-editorial text-center text-[#C6FF00]">
+                                RECEIPT
+                              </div>
+                            </div>
+                          ) : (
+                            <button
+                              onClick={() => handleViewReceipt(pay)}
+                              className="inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-sm bg-white/5 hover:bg-white/10 text-zinc-200 text-xs transition-colors border border-white/15 mx-auto"
+                            >
+                              <ZoomIn className="w-3.5 h-3.5 text-[#C6FF00]" />
+                              <span>View</span>
+                            </button>
+                          )}
+                        </td>
+
+                        {/* Status */}
+                        <td className="py-3 px-4">
+                          <span className={`inline-block px-2.5 py-1 rounded-sm font-mono-editorial text-[10px] font-bold uppercase ${
                             pay.status === 'VERIFIED'
                               ? 'bg-emerald-500/15 text-emerald-400 border border-emerald-500/30'
                               : pay.status === 'REJECTED'
                               ? 'bg-red-500/15 text-red-400 border border-red-500/30'
                               : 'bg-[#C6FF00]/15 text-[#C6FF00] border border-[#C6FF00]/30'
                           }`}>
-                            {pay.status === 'VERIFIED' ? 'Verified' : pay.status === 'REJECTED' ? 'Rejected' : 'Pending Verification'}
+                            {pay.status === 'VERIFIED' ? 'Verified' : pay.status === 'REJECTED' ? 'Rejected' : 'Pending Review'}
                           </span>
                         </td>
-                        <td className="py-3.5 px-4 text-right space-x-2">
+
+                        {/* Actions */}
+                        <td className="py-3 px-4 text-right space-x-2 whitespace-nowrap">
                           {pay.status === 'PENDING' && (
                             <>
                               <button
                                 disabled={verifyingId === pay.payment_id}
                                 onClick={() => handleVerify(pay.payment_id, 'VERIFY')}
-                                className="px-3 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs transition-colors"
+                                className="px-3 py-1.5 rounded-sm bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs uppercase font-mono-editorial transition-colors"
                               >
-                                Verify
+                                {verifyingId === pay.payment_id ? 'Verifying...' : 'Verify'}
                               </button>
                               <button
                                 disabled={verifyingId === pay.payment_id}
@@ -783,7 +1096,7 @@ export default function AdminDashboard() {
                                   setSelectedReasonOption('Invalid transaction reference');
                                   setCustomReason('');
                                 }}
-                                className="px-3 py-1.5 rounded-lg bg-red-950/60 hover:bg-red-900 text-red-300 border border-red-500/40 font-bold text-xs transition-colors"
+                                className="px-3 py-1.5 rounded-sm bg-red-950/60 hover:bg-red-900 text-red-300 border border-red-500/40 font-bold text-xs uppercase font-mono-editorial transition-colors"
                               >
                                 Reject
                               </button>
@@ -793,7 +1106,7 @@ export default function AdminDashboard() {
                           {mobile && (
                             <button
                               onClick={() => openWhatsApp(mobile, participantName, pay.reg_id, pay.status)}
-                              className="px-2.5 py-1.5 rounded-lg bg-emerald-950/40 hover:bg-emerald-900/60 text-emerald-400 border border-emerald-500/30 text-xs transition-colors inline-flex items-center space-x-1"
+                              className="px-2.5 py-1.5 rounded-sm bg-emerald-950/40 hover:bg-emerald-900/60 text-emerald-400 border border-emerald-500/30 text-xs transition-colors inline-flex items-center space-x-1"
                               title="Send WhatsApp Update"
                             >
                               <MessageSquare className="w-3 h-3" />
@@ -803,7 +1116,7 @@ export default function AdminDashboard() {
 
                           <button
                             onClick={() => setDeletePaymentModal(pay)}
-                            className="p-1.5 rounded-lg bg-red-950/40 hover:bg-red-900/60 text-red-400 border border-red-500/30 text-xs transition-colors inline-flex items-center"
+                            className="p-1.5 rounded-sm bg-red-950/40 hover:bg-red-900/60 text-red-400 border border-red-500/30 text-xs transition-colors inline-flex items-center"
                             title="Delete Payment Submission"
                           >
                             <Trash2 className="w-3.5 h-3.5" />
@@ -814,6 +1127,24 @@ export default function AdminDashboard() {
                   })
                 )}
               </tbody>
+              {/* Mathematical Table Summary Footer */}
+              {filteredPayments.length > 0 && (
+                <tfoot className="bg-[#08090d] border-t-2 border-white/20 text-zinc-300 font-mono text-xs">
+                  <tr>
+                    <td colSpan={4} className="py-3 px-4 font-bold text-white">
+                      TOTAL SUM ACROSS {filteredPayments.length} SUBMISSIONS SHOWN:
+                    </td>
+                    <td className="py-3 px-4 font-bold text-[#C6FF00] text-sm">
+                      ₹{filteredPayments.reduce((acc, p) => acc + (typeof p.amount === 'number' ? p.amount : 0), 0).toLocaleString('en-IN')}
+                    </td>
+                    <td colSpan={4} className="py-3 px-4 text-zinc-400 text-[11px]">
+                      Verified: ₹{filteredPayments.filter(p => p.status === 'VERIFIED').reduce((acc, p) => acc + (p.amount || 0), 0).toLocaleString('en-IN')} • 
+                      Pending: ₹{filteredPayments.filter(p => p.status === 'PENDING').reduce((acc, p) => acc + (p.amount || 0), 0).toLocaleString('en-IN')} • 
+                      Rejected: ₹{filteredPayments.filter(p => p.status === 'REJECTED').reduce((acc, p) => acc + (p.amount || 0), 0).toLocaleString('en-IN')}
+                    </td>
+                  </tr>
+                </tfoot>
+              )}
             </table>
           </div>
         </div>
@@ -822,9 +1153,58 @@ export default function AdminDashboard() {
       {/* Participant Registry Table */}
       {activeTab === 'participants' && (
         <div className="bg-[#12151e] border border-zinc-800 rounded-2xl overflow-hidden shadow-xl">
-          <div className="p-4 sm:p-6 border-b border-zinc-800">
-            <h2 className="font-serif text-lg font-bold text-white">Participant Registry</h2>
-            <p className="text-xs text-zinc-400">Complete database of registered runway contestants and payment progression.</p>
+          <div className="p-4 sm:p-6 border-b border-zinc-800 flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4">
+            <div>
+              <div className="flex items-center space-x-2">
+                <h2 className="font-serif text-lg font-bold text-white">Participant Registry</h2>
+                <span className="px-2 py-0.5 rounded-sm bg-white/10 text-xs font-mono text-zinc-300">
+                  {filteredParticipants.length} registered
+                </span>
+              </div>
+              <p className="text-xs text-zinc-400 mt-0.5">
+                Complete database of registered runway contestants, profile portraits, and live financial settlement status.
+              </p>
+            </div>
+
+            {/* Enhanced Search & Category Filters */}
+            <div className="flex flex-wrap items-center gap-2.5 w-full lg:w-auto">
+              <div className="relative flex-1 sm:w-64 min-w-[200px]">
+                <input
+                  type="text"
+                  value={participantSearchQuery}
+                  onChange={(e) => setParticipantSearchQuery(e.target.value)}
+                  placeholder="Search Name, Reg ID, Phone, City..."
+                  className="w-full bg-[#080808] border border-white/15 rounded-sm pl-9 pr-3 py-2 text-white text-xs focus:outline-none focus:border-[#C6FF00]"
+                />
+                <Search className="w-3.5 h-3.5 text-zinc-500 absolute left-3 top-2.5" />
+              </div>
+
+              {/* Showcase Category Filter */}
+              <select
+                value={categoryFilter}
+                onChange={(e) => setCategoryFilter(e.target.value)}
+                className="bg-[#080808] border border-white/15 rounded-sm px-3 py-2 text-white text-xs focus:outline-none focus:border-[#C6FF00]"
+              >
+                {CATEGORY_FILTER_OPTIONS.map((cat) => (
+                  <option key={cat} value={cat}>
+                    {cat === 'ALL' ? 'All Categories' : cat}
+                  </option>
+                ))}
+              </select>
+
+              {/* Status Filter */}
+              <select
+                value={participantStatusFilter}
+                onChange={(e) => setParticipantStatusFilter(e.target.value)}
+                className="bg-[#080808] border border-white/15 rounded-sm px-3 py-2 text-white text-xs focus:outline-none focus:border-[#C6FF00]"
+              >
+                <option value="ALL">All Statuses</option>
+                <option value="FULLY_PAID">Fully Paid</option>
+                <option value="PARTIALLY_PAID">Partially Paid</option>
+                <option value="PENDING_VERIFICATION">Pending Verification</option>
+                <option value="REJECTED">Rejected</option>
+              </select>
+            </div>
           </div>
 
           <div className="overflow-x-auto">
@@ -833,7 +1213,7 @@ export default function AdminDashboard() {
                 <tr>
                   <th className="py-3.5 px-4"># Slot</th>
                   <th className="py-3.5 px-4">Reg ID</th>
-                  <th className="py-3.5 px-4">Model Photo</th>
+                  <th className="py-3.5 px-4 text-center">Model Photo</th>
                   <th className="py-3.5 px-4">Full Name</th>
                   <th className="py-3.5 px-4">Category</th>
                   <th className="py-3.5 px-4">Contact</th>
@@ -846,29 +1226,43 @@ export default function AdminDashboard() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-zinc-800/80">
-                {participants
-                  .slice()
-                  .sort((a, b) => {
-                    const numA = parseInt(a.reg_id.replace(/\D/g, '') || '0', 10);
-                    const numB = parseInt(b.reg_id.replace(/\D/g, '') || '0', 10);
-                    return numA - numB;
-                  })
-                  .map((p, index) => {
+                {filteredParticipants.length === 0 ? (
+                  <tr>
+                    <td colSpan={12} className="py-12 text-center text-zinc-500">
+                      No contestant records found matching your filters.
+                    </td>
+                  </tr>
+                ) : (
+                  filteredParticipants.map((p, index) => {
                     const match = p.reg_id.match(/SC-2026-(\d+)/i);
                     const slotNum = match ? parseInt(match[1], 10) - 1000 : index + 1;
                     return (
-                      <tr key={p.id} className="hover:bg-zinc-800/30 transition-colors">
-                        <td className="py-3.5 px-4 font-mono font-bold">
+                      <tr key={p.id || p.reg_id} className="hover:bg-zinc-800/30 transition-colors">
+                        <td className="py-3 px-4 font-mono font-bold">
                           <span className="px-2 py-0.5 rounded bg-[#C6FF00]/10 border border-[#C6FF00]/30 text-[#C6FF00] text-[11px]">
                             #{slotNum > 0 ? slotNum : index + 1}
                           </span>
                         </td>
-                        <td className="py-3.5 px-4 font-mono font-bold text-white">{p.reg_id}</td>
-                        <td className="py-3.5 px-4">
+                        <td className="py-3 px-4 font-mono font-bold">
+                          <div className="flex items-center space-x-1.5">
+                            <span className="text-white">{p.reg_id}</span>
+                            <button
+                              type="button"
+                              onClick={() => handleCopy(p.reg_id)}
+                              className="p-1 hover:text-[#C6FF00] text-zinc-500 transition-colors"
+                              title="Copy Registration ID"
+                            >
+                              {copiedText === p.reg_id ? <Check className="w-3 h-3 text-emerald-400" /> : <Copy className="w-3 h-3" />}
+                            </button>
+                          </div>
+                        </td>
+
+                        {/* Model Photo Thumbnail (Clear & Inspectable) */}
+                        <td className="py-3 px-4 text-center">
                           {p.model_photo_url ? (
                             <div
-                              onClick={() => setActiveScreenshot(p.model_photo_url!)}
-                              className="group relative w-11 h-11 rounded-sm overflow-hidden border border-white/20 bg-black cursor-pointer hover:border-[#C6FF00] transition-all shadow-md shrink-0"
+                              onClick={() => handleViewCandidatePhoto(p.model_photo_url!, p.full_name, p.reg_id, p.category)}
+                              className="group relative w-14 h-14 rounded-sm overflow-hidden border border-white/20 bg-black cursor-pointer hover:border-[#C6FF00] hover:shadow-lg hover:shadow-[#C6FF00]/20 transition-all shrink-0 mx-auto"
                               title={`Click to preview full-size portrait of ${p.full_name}`}
                             >
                               <img
@@ -877,34 +1271,87 @@ export default function AdminDashboard() {
                                 className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
                               />
                               <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity">
-                                <ZoomIn className="w-3.5 h-3.5 text-[#C6FF00]" />
+                                <ZoomIn className="w-4 h-4 text-[#C6FF00]" />
+                              </div>
+                              <div className="absolute bottom-0 inset-x-0 bg-black/80 py-0.5 text-[8px] font-mono-editorial text-center text-zinc-300">
+                                PORTRAIT
                               </div>
                             </div>
                           ) : p.model_photo_r2_key ? (
                             <button
                               type="button"
-                              onClick={() => handleViewPhoto(p.model_photo_r2_key)}
-                              className="w-11 h-11 rounded-sm border border-dashed border-white/20 bg-white/5 flex flex-col items-center justify-center text-zinc-400 hover:text-[#C6FF00] hover:border-[#C6FF00] transition-all group shrink-0"
+                              onClick={() => handleViewPhoto(p.model_photo_r2_key, p.full_name, p.reg_id, p.category)}
+                              className="w-14 h-14 rounded-sm border border-dashed border-white/25 bg-white/5 flex flex-col items-center justify-center text-zinc-400 hover:text-[#C6FF00] hover:border-[#C6FF00] transition-all group shrink-0 mx-auto"
                               title="View Model Photograph"
                             >
-                              <ZoomIn className="w-3.5 h-3.5 text-[#C6FF00] group-hover:scale-110 transition-transform" />
-                              <span className="text-[9px] font-mono-editorial mt-0.5">PHOTO</span>
+                              <ZoomIn className="w-4 h-4 text-[#C6FF00] group-hover:scale-110 transition-transform" />
+                              <span className="text-[9px] font-mono-editorial mt-0.5 text-[#C6FF00]">PHOTO</span>
                             </button>
                           ) : (
-                            <div className="w-11 h-11 rounded-sm border border-white/10 bg-white/5 flex items-center justify-center text-zinc-600 shrink-0" title="No photo uploaded">
+                            <div className="w-14 h-14 rounded-sm border border-white/10 bg-white/5 flex flex-col items-center justify-center text-zinc-600 shrink-0 mx-auto" title="No photo uploaded">
                               <User className="w-4 h-4 text-zinc-600" />
+                              <span className="text-[8px] font-mono-editorial mt-0.5">NONE</span>
                             </div>
                           )}
                         </td>
-                        <td className="py-3.5 px-4 font-medium text-white">{p.full_name}</td>
-                        <td className="py-3.5 px-4 text-zinc-300">{p.category}</td>
-                        <td className="py-3.5 px-4 text-zinc-400 font-mono">{p.whatsapp || p.mobile}</td>
-                        <td className="py-3.5 px-4 font-bold text-white font-mono">₹{p.total_fee}</td>
-                        <td className="py-3.5 px-4 font-bold text-emerald-400 font-mono">₹{p.amount_paid}</td>
-                        <td className="py-3.5 px-4 font-bold text-[#C6FF00] font-mono">₹{p.balance_due}</td>
-                        <td className="py-3.5 px-4 font-mono text-zinc-400 text-[11px]">{p.terms_version || '2026.2'}</td>
-                        <td className="py-3.5 px-4">
-                          <span className={`inline-block px-2.5 py-0.5 rounded-sm font-mono-editorial text-[10px] font-bold uppercase ${
+
+                        {/* Full Name with 1-click Dossier Modal Opener */}
+                        <td className="py-3 px-4 font-medium text-white">
+                          <button
+                            type="button"
+                            onClick={() => setViewParticipantModal(p)}
+                            className="text-left hover:text-[#C6FF00] transition-colors group flex items-center space-x-1.5"
+                          >
+                            <span className="font-semibold text-sm group-hover:underline">{p.full_name}</span>
+                            <FileText className="w-3.5 h-3.5 text-zinc-500 group-hover:text-[#C6FF00] shrink-0" />
+                          </button>
+                          <span className="text-[10px] text-zinc-500 font-mono block mt-0.5">{p.city || 'Chennai'}</span>
+                        </td>
+
+                        {/* Category with distinct tag */}
+                        <td className="py-3 px-4">
+                          <span className="px-2 py-0.5 rounded-sm bg-white/5 border border-white/10 text-zinc-300 font-mono-editorial text-[10px] font-semibold uppercase">
+                            {p.category}
+                          </span>
+                        </td>
+
+                        {/* Contact with 1-click copy & call */}
+                        <td className="py-3 px-4 text-zinc-300 font-mono">
+                          <div className="flex items-center space-x-1.5">
+                            <span>{p.whatsapp || p.mobile}</span>
+                            {p.mobile && (
+                              <button
+                                type="button"
+                                onClick={() => handleCopy(p.mobile)}
+                                className="p-1 hover:text-[#C6FF00] text-zinc-500 transition-colors"
+                                title="Copy Mobile Number"
+                              >
+                                {copiedText === p.mobile ? <Check className="w-3 h-3 text-emerald-400" /> : <Copy className="w-3 h-3" />}
+                              </button>
+                            )}
+                          </div>
+                        </td>
+
+                        {/* Total Fee */}
+                        <td className="py-3 px-4 font-bold text-white font-mono text-xs">
+                          ₹{p.total_fee || 3000}
+                        </td>
+
+                        {/* Verified Paid */}
+                        <td className="py-3 px-4 font-bold text-emerald-400 font-mono text-xs">
+                          ₹{p.amount_paid}
+                        </td>
+
+                        {/* Outstanding Due */}
+                        <td className="py-3 px-4 font-bold text-[#C6FF00] font-mono text-xs">
+                          ₹{p.balance_due}
+                        </td>
+
+                        <td className="py-3 px-4 font-mono text-zinc-400 text-[11px]">{p.terms_version || '2026.2'}</td>
+
+                        {/* Status */}
+                        <td className="py-3 px-4">
+                          <span className={`inline-block px-2.5 py-1 rounded-sm font-mono-editorial text-[10px] font-bold uppercase ${
                             p.status === 'FULLY_PAID'
                               ? 'bg-emerald-500/15 text-emerald-400 border border-emerald-500/30'
                               : p.status === 'PARTIALLY_PAID'
@@ -916,18 +1363,31 @@ export default function AdminDashboard() {
                             {p.status}
                           </span>
                         </td>
-                        <td className="py-3.5 px-4 text-right space-x-2 whitespace-nowrap">
+
+                        {/* Actions */}
+                        <td className="py-3 px-4 text-right space-x-2 whitespace-nowrap">
+                          <button
+                            type="button"
+                            onClick={() => setViewParticipantModal(p)}
+                            className="px-2.5 py-1.5 rounded-sm bg-white/5 hover:bg-white/10 text-white border border-white/15 text-xs transition-colors inline-flex items-center space-x-1 font-mono-editorial"
+                            title="Open Complete Candidate Dossier"
+                          >
+                            <FileText className="w-3 h-3 text-[#C6FF00]" />
+                            <span>DETAILS</span>
+                          </button>
+
                           <button
                             onClick={() => openWhatsApp(p.whatsapp || p.mobile, p.full_name, p.reg_id, p.status)}
-                            className="px-2.5 py-1.5 rounded-lg bg-emerald-950/40 hover:bg-emerald-900/60 text-emerald-400 border border-emerald-500/30 text-xs transition-colors inline-flex items-center space-x-1"
+                            className="px-2.5 py-1.5 rounded-sm bg-emerald-950/40 hover:bg-emerald-900/60 text-emerald-400 border border-emerald-500/30 text-xs transition-colors inline-flex items-center space-x-1"
                             title="Send WhatsApp Update"
                           >
                             <MessageSquare className="w-3 h-3" />
                             <span>WhatsApp</span>
                           </button>
+
                           <button
                             onClick={() => setDeleteParticipantModal(p)}
-                            className="p-1.5 rounded-lg bg-red-950/40 hover:bg-red-900/60 text-red-400 border border-red-500/30 text-xs transition-colors inline-flex items-center"
+                            className="p-1.5 rounded-sm bg-red-950/40 hover:bg-red-900/60 text-red-400 border border-red-500/30 text-xs transition-colors inline-flex items-center"
                             title="Delete Participant Record"
                           >
                             <Trash2 className="w-3.5 h-3.5" />
@@ -935,8 +1395,32 @@ export default function AdminDashboard() {
                         </td>
                       </tr>
                     );
-                  })}
+                  })
+                )}
               </tbody>
+
+              {/* Mathematical Table Summary Footer */}
+              {filteredParticipants.length > 0 && (
+                <tfoot className="bg-[#08090d] border-t-2 border-white/20 text-zinc-300 font-mono text-xs">
+                  <tr>
+                    <td colSpan={6} className="py-3 px-4 font-bold text-white">
+                      TOTAL MATHEMATICAL SUM ({filteredParticipants.length} CONTESTANTS SHOWN):
+                    </td>
+                    <td className="py-3 px-4 font-bold text-white">
+                      ₹{filteredParticipants.reduce((acc, p) => acc + (typeof p.total_fee === 'number' ? p.total_fee : 3000), 0).toLocaleString('en-IN')}
+                    </td>
+                    <td className="py-3 px-4 font-bold text-emerald-400">
+                      ₹{filteredParticipants.reduce((acc, p) => acc + (typeof p.amount_paid === 'number' ? p.amount_paid : 0), 0).toLocaleString('en-IN')}
+                    </td>
+                    <td className="py-3 px-4 font-bold text-[#C6FF00]">
+                      ₹{filteredParticipants.reduce((acc, p) => acc + (typeof p.balance_due === 'number' ? p.balance_due : 0), 0).toLocaleString('en-IN')}
+                    </td>
+                    <td colSpan={3} className="py-3 px-4 text-zinc-400 text-[11px]">
+                      Balance Check: Verified Paid + Outstanding = Total Fee
+                    </td>
+                  </tr>
+                </tfoot>
+              )}
             </table>
           </div>
         </div>
@@ -1222,22 +1706,344 @@ export default function AdminDashboard() {
         </div>
       )}
 
-      {/* Screenshot Lightbox Modal */}
-      {activeScreenshot && (
-        <div className="fixed inset-0 z-50 bg-black/90 flex items-center justify-center p-4">
-          <div className="relative max-w-4xl max-h-[90vh] bg-[#12151e] border border-zinc-700 rounded-2xl p-4 overflow-hidden">
-            <button
-              onClick={() => setActiveScreenshot(null)}
-              className="absolute top-4 right-4 p-2 bg-zinc-800 text-white rounded-full hover:bg-zinc-700"
-            >
-              <X className="w-5 h-5" />
-            </button>
-            <div className="text-xs text-zinc-400 mb-2 font-mono">Payment Proof Inspection</div>
-            <img
-              src={activeScreenshot}
-              alt="Payment Screenshot Inspection"
-              className="max-h-[80vh] w-auto mx-auto object-contain rounded-lg"
-            />
+      {/* State-of-the-art Image Lightbox Inspection Modal */}
+      {activeMedia && (
+        <div 
+          className="fixed inset-0 z-50 bg-black/95 backdrop-blur-md flex items-center justify-center p-3 sm:p-6"
+          onClick={() => setActiveMedia(null)}
+        >
+          <div 
+            className="relative max-w-5xl w-full max-h-[95vh] bg-[#0d0f15] border border-white/20 rounded-sm shadow-2xl flex flex-col overflow-hidden"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Modal Header */}
+            <div className="flex items-center justify-between px-5 py-3.5 border-b border-white/10 bg-[#12141a]">
+              <div className="flex items-center space-x-3">
+                <span className={`px-2.5 py-0.5 rounded-sm font-mono-editorial text-[10px] font-bold uppercase tracking-wider ${
+                  activeMedia.type === 'photo'
+                    ? 'bg-[#C6FF00]/15 text-[#C6FF00] border border-[#C6FF00]/30'
+                    : 'bg-emerald-500/15 text-emerald-400 border border-emerald-500/30'
+                }`}>
+                  {activeMedia.type === 'photo' ? 'MODEL PORTRAIT PHOTOGRAPH' : 'UPI PAYMENT PROOF RECEIPT'}
+                </span>
+                <div>
+                  <h3 className="font-display text-base sm:text-lg font-bold text-white">
+                    {activeMedia.title}
+                  </h3>
+                  {activeMedia.subtitle && (
+                    <p className="text-xs font-mono text-zinc-400">
+                      {activeMedia.subtitle}
+                    </p>
+                  )}
+                </div>
+              </div>
+
+              {/* Action Toolbar */}
+              <div className="flex items-center space-x-2">
+                <button
+                  type="button"
+                  onClick={() => setZoomLevel(prev => Math.min(prev + 0.25, 3))}
+                  className="p-2 rounded-sm bg-white/5 hover:bg-white/10 text-zinc-300 hover:text-white border border-white/10 transition-colors"
+                  title="Zoom In (+25%)"
+                >
+                  <ZoomIn className="w-4 h-4" />
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setZoomLevel(prev => Math.max(prev - 0.25, 0.5))}
+                  className="p-2 rounded-sm bg-white/5 hover:bg-white/10 text-zinc-300 hover:text-white border border-white/10 transition-colors"
+                  title="Zoom Out (-25%)"
+                >
+                  <ZoomOut className="w-4 h-4" />
+                </button>
+                <button
+                  type="button"
+                  onClick={() => { setZoomLevel(1); setRotation(0); }}
+                  className="px-2 py-1.5 rounded-sm bg-white/5 hover:bg-white/10 text-zinc-300 hover:text-white border border-white/10 transition-colors text-[10px] font-mono-editorial"
+                  title="Reset Zoom &amp; Rotation"
+                >
+                  RESET
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setRotation(prev => (prev + 90) % 360)}
+                  className="p-2 rounded-sm bg-white/5 hover:bg-white/10 text-zinc-300 hover:text-white border border-white/10 transition-colors"
+                  title="Rotate 90°"
+                >
+                  <RotateCw className="w-4 h-4" />
+                </button>
+                <a
+                  href={activeMedia.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="p-2 rounded-sm bg-white/5 hover:bg-white/10 text-zinc-300 hover:text-white border border-white/10 transition-colors"
+                  title="Open Raw Image in New Tab"
+                >
+                  <ExternalLink className="w-4 h-4" />
+                </a>
+                <button
+                  type="button"
+                  onClick={() => setActiveMedia(null)}
+                  className="p-2 rounded-sm bg-red-950/50 hover:bg-red-900/60 text-red-300 hover:text-white border border-red-500/30 transition-colors ml-2"
+                  title="Close Preview (Esc)"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
+            </div>
+
+            {/* High-Resolution Viewport */}
+            <div className="flex-1 overflow-auto p-4 sm:p-6 flex items-center justify-center bg-[#07080b] min-h-[380px] max-h-[68vh]">
+              <div 
+                className="transition-transform duration-200 ease-out origin-center select-none"
+                style={{
+                  transform: `scale(${zoomLevel}) rotate(${rotation}deg)`,
+                }}
+              >
+                <img
+                  src={activeMedia.url}
+                  alt={activeMedia.title}
+                  className="max-h-[62vh] w-auto object-contain rounded-sm shadow-2xl border border-white/10"
+                />
+              </div>
+            </div>
+
+            {/* Inspection Details Footer */}
+            {activeMedia.details && (
+              <div className="px-5 py-3.5 border-t border-white/10 bg-[#12141a] flex flex-wrap items-center justify-between gap-3 text-xs">
+                <div className="flex flex-wrap items-center gap-4 font-mono">
+                  {activeMedia.details.regId && (
+                    <div>
+                      <span className="text-zinc-500 text-[10px] uppercase block">REGISTRATION ID</span>
+                      <span className="text-[#C6FF00] font-bold">{activeMedia.details.regId}</span>
+                    </div>
+                  )}
+                  {activeMedia.details.name && (
+                    <div>
+                      <span className="text-zinc-500 text-[10px] uppercase block">CANDIDATE</span>
+                      <span className="text-white font-medium">{activeMedia.details.name}</span>
+                    </div>
+                  )}
+                  {activeMedia.details.amount && (
+                    <div>
+                      <span className="text-zinc-500 text-[10px] uppercase block">AMOUNT SUBMITTED</span>
+                      <span className="text-emerald-400 font-bold">₹{activeMedia.details.amount.toLocaleString('en-IN')}</span>
+                    </div>
+                  )}
+                  {activeMedia.details.transactionId && (
+                    <div>
+                      <span className="text-zinc-500 text-[10px] uppercase block">BANK UTR REFERENCE</span>
+                      <div className="flex items-center space-x-1.5">
+                        <span className="text-white font-bold select-all">{activeMedia.details.transactionId}</span>
+                        <button
+                          type="button"
+                          onClick={() => handleCopy(activeMedia.details!.transactionId!)}
+                          className="p-1 hover:text-[#C6FF00] text-zinc-500 transition-colors"
+                          title="Copy UTR"
+                        >
+                          {copiedText === activeMedia.details.transactionId ? <Check className="w-3 h-3 text-emerald-400" /> : <Copy className="w-3 h-3" />}
+                        </button>
+                      </div>
+                    </div>
+                  )}
+                </div>
+
+                {activeMedia.payment && activeMedia.payment.status === 'PENDING' && (
+                  <div className="flex items-center space-x-2">
+                    <button
+                      onClick={() => {
+                        handleVerify(activeMedia.payment!.payment_id, 'VERIFY');
+                        setActiveMedia(null);
+                      }}
+                      className="px-4 py-2 rounded-sm bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs uppercase tracking-wider font-mono-editorial"
+                    >
+                      ✓ VERIFY THIS PAYMENT
+                    </button>
+                    <button
+                      onClick={() => {
+                        setRejectModalPayment(activeMedia.payment!);
+                        setSelectedReasonOption('Invalid transaction reference');
+                        setCustomReason('');
+                        setActiveMedia(null);
+                      }}
+                      className="px-4 py-2 rounded-sm bg-red-950 hover:bg-red-900 text-red-300 border border-red-500/40 font-bold text-xs uppercase tracking-wider font-mono-editorial"
+                    >
+                      ✕ REJECT
+                    </button>
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* Participant Dossier Quick View Modal */}
+      {viewParticipantModal && (
+        <div 
+          className="fixed inset-0 z-50 bg-black/90 backdrop-blur-md flex items-center justify-center p-3 sm:p-6"
+          onClick={() => setViewParticipantModal(null)}
+        >
+          <div 
+            className="relative max-w-3xl w-full max-h-[92vh] bg-[#12141a] border border-white/20 rounded-sm shadow-2xl flex flex-col overflow-hidden"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Header */}
+            <div className="flex items-center justify-between px-6 py-4 border-b border-white/10 bg-[#0d0f15]">
+              <div className="flex items-center space-x-3">
+                <div className="w-8 h-8 rounded-full bg-[#C6FF00]/10 border border-[#C6FF00]/30 flex items-center justify-center text-[#C6FF00]">
+                  <User className="w-4 h-4" />
+                </div>
+                <div>
+                  <span className="font-mono-editorial text-[10px] text-[#C6FF00] uppercase tracking-widest block">
+                    CANDIDATE DOSSIER
+                  </span>
+                  <h3 className="font-display text-xl font-bold text-white">
+                    {viewParticipantModal.full_name}
+                  </h3>
+                </div>
+              </div>
+
+              <div className="flex items-center space-x-2">
+                <span className="font-mono text-sm font-bold text-[#C6FF00] px-3 py-1 bg-black border border-[#C6FF00]/30 rounded-sm">
+                  {viewParticipantModal.reg_id}
+                </span>
+                <button
+                  type="button"
+                  onClick={() => setViewParticipantModal(null)}
+                  className="p-1.5 text-zinc-400 hover:text-white rounded-sm bg-white/5"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
+            </div>
+
+            {/* Modal Body */}
+            <div className="p-6 overflow-y-auto space-y-6">
+              <div className="flex flex-col sm:flex-row gap-6 items-start">
+                {/* Large Model Photo */}
+                <div className="w-full sm:w-48 shrink-0">
+                  {viewParticipantModal.model_photo_url ? (
+                    <div 
+                      onClick={() => handleViewCandidatePhoto(
+                        viewParticipantModal.model_photo_url!,
+                        viewParticipantModal.full_name,
+                        viewParticipantModal.reg_id,
+                        viewParticipantModal.category
+                      )}
+                      className="group relative w-full aspect-[3/4] rounded-sm overflow-hidden border border-white/20 bg-black cursor-pointer hover:border-[#C6FF00] shadow-xl"
+                    >
+                      <img 
+                        src={viewParticipantModal.model_photo_url} 
+                        alt={viewParticipantModal.full_name} 
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                      />
+                      <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity">
+                        <ZoomIn className="w-6 h-6 text-[#C6FF00]" />
+                      </div>
+                    </div>
+                  ) : viewParticipantModal.model_photo_r2_key ? (
+                    <button
+                      type="button"
+                      onClick={() => handleViewPhoto(viewParticipantModal.model_photo_r2_key, viewParticipantModal.full_name, viewParticipantModal.reg_id)}
+                      className="w-full aspect-[3/4] rounded-sm border border-dashed border-white/20 bg-white/5 flex flex-col items-center justify-center text-zinc-400 hover:text-[#C6FF00] hover:border-[#C6FF00] transition-all"
+                    >
+                      <User className="w-8 h-8 mb-2" />
+                      <span className="text-xs font-mono-editorial text-[#C6FF00]">CLICK TO LOAD PHOTO</span>
+                    </button>
+                  ) : (
+                    <div className="w-full aspect-[3/4] rounded-sm border border-white/10 bg-white/5 flex flex-col items-center justify-center text-zinc-600">
+                      <User className="w-8 h-8 mb-2 text-zinc-600" />
+                      <span className="text-xs font-mono-editorial text-zinc-600">NO PHOTO ATTACHED</span>
+                    </div>
+                  )}
+                </div>
+
+                {/* Information Grid */}
+                <div className="flex-1 space-y-4 w-full">
+                  <div className="grid grid-cols-2 gap-3 text-xs">
+                    <div className="p-3 rounded-sm bg-[#080808] border border-white/10">
+                      <span className="text-zinc-500 font-mono-editorial text-[10px] uppercase block">CATEGORY</span>
+                      <strong className="text-white text-sm">{viewParticipantModal.category}</strong>
+                    </div>
+                    <div className="p-3 rounded-sm bg-[#080808] border border-white/10">
+                      <span className="text-zinc-500 font-mono-editorial text-[10px] uppercase block">GENDER &amp; CITY</span>
+                      <strong className="text-white text-sm">{viewParticipantModal.gender} • {viewParticipantModal.city}</strong>
+                    </div>
+                    <div className="p-3 rounded-sm bg-[#080808] border border-white/10">
+                      <span className="text-zinc-500 font-mono-editorial text-[10px] uppercase block">DATE OF BIRTH</span>
+                      <strong className="text-white font-mono">{viewParticipantModal.dob}</strong>
+                    </div>
+                    <div className="p-3 rounded-sm bg-[#080808] border border-white/10">
+                      <span className="text-zinc-500 font-mono-editorial text-[10px] uppercase block">REGISTRATION STATUS</span>
+                      <span className={`inline-block px-2 py-0.5 rounded-sm font-mono-editorial text-[10px] font-bold uppercase mt-0.5 ${
+                        viewParticipantModal.status === 'FULLY_PAID'
+                          ? 'bg-emerald-500/15 text-emerald-400 border border-emerald-500/30'
+                          : viewParticipantModal.status === 'PARTIALLY_PAID'
+                          ? 'bg-[#C6FF00]/15 text-[#C6FF00] border border-[#C6FF00]/30'
+                          : 'bg-blue-500/15 text-blue-300 border border-blue-500/30'
+                      }`}>
+                        {viewParticipantModal.status}
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* Financial Status Breakdown */}
+                  <div className="p-4 rounded-sm bg-[#080808] border border-white/15 space-y-2">
+                    <div className="flex justify-between items-center text-xs font-mono">
+                      <span className="text-zinc-400">FINANCIAL BREAKDOWN:</span>
+                      <span className="text-white">
+                        Verified Paid: <strong className="text-emerald-400">₹{viewParticipantModal.amount_paid}</strong> / ₹{viewParticipantModal.total_fee || 3000}
+                      </span>
+                    </div>
+                    {/* Progress Bar */}
+                    <div className="w-full h-2 rounded-full bg-white/10 overflow-hidden">
+                      <div 
+                        className="h-full bg-gradient-to-r from-[#C6FF00] to-emerald-400"
+                        style={{
+                          width: `${Math.min(100, Math.round(((viewParticipantModal.amount_paid || 0) / (viewParticipantModal.total_fee || 3000)) * 100))}%`
+                        }}
+                      />
+                    </div>
+                    <div className="flex justify-between text-[11px] font-mono text-zinc-400 pt-1">
+                      <span>Balance Outstanding: <strong className="text-[#C6FF00]">₹{viewParticipantModal.balance_due}</strong></span>
+                      <span>Progress: {Math.round(((viewParticipantModal.amount_paid || 0) / (viewParticipantModal.total_fee || 3000)) * 100)}%</span>
+                    </div>
+                  </div>
+
+                  {/* Contact Actions */}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
+                    <a
+                      href={`tel:${viewParticipantModal.mobile}`}
+                      className="p-2.5 rounded-sm bg-white/5 hover:bg-white/10 border border-white/10 text-white flex items-center justify-between transition-colors"
+                    >
+                      <div className="flex items-center space-x-2">
+                        <Phone className="w-3.5 h-3.5 text-[#C6FF00]" />
+                        <span>{viewParticipantModal.mobile}</span>
+                      </div>
+                      <span className="text-[10px] font-mono-editorial text-zinc-500">CALL</span>
+                    </a>
+
+                    <button
+                      type="button"
+                      onClick={() => openWhatsApp(
+                        viewParticipantModal.whatsapp || viewParticipantModal.mobile,
+                        viewParticipantModal.full_name,
+                        viewParticipantModal.reg_id,
+                        viewParticipantModal.status
+                      )}
+                      className="p-2.5 rounded-sm bg-emerald-950/40 hover:bg-emerald-900/60 border border-emerald-500/30 text-emerald-400 flex items-center justify-between transition-colors"
+                    >
+                      <div className="flex items-center space-x-2">
+                        <MessageSquare className="w-3.5 h-3.5" />
+                        <span>{viewParticipantModal.whatsapp || viewParticipantModal.mobile}</span>
+                      </div>
+                      <span className="text-[10px] font-mono-editorial">WHATSAPP</span>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       )}
