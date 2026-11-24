@@ -85,6 +85,7 @@ export default function RegistrationPage({ setActiveTab, setLookupRegId, onProce
   const [modelPhotoPreview, setModelPhotoPreview] = useState<string | null>(null);
 
   // ─── STEP 3: REVIEW & POLICIES ────────────────────────────────────────────
+  const [teamCommitmentConfirmed, setTeamCommitmentConfirmed] = useState(false);
   const [accuracyConfirmed, setAccuracyConfirmed] = useState(false);
   const [termsConfirmed, setTermsConfirmed] = useState(false);
 
@@ -241,6 +242,10 @@ export default function RegistrationPage({ setActiveTab, setLookupRegId, onProce
     e.preventDefault();
     setErrorMsg('');
 
+    if (!teamCommitmentConfirmed) {
+      setErrorMsg('Please read and agree to the Team Commitment terms and conditions.');
+      return;
+    }
     if (!accuracyConfirmed) {
       setErrorMsg('Please confirm that your submitted credentials match your official ID.');
       return;
