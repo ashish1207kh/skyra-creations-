@@ -157,7 +157,7 @@ export default function HomePage({ setActiveTab, onSelectEvent }: HomePageProps)
       {/* ──────────────────────────────────────────────────────────
           SECTION 1: 100svh VIRTUAL RUNWAY HERO WITH SCROLL PARALLAX
       ────────────────────────────────────────────────────────── */}
-      <section ref={heroRef} className="relative min-h-[80svh] sm:min-h-[88svh] pt-16 sm:pt-20 pb-8 sm:pb-12 flex items-center justify-center overflow-hidden w-full max-w-full">
+      <section ref={heroRef} className="relative min-h-[70svh] sm:min-h-[80svh] pt-14 sm:pt-16 pb-2 sm:pb-4 flex items-center justify-center overflow-hidden w-full max-w-full">
         {/* Three.js Virtual Runway Catwalk Canvas */}
         <div className="absolute inset-0 z-0 w-full h-full overflow-hidden max-w-full">
           <VirtualRunwayScene className="w-full h-full block max-w-full" />
@@ -179,14 +179,14 @@ export default function HomePage({ setActiveTab, onSelectEvent }: HomePageProps)
 
         <motion.div 
           style={{ scale: heroScale, opacity: heroOpacity, y: heroY }}
-          className="relative z-20 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-4 sm:space-y-5 pt-0 pb-4 sm:pb-6 will-change-transform transform-gpu"
+          className="relative z-20 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-3 sm:space-y-4 pt-0 pb-1 sm:pb-3 will-change-transform transform-gpu"
         >
           {/* Brandmark Showcase */}
           <motion.div
             initial={{ opacity: 0, scale: 0.92, y: -10 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-            className="flex justify-center pb-2"
+            className="flex justify-center pb-1"
           >
             <div 
               onClick={() => setActiveTab('about')}
@@ -251,7 +251,7 @@ export default function HomePage({ setActiveTab, onSelectEvent }: HomePageProps)
             initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.3 }}
-            className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4"
+            className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-2 sm:pt-3"
           >
             <MagneticButton
               onClick={() => setActiveTab('events')}
@@ -285,23 +285,23 @@ export default function HomePage({ setActiveTab, onSelectEvent }: HomePageProps)
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 1.0, delay: 0.4 }}
-            className="pt-10 grid grid-cols-2 sm:grid-cols-4 gap-4 text-center max-w-4xl mx-auto"
+            className="pt-3 sm:pt-4 grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-4 text-center max-w-4xl mx-auto"
             style={{ borderTop: '1px solid var(--border)' }}
           >
-            <div className="p-2">
-              <div className="text-lg sm:text-xl font-bold font-editorial" style={{ color: '#FFFFFF' }}>Chennai</div>
+            <div className="py-1 px-2">
+              <div className="text-base sm:text-xl font-bold font-editorial" style={{ color: '#FFFFFF' }}>Chennai</div>
               <div className="font-mono-editorial mt-0.5" style={{ color: 'var(--text-muted)', fontSize: '10px' }}>CITY CENTER VENUE</div>
             </div>
-            <div className="p-2">
-              <div className="text-lg sm:text-xl font-bold font-editorial" style={{ color: 'var(--accent)' }}>Inclusive</div>
+            <div className="py-1 px-2">
+              <div className="text-base sm:text-xl font-bold font-editorial" style={{ color: 'var(--accent)' }}>Inclusive</div>
               <div className="font-mono-editorial mt-0.5" style={{ color: 'var(--text-muted)', fontSize: '10px' }}>KIDS TO ADULTS</div>
             </div>
-            <div className="p-2">
-              <div className="text-lg sm:text-xl font-bold font-editorial" style={{ color: 'var(--silver)' }}>Grooming</div>
+            <div className="py-1 px-2">
+              <div className="text-base sm:text-xl font-bold font-editorial" style={{ color: 'var(--silver)' }}>Grooming</div>
               <div className="font-mono-editorial mt-0.5" style={{ color: 'var(--text-muted)', fontSize: '10px' }}>STAGE CHOREOGRAPHY</div>
             </div>
-            <div className="p-2">
-              <div className="text-lg sm:text-xl font-bold font-editorial" style={{ color: '#FFFFFF' }}>Verified</div>
+            <div className="py-1 px-2">
+              <div className="text-base sm:text-xl font-bold font-editorial" style={{ color: '#FFFFFF' }}>Verified</div>
               <div className="font-mono-editorial mt-0.5" style={{ color: 'var(--text-muted)', fontSize: '10px' }}>TRANSPARENT SYSTEM</div>
             </div>
           </motion.div>
@@ -331,8 +331,8 @@ export default function HomePage({ setActiveTab, onSelectEvent }: HomePageProps)
               style={{ border: '1px solid var(--border)' }}
             >
               <img 
-                src="/images/runway-2.jpg" 
-                alt="SKYRA CREATIONS Runway Fashion Model" 
+                src="/images/events/skyra-event-03.jpg" 
+                alt="SKYRA CREATIONS Runway Fashion Catwalk with Official LED Stage Backdrop" 
                 loading="lazy"
                 className="w-full h-[320px] sm:h-[420px] lg:h-[520px] object-cover object-center group-hover:scale-105 transition-transform duration-700"
               />
@@ -342,7 +342,7 @@ export default function HomePage({ setActiveTab, onSelectEvent }: HomePageProps)
               >
                 <div>
                   <span className="font-mono-editorial block text-[10px]" style={{ color: 'var(--accent)' }}>
-                    LIVE CATWALK SHOWCASE
+                    OFFICIAL SKYRA CATWALK PRODUCTION // CHENNAI
                   </span>
                   <span className="font-editorial text-lg font-bold text-white">
                     Confidence on the Ramp
@@ -438,7 +438,7 @@ export default function HomePage({ setActiveTab, onSelectEvent }: HomePageProps)
           >
             <div className="lg:col-span-6 relative overflow-hidden h-64 sm:h-80 rounded-sm" style={{ border: '1px solid var(--border)' }}>
               <img 
-                src="/images/runway-1.jpg" 
+                src="/images/events/skyra-event-01.jpg" 
                 alt="Fashion Shows & Runway Lighting" 
                 loading="lazy"
                 className="w-full h-full object-cover object-center"
@@ -482,8 +482,8 @@ export default function HomePage({ setActiveTab, onSelectEvent }: HomePageProps)
           >
             <div className="lg:col-span-6 lg:order-2 relative overflow-hidden h-64 sm:h-80 rounded-sm" style={{ border: '1px solid var(--border)' }}>
               <img 
-                src="/images/runway-3.jpg" 
-                alt="Model Opportunities" 
+                src="/images/events/skyra-event-08.jpg" 
+                alt="Model Opportunities & Graduates" 
                 loading="lazy"
                 className="w-full h-full object-cover object-center"
               />
@@ -526,7 +526,7 @@ export default function HomePage({ setActiveTab, onSelectEvent }: HomePageProps)
           >
             <div className="lg:col-span-6 relative overflow-hidden h-64 sm:h-80 rounded-sm" style={{ border: '1px solid var(--border)' }}>
               <img 
-                src="/images/runway-grooming.jpg" 
+                src="/images/events/skyra-event-12.jpg" 
                 alt="Runway Model Posture and Walk Rehearsal" 
                 loading="lazy"
                 className="w-full h-full object-cover object-center"
@@ -660,7 +660,7 @@ export default function HomePage({ setActiveTab, onSelectEvent }: HomePageProps)
               <div className="lg:col-span-5 relative h-full flex flex-col justify-center">
                 <div className="overflow-hidden shadow-2xl rounded-sm h-full w-full" style={{ border: '1px solid var(--border)' }}>
                   <img 
-                    src="/images/runway-3.jpg" 
+                    src="/images/events/skyra-event-02.jpg" 
                     alt="Runway Show 2026 Live Catwalk" 
                     loading="lazy"
                     className="w-full h-64 sm:h-80 lg:h-full min-h-[260px] lg:min-h-[360px] object-cover object-top"
@@ -699,7 +699,7 @@ export default function HomePage({ setActiveTab, onSelectEvent }: HomePageProps)
         <motion.div 
           className="absolute -inset-16 bg-cover bg-center pointer-events-none will-change-transform"
           style={{ 
-            backgroundImage: `url('/images/runway-1.jpg')`,
+            backgroundImage: `url('/images/events/skyra-event-07.jpg')`,
             y: interludeImgY 
           }}
         />
@@ -777,8 +777,8 @@ export default function HomePage({ setActiveTab, onSelectEvent }: HomePageProps)
                 style={{ border: '1px solid var(--border)' }}
               >
                 <img 
-                  src="/images/runway-2.jpg" 
-                  alt="Runway Stage Catwalk" 
+                  src="/images/events/skyra-event-14.jpg" 
+                  alt="Golden Elegance Stage Awards Ceremony" 
                   loading="lazy"
                   className="w-full h-80 sm:h-96 lg:h-[420px] object-cover object-center group-hover:scale-105 transition-transform duration-700"
                 />
@@ -799,8 +799,8 @@ export default function HomePage({ setActiveTab, onSelectEvent }: HomePageProps)
                 style={{ border: '1px solid var(--border)' }}
               >
                 <img 
-                  src="/images/catwalk-highlight.jpg" 
-                  alt="Editorial Haute Couture Runway Showcase" 
+                  src="/images/events/skyra-event-04.jpg" 
+                  alt="Model Graduates with Official Certificates of Participation" 
                   loading="lazy"
                   className="w-full h-80 sm:h-96 lg:h-[420px] object-cover object-center group-hover:scale-105 transition-transform duration-700"
                 />

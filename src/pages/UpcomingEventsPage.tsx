@@ -75,7 +75,7 @@ export default function UpcomingEventsPage({ setActiveTab, onSelectEvent }: Upco
               style={{ border: '1px solid var(--border)' }}
             >
               <img 
-                src="/images/runway-1.jpg" 
+                src="/images/events/skyra-event-02.jpg" 
                 alt={eventTitle} 
                 loading="lazy"
                 className="w-full h-56 sm:h-72 lg:h-84 object-cover object-center"

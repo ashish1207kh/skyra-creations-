@@ -31,7 +31,7 @@ export default function WhatWeDoPage({ setActiveTab }: WhatWeDoPageProps) {
         'Seated audience including fashion industry delegates and families',
         'Official videography and multi-angle camera coverage',
       ],
-      image: '/images/runway-1.jpg',
+      image: '/images/events/skyra-event-03.jpg',
     },
     {
       id: 'runway-experiences',
@@ -45,7 +45,7 @@ export default function WhatWeDoPage({ setActiveTab }: WhatWeDoPageProps) {
         'Constructive feedback on posture and walk dynamics',
         'Stage confidence building in front of live crowds',
       ],
-      image: '/images/runway-2.jpg',
+      image: '/images/events/skyra-event-01.jpg',
     },
     {
       id: 'model-opportunities',
@@ -59,7 +59,7 @@ export default function WhatWeDoPage({ setActiveTab }: WhatWeDoPageProps) {
         'Official certificates of participation for all stage walkers',
         'Exposure to regional fashion scouts and casting directors',
       ],
-      image: '/images/runway-3.jpg',
+      image: '/images/events/skyra-event-04.jpg',
     },
     {
       id: 'designer-showcases',
@@ -73,7 +73,7 @@ export default function WhatWeDoPage({ setActiveTab }: WhatWeDoPageProps) {
         'High-resolution imagery for designer lookbooks',
         'Collaborative fitting sessions prior to ramp walk',
       ],
-      image: '/images/runway-1.jpg',
+      image: '/images/events/skyra-event-02.jpg',
     },
     {
       id: 'grooming',
@@ -87,7 +87,7 @@ export default function WhatWeDoPage({ setActiveTab }: WhatWeDoPageProps) {
         'Personal grooming tips and makeup alignment',
         'Timing synchronization with show music',
       ],
-      image: '/images/runway-2.jpg',
+      image: '/images/events/skyra-event-11.jpg',
     },
     {
       id: 'collaborations',
@@ -101,7 +101,7 @@ export default function WhatWeDoPage({ setActiveTab }: WhatWeDoPageProps) {
         'Backstage creative management and coordination',
         'Cross-promotional features on official social media channels',
       ],
-      image: '/images/runway-3.jpg',
+      image: '/images/events/skyra-event-12.jpg',
     },
   ];
 

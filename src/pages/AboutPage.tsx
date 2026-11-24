@@ -224,8 +224,8 @@ export default function AboutPage({ setActiveTab }: AboutPageProps) {
           style={{ border: '1px solid var(--border)' }}
         >
           <img 
-            src="/images/runway-2.jpg" 
-            alt="SKYRA Fashion Editorial Ramp Walk" 
+            src="/images/events/skyra-event-07.jpg" 
+            alt="Director B. Sriram receiving the Grand Universe World Record for Skyra Creations" 
             loading="lazy"
             className="w-full h-80 sm:h-96 object-cover object-center"
           />

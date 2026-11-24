@@ -26,52 +26,116 @@ export default function GalleryPage({ setActiveTab }: GalleryPageProps) {
   const galleryItems = [
     {
       id: 1,
-      src: '/images/runway-1.jpg',
-      title: 'Runway Couture Walk',
+      src: '/images/events/skyra-event-03.jpg',
+      title: 'Official Skyra Main Stage Catwalk',
       category: 'RUNWAY',
-      description: 'Solo catwalk presentation in high-fashion designer collection under stage spotlights.',
+      description: 'Runway presentation with the signature glowing Skyra Creations LED backdrop and couture ensembles.',
       span: 'md:col-span-8 md:row-span-2'
     },
     {
       id: 2,
-      src: '/images/runway-2.jpg',
-      title: 'Confidence & Catwalk Poise',
-      category: 'RUNWAY',
-      description: 'Model presenting vibrant apparel on the runway stage during official showcase.',
+      src: '/images/events/skyra-event-07.jpg',
+      title: 'Grand Universe World Record Award',
+      category: 'STAGE',
+      description: 'Official World Record certificate presentation to Founder & Director B. Sriram on the grand stage.',
       span: 'md:col-span-4 md:row-span-1'
     },
     {
       id: 3,
-      src: '/images/runway-grooming.jpg',
-      title: 'Model Grooming & Ramp Rehearsal',
-      category: 'MENTORSHIP',
-      description: 'Pre-show masterclass guiding models through catwalk poise, posture, and pacing.',
+      src: '/images/events/skyra-event-02.jpg',
+      title: 'Bridal Fashion Fest 15:00 // Chennai City Centre',
+      category: 'RUNWAY',
+      description: 'Grand fashion pageant stage with Golden Crown Awards celebrating top contestants and winners.',
       span: 'md:col-span-4 md:row-span-1'
     },
     {
       id: 4,
-      src: '/images/runway-3.jpg',
-      title: 'Stage Grand Finale',
-      category: 'STAGE',
-      description: 'Showcase conclusion featuring participating contestants and creative stylists.',
+      src: '/images/events/skyra-event-01.jpg',
+      title: 'Haute Couture Grand Finale',
+      category: 'RUNWAY',
+      description: 'Runway models assembled on the catwalk under stage lighting for the collection finale.',
       span: 'md:col-span-6 md:row-span-1'
     },
     {
       id: 5,
-      src: '/images/catwalk-highlight.jpg',
-      title: 'Catwalk Editorial Finale',
-      category: 'RUNWAY',
-      description: 'Dramatic catwalk edge presentation showcasing bespoke couture designer creation.',
+      src: '/images/events/skyra-event-14.jpg',
+      title: 'Stage Show India // Golden Elegance Awards',
+      category: 'STAGE',
+      description: 'Gala award ceremony with contestants and models holding official gold trophies and certificates.',
       span: 'md:col-span-6 md:row-span-1'
     },
     {
       id: 6,
-      src: '/og-image.png',
-      title: 'Official Runway Showcase Banner',
-      category: 'STAGE',
-      description: 'SKYRA CREATIONS official event identity and runway visual showcase production.',
+      src: '/images/events/skyra-event-08.jpg',
+      title: 'Skyra Model Academy Graduates',
+      category: 'MENTORSHIP',
+      description: 'Graduating troop of aspiring models displaying their verified portfolio certificates and awards.',
       span: 'md:col-span-12 md:row-span-1'
     },
+    {
+      id: 7,
+      src: '/images/events/skyra-event-12.jpg',
+      title: 'Lion Awards 2.0 // Silk & Traditional Couture',
+      category: 'STAGE',
+      description: 'Ethnic and contemporary silk showcase with models honored with Lion Awards mementos.',
+      span: 'md:col-span-6 md:row-span-1'
+    },
+    {
+      id: 8,
+      src: '/images/events/skyra-event-04.jpg',
+      title: 'Official Ramp Walk Certifications',
+      category: 'MENTORSHIP',
+      description: 'Director B. Sriram and coaching faculty presenting authenticated participation certificates.',
+      span: 'md:col-span-6 md:row-span-1'
+    },
+    {
+      id: 9,
+      src: '/images/events/skyra-event-11.jpg',
+      title: 'Remo International College Ramp Showcase',
+      category: 'MENTORSHIP',
+      description: 'Inclusive mentorship featuring Kids, Teens, and Adults walking the ramp together.',
+      span: 'md:col-span-4 md:row-span-1'
+    },
+    {
+      id: 10,
+      src: '/images/events/skyra-event-05.jpg',
+      title: 'Skyra Creations Production Arena',
+      category: 'STAGE',
+      description: 'Intelligent stage lighting, curved LED trusses, and illuminated catwalk ramp arena.',
+      span: 'md:col-span-4 md:row-span-1'
+    },
+    {
+      id: 11,
+      src: '/images/events/skyra-event-13.jpg',
+      title: 'Trophy Celebration & Victory Moment',
+      category: 'STAGE',
+      description: 'Candid celebratory moment with models cheering and capturing memories with awards.',
+      span: 'md:col-span-4 md:row-span-1'
+    },
+    {
+      id: 12,
+      src: '/images/events/skyra-event-06.jpg',
+      title: 'Catwalk Stage Horizon',
+      category: 'RUNWAY',
+      description: 'Panoramic view of the fashion contest runway and media seating at Chennai City Centre.',
+      span: 'md:col-span-6 md:row-span-1'
+    },
+    {
+      id: 13,
+      src: '/images/events/skyra-event-10.jpg',
+      title: 'Lighting & Stage Precision',
+      category: 'RUNWAY',
+      description: 'Curated audio-visual and stage coordination behind every Skyra Creations show.',
+      span: 'md:col-span-6 md:row-span-1'
+    },
+    {
+      id: 14,
+      src: '/images/events/skyra-event-09.jpg',
+      title: 'Runway Arena Showcase',
+      category: 'STAGE',
+      description: 'Live catwalk production bringing together designers, models, and industry leaders.',
+      span: 'md:col-span-12 md:row-span-1'
+    }
   ];
 
   const filteredItems = activeFilter === 'ALL' 

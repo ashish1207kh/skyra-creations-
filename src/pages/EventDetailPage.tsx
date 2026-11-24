@@ -85,7 +85,7 @@ export default function EventDetailPage({ eventId = 'EVT-CHX-2026', setActiveTab
       {/* Cover Image */}
       <div className="rounded-sm overflow-hidden shadow-2xl border border-white/10">
         <img 
-          src="/images/runway-2.jpg" 
+          src="/images/events/skyra-event-02.jpg" 
           alt="Runway Show 2026 Stage" 
           loading="lazy"
           className="w-full h-64 sm:h-80 lg:h-96 object-cover object-center"
