@@ -60,6 +60,7 @@ export default function App() {
   const [lookupRegId, setLookupRegId] = useState<string>('');
   const [registrationDraft, setRegistrationDraft] = useState<RegistrationDraft | null>(null);
   const [paymentMode, setPaymentMode] = useState<'balance' | 'register'>('register');
+  const [showRegistrationForm, setShowRegistrationForm] = useState<boolean>(false);
   const [showTermsModal, setShowTermsModal] = useState<boolean>(false);
   const [showPrivacyModal, setShowPrivacyModal] = useState<boolean>(false);
   const [isNavigating, setIsNavigating] = useState(false);
@@ -75,6 +76,9 @@ export default function App() {
   const setActiveTab = (tab: string) => {
     setIsNavigating(true);
     setTimeout(() => setIsNavigating(false), 380);
+    if (tab === 'register') {
+      setShowRegistrationForm(false);
+    }
     setActiveTabState(tab);
     updatePageSeo(tab);
     if (typeof window !== 'undefined') {
@@ -91,6 +95,7 @@ export default function App() {
 
     const handlePopState = () => {
       const currentTab = getTabFromPath(window.location.pathname);
+      setShowRegistrationForm(false);
       setActiveTabState(currentTab);
       updatePageSeo(currentTab);
     };
@@ -183,18 +188,34 @@ export default function App() {
               )}
 
               {activeTab === 'register' && (
-                <RegistrationPage 
-                  setActiveTab={setActiveTab} 
-                  setLookupRegId={(id) => {
-                    setLookupRegId(id);
-                    setActiveTab('status');
-                  }} 
-                  onProceedToPayment={(draft) => {
-                    setRegistrationDraft(draft);
-                    setPaymentMode('register');
-                    setActiveTab('payment');
-                  }}
-                />
+                showRegistrationForm ? (
+                  <RegistrationPage 
+                    setActiveTab={setActiveTab} 
+                    onBackToGateway={() => setShowRegistrationForm(false)}
+                    setLookupRegId={(id) => {
+                      setLookupRegId(id);
+                      setActiveTab('status');
+                    }} 
+                    onProceedToPayment={(draft) => {
+                      setRegistrationDraft(draft);
+                      setPaymentMode('register');
+                      setShowRegistrationForm(false);
+                      setActiveTab('payment');
+                    }}
+                  />
+                ) : (
+                  <PaymentPage 
+                    initialRegId={balanceRegId} 
+                    initialMode="register"
+                    registrationDraft={registrationDraft}
+                    setActiveTab={setActiveTab}
+                    onStartRegistrationForm={() => setShowRegistrationForm(true)}
+                    setLookupRegId={(id) => {
+                      setLookupRegId(id);
+                      setActiveTab('status');
+                    }} 
+                  />
+                )
               )}
 
               {(activeTab === 'payment' || activeTab === 'balance') && (
@@ -203,6 +224,10 @@ export default function App() {
                   initialMode={activeTab === 'balance' ? 'balance' : paymentMode}
                   registrationDraft={registrationDraft}
                   setActiveTab={setActiveTab}
+                  onStartRegistrationForm={() => {
+                    setShowRegistrationForm(true);
+                    setActiveTab('register');
+                  }}
                   setLookupRegId={(id) => {
                     setLookupRegId(id);
                     setActiveTab('status');

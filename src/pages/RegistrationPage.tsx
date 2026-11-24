@@ -43,6 +43,7 @@ interface RegistrationPageProps {
   setActiveTab: (tab: string) => void;
   setLookupRegId?: (id: string) => void;
   onProceedToPayment?: (draft: RegistrationDraft) => void;
+  onBackToGateway?: () => void;
 }
 
 const CATEGORY_OPTIONS = [
@@ -58,7 +59,12 @@ const EXPERIENCE_OPTIONS = [
   'Experienced / Professional Model'
 ];
 
-export default function RegistrationPage({ setActiveTab, setLookupRegId, onProceedToPayment }: RegistrationPageProps) {
+export default function RegistrationPage({ 
+  setActiveTab, 
+  setLookupRegId, 
+  onProceedToPayment,
+  onBackToGateway,
+}: RegistrationPageProps) {
   const [currentStep, setCurrentStep] = useState<number>(1);
   const [paymentInfo, setPaymentInfo] = useState<PaymentInfo | null>(null);
   const [loading, setLoading] = useState(false);
@@ -498,14 +504,26 @@ export default function RegistrationPage({ setActiveTab, setLookupRegId, onProce
             </div>
           </div>
 
-          <button
-            type="button"
-            onClick={() => setActiveTab('balance')}
-            className="self-start sm:self-auto px-4 py-2.5 rounded-sm bg-white/5 hover:bg-white/10 text-white font-mono-editorial text-xs font-semibold uppercase tracking-wider border border-white/15 transition-colors flex items-center space-x-2"
-          >
-            <Wallet className="w-3.5 h-3.5 text-[#C6FF00]" />
-            <span>CLEAR EXISTING BALANCE →</span>
-          </button>
+          <div className="flex flex-wrap items-center gap-2 self-start sm:self-auto">
+            {onBackToGateway && (
+              <button
+                type="button"
+                onClick={onBackToGateway}
+                className="px-3.5 py-2.5 rounded-sm bg-white/5 hover:bg-white/10 text-zinc-300 hover:text-white font-mono-editorial text-xs font-semibold uppercase tracking-wider border border-white/15 transition-colors flex items-center space-x-1.5"
+              >
+                <ArrowLeft className="w-3.5 h-3.5 text-[#C6FF00]" />
+                <span>BACK TO GATEWAY</span>
+              </button>
+            )}
+            <button
+              type="button"
+              onClick={() => setActiveTab('balance')}
+              className="px-4 py-2.5 rounded-sm bg-white/5 hover:bg-white/10 text-white font-mono-editorial text-xs font-semibold uppercase tracking-wider border border-white/15 transition-colors flex items-center space-x-2"
+            >
+              <Wallet className="w-3.5 h-3.5 text-[#C6FF00]" />
+              <span>CLEAR EXISTING BALANCE →</span>
+            </button>
+          </div>
         </div>
 
         <p className="text-xs sm:text-sm text-[#BFC3C7] font-light leading-relaxed border-t border-white/10 pt-3">
@@ -857,10 +875,20 @@ export default function RegistrationPage({ setActiveTab, setLookupRegId, onProce
                     </div>
                   </div>
 
-                  <div className="pt-4 flex justify-end">
+                  <div className="pt-4 flex flex-col-reverse sm:flex-row items-center justify-between gap-4">
+                    {onBackToGateway && (
+                      <button
+                        type="button"
+                        onClick={onBackToGateway}
+                        className="w-full sm:w-auto px-6 py-3.5 bg-white/5 hover:bg-white/10 text-white font-mono-editorial text-xs font-semibold uppercase tracking-wider rounded-sm border border-white/15 flex items-center justify-center space-x-2"
+                      >
+                        <ArrowLeft className="w-4 h-4 text-[#C6FF00]" />
+                        <span>BACK TO GATEWAY</span>
+                      </button>
+                    )}
                     <MagneticButton
                       type="submit"
-                      className="w-full sm:w-auto px-8 py-4 bg-[#C6FF00] hover:bg-[#D8FF33] text-black font-mono-editorial text-xs font-bold uppercase tracking-wider rounded-sm transition-all shadow-lg flex items-center justify-center space-x-2"
+                      className="w-full sm:w-auto px-8 py-4 bg-[#C6FF00] hover:bg-[#D8FF33] text-black font-mono-editorial text-xs font-bold uppercase tracking-wider rounded-sm transition-all shadow-lg flex items-center justify-center space-x-2 ml-auto"
                     >
                       <span>CONTINUE TO PROFILE &amp; PHOTO</span>
                       <ArrowRight className="w-4 h-4" />
