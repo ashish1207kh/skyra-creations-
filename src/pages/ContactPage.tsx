@@ -39,7 +39,8 @@ export default function ContactPage({ setActiveTab }: ContactPageProps) {
       {/* Page Header */}
       <motion.div 
         initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
+        whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: false, margin: '-20px' }}
         transition={{ duration: 0.7 }}
         className="text-center max-w-3xl mx-auto space-y-4"
       >
@@ -59,7 +60,8 @@ export default function ContactPage({ setActiveTab }: ContactPageProps) {
         {/* Card 1: Instagram */}
         <motion.a
           initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: false, margin: '-20px' }}
           transition={{ duration: 0.5, delay: 0.1 }}
           href="https://www.instagram.com/skyra_creations_/"
           target="_blank"
@@ -82,7 +84,8 @@ export default function ContactPage({ setActiveTab }: ContactPageProps) {
         {/* Card 2: Helpline */}
         <motion.a
           initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: false, margin: '-20px' }}
           transition={{ duration: 0.5, delay: 0.2 }}
           href="tel:+919342049287"
           className="p-6 rounded-sm transition-all group flex flex-col justify-between shadow-2xl bg-[#12141a] border border-white/10 hover:border-white/30"
@@ -103,7 +106,8 @@ export default function ContactPage({ setActiveTab }: ContactPageProps) {
         {/* Card 3: Location */}
         <motion.div 
           initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: false, margin: '-20px' }}
           transition={{ duration: 0.5, delay: 0.3 }}
           className="p-6 rounded-sm flex flex-col justify-between shadow-2xl bg-[#12141a] border border-white/10"
         >
@@ -123,7 +127,8 @@ export default function ContactPage({ setActiveTab }: ContactPageProps) {
         {/* Card 4: Website */}
         <motion.a
           initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: false, margin: '-20px' }}
           transition={{ duration: 0.5, delay: 0.4 }}
           href="https://www.skyracreations.site"
           className="p-6 rounded-sm transition-all group flex flex-col justify-between shadow-2xl bg-[#12141a] border border-white/10 hover:border-white/30"

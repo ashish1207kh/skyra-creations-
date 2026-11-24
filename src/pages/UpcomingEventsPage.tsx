@@ -61,7 +61,8 @@ export default function UpcomingEventsPage({ setActiveTab, onSelectEvent }: Upco
         <TiltCard className="lg:col-span-8 rounded-sm overflow-hidden">
           <motion.div 
             initial={{ opacity: 0, y: 24 }}
-            animate={{ opacity: 1, y: 0 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: false, margin: '-20px' }}
             transition={{ duration: 0.7 }}
             className="p-8 sm:p-10 rounded-sm shadow-xl space-y-6"
             style={{ 
@@ -182,8 +183,9 @@ export default function UpcomingEventsPage({ setActiveTab, onSelectEvent }: Upco
         <div className="lg:col-span-4 space-y-6">
           <motion.div 
             initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.7, delay: 0.2 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: false, margin: '-20px' }}
+            transition={{ duration: 0.7, delay: 0.15 }}
             className="p-8 rounded-sm space-y-4 shadow-xl"
             style={{ 
               backgroundColor: 'var(--surface)', 
@@ -217,8 +219,9 @@ export default function UpcomingEventsPage({ setActiveTab, onSelectEvent }: Upco
           {/* Assistance Box */}
           <motion.div 
             initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.7, delay: 0.3 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: false, margin: '-20px' }}
+            transition={{ duration: 0.7, delay: 0.2 }}
             className="p-8 rounded-sm space-y-3"
             style={{ 
               backgroundColor: 'var(--surface)', 
