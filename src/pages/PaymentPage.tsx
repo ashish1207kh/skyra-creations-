@@ -99,6 +99,7 @@ export default function PaymentPage({
   const [regTxId, setRegTxId] = useState('');
   const [regScreenshotFile, setRegScreenshotFile] = useState<File | null>(null);
   const [regScreenshotPreview, setRegScreenshotPreview] = useState<string | null>(null);
+  const [regTeamCommitmentConfirmed, setRegTeamCommitmentConfirmed] = useState(false);
   const [regTermsConfirmed, setRegTermsConfirmed] = useState(false);
   const [regCaptchaVerified, setRegCaptchaVerified] = useState(false);
   const [regSubmitting, setRegSubmitting] = useState(false);
@@ -297,6 +298,11 @@ export default function PaymentPage({
 
     if (!regScreenshotFile) {
       setRegError('Please upload a screenshot of your completed token advance payment.');
+      return;
+    }
+
+    if (!regTeamCommitmentConfirmed) {
+      setRegError('Please read and agree to the Team Commitment terms and conditions.');
       return;
     }
 
@@ -1177,6 +1183,33 @@ export default function PaymentPage({
                           </div>
                         )}
                       </div>
+                    </div>
+
+                    {/* Team Commitment */}
+                    <div className="p-4 sm:p-5 rounded-sm bg-[#080808] border border-white/15 space-y-3">
+                      <div className="flex items-center space-x-2 text-[#C6FF00] font-mono-editorial text-[10px] uppercase tracking-widest">
+                        <ShieldCheck className="w-3.5 h-3.5" />
+                        <span>OFFICIAL CODE OF CONDUCT &amp; EXCLUSIVITY</span>
+                      </div>
+                      <h4 className="font-display text-sm sm:text-base font-bold text-white tracking-wide">
+                        TEAM COMMITMENT
+                      </h4>
+                      <p className="text-xs text-zinc-300 font-light leading-relaxed">
+                        I acknowledge and agree to work with Skyra Creations under its team policies and guidelines. I shall not participate in, collaborate with, or associate myself with any other modeling team, agency, or organization without prior permission from Skyra Creations. I further agree not to disclose, share, forward, or misuse any team-related information, personal details, contacts, internal communications, or confidential data with any third party without the prior knowledge and authorization of Skyra Creations. I confirm that I will respect the team’s trust, maintain confidentiality, and abide by these terms throughout my association with Skyra Creations.
+                      </p>
+                      
+                      <label className="flex items-start space-x-3 pt-2.5 border-t border-white/10 cursor-pointer group">
+                        <input
+                          type="checkbox"
+                          required
+                          checked={regTeamCommitmentConfirmed}
+                          onChange={(e) => setRegTeamCommitmentConfirmed(e.target.checked)}
+                          className="mt-0.5 w-4 h-4 rounded-sm border-zinc-700 bg-zinc-900 text-[#C6FF00] focus:ring-[#C6FF00]"
+                        />
+                        <span className="text-xs text-zinc-200 group-hover:text-white font-medium leading-relaxed transition-colors">
+                          I have read, understood, and agree to all the above terms and conditions.
+                        </span>
+                      </label>
                     </div>
 
                     {/* Declaration */}

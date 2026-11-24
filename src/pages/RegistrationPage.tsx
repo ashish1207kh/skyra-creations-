@@ -1172,6 +1172,33 @@ export default function RegistrationPage({ setActiveTab, setLookupRegId, onProce
                     </div>
                   </div>
 
+                  {/* Team Commitment Agreement */}
+                  <div className="p-5 sm:p-6 rounded-sm bg-[#080808] border border-white/15 space-y-3.5 shadow-md">
+                    <div className="flex items-center space-x-2 text-[#C6FF00] font-mono-editorial text-[10px] uppercase tracking-widest">
+                      <ShieldCheck className="w-3.5 h-3.5" />
+                      <span>OFFICIAL CODE OF CONDUCT &amp; EXCLUSIVITY</span>
+                    </div>
+                    <h3 className="font-display text-base sm:text-lg font-bold text-white tracking-wide">
+                      TEAM COMMITMENT
+                    </h3>
+                    <p className="text-xs sm:text-sm text-zinc-300 font-light leading-relaxed">
+                      I acknowledge and agree to work with Skyra Creations under its team policies and guidelines. I shall not participate in, collaborate with, or associate myself with any other modeling team, agency, or organization without prior permission from Skyra Creations. I further agree not to disclose, share, forward, or misuse any team-related information, personal details, contacts, internal communications, or confidential data with any third party without the prior knowledge and authorization of Skyra Creations. I confirm that I will respect the team’s trust, maintain confidentiality, and abide by these terms throughout my association with Skyra Creations.
+                    </p>
+                    
+                    <label className="flex items-start space-x-3 pt-3 border-t border-white/10 cursor-pointer group">
+                      <input
+                        type="checkbox"
+                        required
+                        checked={teamCommitmentConfirmed}
+                        onChange={(e) => setTeamCommitmentConfirmed(e.target.checked)}
+                        className="mt-0.5 rounded-sm border-zinc-700 bg-zinc-900 text-[#C6FF00] focus:ring-[#C6FF00]"
+                      />
+                      <span className="text-xs text-zinc-200 group-hover:text-white font-medium leading-relaxed transition-colors">
+                        I have read, understood, and agree to all the above terms and conditions.
+                      </span>
+                    </label>
+                  </div>
+
                   {/* Mandatory Declarations & Policy Agreement */}
                   <div className="space-y-3 pt-2">
                     <label className="flex items-start space-x-3 p-3.5 rounded-sm bg-[#080808] border border-white/10 cursor-pointer hover:border-white/20 transition-colors">
