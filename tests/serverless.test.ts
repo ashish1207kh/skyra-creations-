@@ -611,6 +611,25 @@ async function runTests() {
   console.log('   ✓ NPCI compliant dynamic UPI URI verified with exact amount ₹1,000.00 & reference ID');
   console.log('   ✓ 5 UPI intent deep links (Google Pay, PhonePe, Paytm, BHIM, Generic) successfully validated');
 
+  // Automated Cleanup: Purge ephemeral test records from database so production stays clean
+  const { getMongoConnection: getTestMongo } = await import('../api/_lib/mongoClient.js');
+  const testConn = await getTestMongo();
+  if (testConn) {
+    await testConn.db.collection('registrations').deleteMany({
+      $or: [
+        { reg_id: regResult.participant.reg_id },
+        { full_name: 'Pooja Hegde Model' }
+      ]
+    });
+    await testConn.db.collection('payments').deleteMany({
+      $or: [
+        { reg_id: regResult.participant.reg_id },
+        { transaction_id: { $in: [validRegTx, balTx] } }
+      ]
+    });
+    console.log('   ✓ Ephemeral test contestant & payments cleanly purged from database');
+  }
+
   console.log('\n=========================================');
   console.log('ALL SERVERLESS & STORAGE SUITES PASSED! ✓');
   console.log('=========================================');

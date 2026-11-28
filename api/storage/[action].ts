@@ -33,7 +33,13 @@ async function readRawBody(req: VercelRequest): Promise<Buffer> {
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   res.setHeader('X-Robots-Tag', 'noindex, nofollow, noarchive');
-  res.setHeader('X-Content-Type-Options', 'nosniff');
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, X-Object-Key, Authorization');
+
+  if (req.method === 'OPTIONS') {
+    return res.status(200).end();
+  }
 
   const rawAction = (req.query.action as string) || (req.url?.split('?')[0].split('/').pop() || '');
   const action = rawAction.toLowerCase();
@@ -82,10 +88,11 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       return res.status(405).json({ detail: 'Method not allowed' });
     }
 
-    const objectKey = (req.query.key as string) || (req.headers['x-object-key'] as string);
-    if (!objectKey) {
+    const rawKey = (req.query.key as string) || (req.headers['x-object-key'] as string);
+    if (!rawKey) {
       return res.status(400).json({ detail: 'Missing "key" query parameter for upload.' });
     }
+    const objectKey = decodeURIComponent(rawKey).replace(/^\/+/, '');
 
     const contentType = (req.headers['content-type'] as string) || 'image/jpeg';
     const cleanMime = contentType.split(';')[0].trim().toLowerCase();
@@ -115,15 +122,21 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       return res.status(405).json({ detail: 'Method not allowed' });
     }
 
-    const objectKey = req.query.key as string;
-    if (!objectKey) {
+    const rawKey = req.query.key as string;
+    if (!rawKey) {
       return res.status(400).json({ detail: 'Missing "key" query parameter.' });
     }
 
+    const objectKey = decodeURIComponent(rawKey).replace(/^\/+/, '');
+
     try {
-      const file = await getFileFromMongo(objectKey);
+      let file = await getFileFromMongo(objectKey);
+      if (!file && rawKey !== objectKey) {
+        file = await getFileFromMongo(rawKey);
+      }
+
       if (file && file.buffer) {
-        res.setHeader('Content-Type', file.mimeType);
+        res.setHeader('Content-Type', file.mimeType || 'image/jpeg');
         res.setHeader('Content-Length', file.size.toString());
         res.setHeader('Cache-Control', 'public, max-age=86400, stale-while-revalidate=604800');
         return res.send(file.buffer);
@@ -131,15 +144,28 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
       // Fallback for historical test keys without bytes: High-fidelity Couture Avatar SVG
       const isProof = objectKey.includes('proofs');
-      const label = isProof ? 'PAYMENT PROOF' : 'MODEL PHOTOGRAPH';
+      const label = isProof ? 'PAYMENT PROOF' : 'MODEL DOSSIER';
       const sub = objectKey.split('/').pop() || 'SKYRA CREATIONS';
       const fallbackSvg = `
         <svg xmlns="http://www.w3.org/2000/svg" width="600" height="600" viewBox="0 0 600 600">
-          <rect width="600" height="600" fill="#0c0d12"/>
-          <circle cx="300" cy="240" r="110" fill="#181a24" stroke="#c6ff00" stroke-width="2" stroke-opacity="0.4"/>
-          <path d="M 190 470 C 190 370, 410 370, 410 470 Z" fill="#181a24" stroke="#c6ff00" stroke-width="2" stroke-opacity="0.4"/>
-          <text x="300" y="520" text-anchor="middle" fill="#c6ff00" font-family="monospace" font-size="20" font-weight="bold" letter-spacing="3">${label}</text>
-          <text x="300" y="550" text-anchor="middle" fill="#888" font-family="monospace" font-size="13">${sub}</text>
+          <defs>
+            <linearGradient id="fbGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#0c0d14"/>
+              <stop offset="100%" stop-color="#141824"/>
+            </linearGradient>
+          </defs>
+          <rect width="600" height="600" fill="url(#fbGrad)"/>
+          <rect x="20" y="20" width="560" height="560" rx="16" fill="none" stroke="${isProof ? '#10B981' : '#C6FF00'}" stroke-width="3" stroke-opacity="0.6"/>
+          
+          <circle cx="300" cy="220" r="90" fill="#1b2030" stroke="${isProof ? '#10B981' : '#C6FF00'}" stroke-width="2" stroke-opacity="0.8"/>
+          <path d="M 230 220 Q 300 150 370 220" stroke="${isProof ? '#10B981' : '#C6FF00'}" stroke-width="4" fill="none"/>
+          <circle cx="300" cy="220" r="14" fill="${isProof ? '#10B981' : '#C6FF00'}"/>
+
+          <rect x="80" y="360" width="440" height="70" rx="8" fill="#080a10" stroke="#ffffff" stroke-width="1" stroke-opacity="0.15"/>
+          <text x="300" y="405" text-anchor="middle" fill="${isProof ? '#10B981' : '#C6FF00'}" font-family="'Courier New', monospace" font-size="24" font-weight="900" letter-spacing="4">${label}</text>
+          
+          <text x="300" y="475" text-anchor="middle" fill="#ffffff" font-family="'Cinzel', serif, sans-serif" font-size="20" font-weight="bold" letter-spacing="4">SKYRA CREATIONS</text>
+          <text x="300" y="515" text-anchor="middle" fill="#718096" font-family="'Courier New', monospace" font-size="12" letter-spacing="2">${sub}</text>
         </svg>
       `.trim();
 
@@ -157,10 +183,11 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       return res.status(405).json({ detail: 'Method not allowed' });
     }
 
-    const objectKey = req.query.key as string;
-    if (!objectKey) {
+    const rawKey = req.query.key as string;
+    if (!rawKey) {
       return res.status(400).json({ detail: 'Missing "key" query parameter.' });
     }
+    const objectKey = decodeURIComponent(rawKey).replace(/^\/+/, '');
 
     try {
       const viewUrl = await generatePresignedViewUrl(objectKey);

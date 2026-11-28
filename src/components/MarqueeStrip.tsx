@@ -30,7 +30,7 @@ export default function MarqueeStrip({
   ], 
   reverse = false, 
   className = '',
-  baseVelocity = 0.06,
+  baseVelocity = 0.018,
 }: MarqueeStripProps) {
   const repeated = [...text, ...text, ...text, ...text];
   const baseX = useMotionValue(reverse ? -25 : 0);
@@ -50,12 +50,12 @@ export default function MarqueeStrip({
   useAnimationFrame((_, delta) => {
     if (isHovered) return;
     const dir = reverse ? 1 : -1;
-    // Calibrated cinematic crawl: calm, legible, high-fashion pace
+    // Calibrated cinematic crawl: gentle, slow, high-fashion luxurious pace
     let moveBy = dir * baseVelocity * (delta / 16);
 
     const vFactor = velocityFactor.get();
     if (Math.abs(vFactor) > 0.05) {
-      moveBy += dir * Math.abs(vFactor) * 0.06;
+      moveBy += dir * Math.abs(vFactor) * 0.015;
     }
 
     let next = baseX.get() + moveBy;
