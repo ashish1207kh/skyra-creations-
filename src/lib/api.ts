@@ -110,7 +110,7 @@ export async function getAdminPayments(): Promise<Payment[]> {
 
 export async function verifyPayment(
   paymentId: string,
-  action: 'VERIFY' | 'REJECT',
+  action: 'VERIFY' | 'REJECT' | 'PENDING',
   reason?: string
 ): Promise<{ success: boolean; message: string }> {
   return fetchJson('/api/admin/verify-payment', {

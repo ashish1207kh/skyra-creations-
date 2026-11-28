@@ -10,6 +10,7 @@ import {
 } from 'lucide-react';
 import { motion, useScroll, useTransform, AnimatePresence } from 'motion/react';
 import VirtualRunwayScene from '../components/VirtualRunwayScene';
+import MovingStudioLights from '../components/MovingStudioLights';
 import TiltCard from '../components/TiltCard';
 import MarqueeStrip from '../components/MarqueeStrip';
 import MagneticButton from '../components/MagneticButton';
@@ -170,6 +171,9 @@ export default function HomePage({ setActiveTab, onSelectEvent }: HomePageProps)
             background: 'linear-gradient(to bottom, rgba(8,8,8,0.7) 0%, transparent 40%, rgba(8,8,8,0.4) 70%, var(--bg-primary) 100%)'
           }}
         />
+
+        {/* Automated DMX Moving Head Stage Studio Lights (Sweeping Volumetric Beams & Industrial Rigging) */}
+        <MovingStudioLights className="z-10" />
 
         {/* Subtle Ambient Accent Glow */}
         <div 
@@ -778,7 +782,10 @@ export default function HomePage({ setActiveTab, onSelectEvent }: HomePageProps)
             transition={{ duration: 0.6 }}
             className="w-full"
           >
-            <TiltCard className="rounded-sm overflow-hidden shadow-lg group h-full">
+            <TiltCard 
+              onClick={() => setActiveTab('gallery')} 
+              className="rounded-sm overflow-hidden shadow-lg group h-full cursor-pointer"
+            >
               <div 
                 className="overflow-hidden rounded-sm h-full"
                 style={{ border: '1px solid var(--border)' }}
@@ -800,7 +807,10 @@ export default function HomePage({ setActiveTab, onSelectEvent }: HomePageProps)
             transition={{ duration: 0.6, delay: 0.1 }}
             className="w-full"
           >
-            <TiltCard className="rounded-sm overflow-hidden shadow-lg group h-full">
+            <TiltCard 
+              onClick={() => setActiveTab('gallery')} 
+              className="rounded-sm overflow-hidden shadow-lg group h-full cursor-pointer"
+            >
               <div 
                 className="overflow-hidden rounded-sm h-full"
                 style={{ border: '1px solid var(--border)' }}

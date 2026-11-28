@@ -39,12 +39,15 @@ export async function getMongoConnection(): Promise<MongoConnection | null> {
     }
   }
 
-  const primaryUri = process.env.MONGODB_URI || DIRECT_MONGODB_URI;
+  // Direct Replica Set URI avoids DNS SRV lookup failures (such as ECONNREFUSED on Windows or restrictive cloud VPCs)
+  const primaryUri = (process.env.MONGODB_URI && !process.env.MONGODB_URI.startsWith('mongodb+srv://'))
+    ? process.env.MONGODB_URI
+    : DIRECT_MONGODB_URI;
 
   const connectPromise = (async (): Promise<MongoConnection> => {
     let client: MongoClient | null = null;
 
-    // Attempt 1: Try Primary URI (from env or direct)
+    // Attempt 1: Try Primary URI (Direct Replica Set)
     try {
       client = new MongoClient(primaryUri, {
         maxPoolSize: 10,
@@ -54,23 +57,19 @@ export async function getMongoConnection(): Promise<MongoConnection | null> {
       });
       await client.connect();
     } catch (primaryErr) {
-      console.warn('Primary MongoDB connection failed, trying DIRECT_MONGODB_URI fallback:', primaryErr);
-      if (primaryUri !== DIRECT_MONGODB_URI) {
-        try {
-          client = new MongoClient(DIRECT_MONGODB_URI, {
-            maxPoolSize: 10,
-            minPoolSize: 1,
-            maxIdleTimeMS: 30000,
-            serverSelectionTimeoutMS: 5000,
-          });
-          await client.connect();
-        } catch (directErr) {
-          global._mongoConnectionPromise = undefined;
-          throw directErr;
-        }
-      } else {
+      console.warn('Primary MongoDB connection failed, trying SRV_MONGODB_URI fallback:', primaryErr);
+      const fallbackUri = primaryUri === DIRECT_MONGODB_URI ? SRV_MONGODB_URI : DIRECT_MONGODB_URI;
+      try {
+        client = new MongoClient(fallbackUri, {
+          maxPoolSize: 10,
+          minPoolSize: 1,
+          maxIdleTimeMS: 30000,
+          serverSelectionTimeoutMS: 5000,
+        });
+        await client.connect();
+      } catch (fallbackErr) {
         global._mongoConnectionPromise = undefined;
-        throw primaryErr;
+        throw fallbackErr;
       }
     }
 
@@ -106,6 +105,10 @@ export async function getMongoConnection(): Promise<MongoConnection | null> {
       // 6. Temporary records: Automatic TTL expiration
       await db.collection('temporary_records').createIndex({ expires_at: 1 }, { expireAfterSeconds: 0 });
       await db.collection('temporary_records').createIndex({ key: 1 }, { unique: true, sparse: true });
+
+      // 7. Binary Uploaded Files storage (Resilient MongoDB file storage)
+      await db.collection('uploaded_files').createIndex({ key: 1 }, { unique: true });
+      await db.collection('uploaded_files').createIndex({ createdAt: -1 });
     } catch (indexErr) {
       console.warn('Non-fatal index creation warning:', indexErr);
     }

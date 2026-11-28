@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { 
   ShieldCheck, 
   Lock, 
@@ -139,6 +140,27 @@ export default function AdminDashboard() {
   const [customReason, setCustomReason] = useState('');
   const [verifyingId, setVerifyingId] = useState<string | null>(null);
 
+  // Lock background scroll when any modal popup is open to eliminate vertical displacement
+  const isAnyModalOpen = Boolean(
+    activeMedia ||
+    viewParticipantModal ||
+    rejectModalPayment ||
+    deleteParticipantModal ||
+    deletePaymentModal ||
+    purgeModalOpen
+  );
+
+  useEffect(() => {
+    if (isAnyModalOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [isAnyModalOpen]);
+
   const predefinedRejectionReasons = [
     'Invalid transaction reference',
     'Amount mismatch',
@@ -257,7 +279,7 @@ export default function AdminDashboard() {
     }
   };
 
-  const handleVerify = async (paymentId: string, action: 'VERIFY' | 'REJECT', reason?: string) => {
+  const handleVerify = async (paymentId: string, action: 'VERIFY' | 'REJECT' | 'PENDING', reason?: string) => {
     setVerifyingId(paymentId);
     try {
       await verifyPayment(paymentId, action, reason);
@@ -1045,6 +1067,13 @@ export default function AdminDashboard() {
                               <img
                                 src={pay.view_url}
                                 alt={`Receipt ${pay.transaction_id}`}
+                                onError={(e) => {
+                                  const target = e.currentTarget;
+                                  if (!target.dataset.fallbackApplied) {
+                                    target.dataset.fallbackApplied = 'true';
+                                    target.src = '/logo.png';
+                                  }
+                                }}
                                 className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
                               />
                               <div className="absolute inset-0 bg-black/45 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity">
@@ -1079,15 +1108,17 @@ export default function AdminDashboard() {
                         </td>
 
                         {/* Actions */}
-                        <td className="py-3 px-4 text-right space-x-2 whitespace-nowrap">
+                        <td className="py-3 px-4 text-right space-x-1.5 whitespace-nowrap">
                           {pay.status === 'PENDING' && (
                             <>
                               <button
                                 disabled={verifyingId === pay.payment_id}
                                 onClick={() => handleVerify(pay.payment_id, 'VERIFY')}
-                                className="px-3 py-1.5 rounded-sm bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs uppercase font-mono-editorial transition-colors"
+                                className="px-3 py-1.5 rounded-sm bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs uppercase font-mono-editorial transition-colors inline-flex items-center space-x-1 shadow-sm"
+                                title="Approve and verify payment"
                               >
-                                {verifyingId === pay.payment_id ? 'Verifying...' : 'Verify'}
+                                <Check className="w-3 h-3" />
+                                <span>{verifyingId === pay.payment_id ? 'Verifying...' : 'Verify'}</span>
                               </button>
                               <button
                                 disabled={verifyingId === pay.payment_id}
@@ -1096,9 +1127,61 @@ export default function AdminDashboard() {
                                   setSelectedReasonOption('Invalid transaction reference');
                                   setCustomReason('');
                                 }}
-                                className="px-3 py-1.5 rounded-sm bg-red-950/60 hover:bg-red-900 text-red-300 border border-red-500/40 font-bold text-xs uppercase font-mono-editorial transition-colors"
+                                className="px-3 py-1.5 rounded-sm bg-red-950/60 hover:bg-red-900 text-red-300 border border-red-500/40 font-bold text-xs uppercase font-mono-editorial transition-colors inline-flex items-center space-x-1"
+                                title="Reject payment with reason"
                               >
-                                Reject
+                                <X className="w-3 h-3" />
+                                <span>Reject</span>
+                              </button>
+                            </>
+                          )}
+
+                          {pay.status === 'VERIFIED' && (
+                            <>
+                              <button
+                                disabled={verifyingId === pay.payment_id}
+                                onClick={() => {
+                                  setRejectModalPayment(pay);
+                                  setSelectedReasonOption('Payment revokation / invalid reference');
+                                  setCustomReason('');
+                                }}
+                                className="px-2.5 py-1.5 rounded-sm bg-red-950/40 hover:bg-red-900 text-red-400 border border-red-500/30 text-xs font-mono-editorial uppercase transition-colors inline-flex items-center space-x-1"
+                                title="Change decision: Mark this verified payment as Rejected"
+                              >
+                                <X className="w-3 h-3" />
+                                <span>Change to Reject</span>
+                              </button>
+                              <button
+                                disabled={verifyingId === pay.payment_id}
+                                onClick={() => handleVerify(pay.payment_id, 'PENDING')}
+                                className="px-2.5 py-1.5 rounded-sm bg-amber-950/40 hover:bg-amber-900 text-amber-300 border border-amber-500/30 text-xs font-mono-editorial uppercase transition-colors inline-flex items-center space-x-1"
+                                title="Reset status back to Pending Review"
+                              >
+                                <RefreshCw className={`w-3 h-3 ${verifyingId === pay.payment_id ? 'animate-spin' : ''}`} />
+                                <span>Reset Pending</span>
+                              </button>
+                            </>
+                          )}
+
+                          {pay.status === 'REJECTED' && (
+                            <>
+                              <button
+                                disabled={verifyingId === pay.payment_id}
+                                onClick={() => handleVerify(pay.payment_id, 'VERIFY')}
+                                className="px-2.5 py-1.5 rounded-sm bg-emerald-950/40 hover:bg-emerald-800 text-emerald-300 border border-emerald-500/30 text-xs font-mono-editorial uppercase transition-colors inline-flex items-center space-x-1"
+                                title="Change decision: Mark this rejected payment as Verified"
+                              >
+                                <Check className="w-3 h-3" />
+                                <span>Change to Verify</span>
+                              </button>
+                              <button
+                                disabled={verifyingId === pay.payment_id}
+                                onClick={() => handleVerify(pay.payment_id, 'PENDING')}
+                                className="px-2.5 py-1.5 rounded-sm bg-amber-950/40 hover:bg-amber-900 text-amber-300 border border-amber-500/30 text-xs font-mono-editorial uppercase transition-colors inline-flex items-center space-x-1"
+                                title="Reset status back to Pending Review"
+                              >
+                                <RefreshCw className={`w-3 h-3 ${verifyingId === pay.payment_id ? 'animate-spin' : ''}`} />
+                                <span>Reset Pending</span>
                               </button>
                             </>
                           )}
@@ -1268,6 +1351,13 @@ export default function AdminDashboard() {
                               <img
                                 src={p.model_photo_url}
                                 alt={p.full_name}
+                                onError={(e) => {
+                                  const target = e.currentTarget;
+                                  if (!target.dataset.fallbackApplied) {
+                                    target.dataset.fallbackApplied = 'true';
+                                    target.src = '/logo.png';
+                                  }
+                                }}
                                 className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
                               />
                               <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity">
@@ -1707,13 +1797,13 @@ export default function AdminDashboard() {
       )}
 
       {/* State-of-the-art Image Lightbox Inspection Modal */}
-      {activeMedia && (
+      {activeMedia && typeof document !== 'undefined' && createPortal(
         <div 
-          className="fixed inset-0 z-50 bg-black/95 backdrop-blur-md flex items-center justify-center p-3 sm:p-6"
+          className="fixed inset-0 z-[100] bg-black/95 backdrop-blur-md flex items-center justify-center p-3 sm:p-6 overflow-y-auto"
           onClick={() => setActiveMedia(null)}
         >
           <div 
-            className="relative max-w-5xl w-full max-h-[95vh] bg-[#0d0f15] border border-white/20 rounded-sm shadow-2xl flex flex-col overflow-hidden"
+            className="relative max-w-5xl w-full max-h-[92vh] bg-[#0d0f15] border border-white/20 rounded-sm shadow-2xl flex flex-col overflow-hidden my-auto"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Modal Header */}
@@ -1803,6 +1893,13 @@ export default function AdminDashboard() {
                 <img
                   src={activeMedia.url}
                   alt={activeMedia.title}
+                  onError={(e) => {
+                    const target = e.currentTarget;
+                    if (!target.dataset.fallbackApplied) {
+                      target.dataset.fallbackApplied = 'true';
+                      target.src = '/logo.png';
+                    }
+                  }}
                   className="max-h-[62vh] w-auto object-contain rounded-sm shadow-2xl border border-white/10"
                 />
               </div>
@@ -1848,40 +1945,109 @@ export default function AdminDashboard() {
                   )}
                 </div>
 
-                {activeMedia.payment && activeMedia.payment.status === 'PENDING' && (
-                  <div className="flex items-center space-x-2">
-                    <button
-                      onClick={() => {
-                        handleVerify(activeMedia.payment!.payment_id, 'VERIFY');
-                        setActiveMedia(null);
-                      }}
-                      className="px-4 py-2 rounded-sm bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs uppercase tracking-wider font-mono-editorial"
-                    >
-                      ✓ VERIFY THIS PAYMENT
-                    </button>
-                    <button
-                      onClick={() => {
-                        setRejectModalPayment(activeMedia.payment!);
-                        setSelectedReasonOption('Invalid transaction reference');
-                        setCustomReason('');
-                        setActiveMedia(null);
-                      }}
-                      className="px-4 py-2 rounded-sm bg-red-950 hover:bg-red-900 text-red-300 border border-red-500/40 font-bold text-xs uppercase tracking-wider font-mono-editorial"
-                    >
-                      ✕ REJECT
-                    </button>
+                {activeMedia.payment && (
+                  <div className="flex flex-wrap items-center gap-2">
+                    {activeMedia.payment.status === 'PENDING' && (
+                      <>
+                        <button
+                          onClick={() => {
+                            handleVerify(activeMedia.payment!.payment_id, 'VERIFY');
+                            setActiveMedia(null);
+                          }}
+                          className="px-4 py-2 rounded-sm bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs uppercase tracking-wider font-mono-editorial inline-flex items-center space-x-1"
+                        >
+                          <Check className="w-3.5 h-3.5" />
+                          <span>✓ VERIFY THIS PAYMENT</span>
+                        </button>
+                        <button
+                          onClick={() => {
+                            setRejectModalPayment(activeMedia.payment!);
+                            setSelectedReasonOption('Invalid transaction reference');
+                            setCustomReason('');
+                            setActiveMedia(null);
+                          }}
+                          className="px-4 py-2 rounded-sm bg-red-950 hover:bg-red-900 text-red-300 border border-red-500/40 font-bold text-xs uppercase tracking-wider font-mono-editorial inline-flex items-center space-x-1"
+                        >
+                          <X className="w-3.5 h-3.5" />
+                          <span>✕ REJECT</span>
+                        </button>
+                      </>
+                    )}
+
+                    {activeMedia.payment.status === 'VERIFIED' && (
+                      <>
+                        <span className="px-3 py-1.5 rounded-sm bg-emerald-500/15 text-emerald-400 border border-emerald-500/30 text-[10px] font-mono-editorial font-bold uppercase">
+                          STATUS: VERIFIED
+                        </span>
+                        <button
+                          onClick={() => {
+                            setRejectModalPayment(activeMedia.payment!);
+                            setSelectedReasonOption('Payment revokation / invalid reference');
+                            setCustomReason('');
+                            setActiveMedia(null);
+                          }}
+                          className="px-3.5 py-1.5 rounded-sm bg-red-950/60 hover:bg-red-900 text-red-300 border border-red-500/40 font-bold text-xs uppercase font-mono-editorial inline-flex items-center space-x-1"
+                          title="Change decision to Rejected"
+                        >
+                          <X className="w-3.5 h-3.5" />
+                          <span>CHANGE TO REJECT</span>
+                        </button>
+                        <button
+                          onClick={() => {
+                            handleVerify(activeMedia.payment!.payment_id, 'PENDING');
+                            setActiveMedia(null);
+                          }}
+                          className="px-3.5 py-1.5 rounded-sm bg-amber-950/60 hover:bg-amber-900 text-amber-300 border border-amber-500/40 font-bold text-xs uppercase font-mono-editorial inline-flex items-center space-x-1"
+                          title="Reset decision back to Pending Review"
+                        >
+                          <RefreshCw className="w-3.5 h-3.5" />
+                          <span>RESET TO PENDING</span>
+                        </button>
+                      </>
+                    )}
+
+                    {activeMedia.payment.status === 'REJECTED' && (
+                      <>
+                        <span className="px-3 py-1.5 rounded-sm bg-red-500/15 text-red-400 border border-red-500/30 text-[10px] font-mono-editorial font-bold uppercase">
+                          STATUS: REJECTED
+                        </span>
+                        <button
+                          onClick={() => {
+                            handleVerify(activeMedia.payment!.payment_id, 'VERIFY');
+                            setActiveMedia(null);
+                          }}
+                          className="px-3.5 py-1.5 rounded-sm bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs uppercase font-mono-editorial inline-flex items-center space-x-1"
+                          title="Change decision to Verified"
+                        >
+                          <Check className="w-3.5 h-3.5" />
+                          <span>CHANGE TO VERIFY</span>
+                        </button>
+                        <button
+                          onClick={() => {
+                            handleVerify(activeMedia.payment!.payment_id, 'PENDING');
+                            setActiveMedia(null);
+                          }}
+                          className="px-3.5 py-1.5 rounded-sm bg-amber-950/60 hover:bg-amber-900 text-amber-300 border border-amber-500/40 font-bold text-xs uppercase font-mono-editorial inline-flex items-center space-x-1"
+                          title="Reset decision back to Pending Review"
+                        >
+                          <RefreshCw className="w-3.5 h-3.5" />
+                          <span>RESET TO PENDING</span>
+                        </button>
+                      </>
+                    )}
                   </div>
                 )}
               </div>
             )}
           </div>
-        </div>
+        </div>,
+        document.body
       )}
 
       {/* Participant Dossier Quick View Modal */}
-      {viewParticipantModal && (
+      {viewParticipantModal && typeof document !== 'undefined' && createPortal(
         <div 
-          className="fixed inset-0 z-50 bg-black/90 backdrop-blur-md flex items-center justify-center p-3 sm:p-6"
+          className="fixed inset-0 z-[100] bg-black/90 backdrop-blur-md flex items-center justify-center p-3 sm:p-6 overflow-hidden"
           onClick={() => setViewParticipantModal(null)}
         >
           <div 
@@ -1936,6 +2102,13 @@ export default function AdminDashboard() {
                       <img 
                         src={viewParticipantModal.model_photo_url} 
                         alt={viewParticipantModal.full_name} 
+                        onError={(e) => {
+                          const target = e.currentTarget;
+                          if (!target.dataset.fallbackApplied) {
+                            target.dataset.fallbackApplied = 'true';
+                            target.src = '/logo.png';
+                          }
+                        }}
                         className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                       />
                       <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity">
@@ -2045,16 +2218,20 @@ export default function AdminDashboard() {
               </div>
             </div>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
 
       {/* Rejection Modal with Mandatory Reason */}
-      {rejectModalPayment && (
-        <div className="fixed inset-0 z-50 bg-black/85 flex items-center justify-center p-4">
-          <div className="bg-[#141824] border border-red-500/40 rounded-2xl p-6 max-w-md w-full shadow-2xl">
-            <h3 className="text-lg font-bold text-white mb-1">Reject Payment Submission</h3>
+      {rejectModalPayment && typeof document !== 'undefined' && createPortal(
+        <div className="fixed inset-0 z-[100] bg-black/85 backdrop-blur-md flex items-center justify-center p-4 overflow-hidden">
+          <div className="bg-[#141824] border border-red-500/40 rounded-2xl p-6 max-w-md w-full shadow-2xl relative max-h-[90vh] overflow-y-auto">
+            <h3 className="text-lg font-bold text-white mb-1">
+              {rejectModalPayment.status === 'VERIFIED' ? 'Revoke Verification & Reject Payment' : 'Reject Payment Submission'}
+            </h3>
             <p className="text-xs text-zinc-400 mb-4">
-              Rejecting payment for <strong>{(rejectModalPayment as any).participant?.full_name || rejectModalPayment.reg_id}</strong> of amount ₹{rejectModalPayment.amount}.
+              {rejectModalPayment.status === 'VERIFIED' ? 'Changing previous decision from VERIFIED to REJECTED for ' : 'Rejecting payment for '}
+              <strong>{(rejectModalPayment as any).participant?.full_name || rejectModalPayment.reg_id}</strong> of amount ₹{rejectModalPayment.amount}.
             </p>
 
             <label className="block text-xs font-semibold text-zinc-300 mb-1.5">
@@ -2098,13 +2275,14 @@ export default function AdminDashboard() {
               </button>
             </div>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
 
       {/* Delete Participant Modal */}
-      {deleteParticipantModal && (
-        <div className="fixed inset-0 z-50 bg-black/85 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="bg-[#141824] border border-red-500/50 rounded-2xl p-6 max-w-md w-full shadow-2xl">
+      {deleteParticipantModal && typeof document !== 'undefined' && createPortal(
+        <div className="fixed inset-0 z-[100] bg-black/85 backdrop-blur-md flex items-center justify-center p-4 overflow-hidden">
+          <div className="bg-[#141824] border border-red-500/50 rounded-2xl p-6 max-w-md w-full shadow-2xl relative max-h-[90vh] overflow-y-auto">
             <div className="flex items-center space-x-3 text-red-400 mb-3">
               <div className="p-2.5 rounded-full bg-red-500/10 border border-red-500/20">
                 <Trash2 className="w-5 h-5 text-red-400" />
@@ -2158,13 +2336,14 @@ export default function AdminDashboard() {
               </button>
             </div>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
 
       {/* Delete Payment Modal */}
-      {deletePaymentModal && (
-        <div className="fixed inset-0 z-50 bg-black/85 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="bg-[#141824] border border-red-500/50 rounded-2xl p-6 max-w-md w-full shadow-2xl">
+      {deletePaymentModal && typeof document !== 'undefined' && createPortal(
+        <div className="fixed inset-0 z-[100] bg-black/85 backdrop-blur-md flex items-center justify-center p-4 overflow-hidden">
+          <div className="bg-[#141824] border border-red-500/50 rounded-2xl p-6 max-w-md w-full shadow-2xl relative max-h-[90vh] overflow-y-auto">
             <div className="flex items-center space-x-3 text-red-400 mb-3">
               <div className="p-2.5 rounded-full bg-red-500/10 border border-red-500/20">
                 <Trash2 className="w-5 h-5 text-red-400" />
@@ -2218,13 +2397,14 @@ export default function AdminDashboard() {
               </button>
             </div>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
 
       {/* Zero Storage Purge Confirmation Modal */}
-      {purgeModalOpen && (
-        <div className="fixed inset-0 z-50 bg-black/90 backdrop-blur-md flex items-center justify-center p-4">
-          <div className="bg-[#141824] border-2 border-red-500/70 rounded-2xl p-6 sm:p-8 max-w-lg w-full shadow-2xl relative">
+      {purgeModalOpen && typeof document !== 'undefined' && createPortal(
+        <div className="fixed inset-0 z-[100] bg-black/90 backdrop-blur-md flex items-center justify-center p-4 overflow-hidden">
+          <div className="bg-[#141824] border-2 border-red-500/70 rounded-2xl p-6 sm:p-8 max-w-lg w-full shadow-2xl relative max-h-[90vh] overflow-y-auto">
             <div className="flex items-center space-x-3 text-red-400 mb-4">
               <div className="p-3 rounded-full bg-red-500/15 border border-red-500/30">
                 <Trash2 className="w-6 h-6 text-red-400" />
@@ -2274,7 +2454,8 @@ export default function AdminDashboard() {
               </button>
             </div>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
     </div>
   );

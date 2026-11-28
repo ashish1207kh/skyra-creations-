@@ -533,7 +533,7 @@ export async function addBalancePayment(params: {
 
 export async function verifyPaymentRecord(params: {
   payment_id: string;
-  action: 'VERIFY' | 'REJECT';
+  action: 'VERIFY' | 'REJECT' | 'PENDING';
   reason?: string;
   adminName: string;
   ipAddress?: string;
@@ -542,15 +542,15 @@ export async function verifyPaymentRecord(params: {
 
   if (isSupabaseConfigured) {
     const supabase = getSupabaseAdmin();
-    const newStatus = action === 'VERIFY' ? 'VERIFIED' : 'REJECTED';
+    const newStatus = action === 'VERIFY' ? 'VERIFIED' : action === 'REJECT' ? 'REJECTED' : 'PENDING';
 
     const { data: payment, error: payErr } = await supabase
       .from('payments')
       .update({
         status: newStatus,
         rejection_reason: action === 'REJECT' ? reason : null,
-        verified_by: adminName,
-        verified_at: new Date().toISOString(),
+        verified_by: action === 'PENDING' ? null : adminName,
+        verified_at: action === 'PENDING' ? null : new Date().toISOString(),
       })
       .eq('payment_id', payment_id)
       .select('*, participant:participants(*)')
@@ -578,10 +578,10 @@ export async function verifyPaymentRecord(params: {
   const pay = memPayments.find((p) => p.payment_id === payment_id);
   if (!pay) throw new Error('Payment not found');
 
-  pay.status = action === 'VERIFY' ? 'VERIFIED' : 'REJECTED';
+  pay.status = action === 'VERIFY' ? 'VERIFIED' : action === 'REJECT' ? 'REJECTED' : 'PENDING';
   pay.rejection_reason = action === 'REJECT' ? reason : null;
-  pay.verified_by = adminName;
-  pay.verified_at = new Date().toISOString();
+  pay.verified_by = action === 'PENDING' ? undefined : adminName;
+  pay.verified_at = action === 'PENDING' ? undefined : new Date().toISOString();
 
   // Recalculate participant
   const p = memParticipants.find((item) => item.id === pay.participant_id);

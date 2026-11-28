@@ -1,4 +1,5 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { QRCodeSVG } from 'qrcode.react';
 import { 
   Check, 
@@ -85,6 +86,17 @@ export default function DynamicUpiPayment({
   const [copiedUpi, setCopiedUpi] = useState(false);
   const [appOpenNotice, setAppOpenNotice] = useState<string | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+
+  useEffect(() => {
+    if (isModalOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [isModalOpen]);
 
   // Recipient details from server/owner configuration (STRICTLY PRESERVED)
   const upiId = paymentInfo?.upi_id || 'sri.469512-1@oksbi';
@@ -382,12 +394,12 @@ export default function DynamicUpiPayment({
 
       {/* Dedicated Payment Modal / Popup */}
       <AnimatePresence>
-        {isModalOpen && (
+        {isModalOpen && typeof document !== 'undefined' && createPortal(
           <motion.div 
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-50 bg-black/90 backdrop-blur-md flex items-center justify-center p-3 sm:p-4 overflow-y-auto"
+            className="fixed inset-0 z-[100] bg-black/90 backdrop-blur-md flex items-center justify-center p-3 sm:p-4 overflow-y-auto"
           >
             <motion.div 
               initial={{ scale: 0.95, opacity: 0 }}
@@ -480,7 +492,8 @@ export default function DynamicUpiPayment({
                 </p>
               </div>
             </motion.div>
-          </motion.div>
+          </motion.div>,
+          document.body
         )}
       </AnimatePresence>
     </div>

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import Navbar from './components/Navbar';
 import HomePage from './pages/HomePage';
 import AboutPage from './pages/AboutPage';
@@ -64,6 +65,17 @@ export default function App() {
   const [showTermsModal, setShowTermsModal] = useState<boolean>(false);
   const [showPrivacyModal, setShowPrivacyModal] = useState<boolean>(false);
   const [isNavigating, setIsNavigating] = useState(false);
+
+  useEffect(() => {
+    if (showTermsModal || showPrivacyModal) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [showTermsModal, showPrivacyModal]);
 
   // Haute Couture Global Scroll Progress
   const { scrollYProgress } = useScroll();
@@ -148,7 +160,7 @@ export default function App() {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -8 }}
               transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
-              className="will-change-transform"
+              className="w-full flex-1"
             >
               {activeTab === 'home' && (
                 <HomePage 
@@ -371,10 +383,10 @@ export default function App() {
         </footer>
 
         {/* Terms & Conditions Modal */}
-        {showTermsModal && (
-          <div className="fixed inset-0 z-50 bg-black/90 backdrop-blur-md flex items-center justify-center p-4">
+        {showTermsModal && typeof document !== 'undefined' && createPortal(
+          <div className="fixed inset-0 z-[100] bg-black/90 backdrop-blur-md flex items-center justify-center p-4 overflow-y-auto">
             <div 
-              className="max-w-2xl w-full p-6 sm:p-8 max-h-[85vh] overflow-y-auto shadow-2xl relative rounded-sm"
+              className="max-w-2xl w-full p-6 sm:p-8 max-h-[85vh] overflow-y-auto shadow-2xl relative rounded-sm my-auto"
               style={{ 
                 backgroundColor: 'var(--surface)', 
                 border: '1px solid var(--border)',
@@ -413,14 +425,15 @@ export default function App() {
                 </div>
               </div>
             </div>
-          </div>
+          </div>,
+          document.body
         )}
 
         {/* Privacy Policy Modal */}
-        {showPrivacyModal && (
-          <div className="fixed inset-0 z-50 bg-black/90 backdrop-blur-md flex items-center justify-center p-4">
+        {showPrivacyModal && typeof document !== 'undefined' && createPortal(
+          <div className="fixed inset-0 z-[100] bg-black/90 backdrop-blur-md flex items-center justify-center p-4 overflow-y-auto">
             <div 
-              className="max-w-2xl w-full p-6 sm:p-8 max-h-[85vh] overflow-y-auto shadow-2xl relative rounded-sm"
+              className="max-w-2xl w-full p-6 sm:p-8 max-h-[85vh] overflow-y-auto shadow-2xl relative rounded-sm my-auto"
               style={{ 
                 backgroundColor: 'var(--surface)', 
                 border: '1px solid var(--border)',
@@ -456,7 +469,8 @@ export default function App() {
                 </div>
               </div>
             </div>
-          </div>
+          </div>,
+          document.body
         )}
       </div>
   );

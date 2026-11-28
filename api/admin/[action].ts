@@ -30,7 +30,7 @@ const loginSchema = z.object({
 
 const verifySchema = z.object({
   payment_id: z.string().min(1),
-  action: z.enum(['VERIFY', 'REJECT']),
+  action: z.enum(['VERIFY', 'REJECT', 'PENDING']),
   rejection_reason: z.string().optional(),
   admin_name: z.string().optional(),
 });
@@ -278,17 +278,20 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
       const adminDisplayName = data.admin_name || auth.session?.email || 'Operations Director';
 
+      const statusToSet: 'VERIFIED' | 'REJECTED' | 'PENDING' = 
+        data.action === 'VERIFY' ? 'VERIFIED' : data.action === 'REJECT' ? 'REJECTED' : 'PENDING';
+
       const result = await updatePaymentVerification(
         data.payment_id,
         undefined,
-        data.action === 'VERIFY' ? 'VERIFIED' : 'REJECTED',
+        statusToSet,
         adminDisplayName,
         data.rejection_reason
       );
 
       return res.status(200).json({
         success: true,
-        message: `Payment ${data.payment_id} has been marked as ${data.action === 'VERIFY' ? 'VERIFIED' : 'REJECTED'}.`,
+        message: `Payment ${data.payment_id} has been marked as ${statusToSet}.`,
         result,
       });
     } catch (err: any) {

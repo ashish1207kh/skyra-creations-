@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { 
   ZoomIn, 
   X, 
@@ -22,6 +23,17 @@ export default function GalleryPage({ setActiveTab }: GalleryPageProps) {
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, []);
+
+  useEffect(() => {
+    if (selectedImage) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [selectedImage]);
 
   const galleryItems = [
     {
@@ -240,20 +252,20 @@ export default function GalleryPage({ setActiveTab }: GalleryPageProps) {
 
       {/* Lightbox Modal */}
       <AnimatePresence>
-        {selectedImage && (
+        {selectedImage && typeof document !== 'undefined' && createPortal(
           <motion.div 
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={() => setSelectedImage(null)}
-            className="fixed inset-0 z-50 bg-black/95 backdrop-blur-md flex items-center justify-center p-4"
+            className="fixed inset-0 z-[100] bg-black/95 backdrop-blur-md flex items-center justify-center p-3 sm:p-6 overflow-y-auto"
           >
             <motion.div 
               initial={{ scale: 0.95 }}
               animate={{ scale: 1 }}
               exit={{ scale: 0.95 }}
               onClick={(e) => e.stopPropagation()}
-              className="relative max-w-4xl max-h-[90vh] p-4 overflow-hidden rounded-sm"
+              className="relative max-w-4xl max-h-[90vh] p-4 overflow-hidden rounded-sm my-auto"
               style={{ 
                 backgroundColor: 'var(--surface)', 
                 border: '1px solid var(--border)' 
@@ -286,7 +298,8 @@ export default function GalleryPage({ setActiveTab }: GalleryPageProps) {
                 </p>
               </div>
             </motion.div>
-          </motion.div>
+          </motion.div>,
+          document.body
         )}
       </AnimatePresence>
 

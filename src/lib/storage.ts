@@ -40,13 +40,7 @@ export async function uploadFileToR2(
     throw new Error('Server returned an invalid storage upload response.');
   }
 
-  // 3. Upload binary directly to Cloudflare R2 via signed PUT URL
-  // If in local mock mode without R2, bypass direct PUT
-  if (upload_url.startsWith('/api/storage/local-upload-mock')) {
-    if (onProgress) onProgress(100);
-    return object_key;
-  }
-
+  // 3. Upload binary directly to secure storage (Cloudflare R2 or direct MongoDB Atlas storage)
   return new Promise((resolve, reject) => {
     const xhr = new XMLHttpRequest();
     xhr.open('PUT', upload_url, true);
@@ -63,14 +57,15 @@ export async function uploadFileToR2(
 
     xhr.onload = () => {
       if (xhr.status >= 200 && xhr.status < 300) {
+        if (onProgress) onProgress(100);
         resolve(object_key);
       } else {
-        reject(new Error(`Cloudflare R2 upload failed with status ${xhr.status}.`));
+        reject(new Error(`File upload failed with status ${xhr.status}.`));
       }
     };
 
     xhr.onerror = () => {
-      reject(new Error('Network error occurred during file upload to Cloudflare R2.'));
+      reject(new Error('Network error occurred during file upload. Please check your connection and retry.'));
     };
 
     xhr.send(file);

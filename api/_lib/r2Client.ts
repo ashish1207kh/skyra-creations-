@@ -69,9 +69,9 @@ export async function generatePresignedUploadUrl(opts: PresignUploadOptions): Pr
   const expiresInSeconds = 300; // 5 minutes
 
   if (!isR2Configured) {
-    // Local / development mock presigned URL
+    // Database-backed storage endpoint (MongoDB Atlas)
     return {
-      uploadUrl: `/api/storage/local-upload-mock?key=${encodeURIComponent(randomKey)}`,
+      uploadUrl: `/api/storage/upload?key=${encodeURIComponent(randomKey)}`,
       objectKey: randomKey,
       expiresInSeconds,
     };
@@ -95,9 +95,10 @@ export async function generatePresignedUploadUrl(opts: PresignUploadOptions): Pr
 }
 
 export async function generatePresignedViewUrl(objectKey: string): Promise<string> {
+  if (!objectKey) return '/logo.png';
   if (!isR2Configured) {
-    // Return sample local asset URL for local dev
-    return `/qr_code.png`;
+    // Serve directly from database-backed storage
+    return `/api/storage/file?key=${encodeURIComponent(objectKey)}`;
   }
 
   const client = getR2Client();

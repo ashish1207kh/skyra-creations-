@@ -415,7 +415,7 @@ export async function recordPayment(payment: Omit<PaymentRecord, 'id' | 'created
 export async function updatePaymentVerification(
   paymentId: string,
   regId: string | undefined,
-  newStatus: 'VERIFIED' | 'REJECTED',
+  newStatus: 'VERIFIED' | 'REJECTED' | 'PENDING',
   verifiedBy: string,
   rejectionReason?: string
 ): Promise<{ success: boolean; participant?: ParticipantRecord }> {
@@ -437,9 +437,9 @@ export async function updatePaymentVerification(
         {
           $set: {
             status: newStatus,
-            verified_by: verifiedBy,
-            verified_at: now,
-            rejection_reason: rejectionReason || null,
+            verified_by: newStatus === 'PENDING' ? null : verifiedBy,
+            verified_at: newStatus === 'PENDING' ? null : now,
+            rejection_reason: newStatus === 'REJECTED' ? (rejectionReason || null) : null,
           },
         }
       );
@@ -448,10 +448,13 @@ export async function updatePaymentVerification(
       // Recalculate participant's balance based strictly on verified payments
       const participant = await getParticipantByRegId(targetRegId);
       if (participant) {
-        const verifiedDocs = await conn.db.collection('payments').find({
+        const allPayments = await conn.db.collection('payments').find({
           reg_id: targetRegId.toUpperCase(),
-          status: 'VERIFIED',
         }).toArray();
+
+        const verifiedDocs = allPayments.filter((p) => p.status === 'VERIFIED');
+        const pendingDocs = allPayments.filter((p) => p.status === 'PENDING');
+        const rejectedDocs = allPayments.filter((p) => p.status === 'REJECTED');
 
         const verifiedSum = verifiedDocs.reduce((acc, curr) => acc + (typeof curr.amount === 'number' ? curr.amount : 0), 0);
         const balanceDue = Math.max(0, participant.total_fee - verifiedSum);
@@ -465,6 +468,10 @@ export async function updatePaymentVerification(
           }
         } else if (verifiedSum > 0) {
           updatedStatus = 'PARTIALLY_PAID';
+        } else if (pendingDocs.length === 0 && rejectedDocs.length > 0) {
+          updatedStatus = 'REJECTED';
+        } else {
+          updatedStatus = 'PENDING_VERIFICATION';
         }
 
         await conn.db.collection('registrations').updateOne(
@@ -489,7 +496,7 @@ export async function updatePaymentVerification(
   // Fallback to Supabase / In-Memory
   const result = await supabaseAdmin.verifyPaymentRecord({
     payment_id: paymentId,
-    action: newStatus === 'VERIFIED' ? 'VERIFY' : 'REJECT',
+    action: newStatus === 'VERIFIED' ? 'VERIFY' : newStatus === 'REJECTED' ? 'REJECT' : 'PENDING',
     adminName: verifiedBy,
     reason: rejectionReason,
   });
