@@ -79,8 +79,8 @@ export async function getMongoConnection(): Promise<MongoConnection | null> {
     try {
       // 1. Registrations collection indexes
       await db.collection('registrations').createIndex({ reg_id: 1 }, { unique: true });
-      await db.collection('registrations').createIndex({ phone_blind_index: 1 }, { unique: true, sparse: true });
-      await db.collection('registrations').createIndex({ email_blind_index: 1 }, { unique: true, sparse: true });
+      await db.collection('registrations').createIndex({ phone_blind_index: 1 });
+      await db.collection('registrations').createIndex({ email_blind_index: 1 });
       await db.collection('registrations').createIndex({ status: 1 });
       await db.collection('registrations').createIndex({ created_at: -1 });
 

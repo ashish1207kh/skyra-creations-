@@ -817,7 +817,7 @@ export async function registerParticipant(data: {
   // Enforce allowed token advance amounts (Full: 3000, Half: 1500, Partial: 1000, Token: 500)
   const allowedRegistrationAmounts = [500, 1000, 1500, 3000, ...(eventConfig.allowed_token_advances || [])];
   if (!allowedRegistrationAmounts.includes(data.amount)) {
-    throw new Error(`Payment amount must be ₹500 (Token Advance), ₹1,000 (Partial Advance), ₹1,500 (Half Payment), or ₹3,000 (Full Payment). Received: ₹${data.amount}`);
+    throw new Error(`Token advance must be one of ₹${allowedRegistrationAmounts.join(', ₹')} (₹500 Token Advance, ₹1,000 Partial Advance, ₹1,500 Half Payment, or ₹3,000 Full Payment). Received: ₹${data.amount}`);
   }
 
   if (driver === 'mongodb') {
