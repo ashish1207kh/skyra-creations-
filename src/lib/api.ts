@@ -124,13 +124,14 @@ export async function verifyPayment(
   });
 }
 
-export function getZipDownloadUrl(keys?: string[]): string {
+export function getZipDownloadUrl(category: 'all' | 'photos' | 'receipts' = 'all', keys?: string[]): string {
   const token = getAdminToken();
-  const tokenParam = token ? `&token=${encodeURIComponent(token)}` : '';
-  if (keys && keys.length > 0) {
-    return `/api/admin/download-zip?keys=${encodeURIComponent(keys.join(','))}${tokenParam}`;
-  }
-  return `/api/admin/download-zip?${tokenParam.replace('&', '')}`;
+  const params = new URLSearchParams();
+  if (token) params.set('token', token);
+  if (category && category !== 'all') params.set('type', category);
+  if (keys && keys.length > 0) params.set('keys', keys.join(','));
+  const qs = params.toString();
+  return `/api/admin/download-zip${qs ? `?${qs}` : ''}`;
 }
 
 export function getCsvExportUrl(): string {

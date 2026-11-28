@@ -650,7 +650,7 @@ export default function AdminDashboard() {
             <span>SYNC</span>
           </button>
 
-          {/* 6.4 Admin Exports */}
+          {/* 6.4 Admin Exports & Asset Download Suite */}
           <a
             href={getCsvExportUrl()}
             target="_blank"
@@ -661,15 +661,41 @@ export default function AdminDashboard() {
             <span>EXPORT CSV</span>
           </a>
 
-          <a
-            href={getZipDownloadUrl()}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="flex items-center space-x-1.5 px-3.5 py-2.5 rounded-sm bg-[#C6FF00]/10 hover:bg-[#C6FF00]/20 text-[#C6FF00] border border-[#C6FF00]/30 text-xs font-semibold transition-colors"
-          >
-            <FolderArchive className="w-3.5 h-3.5" />
-            <span>DOWNLOAD PHOTOS (ZIP)</span>
-          </a>
+          {/* Separated Assets Download Toolbar: Master Archive (Separated Folders) / Photos / Receipts */}
+          <div className="flex items-center rounded-sm border border-white/15 bg-white/5 p-0.5">
+            <a
+              href={getZipDownloadUrl('all')}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center space-x-1.5 px-3 py-2 rounded-sm bg-[#C6FF00]/15 hover:bg-[#C6FF00]/25 text-[#C6FF00] text-xs font-semibold transition-colors"
+              title="Download Master Archive with separate model_photos/ and payment_receipts/ folders"
+            >
+              <FolderArchive className="w-3.5 h-3.5" />
+              <span>DOWNLOAD ALL (ZIP)</span>
+            </a>
+
+            <a
+              href={getZipDownloadUrl('photos')}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center space-x-1 px-2.5 py-2 hover:bg-white/10 text-zinc-300 hover:text-white text-xs font-mono-editorial transition-colors border-l border-white/10"
+              title="Download Candidate Model Portraits Only (ZIP)"
+            >
+              <User className="w-3 h-3 text-[#C6FF00]" />
+              <span>PHOTOS</span>
+            </a>
+
+            <a
+              href={getZipDownloadUrl('receipts')}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center space-x-1 px-2.5 py-2 hover:bg-white/10 text-zinc-300 hover:text-white text-xs font-mono-editorial transition-colors border-l border-white/10"
+              title="Download UPI Payment Receipts Only (ZIP)"
+            >
+              <Check className="w-3 h-3 text-emerald-400" />
+              <span>RECEIPTS</span>
+            </a>
+          </div>
 
           <button
             onClick={() => setPurgeModalOpen(true)}
@@ -1870,6 +1896,17 @@ export default function AdminDashboard() {
                   title="Open Raw Image in New Tab"
                 >
                   <ExternalLink className="w-4 h-4" />
+                </a>
+                <a
+                  href={activeMedia.url}
+                  download={`${(activeMedia.details?.regId || 'skyra').replace(/[^a-zA-Z0-9_-]/g, '_')}_${activeMedia.type === 'photo' ? 'model_portrait' : 'payment_receipt'}.jpg`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center space-x-1.5 px-3 py-1.5 rounded-sm bg-[#C6FF00]/15 hover:bg-[#C6FF00]/25 text-[#C6FF00] border border-[#C6FF00]/30 transition-colors text-xs font-mono font-bold ml-1"
+                  title={`Download this ${activeMedia.type === 'photo' ? 'Model Portrait' : 'Payment Receipt'} individually`}
+                >
+                  <Download className="w-3.5 h-3.5" />
+                  <span>DOWNLOAD {activeMedia.type === 'photo' ? 'PHOTO' : 'RECEIPT'}</span>
                 </a>
                 <button
                   type="button"

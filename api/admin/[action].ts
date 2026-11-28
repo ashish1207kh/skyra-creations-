@@ -21,6 +21,7 @@ import {
   getSupabaseAdmin 
 } from '../_lib/supabaseAdmin.js';
 import { generatePresignedViewUrl, isR2Configured, getObjectStream } from '../_lib/r2Client.js';
+import { getFileFromMongo } from '../_lib/mongoStorage.js';
 import { checkRateLimit, sanitizeNoSqlInjection } from '../_lib/rateLimit.js';
 
 const loginSchema = z.object({
@@ -430,48 +431,152 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       return res.status(405).json({ detail: 'Method not allowed' });
     }
 
-    const selectedKeys = req.query.keys ? (req.query.keys as string).split(',') : null;
+    const downloadType = ((req.query.type as string) || 'all').toLowerCase(); // 'all', 'photos', 'receipts'
+    const selectedKeys = req.query.keys ? (req.query.keys as string).split(',').map((k: string) => k.trim()).filter(Boolean) : null;
 
     try {
       const archive = archiver('zip', { zlib: { level: 9 } });
-      const filename = `skyra_event_photos_${Date.now()}.zip`;
+      
+      let filename = `skyra_assets_all_${Date.now()}.zip`;
+      if (downloadType === 'photos') {
+        filename = `skyra_model_photos_${Date.now()}.zip`;
+      } else if (downloadType === 'receipts') {
+        filename = `skyra_payment_receipts_${Date.now()}.zip`;
+      }
 
       res.setHeader('Content-Type', 'application/zip');
       res.setHeader('Content-Disposition', `attachment; filename="${filename}"`);
 
       archive.pipe(res);
 
-      let keysToInclude: string[] = [];
-      if (selectedKeys && selectedKeys.length > 0) {
-        keysToInclude = selectedKeys;
-      } else {
-        const allPayments = await listAllPayments();
-        keysToInclude = allPayments.map((p: any) => p.r2_object_key).filter(Boolean);
-      }
-
-      if (!isR2Configured) {
-        const samplePath = path.resolve(process.cwd(), 'public', 'logo.png');
-        if (fs.existsSync(samplePath)) {
-          const stream = fs.createReadStream(samplePath);
-          archive.append(stream, { name: 'sample_payment_proof.png' });
+      // Robust binary retrieval helper: checks MongoDB Atlas first, then Cloudflare R2
+      const getFileBuffer = async (key: string): Promise<{ buffer: Buffer; mimeType: string } | null> => {
+        if (!key) return null;
+        const cleanKey = decodeURIComponent(key).replace(/^\/+/, '');
+        try {
+          const mongoFile = await getFileFromMongo(cleanKey);
+          if (mongoFile && mongoFile.buffer && mongoFile.buffer.length > 0) {
+            return { buffer: mongoFile.buffer, mimeType: mongoFile.mimeType };
+          }
+        } catch (err) {
+          console.warn(`MongoDB retrieval error for ${key}:`, err);
         }
-        archive.append(
-          Buffer.from('Manifest of requested keys:\n' + keysToInclude.join('\n')),
-          { name: 'download_manifest.txt' }
-        );
-      } else {
-        for (const key of keysToInclude) {
+
+        if (isR2Configured) {
           try {
-            const bodyStream = await getObjectStream(key);
-            if (bodyStream) {
-              const entryName = path.basename(key);
-              archive.append(bodyStream as any, { name: entryName });
+            const stream = await getObjectStream(cleanKey);
+            if (stream) {
+              const chunks: Buffer[] = [];
+              for await (const chunk of stream as any) {
+                chunks.push(Buffer.isBuffer(chunk) ? chunk : Buffer.from(chunk));
+              }
+              return { buffer: Buffer.concat(chunks), mimeType: 'image/jpeg' };
             }
-          } catch (fileErr) {
-            console.error(`Failed to stream object ${key}:`, fileErr);
+          } catch (err) {
+            console.warn(`R2 retrieval error for ${key}:`, err);
           }
         }
+        return null;
+      };
+
+      const manifestEntries: string[] = [
+        '=========================================================================',
+        'SKYRA CREATIONS • RUNWAY SHOW 2026 OFFICIAL CANDIDATE AUDIT ARCHIVE',
+        `Export Timestamp : ${new Date().toISOString()}`,
+        `Archive Package  : ${downloadType.toUpperCase()}`,
+        '=========================================================================\n',
+      ];
+
+      // 1. Process specific selected keys if explicitly requested
+      if (selectedKeys && selectedKeys.length > 0) {
+        manifestEntries.push('REQUESTED KEYS INCLUDED:\n');
+        for (const key of selectedKeys) {
+          const fileData = await getFileBuffer(key);
+          if (fileData) {
+            const isPhoto = key.includes('photos') || key.includes('portrait');
+            const folderPrefix = isPhoto ? 'model_photos/' : 'payment_receipts/';
+            const base = path.basename(key);
+            const entryPath = `${folderPrefix}${base}`;
+            archive.append(fileData.buffer, { name: entryPath });
+            manifestEntries.push(`[${isPhoto ? 'MODEL PHOTO' : 'RECEIPT'}] ${entryPath} (${fileData.buffer.length} bytes)`);
+          }
+        }
+      } else {
+        // Query database registrations and payments
+        const rawParticipants = await listRegistrations();
+        const participantsList: any[] = Array.isArray(rawParticipants) ? rawParticipants : (rawParticipants?.items || []);
+        const participantMap = new Map<string, any>();
+        participantsList.forEach((p) => {
+          if (p?.reg_id) participantMap.set(p.reg_id, p);
+        });
+
+        const rawPayments = await listAllPayments();
+        const paymentsList: any[] = Array.isArray(rawPayments) ? rawPayments : (rawPayments?.items || []);
+
+        let photoCount = 0;
+        let receiptCount = 0;
+
+        // 2. Folder A: Model Photos (model_photos/)
+        if (downloadType === 'all' || downloadType === 'photos') {
+          manifestEntries.push('-------------------------------------------------------------------------');
+          manifestEntries.push('1. MODEL PHOTOGRAPHS (Folder: model_photos/)');
+          manifestEntries.push('-------------------------------------------------------------------------');
+
+          for (const p of participantsList) {
+            if (p.model_photo_r2_key) {
+              const fileData = await getFileBuffer(p.model_photo_r2_key);
+              if (fileData) {
+                const safeName = (p.full_name || 'Participant').replace(/[^a-zA-Z0-9_-]/g, '_');
+                const safeRegId = (p.reg_id || 'UNKNOWN').replace(/[^a-zA-Z0-9_-]/g, '_');
+                const extMatch = p.model_photo_r2_key.match(/\.([a-zA-Z0-9]+)$/);
+                const ext = extMatch ? extMatch[1].toLowerCase() : (fileData.mimeType.includes('png') ? 'png' : 'jpg');
+
+                const entryPath = downloadType === 'all' 
+                  ? `model_photos/${safeRegId}_${safeName}_portrait.${ext}`
+                  : `${safeRegId}_${safeName}_portrait.${ext}`;
+
+                archive.append(fileData.buffer, { name: entryPath });
+                photoCount++;
+                manifestEntries.push(`✓ [${safeRegId}] ${p.full_name} (${p.category || 'General'}) -> ${entryPath} [${fileData.buffer.length} bytes]`);
+              }
+            }
+          }
+          manifestEntries.push(`Total Model Photographs archived: ${photoCount}\n`);
+        }
+
+        // 3. Folder B: Payment Receipts (payment_receipts/)
+        if (downloadType === 'all' || downloadType === 'receipts') {
+          manifestEntries.push('-------------------------------------------------------------------------');
+          manifestEntries.push('2. PAYMENT RECEIPTS (Folder: payment_receipts/)');
+          manifestEntries.push('-------------------------------------------------------------------------');
+
+          for (const pay of paymentsList) {
+            if (pay.r2_object_key) {
+              const fileData = await getFileBuffer(pay.r2_object_key);
+              if (fileData) {
+                const p = participantMap.get(pay.reg_id) || pay.participant || {};
+                const safeName = (p.full_name || 'Participant').replace(/[^a-zA-Z0-9_-]/g, '_');
+                const safeRegId = (pay.reg_id || 'UNKNOWN').replace(/[^a-zA-Z0-9_-]/g, '_');
+                const safeUtr = (pay.transaction_id || 'UTR').replace(/[^a-zA-Z0-9_-]/g, '_');
+                const extMatch = pay.r2_object_key.match(/\.([a-zA-Z0-9]+)$/);
+                const ext = extMatch ? extMatch[1].toLowerCase() : (fileData.mimeType.includes('png') ? 'png' : 'jpg');
+
+                const entryPath = downloadType === 'all'
+                  ? `payment_receipts/${safeRegId}_${safeName}_receipt_${pay.amount || 0}_${safeUtr}.${ext}`
+                  : `${safeRegId}_${safeName}_receipt_${pay.amount || 0}_${safeUtr}.${ext}`;
+
+                archive.append(fileData.buffer, { name: entryPath });
+                receiptCount++;
+                manifestEntries.push(`✓ [${safeRegId}] ${safeName} | Amount: ₹${pay.amount?.toLocaleString('en-IN')} | UTR: ${pay.transaction_id} -> ${entryPath} [${fileData.buffer.length} bytes]`);
+              }
+            }
+          }
+          manifestEntries.push(`Total Payment Receipts archived: ${receiptCount}\n`);
+        }
       }
+
+      // 4. Append INDEX_MANIFEST.txt to root of ZIP
+      archive.append(Buffer.from(manifestEntries.join('\n'), 'utf-8'), { name: 'INDEX_MANIFEST.txt' });
 
       await archive.finalize();
     } catch (err: any) {

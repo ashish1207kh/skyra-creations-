@@ -55,7 +55,13 @@ export async function getFileFromMongo(
   if (!conn) return null;
 
   const collection = conn.db.collection('uploaded_files');
-  const doc = await collection.findOne({ key });
+  let doc = await collection.findOne({ key });
+  if (!doc) {
+    const cleanKey = decodeURIComponent(key).replace(/^\/+/, '');
+    if (cleanKey !== key) {
+      doc = await collection.findOne({ key: cleanKey });
+    }
+  }
 
   if (!doc || !doc.data) return null;
 
